@@ -112,7 +112,7 @@
     "items": {
       "free": {
         "q": "Is Spectra Launcher free?",
-        "a": "Yes — Spectra is completely free and open source under the MIT license. The full source lives on GitHub."
+        "a": "Yes — Spectra is completely free and open source under the GNU GPLv3 license. The full source lives on GitHub."
       },
       "platforms": {
         "q": "Which platforms are supported?",
