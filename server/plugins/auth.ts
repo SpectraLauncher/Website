@@ -1,7 +1,7 @@
 // Boot order matters here: better-auth creates the `user` table and
 // `ensureSchema` adds everything that references it.
 import { getMigrations } from 'better-auth/db/migration'
-import { ensureSchema } from '../utils/schema'
+import { ensureAccountIssuer, ensureSchema } from '../utils/schema'
 import { backfillUsernames } from '../utils/username'
 
 export default defineNitroPlugin(async () => {
@@ -10,6 +10,10 @@ export default defineNitroPlugin(async () => {
   if (import.meta.prerender) return
 
   try {
+    // Before better-auth's own migration: 1.7 wants a NOT NULL `issuer` on
+    // `account` and cannot add it to rows that predate it. See schema.ts.
+    await ensureAccountIssuer()
+
     const { runMigrations } = await getMigrations(useAuth().options)
     await runMigrations()
     await ensureSchema()

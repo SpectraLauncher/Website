@@ -241,8 +241,16 @@ const loadAccounts = async () => {
 onMounted(loadAccounts)
 const linked = (id: string) => accounts.value.some(a => a.providerId === id || a.provider === id)
 const link = (provider: string) => auth.linkSocial({ provider: provider as any, callbackURL: localePath('/account') })
-const unlink = (providerId: string) => run('link', async () => {
-  const res = await auth.unlinkAccount({ providerId })
+// better-auth 1.7 unlinks by the account row's own id. `providerId` stopped
+// being a selector there, because one provider can now hold more than one
+// identity — so the row has to be looked up in the list we already loaded.
+const unlink = (provider: string) => run('link', async () => {
+  const account = accounts.value.find(a => a.providerId === provider || a.provider === provider)
+  // Only reachable if the list went stale between render and click; refreshing
+  // it puts the button back in the right state.
+  if (!account) return void await loadAccounts()
+
+  const res = await auth.unlinkAccount({ accountId: account.id })
   await loadAccounts()
   return res
 })

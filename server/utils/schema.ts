@@ -215,3 +215,121 @@ export async function ensureSchema() {
       ON notification(user_id, kind, created)
   `)
 }
+
+/**
+ * better-auth 1.7 stopped identifying an external account by `providerId` alone
+ * and started using the pair (`issuer`, `accountId`). Its own migration cannot
+ * add the column: `issuer` is NOT NULL with no default, and a populated
+ * `account` table has nothing to backfill it with — so it refuses and boot fails
+ * with "Cannot add required column issuer to populated table account".
+ *
+ * We add and backfill it ourselves, before `runMigrations()` runs, so by the
+ * time better-auth inspects the table the column is already there and correct.
+ *
+ * The values are not ours to invent — they have to match exactly what 1.7
+ * computes at sign-in, or the row will not be found and the user gets a second
+ * account. Taken from the provider definitions in @better-auth/core:
+ *
+ *   credential            local:credential          (createLocalAccountIssuer)
+ *   google                https://accounts.google.com
+ *   microsoft             the `iss` claim of the account's own id_token
+ *   any other OAuth       local:oauth:<providerId>  (createOAuthAccountIssuer)
+ *
+ * Microsoft also changed which claim identifies the account: 1.6 stored the
+ * pairwise, app-specific `sub`, 1.7 stores the stable directory `oid`. Both
+ * claims sit in the id_token we already have on the row, so the rewrite is
+ * exact and nobody has to sign in again.
+ */
+export async function ensureAccountIssuer() {
+  const pool = usePool()
+
+  // A fresh database has no `account` table yet: better-auth is about to create
+  // it, with `issuer` already part of the definition. Nothing to migrate, and
+  // an ALTER here would throw before `runMigrations()` ever got to run.
+  const table = await pool.query(`
+    SELECT 1 FROM information_schema.tables WHERE table_name = 'account'
+  `)
+  if (!table.rowCount) return
+
+  const column = await pool.query(`
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'account' AND column_name = 'issuer'
+  `)
+  if (column.rowCount) return
+
+  // Nullable first — the whole point is that NOT NULL cannot be added to rows
+  // that have no value yet.
+  await pool.query('ALTER TABLE account ADD COLUMN issuer TEXT')
+
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    await client.query(`UPDATE account SET issuer = 'local:credential' WHERE "providerId" = 'credential'`)
+    await client.query(`UPDATE account SET issuer = 'https://accounts.google.com' WHERE "providerId" = 'google'`)
+    await client.query(`
+      UPDATE account SET issuer = 'local:oauth:' || "providerId"
+      WHERE "providerId" NOT IN ('credential', 'google', 'microsoft')
+    `)
+
+    // Microsoft: issuer and accountId both come out of the stored id_token.
+    const ms = await client.query<{ id: string, idToken: string | null }>(
+      `SELECT id, "idToken" FROM account WHERE "providerId" = 'microsoft'`
+    )
+    for (const row of ms.rows) {
+      const claims = decodeJwtClaims(row.idToken)
+      const iss = typeof claims?.iss === 'string' ? claims.iss : null
+      const oid = typeof claims?.oid === 'string' ? claims.oid : null
+      if (!iss || !oid) {
+        // No id_token to read, so there is no honest value to write. Leaving it
+        // NULL trips the NOT NULL below on purpose: a wrong issuer is worse
+        // than a failed boot, because it silently splits one person into two
+        // accounts on their next sign-in.
+        console.error(`[db] account ${row.id}: microsoft row has no usable id_token — cannot derive issuer/oid`)
+        continue
+      }
+      await client.query('UPDATE account SET issuer = $1, "accountId" = $2 WHERE id = $3', [iss, oid, row.id])
+    }
+
+    const blank = await client.query('SELECT count(*)::int AS n FROM account WHERE issuer IS NULL')
+    if (blank.rows[0]!.n > 0) {
+      throw new Error(`${blank.rows[0]!.n} account row(s) have no issuer — refusing to finish the migration`)
+    }
+
+    // Collisions would make the unique index fail with a message that says
+    // nothing about which rows are at fault. Say it here instead.
+    const dupes = await client.query<{ issuer: string, accountId: string, n: number }>(`
+      SELECT issuer, "accountId", count(*)::int AS n FROM account
+      GROUP BY issuer, "accountId" HAVING count(*) > 1
+    `)
+    if (dupes.rowCount) {
+      const list = dupes.rows.map(d => `${d.issuer} / ${d.accountId} (${d.n}x)`).join(', ')
+      throw new Error(`identity collisions after backfill: ${list}`)
+    }
+
+    await client.query('ALTER TABLE account ALTER COLUMN issuer SET NOT NULL')
+    await client.query('CREATE UNIQUE INDEX IF NOT EXISTS "account_issuer_accountId_uidx" ON account (issuer, "accountId")')
+
+    await client.query('COMMIT')
+    console.info(`[db] backfilled account.issuer for better-auth 1.7 (${ms.rowCount} microsoft row(s) re-keyed to oid)`)
+  } catch (e) {
+    await client.query('ROLLBACK')
+    // The ADD COLUMN above is outside the transaction, so a half-migrated table
+    // would look "already done" on the next boot and skip the backfill. Undo it.
+    await pool.query('ALTER TABLE account DROP COLUMN IF EXISTS issuer')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
+/** Payload of a JWT, without verifying it — these are our own stored tokens. */
+function decodeJwtClaims(token: string | null): Record<string, unknown> | null {
+  const part = token?.split('.')[1]
+  if (!part) return null
+  try {
+    return JSON.parse(Buffer.from(part, 'base64url').toString('utf8'))
+  } catch {
+    return null
+  }
+}
