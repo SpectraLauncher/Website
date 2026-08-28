@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const localePath = useLocalePath()
 const { data: release } = useLauncherVersion()
 const os = useOs()
 const { t } = useI18n()
@@ -116,7 +117,7 @@ onMounted(() => {
                 {{ t('hero.downloadFor', { os }) }}
                 </NuxtLink>
                 <NuxtLink
-                    to="#download"
+                    :to="localePath('/launcher') + '#downloads'"
                     class="inline-flex items-center justify-center gap-2 rounded-[13px] border border-white/[0.14] px-5.5 py-3.75 text-[16px] font-semibold no-underline transition-colors hover:border-[rgba(125,211,252,.45)]"
                     style="color:#eaf1fb;background:rgba(255,255,255,.03)"
                 >{{ t('hero.allPlatforms') }}</NuxtLink>

@@ -152,14 +152,13 @@ useSchemaOrg(computed(() => [
                 :label="t('hero.downloadFor', { os })"
               />
               <UButton
-                :to="release?.releasesUrl || GITHUB_REPO"
-                external
+                to="#downloads"
                 size="xl"
                 variant="ghost"
                 color="neutral"
                 class="rounded-xl"
                 :label="t('hero.allPlatforms')"
-                trailing-icon="i-lucide-arrow-up-right"
+                trailing-icon="i-lucide-arrow-down"
               />
             </div>
 
@@ -255,7 +254,7 @@ useSchemaOrg(computed(() => [
       </div>
     </section>
 
-    <section class="container mx-auto px-4 pb-16">
+    <section id="downloads" class="container mx-auto scroll-mt-28 px-4 pb-16">
       <h2 v-reveal class="mb-2 text-2xl font-semibold tracking-tight">{{ t('launcherPage.dlTitle') }}</h2>
       <p v-reveal class="mb-6 max-w-[60ch] text-sm/relaxed text-muted">{{ t('launcherPage.dlSub') }}</p>
 
