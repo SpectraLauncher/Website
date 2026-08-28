@@ -40,6 +40,10 @@ export default defineNuxtConfig({
   fonts: {
     providers: {
       google: false,
+      bunny: false,
+      fontshare: false,
+      fontsource: false,
+      adobe: false,
     },
     families: [
       { name: 'Inter', src: '/fonts/Inter-400.ttf', weight: 400 },
@@ -58,6 +62,19 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    hooks: {
+      async compiled(nitro) {
+        const { copyFile, mkdir } = await import('node:fs/promises')
+        const { dirname, join } = await import('node:path')
+        const { createRequire } = await import('node:module')
+
+        const from = join(dirname(createRequire(import.meta.url).resolve('harfbuzzjs')), 'hb.wasm')
+        const to = join(nitro.options.output.serverDir, 'node_modules/harfbuzzjs/hb.wasm')
+
+        await mkdir(dirname(to), { recursive: true })
+        await copyFile(from, to)
+      },
+    },
     prerender: {
       crawlLinks: false,
       failOnError: true,
