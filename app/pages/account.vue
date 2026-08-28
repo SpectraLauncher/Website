@@ -319,7 +319,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 
-      <section class="container mx-auto max-w-5xl px-4 pb-24 pt-40">
+      <section class="container mx-auto max-w-5xl px-4 pb-24 pt-28 sm:pt-40">
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="flex flex-wrap items-center gap-5">
             <button type="button" class="group relative shrink-0 cursor-pointer" @click="pickAvatar">

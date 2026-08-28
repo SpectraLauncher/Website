@@ -270,12 +270,12 @@ useSchemaOrg(computed(() => (data.value
       </template>
 
       <template v-else>
-        <section class="container mx-auto px-4 pt-36">
-          <div class="flex flex-wrap items-end gap-8">
+        <section class="container mx-auto px-4 pt-28 sm:pt-36">
+          <div class="flex flex-wrap items-end justify-center gap-6 sm:justify-start sm:gap-8">
             <div
               v-if="mc"
               class="relative shrink-0 transition-[height,width] duration-300"
-              :class="expanded ? 'h-[36rem] w-80' : '-mb-36 h-[30rem] w-64'"
+              :class="expanded ? 'h-[26rem] w-56 sm:h-[36rem] sm:w-80' : '-mb-16 h-[20rem] w-44 sm:-mb-36 sm:h-[30rem] sm:w-64'"
             >
               <SkinViewer
                 v-if="skinCanvas"
@@ -312,7 +312,7 @@ useSchemaOrg(computed(() => (data.value
             </div>
 
             <div class="min-w-0 flex-1 pb-6">
-              <h1 class="mb-2 truncate text-5xl font-semibold tracking-tight">{{ data.user.name || label(data.user) }}</h1>
+              <h1 class="mb-2 truncate text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">{{ data.user.name || label(data.user) }}</h1>
               <p class="mb-4 font-mono text-muted">@{{ data.user.username }}</p>
 
               <div class="mb-1 flex items-center gap-1">
@@ -322,10 +322,11 @@ useSchemaOrg(computed(() => (data.value
                   variant="ghost"
                   color="neutral"
                   icon="i-lucide-copy"
-                  class="font-mono"
-                  :label="'UUID '+data.user.mcUuid"
+                  class="min-w-0 max-w-full font-mono"
                   @click="copy(data.user.mcUuid)"
-                />
+                >
+                  <span class="truncate">UUID {{ data.user.mcUuid }}</span>
+                </UButton>
                 <UTooltip
                   v-if="locatorHex"
                   :text="t('profile.locatorColor', { name: mc || label(data.user) })"

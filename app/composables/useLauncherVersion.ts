@@ -39,4 +39,4 @@ export function useLauncherVersion() {
   })
 }
 
-export const GITHUB_REPO = 'https://github.com/MakotoPD/Spectra-Launcher'
+export const GITHUB_REPO = 'https://github.com/SpectraLauncher/Launcher/'
