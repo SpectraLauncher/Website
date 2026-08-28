@@ -82,34 +82,34 @@ onMounted(() => {
 </script>
 
 <template>
-    <div ref="root" class="relative pt-48">
+    <div ref="root" class="relative pt-32 md:pt-48">
         <div class="absolute inset-0 -z-10 bg-[url('/bg.webp')] bg-center bg-no-repeat bg-cover mask-b-from-50% mask-b-to-100%"></div>
 
 
-        <div class="container mx-auto flex flex-col items-center text-center">
+        <div class="container mx-auto flex flex-col items-center px-4 text-center">
 
-            <div data-anim="hero" class="flex gap-2 py-2 px-3 text-sm bg-black/10 border border-zinc-600/50 rounded-full w-fit">
+            <div data-anim="hero" class="flex w-fit max-w-full items-center gap-2 rounded-full border border-zinc-600/50 bg-black/10 px-3 py-2 text-xs sm:text-sm">
                 <UChip standalone inset color="success" class="animate-pulse" />
                 <div>
-                    <p class="text-muted">Launcher <span class="text-white">v{{ release?.version || '…' }}</span> · open beta · {{ DISCORD_MEMBERS }} members</p>
+                    <p class="text-muted">Launcher <span class="text-white">v{{ release?.version || '…' }}</span> · open beta<span class="hidden sm:inline"> · {{ DISCORD_MEMBERS }} members</span></p>
                 </div>
             </div>
-            <h1 class="flex flex-wrap justify-center gap-x-[0.26em] text-8xl font-semibold mb-6">
+            <h1 class="mb-6 flex flex-wrap justify-center gap-x-[0.26em] text-4xl font-semibold sm:text-6xl lg:text-7xl xl:text-8xl">
                 <span v-for="(word, i) in titleWords" :key="i" class="inline-block overflow-hidden pb-[0.08em]">
                     <span data-word class="inline-block"><span v-if="word.hl" class="cpface">{{ word.w }}</span><template v-else>{{ word.w }}</template>{{ word.punct }}</span>
                 </span>
             </h1>
 
-            <i18n-t data-anim="hero" keypath="hero.subtitle" tag="p" scope="global" class="text-xl text-muted mb-6">
+            <i18n-t data-anim="hero" keypath="hero.subtitle" tag="p" scope="global" class="mb-6 max-w-[60ch] text-base text-muted sm:text-lg lg:text-xl">
                 <template #br><br class="hidden lg:inline"></template>
             </i18n-t>
 
-            <div data-anim="hero" class="flex flex-wrap items-center gap-3.5 z-10">
+            <div data-anim="hero" class="z-10 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3.5">
                 <NuxtLink
                     :to="primaryHref"
                     target="_blank"
                     rel="noreferrer"
-                    class="inline-flex items-center gap-3 rounded-[13px] px-6 py-4 text-[16px] font-bold no-underline transition-transform hover:-translate-y-0.5"
+                    class="inline-flex items-center justify-center gap-3 rounded-[13px] px-6 py-4 text-[16px] font-bold no-underline transition-transform hover:-translate-y-0.5"
                     style="color:#04121f;background:linear-gradient(135deg,#7dd3fc,#38bdf8 55%,#0ea5e9);box-shadow:0 10px 34px rgba(56,189,248,.38)"
                 >
                     <UIcon name="i-lucide-download" size="20" color="neutral" />
@@ -117,13 +117,13 @@ onMounted(() => {
                 </NuxtLink>
                 <NuxtLink
                     to="#download"
-                    class="inline-flex items-center gap-2 rounded-[13px] border border-white/[0.14] px-5.5 py-3.75 text-[16px] font-semibold no-underline transition-colors hover:border-[rgba(125,211,252,.45)]"
+                    class="inline-flex items-center justify-center gap-2 rounded-[13px] border border-white/[0.14] px-5.5 py-3.75 text-[16px] font-semibold no-underline transition-colors hover:border-[rgba(125,211,252,.45)]"
                     style="color:#eaf1fb;background:rgba(255,255,255,.03)"
                 >{{ t('hero.allPlatforms') }}</NuxtLink>
             </div>
 
             
-            <canvas ref="canvas" data-anim="hero" :width="W" :height="H" class="w-full relative -top-8" />
+            <canvas ref="canvas" data-anim="hero" :width="W" :height="H" class="relative -top-4 w-full md:-top-8" />
 
 
         </div>

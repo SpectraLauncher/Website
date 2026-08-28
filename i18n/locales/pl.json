@@ -10,7 +10,8 @@
     "login": "Zaloguj się",
     "badgesDesc": "Wyróżnienia dla społeczności",
     "githubDesc": "Kod launchera i strony",
-    "discordDesc": "Wsparcie i rozmowy"
+    "discordDesc": "Wsparcie i rozmowy",
+    "menu": "Menu"
   },
   "hero": {
     "opensource": "open source",

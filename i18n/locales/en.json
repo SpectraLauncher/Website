@@ -10,7 +10,8 @@
     "login": "Login",
     "badgesDesc": "Marks for the community",
     "githubDesc": "Launcher and site source",
-    "discordDesc": "Support and chatter"
+    "discordDesc": "Support and chatter",
+    "menu": "Menu"
   },
   "hero": {
     "opensource": "open source",

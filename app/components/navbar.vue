@@ -55,22 +55,25 @@ const tr = (list: NavigationMenuItem[]): NavigationMenuItem[] => list.map(i => (
 
 const localized = computed(() => tr(items.value))
 
+const menuOpen = ref(false)
+watch(() => route.fullPath, () => { menuOpen.value = false })
+
 defineExpose({ items })
 </script>
 
 <template>
-    <div class="fixed w-full z-100 transition-[top] duration-300 ease-out" :class="scrolled ? 'top-4' : 'top-12'">
+    <div class="fixed w-full z-100 transition-[top] duration-300 ease-out" :class="scrolled ? 'top-2 md:top-4' : 'top-4 md:top-12'">
         <div class="container relative mx-auto px-4 py-3 rounded-3xl border border-zinc-600/50">
 
             <div class="absolute inset-0 rounded-3xl bg-black/30 backdrop-blur-sm"></div>
 
             <div class="relative w-full flex justify-between items-center">
                 <NuxtLink :to="localePath('/')" class="flex items-center">
-                    <NuxtImg src="/logo-transparent.png" alt="Logo" class="h-10" />
-                    <p class="text-xl font-bold ml-2">Spectra</p>
+                    <NuxtImg src="/logo-transparent.png" alt="Logo" class="h-8 md:h-10" />
+                    <p class="ml-2 text-lg font-bold md:text-xl">Spectra</p>
                 </NuxtLink>
 
-                <div id="nav">
+                <div id="nav" class="hidden lg:block">
                     <UNavigationMenu
                         :items="localized"
                         content-orientation="vertical"
@@ -83,7 +86,7 @@ defineExpose({ items })
                     />
                 </div>
 
-                <div class="flex gap-3 items-center">
+                <div class="hidden gap-3 items-center lg:flex">
                     <USelect 
                         v-model="lang"
                         :items="langs"
@@ -114,10 +117,59 @@ defineExpose({ items })
                         class="rounded-xl cursor-pointer"
                     />
                 </div>
-            </div>
-            <div>
 
+                <UButton
+                    class="rounded-xl lg:hidden"
+                    variant="ghost"
+                    color="neutral"
+                    size="lg"
+                    :icon="menuOpen ? 'i-lucide-x' : 'i-lucide-menu'"
+                    :aria-label="t('nav.menu')"
+                    @click="menuOpen = !menuOpen"
+                />
             </div>
         </div>
+
+        <USlideover v-model:open="menuOpen" side="right" :title="t('nav.menu')">
+            <template #body>
+                <div class="flex flex-col gap-6">
+                    <UNavigationMenu :items="localized" orientation="vertical" class="w-full" />
+
+                    <div class="flex flex-col gap-3 border-t border-default pt-6">
+                        <USelect
+                            v-model="lang"
+                            :items="langs"
+                            value-key="value"
+                            icon="i-lucide-languages"
+                            variant="soft"
+                            color="neutral"
+                            class="w-full"
+                            :ui="{ base: 'rounded-xl cursor-pointer' }"
+                        />
+                        <UButton
+                            v-if="me"
+                            :to="localePath('/account')"
+                            :label="me.username || me.name"
+                            :avatar="me.image ? { src: me.image } : undefined"
+                            :icon="me.image ? undefined : 'i-lucide-user-round'"
+                            variant="soft"
+                            color="neutral"
+                            block
+                            class="rounded-xl"
+                        />
+                        <UButton
+                            v-else
+                            :to="localePath('/login')"
+                            :label="t('nav.login')"
+                            variant="solid"
+                            color="neutral"
+                            icon="i-lucide-log-in"
+                            block
+                            class="rounded-xl"
+                        />
+                    </div>
+                </div>
+            </template>
+        </USlideover>
     </div>
 </template>
