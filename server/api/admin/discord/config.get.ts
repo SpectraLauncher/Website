@@ -1,8 +1,6 @@
-// Everything the bot reads out of the database, plus the channel and role lists
-// the panel needs to render pickers for it.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const [config, roleRows, channels, roles] = await Promise.all([
@@ -42,13 +40,10 @@ export default defineEventHandler(async (event) => {
       releaseChannel: config?.release_channel ?? null,
       releaseRole: config?.release_role ?? null,
     },
-    // Categories are what a ticket channel gets created *inside*, so they are
-    // offered separately from the channels a message can be posted to.
     textChannels: channels
       .filter(c => c.type === 0 || c.type === 5)
       .sort((a, b) => a.position - b.position)
       .map(c => ({ id: c.id, name: c.name })),
-    // Type 2 is a normal voice channel; 13 is a stage, which cannot be a hub.
     voiceChannels: channels
       .filter(c => c.type === 2)
       .sort((a, b) => a.position - b.position)

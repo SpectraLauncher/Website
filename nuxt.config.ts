@@ -1,38 +1,42 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { TOOLS } from './app/utils/tools'
+
+const PRIVATE_PATHS = [
+  '/admin',
+  '/account',
+  '/login',
+  '/reset-password',
+  '/secret',
+  '/launcher/auth',
+  '/s/'
+]
+
+const PRERENDER = [
+  '/tools',
+  ...TOOLS.filter(tool => tool.page).map(tool => `/tools/${tool.id}`),
+  '/privacy',
+  '/terms',
+  '/cookies'
+]
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  // Server-only secrets. Set via env in prod:
-  //   ADMIN_TOKEN          — password for /admin
-  //   SPECTRA_INGEST_KEY   — optional soft key the launcher sends (anti-spam)
-  //   DATABASE_URL         — Postgres; every table lives there
-  //   BETTER_AUTH_SECRET   — session/token signing secret (required in prod)
-  //   RESEND_API_KEY, MAIL_FROM — transactional mail; without it verification
-  //                          and reset links are only printed to the server log
-  //   DISCORD_/GOOGLE_/GITHUB_/MICROSOFT_CLIENT_ID + _CLIENT_SECRET — OAuth,
-  //                          each provider appears on the sign-in page only
-  //                          once both of its values are set. Callback URL is
-  //                          <site>/api/auth/callback/<provider>.
-  //   R2_* — Cloudflare R2 bucket for avatar uploads (see .env.example)
-  //   DISCORD_BOT_TOKEN / DISCORD_GUILD_ID — the admin panel's Discord tab.
-  //                          Read straight from process.env (see secrets.ts for
-  //                          why that matters), so no runtimeConfig entry.
-  //   TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY — captcha on sign-up/-in/reset
+
   runtimeConfig: {
-    adminToken: process.env.ADMIN_TOKEN || '',
+    adminEmails: process.env.ADMIN_EMAILS || '',
     ingestKey: process.env.SPECTRA_INGEST_KEY || '',
     public: {
-      // Canonical site origin — used for canonical/og:url, hreflang, sitemap & robots.
-      // Override per-environment with NUXT_PUBLIC_SITE_URL.
+
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+      umamiSrc: process.env.NUXT_PUBLIC_UMAMI_SRC || '',
+      umamiId: process.env.NUXT_PUBLIC_UMAMI_ID || '',
+      controller: process.env.NUXT_PUBLIC_CONTROLLER || '',
+      contactEmail: process.env.NUXT_PUBLIC_CONTACT_EMAIL || '',
     },
   },
 
-  // The fonts are loaded from Google with a <link> in `app.head` below. @nuxt/ui
-  // also pulls in @nuxt/fonts, which would download and self-host the same
-  // families during the build — a network call that has already broken a deploy
-  // when Google rotated a file URL and the cached one started returning 404.
   fonts: {
     providers: {
       google: false,
@@ -42,25 +46,62 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/image',
-    '@nuxt/scripts',
     '@nuxt/ui',
-    '@nuxt/content',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    '@nuxtjs/seo',
+    'nuxt-ai-ready',
+    '@pinia/nuxt'
   ],
 
-  // Dark mode only — force the dark color scheme, no toggle.
+  nitro: {
+    prerender: {
+      crawlLinks: false,
+      failOnError: true,
+      routes: PRERENDER.flatMap(path => [path, `/pl${path}`])
+    }
+  },
+
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+    name: 'Spectra',
+    description: 'The modern desktop launcher for modded Minecraft, plus free browser tools for players and server owners.',
+    defaultLocale: 'en'
+  },
+
+  robots: {
+    disallow: [...PRIVATE_PATHS, '/api/']
+  },
+
+  sitemap: {
+    exclude: PRIVATE_PATHS.map(path => `${path}**`),
+    sources: ['/api/__sitemap__/urls']
+  },
+
+  ogImage: {
+    fonts: ['Inter:400', 'Inter:600']
+  },
+
+  linkChecker: {
+    skipInspections: ['no-error-response']
+  },
+
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Spectra Launcher',
+      url: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+      logo: '/logo.png',
+      sameAs: ['https://github.com/MakotoPD/Spectra-Launcher']
+    }
+  },
+
+
   colorMode: {
     preference: 'dark',
     fallback: 'dark'
   },
 
-  content: {
-    experimental: { nativeSqlite: true }
-  },
-
   i18n: {
-    // Default locale (en) stays at /, other locales get a prefix (/pl) so each
-    // language has its own indexable URL + automatic hreflang alternates.
     strategy: 'prefix_except_default',
     defaultLocale: 'en',
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
@@ -77,20 +118,17 @@ export default defineNuxtConfig({
   },
 
   app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
+      templateParams: { titleSeparator: '—' },
       htmlAttrs: { class: 'dark' },
       meta: [
         { name: 'theme-color', content: '#05080f' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap'
-        }
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     }
   }
 })
+

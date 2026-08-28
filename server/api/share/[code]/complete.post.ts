@@ -1,8 +1,3 @@
-// Step 2 of sharing a pack: the launcher says the object landed in R2.
-//
-// Everything that makes a code live happens here, so an upload that dies
-// halfway changes nothing — a new code stays invisible, and a pushed update
-// leaves the previous revision serving until its replacement is really there.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
@@ -28,16 +23,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'nothing was being uploaded' })
   }
 
-  // The key is derived, never taken from the client: whatever it uploaded to,
-  // the only object this code will ever serve is the one we signed for.
   const revision = row.uploaded ? row.revision + 1 : row.revision
   if (row.pending_key !== packKey(code, revision)) {
     throw createError({ statusCode: 409, statusMessage: 'this upload is out of date' })
   }
 
-  // Measure the object instead of believing the uploader: a presigned PUT has no
-  // size limit of its own, so this is the only place an oversized pack can be
-  // caught — and it is caught before the code serves it to anyone.
   const r2 = useR2()
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'pack storage is not configured' })
 
@@ -61,11 +51,9 @@ export default defineEventHandler(async (event) => {
     `UPDATE shares SET object_key = $1, pending_key = NULL, pending_at = NULL, uploaded = TRUE,
             size = $2, revision = $3, expires = $4
      WHERE code = $5`,
-    // A push restarts the week — the pack is current again.
     [row.pending_key, stored, revision, expires, code],
   )
 
-  // The revision it replaced is nobody's download target now.
   if (previous && previous !== row.pending_key) await r2Delete(r2, previous)
 
   if (revision > 1) {

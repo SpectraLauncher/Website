@@ -1,10 +1,3 @@
-// Kills a share code on the spot.
-//
-// The row stays (the admin dashboard charts history from it) but expires now,
-// which is the same state a code reaches on its own after a week: the pack is
-// deleted from storage and nothing resolves any more. Copies friends already
-// installed keep working — they are files on their disks — they simply stop
-// receiving updates.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
@@ -24,7 +17,6 @@ export default defineEventHandler(async (event) => {
      WHERE code = $2`,
     [Date.now(), code],
   )
-  // Nobody is on this code any more, so the recipient list is noise.
   await exec('DELETE FROM share_recipient WHERE code = $1', [code])
 
   return { ok: true }

@@ -1,5 +1,3 @@
-// Warning history, newest first. Written by the bot's /warn command and by a
-// ban issued from the panel; read here.
 
 interface WarningRow {
   id: string
@@ -10,7 +8,7 @@ interface WarningRow {
 }
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const userId = String(getQuery(event).userId ?? '')

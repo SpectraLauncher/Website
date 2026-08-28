@@ -1,19 +1,4 @@
 <script setup lang="ts">
-// Buttons and dropdowns, arranged into action rows.
-//
-// Discord's layout rules are structural, not stylistic, so they are enforced by
-// what the buttons here let you do rather than by a validator that complains
-// afterwards:
-//
-//   · a row holds up to 5 buttons, OR exactly one dropdown, never both
-//   · at most 5 rows on a message
-//   · a link button carries a URL and no custom id; every other style is the
-//     other way round — the API rejects a component with both
-//
-// The one thing this cannot enforce is whether a custom id means anything. A
-// button whose id nothing listens for renders perfectly and then answers "This
-// interaction failed" when pressed, so ids the bot does not handle are flagged
-// as a warning rather than blocked — the handler may be about to be written.
 
 import type { GuildEmoji } from './DiscordEmojiPicker.vue'
 
@@ -23,7 +8,6 @@ export interface ComponentDraft {
   label?: string
   custom_id?: string
   url?: string
-  /** A server emoji is `{ id, name, animated }`; a unicode one is `{ name }`. */
   emoji?: { id?: string, name?: string, animated?: boolean }
   placeholder?: string
   options?: { label: string, value: string, description?: string }[]
@@ -41,7 +25,6 @@ const MAX_ROWS = 5
 const MAX_BUTTONS = 5
 const SELECT_TYPES = new Set([3, 6])
 
-/** The ids the bot in the dc-bot repo listens for. Kept in step with it by hand. */
 const HANDLED_IDS = ['open_ticket', 'close_ticket']
 
 const STYLES = [
@@ -55,7 +38,6 @@ const STYLES = [
 const isSelect = (c: ComponentDraft) => SELECT_TYPES.has(c.type)
 const rowHasSelect = (row: RowDraft) => row.components.some(isSelect)
 
-/** A row already holding a dropdown is full; one of buttons fills up at five. */
 const canAddButton = (row: RowDraft) => !rowHasSelect(row) && row.components.length < MAX_BUTTONS
 const canAddSelect = (row: RowDraft) => row.components.length === 0
 
@@ -71,14 +53,11 @@ function addRow() {
 }
 
 function addButton(row: RowDraft, style: number) {
-  // Set the field the style actually uses and leave the other absent — sending
-  // both is what Discord refuses.
   row.components.push(style === 5
     ? { type: 2, style, label: '', url: '' }
     : { type: 2, style, label: '', custom_id: '' })
 }
 
-/** Switching to or from Link swaps which field the button carries. */
 function setStyle(component: ComponentDraft, style: number) {
   component.style = style
   if (style === 5) {
@@ -96,7 +75,6 @@ function addSelect(row: RowDraft, type: number) {
     : { type: 3, custom_id: '', placeholder: '', options: [{ label: '', value: '' }] })
 }
 
-/** Custom ids in use that nothing in the bot answers. */
 const unhandled = computed(() => {
   const ids = rows.value
     .flatMap(r => r.components)
@@ -121,7 +99,6 @@ const unhandled = computed(() => {
 
       <div class="space-y-2 border-t border-white/8 p-3">
         <div v-for="(component, ci) in row.components" :key="ci" class="rounded-lg bg-white/[0.03] p-2.5">
-          <!-- button -->
           <template v-if="component.type === 2">
             <div class="mb-2 flex flex-wrap items-center gap-1.5">
               <button
@@ -138,9 +115,6 @@ const unhandled = computed(() => {
             <div class="mb-1.5 flex items-center gap-1.5">
               <UInput v-model="component.label" :maxlength="80" size="sm" class="flex-1" placeholder="Label (max 80)" />
 
-              <!-- Shown beside the label because that is where it appears on
-                   the button, and it is set as a field rather than typed into
-                   the label — markup in a label renders as literal text. -->
               <button
                 v-if="component.emoji?.id"
                 type="button"
@@ -175,7 +149,6 @@ const unhandled = computed(() => {
             </template>
           </template>
 
-          <!-- dropdown -->
           <template v-else>
             <div class="mb-2 flex items-center gap-2">
               <span class="text-[11px] font-medium text-white/40">
@@ -239,8 +212,6 @@ const unhandled = computed(() => {
       @click="addRow"
     />
 
-    <!-- Not an error: the handler may not be written yet. But hearing it here
-         beats hearing it from the first member who presses the button. -->
     <p v-if="unhandled.length" class="flex items-start gap-2 rounded-lg bg-amber-500/10 px-3 py-2 text-[12px] text-amber-200/90">
       <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 shrink-0" />
       <span>

@@ -1,17 +1,28 @@
-// The gate in front of /api/admin/*.
-//
-// Not an account: the dashboard is a single shared ADMIN_TOKEN exchanged for an
-// HttpOnly cookie by `api/admin/login.post.ts`. That is why this sits apart
-// from `requireUser` — an admin here is not a signed-in Spectra user, and the
-// two must never be mistaken for each other.
 
 import type { H3Event } from 'h3'
 
-import { adminToken } from './secrets'
-import { tokenOk } from './telemetry'
+const FALLBACK = ['patrydab4@gmail.com']
 
-export function requireAdmin(event: H3Event) {
-  if (!tokenOk(getCookie(event, 'spectra_admin'), adminToken())) {
-    throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
-  }
+export function parseAdminEmails(raw: string): string[] {
+  const configured = raw.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+  return configured.length ? configured : FALLBACK
+}
+
+export function isAdminEmail(email: string | null | undefined, list: string[]): boolean {
+  const value = email?.trim().toLowerCase()
+  return Boolean(value && list.includes(value))
+}
+
+export function adminEmails(): string[] {
+  return parseAdminEmails(String(useRuntimeConfig().adminEmails || process.env.ADMIN_EMAILS || ''))
+}
+
+export function isAdmin(user: { email?: string | null } | null | undefined): boolean {
+  return isAdminEmail(user?.email, adminEmails())
+}
+
+export async function requireAdmin(event: H3Event) {
+  const user = await requireUser(event)
+  if (!isAdmin(user)) throw createError({ statusCode: 404, statusMessage: 'not found' })
+  return user
 }

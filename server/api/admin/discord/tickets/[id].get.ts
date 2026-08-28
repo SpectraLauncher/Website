@@ -1,12 +1,6 @@
-// One ticket, with the HTML transcript the bot saved when it was closed.
-//
-// The transcript is returned as a string for the panel to drop into a sandboxed
-// iframe rather than served as its own document: it is Discord message content
-// turned into markup, which means it is user-written, and it must never run in
-// this origin.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const id = Number(getRouterParam(event, 'id'))

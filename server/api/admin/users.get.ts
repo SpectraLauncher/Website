@@ -1,16 +1,9 @@
-// Accounts, for the admin panel's Users tab. Cookie-gated (see login.post.ts).
-//
-// Unlike `api/users.get.ts` — the friend-search type-ahead, which deliberately
-// refuses to match on e-mail — this one shows the address and searches it too.
-// The audience is the operator of the site, not another player.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
 
   const query = getQuery(event)
   const search = String(query.q ?? '').trim().toLowerCase()
-  // Bounded rather than paged: a panel that lists everyone is a panel that
-  // stops loading once the site works. Narrow with the search box.
   const limit = Math.min(Math.max(Number(query.limit) || 100, 1), 500)
 
   const rows = await q<{
@@ -40,9 +33,6 @@ export default defineEventHandler(async (event) => {
         OR lower(coalesce(u."mcUsername", '')) LIKE '%' || $1 || '%' ESCAPE '\'
      ORDER BY u."createdAt" DESC
      LIMIT $2`,
-    // `%` and `_` are LIKE wildcards, so an unescaped search box would let a
-    // single `%` mean "everything" — harmless here, but the ranking would be
-    // nonsense and the query would scan for no reason.
     [search.replace(/[\\%_]/g, c => `\\${c}`), limit],
   )
 

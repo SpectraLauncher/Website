@@ -1,6 +1,3 @@
-// Pulls the current launcher version from the same `latest.json` the
-// Spectra Launcher auto-updater checks (Tauri updater manifest on GitHub).
-// Cached for an hour so we don't hammer GitHub on every page view.
 
 const LATEST_JSON
   = 'https://github.com/MakotoPD/Spectra-Launcher/releases/latest/download/latest.json'
@@ -38,7 +35,6 @@ export default defineCachedEventHandler(
         linuxDeb:     pick(platforms, 'linux-x86_64-deb'),
       }
 
-      // Primary CTA still points to the Windows installer
       const downloadUrl = downloads.winInstaller
 
       return {

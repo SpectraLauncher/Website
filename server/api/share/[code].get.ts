@@ -1,8 +1,3 @@
-// Redeem endpoint. `GET /api/share/ABC123` sends the caller to the pack in
-// storage; `?meta=1` returns just the metadata for the /s/:code landing page.
-//
-// The `expires > now` check does the real work — a code stops resolving the
-// moment it lapses, whether or not the pruning pass has run yet.
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'access-control-allow-origin', '*')
@@ -31,8 +26,6 @@ export default defineEventHandler(async (event) => {
 
   await exec('UPDATE shares SET downloads = downloads + 1 WHERE code = $1', [code])
 
-  // Pulling an account-owned pack while signed in subscribes you to its updates:
-  // the author's next push turns into a notification instead of a stale copy.
   if (row.owner_id) {
     const user = await optionalUser(event)
     if (user && user.id !== row.owner_id) {
@@ -41,9 +34,6 @@ export default defineEventHandler(async (event) => {
          ON CONFLICT (code, user_id) DO UPDATE SET imported_revision = EXCLUDED.imported_revision`,
         [code, user.id, Date.now(), row.revision],
       )
-      // They have the pack now, so the invitation (or the update notice that
-      // sent them here) has served its purpose. Tied to the download rather
-      // than to a button, so a cancelled install leaves the prompt in place.
       await clearNotifications(user.id, ['instance_invite', 'instance_update'], { shareCode: code })
     }
   }
@@ -56,12 +46,7 @@ export default defineEventHandler(async (event) => {
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'pack storage is not configured' })
   const url = await r2SignedGet(r2, row.object_key)
 
-  // `?url=1` — for the launcher, which authenticates with a bearer token.
-  // Following a redirect into R2 would carry that header along, and S3 refuses
-  // a request that arrives with two different signatures. So it asks for the
-  // address and fetches the bytes unauthenticated.
   if (getQuery(event).url !== undefined) return { url }
 
-  // Browsers (the /s/<code> page) just follow it.
   return sendRedirect(event, url, 302)
 })

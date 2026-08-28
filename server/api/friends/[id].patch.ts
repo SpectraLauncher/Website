@@ -1,5 +1,3 @@
-// Answers a friend request: accept, reject or block the person who sent it.
-// Only the addressee can do this — the requester's "undo" is DELETE.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
@@ -15,7 +13,6 @@ export default defineEventHandler(async (event) => {
   )
   if (!row) throw createError({ statusCode: 404, statusMessage: 'no such request' })
 
-  // Answered, so the prompt goes — whichever way it was answered.
   await clearNotifications(me.id, ['friend_request'], { actorId: row.requester_id })
 
   if (action === 'accept') {

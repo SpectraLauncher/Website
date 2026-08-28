@@ -1,13 +1,3 @@
-// Avatar upload → Cloudflare R2.
-//
-// The browser already downscales the picture to a 256px WebP before it gets
-// here (see `account.vue`), so this only has to check what arrived and put it
-// in the bucket. R2 speaks S3, and `aws4fetch` signs a plain `fetch` — no need
-// to pull in the AWS SDK for one PUT.
-//
-// The object key is fixed per user, so re-uploading replaces the old picture
-// instead of leaving orphans behind; a `?v=` stamp on the stored URL busts any
-// cache that already has the previous one.
 
 import { r2Put } from '../../utils/r2'
 

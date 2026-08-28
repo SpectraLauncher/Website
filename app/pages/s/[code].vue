@@ -1,104 +1,150 @@
 <script setup lang="ts">
-// Landing page for a launcher share code. Its only job is to bounce the visitor
-// into the desktop app via the `spectra://` deep link — everything else on the
-// page is a fallback for people who don't have the launcher yet.
+
+const route = useRoute()
+const localePath = useLocalePath()
+const { t } = useI18n()
+
+const { data: release } = useLauncherVersion()
+const os = useOs()
 
 interface ShareMeta {
   code: string
-  created: number
-  expires: number
   name: string | null
   mc_version: string | null
   loader: string | null
   mods: number
   size: number
   downloads: number
+  created: number
+  expires: number
 }
 
-const route = useRoute()
-const { t, locale } = useI18n()
-const localePath = useLocalePath()
+const code = computed(() => String(route.params.code ?? '').toUpperCase())
 
-const code = String(route.params.code || '').toUpperCase()
+const { data: meta, error } = await useFetch<ShareMeta>(
+  () => `/api/share/${encodeURIComponent(code.value)}`,
+  { query: { meta: '' } }
+)
 
-const { data: meta, error } = await useFetch<ShareMeta>(`/api/share/${code}`, {
-  query: { meta: 1 },
+const deepLink = computed(() => `spectra://share/${code.value}`)
+
+const downloadHref = computed(() => {
+  const dl = release.value?.downloads
+  const fallback = release.value?.releasesUrl || GITHUB_REPO
+  if (!dl) return fallback
+  if (os.value === 'macOS') return dl.macArm
+  if (os.value === 'Linux') return dl.linuxAppImage
+  return dl.winInstaller
 })
 
-const deepLink = computed(() => `spectra://share/${code}`)
-const expiresIn = computed(() => {
-  if (!meta.value) return ''
-  const days = Math.max(0, Math.ceil((meta.value.expires - Date.now()) / 86_400_000))
-  return new Intl.RelativeTimeFormat(locale.value, { numeric: 'auto' }).format(days, 'day')
-})
-const prettySize = computed(() => {
-  const kb = (meta.value?.size ?? 0) / 1024
-  return kb < 1024 ? `${Math.max(1, Math.round(kb))} KB` : `${(kb / 1024).toFixed(1)} MB`
-})
+function bytes(n: number) {
+  if (!n) return '0 B'
+  const units = ['B', 'kB', 'MB', 'GB']
+  const i = Math.min(units.length - 1, Math.floor(Math.log(n) / Math.log(1024)))
+  return `${(n / 1024 ** i).toFixed(i ? 1 : 0)} ${units[i]}`
+}
 
-// Share links are per-person and short-lived — keep them out of the index.
-useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
+const expires = computed(() =>
+  meta.value ? new Date(meta.value.expires).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' }) : '')
+
 useSeoMeta({
-  title: () => (meta.value ? t('share.metaTitle', { name: meta.value.name }) : t('share.notFoundTitle')),
+  title: () => (meta.value
+    ? `${t('share.metaTitle', { name: meta.value.name || code.value })}`
+    : `${t('share.notFoundTitle')}`),
   description: () => t('share.metaDescription'),
+  robots: 'noindex, nofollow'
 })
-
-const opening = ref(false)
-function openInLauncher() {
-  opening.value = true
-  window.location.href = deepLink.value
-  setTimeout(() => (opening.value = false), 3000)
-}
 </script>
 
 <template>
-  <section class="mx-auto max-w-xl px-4 pt-28 pb-24">
-    <!-- expired / unknown code -->
-    <UCard v-if="error || !meta">
-      <div class="py-6 text-center">
-        <UIcon name="i-lucide-link-2-off" class="mx-auto size-10 text-white/30" />
-        <h1 class="mt-4 text-xl font-bold">{{ $t('share.notFoundTitle') }}</h1>
-        <p class="mt-2 text-sm text-white/60">{{ $t('share.notFoundDesc') }}</p>
-        <UButton class="mt-6" color="neutral" variant="soft" :to="localePath('/')" :label="$t('share.backHome')" />
-      </div>
-    </UCard>
+  <div>
+    <Navbar />
 
-    <UCard v-else>
-      <div class="text-center">
-        <p class="text-xs font-medium tracking-widest text-primary-400 uppercase">{{ $t('share.eyebrow') }}</p>
-        <h1 class="mt-2 text-2xl font-bold tracking-tight">{{ meta.name }}</h1>
+    <div class="relative">
+      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 
-        <div class="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs">
-          <span v-if="meta.mc_version" class="rounded-full bg-white/8 px-2.5 py-1">{{ meta.mc_version }}</span>
-          <span v-if="meta.loader" class="rounded-full bg-white/8 px-2.5 py-1 capitalize">{{ meta.loader }}</span>
-          <span class="rounded-full bg-white/8 px-2.5 py-1">{{ $t('share.modCount', { n: meta.mods }) }}</span>
+      <section class="container mx-auto max-w-lg px-4 pb-24 pt-40">
+        <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-8 backdrop-blur-sm">
+          <template v-if="error || !meta">
+            <div class="text-center">
+              <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                <UIcon name="i-lucide-package-x" class="size-6 text-muted" />
+              </span>
+              <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('share.notFoundTitle') }}</h1>
+              <p class="mt-2 text-sm/relaxed text-muted">{{ t('share.notFoundDesc') }}</p>
+              <p class="mt-3 font-mono text-sm text-dimmed">{{ code }}</p>
+              <UButton
+                :to="localePath('/launcher')"
+                class="mt-6 rounded-xl"
+                size="lg"
+                color="neutral"
+                variant="outline"
+                :label="t('share.backHome')"
+              />
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="mb-6 flex items-center gap-4">
+              <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
+                <UIcon name="i-lucide-package" class="size-6 text-primary" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('share.eyebrow') }}</p>
+                <h1 class="truncate text-2xl font-semibold tracking-tight">{{ meta.name || code }}</h1>
+              </div>
+            </div>
+
+            <div class="mb-6 grid grid-cols-2 gap-2 text-sm">
+              <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <p class="text-xs text-dimmed">{{ t('share.codeLabel') }}</p>
+                <p class="font-mono text-lg tracking-[0.2em]">{{ meta.code }}</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <p class="text-xs text-dimmed">Minecraft</p>
+                <p class="font-mono">{{ meta.mc_version || '—' }}</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <p class="text-xs text-dimmed">Loader</p>
+                <p class="capitalize">{{ meta.loader || '—' }}</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <p class="text-xs text-dimmed">{{ t('share.mods') }}</p>
+                <p class="font-mono">{{ meta.mods }}</p>
+              </div>
+            </div>
+
+            <UButton
+              :to="deepLink"
+              external
+              block
+              size="xl"
+              color="neutral"
+              class="rounded-xl"
+              icon="i-lucide-download"
+              :label="t('share.openBtn')"
+            />
+            <p class="mt-2 text-center text-xs text-dimmed">{{ t('share.openHint') }}</p>
+
+            <div class="mt-6 border-t border-white/10 pt-5 text-center">
+              <p class="mb-3 text-sm text-muted">{{ t('share.noLauncher') }}</p>
+              <UButton
+                :to="downloadHref"
+                external
+                variant="outline"
+                color="neutral"
+                class="rounded-xl"
+                icon="i-lucide-arrow-down-to-line"
+                :label="t('share.getLauncher')"
+              />
+            </div>
+
+            <p class="mt-6 text-center text-xs text-dimmed">
+              {{ t('share.footerMeta', { size: bytes(meta.size), downloads: meta.downloads, expires }) }}
+            </p>
+          </template>
         </div>
-
-        <div class="mt-6 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
-          <p class="text-[11px] tracking-wider text-white/40 uppercase">{{ $t('share.codeLabel') }}</p>
-          <p class="mt-1 font-mono text-3xl font-bold tracking-[0.35em]">{{ meta.code }}</p>
-        </div>
-
-        <UButton
-          class="mt-6"
-          size="lg"
-          block
-          icon="i-lucide-rocket"
-          :loading="opening"
-          :label="$t('share.openBtn')"
-          @click="openInLauncher"
-        />
-        <p class="mt-3 text-xs text-white/45">{{ $t('share.openHint') }}</p>
-
-        <div class="mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
-          <p class="text-white/60">{{ $t('share.noLauncher') }}</p>
-          <UButton color="neutral" variant="soft" icon="i-lucide-download" :to="localePath('/')" :label="$t('share.getLauncher')" />
-        </div>
-
-        <p class="mt-6 text-[11px] text-white/35">
-          {{ $t('share.footerMeta', { size: prettySize, downloads: meta.downloads, expires: expiresIn }) }}
-        </p>
-      </div>
-    </UCard>
-  </section>
+      </section>
+    </div>
+  </div>
 </template>

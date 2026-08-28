@@ -1,5 +1,3 @@
-// Ticket list for the panel. Rows are written by the bot when someone opens or
-// closes one; nothing here talks to Discord.
 
 interface TicketRow {
   id: string
@@ -14,7 +12,7 @@ interface TicketRow {
 }
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const status = String(getQuery(event).status ?? 'all')

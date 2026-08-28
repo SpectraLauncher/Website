@@ -1,8 +1,3 @@
-// Pushes a code out by another week.
-//
-// Only inside the last 48 hours: outside that window there is nothing to fix,
-// and letting a code be renewed at any time would make "a week" meaningless
-// while quietly keeping every pack in the bucket forever.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
@@ -28,7 +23,6 @@ export default defineEventHandler(async (event) => {
 
   const next = expiryFor(now)
   await exec('UPDATE shares SET expires = $1 WHERE code = $2', [next, code])
-  // Someone is here anyway, so this is a good moment to take out the rubbish.
   await pruneShares()
 
   return { code, expires: next }

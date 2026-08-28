@@ -4,181 +4,2333 @@
     "description": "Nowoczesny launcher na komputer do moddowanego Minecrafta. Instancje, mody, światy i skiny — z wbudowanymi przeglądarkami Modrinth i CurseForge oraz każdym popularnym loaderem, w jednej szybkiej aplikacji."
   },
   "nav": {
-    "features": "Funkcje",
-    "loaders": "Loadery",
-    "download": "Pobierz",
-    "faq": "FAQ",
-    "github": "GitHub",
-    "account": "Konto"
+    "launcher": "Launcher",
+    "tools": "Narzędzia",
+    "community": "Sociale",
+    "login": "Zaloguj się",
+    "badgesDesc": "Wyróżnienia dla społeczności",
+    "githubDesc": "Kod launchera i strony",
+    "discordDesc": "Wsparcie i rozmowy"
   },
   "hero": {
-    "badgeFree": "Darmowy i open source",
-    "title1": "Moduj.",
-    "title2": "Zarządzaj.",
-    "title3": "Graj.",
-    "subtitle": "Nowoczesny launcher na komputer do moddowanego Minecrafta. Instancje, mody, światy i skiny — z wbudowanymi przeglądarkami Modrinth i CurseForge oraz każdym popularnym loaderem, w jednej szybkiej aplikacji.",
+    "opensource": "open source",
+    "title1": "Wszystko, co dotyczy",
+    "title2": "Minecrafta",
+    "title3": "w jednym miejscu.",
+    "subtitle": "Launcher tworzony przez społeczność oraz wiele narzędzi dla graczy,{br} twórców i właścicieli serwerów. Stworzone przez graczy, dla graczy.",
     "downloadFor": "Pobierz na {os}",
     "allPlatforms": "Wszystkie platformy"
   },
-  "showcase": {
-    "eyebrow": "Zajrzyj do środka",
-    "heading": "Wszystko, w co grasz, w jednym miejscu.",
-    "tabs": {
-      "home": "Ekran główny",
-      "mods": "Mody",
-      "skins": "Skiny",
-      "worlds": "Światy",
-      "settings": "Ustawienia"
-    }
+  "home": {
+    "p1t": "Launcher",
+    "p1d": "Instancje, mody, światy, zrzuty ekranu i skiny w jednej aplikacji, która trzyma każdy setup osobno.",
+    "p1cta": "Zobacz launcher",
+    "p2t": "Narzędzia",
+    "p2d": "Kody kolorów, MOTD, banery, gradienty, kalkulatory — wszystko w przeglądarce, nic nie instalujesz.",
+    "p2cta": "Otwórz indeks",
+    "p3t": "Ludzie",
+    "p3d": "Discord, na którym ludzie naprawdę pomagają. Pokaż budowle, zapytaj o mody, wpadnij na eventy.",
+    "p3cta": "Dołącz",
+    "toolsTitle": "Narzędzia, które robią jedną rzecz dobrze",
+    "toolsSub": "Każde robi jedną rzecz i nie zawraca głowy. Działa w przeglądarce, działa na telefonie.",
+    "seeAll": "Wszystkie 18",
+    "launcherKicker": "Spectra Launcher",
+    "launcherTitle": "Mody bez zgadywania",
+    "launcherSub": "Przeszukuj Modrinth i CurseForge z wnętrza launchera, instaluj jednym klikiem i trzymaj każdą instancję osobno i stabilnie.",
+    "launcherBullets": [
+      "Modrinth i CurseForge w jednej wyszukiwarce",
+      "Java, RAM i lista modów per instancja",
+      "Światy, zrzuty ekranu i skiny w środku",
+      "Fabric, NeoForge, Quilt i vanilla"
+    ],
+    "launcherCta": "Zobacz launcher",
+    "discordTitle": "Wpadnij się przywitać",
+    "discordSub": "Wsparcie, polecane mody, opinie o budowlach i weekendowe eventy. Discord to serce Spectry.",
+    "discordCta": "Wejdź na Discorda",
+    "members": "osób"
   },
-  "features": {
-    "eyebrow": "Funkcje",
-    "heading": "Stworzony pod to, jak naprawdę grasz.",
-    "subheading": "Od paczki ze stoma modami po szybki świat vanilla — Spectra trzyma to w porządku i działa błyskawicznie.",
-    "items": {
-      "instances": {
-        "title": "Zarządzanie instancjami",
-        "desc": "Organizuj paczki w grupy i ulubione. Duplikuj, konfiguruj i uruchamiaj jednym kliknięciem."
+  "toolsPage": {
+    "title": "Narzędzia",
+    "sub": "Osiemnaście małych narzędzi dla graczy, budowniczych i właścicieli serwerów. Bez rejestracji, działają na telefonie.",
+    "searchPh": "Szukaj narzędzia…",
+    "empty": "Nic nie pasuje do tego wyszukiwania",
+    "soon": "Wkrótce"
+  },
+  "cats": {
+    "all": "Wszystkie",
+    "fmt": "Tekst / Format",
+    "design": "Design",
+    "cmd": "Komendy",
+    "calc": "Kalkulatory",
+    "srv": "Serwer",
+    "skin": "Skiny"
+  },
+  "tools": {
+    "color-codes": "Wszystkie kody § i kolory hex z formatowaniem, kopiujesz jednym klikiem.",
+    "motd": "Zaprojektuj wiadomość z listy serwerów z podglądem na żywo.",
+    "banner": "Buduj banery warstwa po warstwie i wyeksportuj komendę /give.",
+    "gradient": "Płynne gradienty wielokolorowe do nicków, MOTD i scoreboardów.",
+    "armor-dye": "Znajdź dokładny przepis na barwnik do dowolnego koloru zbroi.",
+    "tellraw": "Twórz JSON do tellraw, title i actionbar bez walki ze składnią.",
+    "display": "Przywołuj text, block i item display z podglądem 3D na żywo.",
+    "coords": "Przeliczaj Overworld ↔ Nether i planuj połączenia portali.",
+    "circle": "Idealne okręgi i elipsy do budowli o dowolnym promieniu.",
+    "xp": "Poziomy na punkty i odwrotnie, plus realny koszt każdego poziomu.",
+    "tick": "Ticki, sekundy, dni w grze i czas realny w jednej tabeli.",
+    "locator": "Wybierz kolory paska lokalizatora i skopiuj wartość.",
+    "potion": "Każda warzalna mikstura z przepisem, czasem i komendą give.",
+    "skin-stealer": "Pobierz skin dowolnego gracza i jego peleryny, oficjalne i modowe.",
+    "small-text": "Zamień zwykły tekst na kapitaliki i indeks górny unicode.",
+    "unicode": "Symbole, które działają w czacie, na tabliczkach i w nazwach.",
+    "start-file": "Wygeneruj start.bat i start.sh z rozsądnymi flagami JVM.",
+    "player-head": "Skopiuj komendę /give z głową dowolnego gracza, w obu składniach.",
+    "skin-editor": "Maluj skina piksel po pikselu z podglądem 3D na żywo.",
+    "text-animation": "Animuj gradient na tekście i wyeksportuj każdą klatkę.",
+    "skin-poses": "Wyrenderuj gracza w 22 pozach, z publicznym adresem do osadzenia.",
+    "rank": "Projektuj pikselowe tagi rang z ikonami, gradientami i podglądem czatu."
+  },
+  "colorCodes": {
+    "title": "Kody kolorów Minecraft",
+    "sub": "Wszystkie kody kolorów i formatowania, kopiujesz jednym klikiem. Napisz tekst w edytorze poniżej i dostaniesz gotową linię do czatu, na tabliczkę, do MOTD serwera albo do configu pluginu.",
+    "colorsTitle": "Kody kolorów",
+    "formatsTitle": "Kody formatowania",
+    "genTitle": "Generator tekstu",
+    "genSub": "Zaznacz tekst i sformatuj go paskiem narzędzi. Podgląd pokazuje, jak wygląda w grze, a oba wyjścia aktualizują się na bieżąco.",
+    "previewLabel": "Podgląd w grze",
+    "outVanilla": "Vanilla (§)",
+    "outPlugins": "Pluginy i configi (&)",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano {value}",
+    "howTitle": "Jak używać kodów kolorów",
+    "faqTitle": "Najczęstsze pytania",
+    "fmt": {
+      "bold": "Pogrubienie",
+      "italic": "Kursywa",
+      "underline": "Podkreślenie",
+      "strike": "Przekreślenie",
+      "obfuscated": "Zaszyfrowany",
+      "reset": "Reset"
+    },
+    "fmtHint": {
+      "bold": "Grubsze znaki",
+      "italic": "Pochylony tekst",
+      "underline": "Linia pod tekstem",
+      "strike": "Linia przez tekst",
+      "obfuscated": "Losowo zmieniające się znaki",
+      "reset": "Czyści kolor i formatowanie"
+    },
+    "steps": [
+      {
+        "title": "Wybierz kolor",
+        "body": "Kliknij próbkę, żeby skopiować jej kod. § działa w grze, a & to zapis, którego oczekuje większość pluginów i configów."
       },
-      "mods": {
-        "title": "Mody jednym kliknięciem",
-        "desc": "Przeglądaj i instaluj z Modrinth i CurseForge bez wychodzenia z aplikacji. Włączaj, wyłączaj, aktualizuj."
+      {
+        "title": "Wstaw go przed tekstem",
+        "body": "Kod działa na wszystko po nim, aż do kolejnego koloru albo resetu. Kolor kasuje też aktywne formatowanie, więc najpierw kolor, zaraz po nim format."
       },
-      "skins": {
-        "title": "Skiny i peleryny",
-        "desc": "Wgrywaj, podglądaj w 3D i zmieniaj skiny oraz peleryny — Classic lub Slim — prosto z launchera."
-      },
-      "worlds": {
-        "title": "Światy i zrzuty ekranu",
-        "desc": "Wskocz prosto do dowolnego świata i przeglądaj wszystkie zrzuty ekranu ze wszystkich instancji."
-      },
-      "fast": {
-        "title": "Szybki i lekki",
-        "desc": "Sprawna, natywna aplikacja z zarządzaną Javą — minimum zachodu, maksimum klatek."
-      },
-      "themes": {
-        "title": "Motywy i akcenty",
-        "desc": "Motywy Dark i OLED oraz paleta kolorów akcentu, by launcher był Twój."
+      {
+        "title": "Sformatuj dłuższy tekst",
+        "body": "Do czegokolwiek z więcej niż jednym kolorem użyj generatora. Sam pilnuje kolejności kodów i daje oba formaty wyjścia."
       }
-    }
-  },
-  "loaders": {
-    "eyebrow": "Loadery modów",
-    "heading": "Każdy loader. Zero zachodu.",
-    "subheading": "Utwórz instancję z dowolnym loaderem i zmieniaj go, kiedy chcesz.",
-    "notes": {
-      "fabric": "Lekki",
-      "forge": "Klasyczny",
-      "neoforge": "Nowoczesny Forge",
-      "quilt": "Zgodny z Fabric",
-      "vanilla": "Bez modów"
-    }
-  },
-  "download": {
-    "eyebrow": "Pobierz",
-    "heading": "Pobierz Spectrę na swoją platformę.",
-    "version": "Wersja {version} · Zalecana Java 17+ (21 dla nowszych wersji).",
-    "buildSource": "Wolisz zbudować samodzielnie? Pobierz kod źródłowy na {github}.",
-    "platforms": {
-      "windows": {
-        "name": "Windows",
-        "sub": "Windows 10 / 11",
-        "builds": {
-          "installer": "Instalator",
-          "portable": "Przenośna"
-        }
+    ],
+    "faq": [
+      {
+        "q": "Jak wpisać znak §?",
+        "a": "Na Windowsie przytrzymaj Alt i wpisz 21 na klawiaturze numerycznej albo skopiuj znak z tej strony. Na macOS wciśnij Option + 6. W większości configów pluginów możesz zamiast tego napisać &, a plugin sam to przetłumaczy."
       },
-      "macos": {
-        "name": "macOS",
-        "sub": "macOS 11+",
-        "builds": {
-          "arm": "Apple Silicon",
-          "intel": "Intel"
-        }
+      {
+        "q": "Czym różni się § od &?",
+        "a": "To te same kody. § czyta sama gra — czat, tabliczki, książki, server.properties. & to konwencja pluginów i configów, które przed wysłaniem do klienta zamieniają go na §."
       },
-      "linux": {
-        "name": "Linux",
-        "sub": "Większość dystrybucji",
-        "builds": {
-          "universal": "Uniwersalna",
-          "deb": "Debian / Ubuntu"
-        }
+      {
+        "q": "Czy mogę użyć własnych kolorów hex?",
+        "a": "Tak, od wersji 1.16, ale nie tymi dwuznakowymi kodami. Kolory hex wymagają formatu JSON albo składni konkretnego pluginu, np. &#RRGGBB. Te 16 kodów działa w każdej wersji."
+      },
+      {
+        "q": "Dlaczego pogrubiony tekst stracił formatowanie?",
+        "a": "Kod koloru resetuje wszystko, co było przed nim. Jeśli najpierw dasz pogrubienie, a potem kolor, pogrubienie znika. Zawsze najpierw kolor, potem kody formatowania."
+      },
+      {
+        "q": "Czy to działa w MOTD serwera?",
+        "a": "Tak. W pliku server.properties wpisz \\u00A7 zamiast §, bo plik jest czytany jako Java properties. Kod po tym znaku zostaje ten sam."
+      },
+      {
+        "q": "Co dokładnie robi §k?",
+        "a": "Zamienia każdy znak na losowy, kilka razy na sekundę, zachowując szerokość. Używa się go do ukrywania tekstu albo jako efektu ładowania. W niektórych miejscach, np. w książkach, nie działa."
+      },
+      {
+        "q": "Czy formatowanie działa też na Bedrocku?",
+        "a": "Kolory i większość kodów formatowania tak, z dwoma wyjątkami: §n (podkreślenie) i §m (przekreślenie) są na Bedrocku ignorowane."
       }
+    ]
+  },
+  "locator": {
+    "title": "Kolor paska lokalizatora",
+    "sub": "Marker każdego gracza na pasku lokalizatora dostaje kolor wyliczony z jego UUID. Podaj nick albo UUID, żeby zobaczyć dokładnie ten kolor, który rysuje gra — nic losowego, nic po stronie serwera.",
+    "placeholder": "Nick albo UUID…",
+    "check": "Sprawdź",
+    "notFound": "Nie ma gracza o nicku „{q}”",
+    "remove": "Usuń",
+    "rawLabel": "Surowy kolor UUID",
+    "ingameLabel": "Kolor w grze",
+    "clashTitle": "Gracze z tym samym kolorem",
+    "clashNone": "Żadnych dwóch graczy z tej listy nie łączy ten sam kolor markera.",
+    "pickerTitle": "Próbnik kolorów",
+    "pickerSub": "Wybierz dowolny kolor, żeby zobaczyć, jak gra go narysuje po normalizacji jasności. Przydaje się przy ustawianiu koloru waypointa komendą.",
+    "featuresTitle": "Możliwości",
+    "features": [
+      {
+        "title": "Matematyka jak w vanilli",
+        "body": "Odtwarza UUID.hashCode i przejście przez HSV bit w bit, razem z zaokrąglaniem floatów Javy — bez przybliżeń."
+      },
+      {
+        "title": "Oba kolory naraz",
+        "body": "Surowe bajty z hasha i znormalizowany kolor, który faktycznie rysuje klient, każdy w hex i RGB."
+      },
+      {
+        "title": "Porównanie graczy",
+        "body": "Sprawdź kilka kont naraz i od razu zobacz, czy któreś z nich nie kończą z tym samym kolorem markera."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czym jest pasek lokalizatora?",
+        "a": "Pasek dodany w Java Edition 1.21.6, który zastępuje pasek doświadczenia, gdy w pobliżu są inni gracze. Pokazuje kolorową kropkę dla każdego z nich i z grubsza kierunek, w którym się znajdują."
+      },
+      {
+        "q": "Skąd bierze się kolor?",
+        "a": "Z UUID gracza. Java składa XOR-em dwie 64-bitowe połowy UUID w jeden 32-bitowy hash, a trzy najniższe bajty tego hasha stają się czerwonym, zielonym i niebieskim. Ten sam UUID zawsze daje ten sam kolor, na każdym serwerze i po każdej reinstalacji."
+      },
+      {
+        "q": "Czemu kolor w grze różni się od surowego?",
+        "a": "Klient zachowuje odcień i nasycenie, ale przed narysowaniem przypina jasność HSV na 90%. Ciemne surowe kolory wychodzą jaśniejsze, a jasne odrobinę ciemniejsze, dzięki czemu każdy marker pozostaje czytelny na pasku."
+      },
+      {
+        "q": "Czy to to samo, co przemnożenie kanałów przez 0.9?",
+        "a": "Nie, i na tym wykłada się sporo kalkulatorów. Mnożenie kanałów to zachowanie z 1.21.6, zmienione w 1.21.7. Mnożenie przyciemnia wszystko, a przejście przez HSV rozjaśnia ciemne kolory. Wyniki różnią się widocznie."
+      },
+      {
+        "q": "Czy mogę zmienić swój kolor?",
+        "a": "W zwykłym survivalu nie — kolor jest przypisany do konta. Serwery i twórcy map mogą go nadpisać komendą /waypoint albo wpisując gracza do drużyny na scoreboardzie z ustawionym kolorem."
+      },
+      {
+        "q": "Czy dwóch graczy może mieć ten sam kolor?",
+        "a": "Tak. Kolor ma 24 bity, więc kolizje istnieją, a po normalizacji jasności nieco różne surowe kolory mogą wypaść identycznie. Dodaj kilka nicków powyżej, żeby sprawdzić."
+      },
+      {
+        "q": "Czy to działa na Bedrocku?",
+        "a": "Nie. To wyliczenie dotyczy tylko Java Edition. Bedrock przydziela kolory markerów per sesja, zamiast wyprowadzać je z konta."
+      }
+    ]
+  },
+  "smallText": {
+    "title": "Konwerter małego tekstu",
+    "sub": "Zamień dowolny tekst na unicode'owe kapitaliki. Działa na czacie, na tabliczkach, w nazwach przedmiotów i w nicku — gra widzi zwykłe znaki, więc nie trzeba żadnego moda ani pluginu.",
+    "inputLabel": "Twój tekst",
+    "outputLabel": "Kapitaliki",
+    "placeholder": "Wpisz coś…",
+    "empty": "Tu pojawi się przekonwertowany tekst",
+    "clear": "Wyczyść",
+    "theText": "tekst",
+    "mapTitle": "Mapa znaków",
+    "mapSub": "Kliknij literę, żeby skopiować sam ten znak. Wszystko poza A–Z przechodzi nietknięte, więc cyfry, kody kolorów i znaki interpunkcyjne zostają dokładnie takie, jak je wpisałeś.",
+    "substitute": "{letter} nie ma kapitalika w Unicode — to zastępnik",
+    "substituteNote": "Unicode nie ma kapitalika dla {letters}, więc te używają najbliższego podobnego znaku.",
+    "features": [
+      {
+        "title": "Nic nie instalujesz",
+        "body": "To zwykłe znaki Unicode, nie font ani resource pack. Każdy, kto czyta Twoją wiadomość, widzi to samo co Ty."
+      },
+      {
+        "title": "Bezpieczne z kodami kolorów",
+        "body": "Konwertowane są tylko litery. Kod § albo & w tekście wychodzi nienaruszony, więc mały tekst formatujesz jak zwykle."
+      },
+      {
+        "title": "Uczciwie o brakach",
+        "body": "Cztery litery nie mają w Unicode prawdziwego kapitalika. Mapa je oznacza, zamiast po cichu podstawiać coś, co wygląda źle."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak to działa?",
+        "a": "Unicode zawiera zestaw liter „small capital”, stworzony pierwotnie na potrzeby zapisu fonetycznego. Wyglądają jak miniaturowe wielkie litery, więc pisanie nimi sprawia wrażenie mniejszego tekstu. Gra traktuje je jak zwykłe znaki."
+      },
+      {
+        "q": "Czy to działa w Minecrafcie?",
+        "a": "Tak — na czacie, na tabliczkach, w nazwach książek i przedmiotów oraz w większości pluginów serwerowych. Domyślny font je renderuje, a że to zwyczajne znaki, nikt po żadnej stronie niczego nie instaluje."
+      },
+      {
+        "q": "Czemu niektóre litery wyglądają nie tak?",
+        "a": "Unicode w ogóle nie ma kapitalika dla Q ani X, a te dla F i S leżą w bloku, którego nie każdy font pokrywa w całości. Te cztery litery używają najbliższego podobnego znaku i są oznaczone w mapie powyżej."
+      },
+      {
+        "q": "Czy mogę użyć tego w nicku?",
+        "a": "W nazwie konta Minecraft nie — Mojang dopuszcza tylko A–Z, cyfry i podkreślnik. Działa natomiast w nickach ustawianych przez plugin serwerowy, w nazwach wyświetlanych, prefiksach drużyn i na Discordzie."
+      },
+      {
+        "q": "Czy mogę dalej używać kodów kolorów?",
+        "a": "Tak. Konwerter rusza wyłącznie A–Z, więc §a, &c i podobne kody przechodzą bez zmian. Najpierw przekonwertuj tekst, potem dodaj kody, albo wklej wynik do generatora kodów kolorów."
+      },
+      {
+        "q": "Czemu w niektórych miejscach tekst nie jest mniejszy?",
+        "a": "Kilka miejsc używa fontu, który nie ma tych znaków, i pokaże zamiast nich kwadraciki. Jeśli tak się stanie, unikaj tych czterech zastępowanych liter albo zostań tam przy zwykłym tekście."
+      },
+      {
+        "q": "Czy da się przekonwertować z powrotem?",
+        "a": "Tak, kapitaliki odpowiadają zwykłym literom jeden do jednego. Wklej kapitaliki w pole wejściowe, a wrócą do normalnego tekstu."
+      }
+    ],
+    "strip": "Bez ogonków",
+    "stripHint": "Usuń znaki diakrytyczne zamiast doklejać je do kapitalików"
+  },
+  "unicode": {
+    "title": "Symbole Unicode",
+    "sub": "Biblioteka symboli, które wkleisz prosto do Minecrafta — na czat, tabliczki, w nazwy przedmiotów, do MOTD i configów serwera. Kliknij symbol, żeby go skopiować.",
+    "searchPh": "Szukaj po symbolu albo kodzie…",
+    "count": "{n} symboli",
+    "escapeMode": "Tryb escape",
+    "escapeOn": "Kopiuję jako \\uXXXX — w takiej postaci wpisuje się je do plików JSON i server.properties.",
+    "escapeOff": "Kopiuję sam znak. Do JSON-a i server.properties przełącz na tryb escape.",
+    "mcOnly": "Tylko Minecraft",
+    "mcOnlyHint": "Ukryj symbole, których font gry nie renderuje",
+    "notInMc": "nie w Minecrafcie",
+    "popularTitle": "Popularne",
+    "allTitle": "Wszystkie symbole",
+    "groups": {
+      "arrows": "Strzałki",
+      "stars": "Gwiazdki i błyski",
+      "hearts": "Serca i karty",
+      "faces": "Buźki",
+      "hands": "Dłonie i pisanie",
+      "shapes": "Kształty",
+      "blocks": "Bloki i paski",
+      "lines": "Linie i ramki",
+      "marks": "Znaczniki",
+      "game": "Gry i narzędzia",
+      "weather": "Pogoda i niebo",
+      "music": "Muzyka i odtwarzanie",
+      "currency": "Waluty",
+      "math": "Matematyka",
+      "fractions": "Ułamki",
+      "numbers": "Liczby",
+      "circled": "Litery w kółkach",
+      "flipped": "Odwrócone litery",
+      "greek": "Greka",
+      "zodiac": "Zodiak i znaki",
+      "brackets": "Nawiasy i cudzysłowy",
+      "emoji": "Emoji"
+    },
+    "features": [
+      {
+        "title": "Przefiltrowane pod grę",
+        "body": "Biblioteka domyślnie pokazuje symbole, które font Minecrafta faktycznie renderuje. Emoji są osobno i wyraźnie oznaczone, bo w grze wychodzą jako puste kwadraty."
+      },
+      {
+        "title": "Tryb escape",
+        "body": "Jedno kliknięcie przełącza kopiowanie na \\uXXXX. Tej postaci wymagają pliki JSON i server.properties, gdzie surowy znak albo się psuje, albo w ogóle nie przechodzi."
+      },
+      {
+        "title": "Widoczne kody znaków",
+        "body": "Każdy symbol pokazuje swój code point, więc możesz go sprawdzić, zgłosić albo wpisać ręcznie bez zgadywania."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Gdzie mogę używać tych symboli?",
+        "a": "Na czacie, tabliczkach, w książkach, nazwach przedmiotów i skrzyń, w prefiksach drużyn, na scoreboardzie i w MOTD z listy serwerów. To zwykłe znaki, więc nikt po żadnej stronie niczego nie instaluje."
+      },
+      {
+        "q": "Czemu niektóre symbole pokazują się jako kwadraty?",
+        "a": "Używany font nie ma glifu dla tego znaku. Domyślny font Minecrafta pokrywa szeroki, ale nie nieograniczony zakres — brakuje w nim zwłaszcza emoji. Zostaw włączony filtr „Tylko Minecraft”, żeby ich uniknąć."
+      },
+      {
+        "q": "Jak wstawić symbol do server.properties?",
+        "a": "Włącz tryb escape i skopiuj postać \\uXXXX. Ten plik jest czytany jako Java properties, który pewnie obsługuje tylko czyste ASCII plus sekwencje escape."
+      },
+      {
+        "q": "Czy mogę użyć symboli w nicku?",
+        "a": "Nie. Nazwa konta Minecraft dopuszcza wyłącznie A–Z, cyfry i podkreślnik. Symbole działają natomiast w nickach ustawianych pluginem, w nazwach wyświetlanych i prefiksach drużyn."
+      },
+      {
+        "q": "Czy symbole działają z kodami kolorów?",
+        "a": "Tak. Kod koloru wstaw przed symbolem tak samo jak przed każdym innym znakiem, na przykład §c❤ da czerwone serce."
+      },
+      {
+        "q": "Czemu symbol wygląda inaczej na serwerze niż u mnie?",
+        "a": "Każda strona renderuje własnym fontem. Resource pack, inny launcher albo klient mobilny mogą podstawić inny glif albo żaden."
+      },
+      {
+        "q": "Czy to bezpieczne w configu pluginu?",
+        "a": "Zwykle tak, o ile plik jest zapisany w UTF-8. Jeśli config wraca połamany po restarcie, plugin zapisał go w innym kodowaniu — użyj tam trybu escape."
+      }
+    ]
+  },
+  "gradient": {
+    "title": "Generator gradientów",
+    "sub": "Rozłóż płynny gradient na dowolnym tekście i skopiuj go w formacie, który rozumie Twój serwer. Do siedmiu przystanków kolorystycznych, podgląd na żywo, trzy składnie wyjścia.",
+    "textLabel": "Twój tekst",
+    "textPh": "Wpisz coś…",
+    "stop": "Kolor {n}",
+    "addColor": "Dodaj kolor",
+    "presets": "Gotowce",
+    "length": "{n} znaków",
+    "howTitle": "Jak zrobić tekst z gradientem",
+    "fmt": {
+      "minimessage": "MiniMessage",
+      "amp": "&-hex na znak",
+      "section": "§x hex na znak"
+    },
+    "fmtHint": {
+      "minimessage": "Paper, Velocity i wszystko oparte o Adventure. Jeden tag, najkrótsze wyjście.",
+      "amp": "EssentialsX, DeluxeChat i większość pluginów czatowych z obsługą heksu.",
+      "section": "Tabliczki, książki, kowadła i pluginy, które znają tylko zapis §x ze Spigota."
+    },
+    "presetNames": {
+      "sunset": "Zachód",
+      "ocean": "Ocean",
+      "rainbow": "Tęcza",
+      "lime": "Limonka",
+      "fire": "Ogień",
+      "ice": "Lód",
+      "nether": "Nether",
+      "gold": "Złoto"
+    },
+    "steps": [
+      {
+        "title": "Wpisz tekst",
+        "body": "Gradient rozkłada się równo na wszystkich widocznych znakach. Spacje są pomijane, więc nie zjadają limitu długości."
+      },
+      {
+        "title": "Wybierz kolory",
+        "body": "Dwa przystanki dają proste przejście. Dodaj więcej, żeby poprowadzić gradient przez nie — każdy przystanek dostaje równy kawałek tekstu."
+      },
+      {
+        "title": "Skopiuj właściwy format",
+        "body": "MiniMessage, jeśli serwer stoi na Paperze albo Velocity, &-hex do większości pluginów czatowych, §x na tabliczki, książki i wszystko starsze."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Którego formatu użyć?",
+        "a": "MiniMessage, jeśli serwer to Paper, Purpur albo Velocity — to jeden krótki tag, a interpolację robi serwer. &-hex do pluginów czatowych w stylu EssentialsX, a §x tam, gdzie nic innego nie przechodzi, czyli na tabliczkach i w książkach."
+      },
+      {
+        "q": "Czemu wyjście jest takie długie?",
+        "a": "Poza MiniMessage kolory hex trzeba zapisać przy każdym znaku. Każdy znak niesie własny kod koloru, więc piętnastoznakowe słowo zamienia się w kilkaset znaków. To cecha formatu, nie tego narzędzia."
+      },
+      {
+        "q": "Czy zmieści się na tabliczce albo w kowadle?",
+        "a": "Często nie. Tabliczka mieści około 384 znaków na linię, a kowadło 50, co zapis §x wyczerpuje błyskawicznie. Skróć tekst albo użyj mniej widocznych znaków."
+      },
+      {
+        "q": "Czy kolory hex działają w każdej wersji?",
+        "a": "Obsługa heksu pojawiła się w 1.16. W starszych wersjach istnieje tylko 16 klasycznych kodów kolorów, a kod hex pokaże się jako surowy tekst albo zostanie pominięty."
+      },
+      {
+        "q": "Czy mogę połączyć gradient z pogrubieniem albo kursywą?",
+        "a": "Tak. W formatach na znak kod formatowania trzeba powtórzyć po każdym kodzie koloru, bo kolor kasuje aktywne formatowanie — narzędzie wplata je za Ciebie."
+      },
+      {
+        "q": "Czy da się użyć tego w MOTD serwera?",
+        "a": "W server.properties potrzebujesz \\\\u00A7 zamiast §, a linia szybko robi się długa. Większość osób ustawia MOTD z gradientem przez plugin, w postaci &-hex albo MiniMessage."
+      },
+      {
+        "q": "Czemu spacje nie mają kodu koloru?",
+        "a": "Spacja nie ma czego pomalować, więc kod przed nią to zmarnowana długość. Pomijanie ich skraca wynik i rozkłada gradient równo na literach, które faktycznie widać."
+      }
+    ],
+    "stopCount": "{n} z {max} kolorów"
+  },
+  "banner": {
+    "title": "Kreator banerów",
+    "sub": "Układaj wzory i barwniki warstwa po warstwie, oglądaj efekt renderowany dokładnie tak, jak rysuje go gra, i skopiuj gotową komendę /give na baner albo pasującą tarczę.",
+    "baseColor": "Kolor bazowy",
+    "layerColor": "Kolor warstwy",
+    "layers": "Warstwy",
+    "noLayers": "Brak warstw — wybierz wzór po prawej.",
+    "layerCount": "{n} z {max} warstw",
+    "maxLayers": "Baner mieści najwyżej {n} warstw wzoru",
+    "presets": "Gotowce",
+    "reset": "Wyczyść",
+    "target": "Cel",
+    "up": "Wyżej",
+    "down": "Niżej",
+    "theCommand": "komendę",
+    "cmdBanner": "Baner",
+    "cmdShield": "Tarcza",
+    "cmdBannerLegacy": "Baner (stary format)",
+    "cmdShieldLegacy": "Tarcza (stary format)",
+    "cmdModern": "1.20.5 i nowsze — komponenty przedmiotu",
+    "cmdLegacy": "1.13 do 1.20.4 — tagi NBT",
+    "groups": {
+      "geo": "Wzory",
+      "charge": "Godła"
+    },
+    "patterns": {
+      "base": "Podstawa",
+      "stripe_bottom": "Pas dolny",
+      "stripe_top": "Pas górny",
+      "stripe_left": "Pas lewy",
+      "stripe_right": "Pas prawy",
+      "stripe_center": "Słup",
+      "stripe_middle": "Pas środkowy",
+      "stripe_downright": "Skos w prawo",
+      "stripe_downleft": "Skos w lewo",
+      "small_stripes": "Wąskie pasy",
+      "cross": "Krzyż ukośny",
+      "straight_cross": "Krzyż prosty",
+      "diagonal_left": "Przekątna lewa",
+      "diagonal_right": "Przekątna prawa",
+      "diagonal_up_left": "Przekątna lewa odwrócona",
+      "diagonal_up_right": "Przekątna prawa odwrócona",
+      "half_vertical": "Połowa lewa",
+      "half_vertical_right": "Połowa prawa",
+      "half_horizontal": "Połowa górna",
+      "half_horizontal_bottom": "Połowa dolna",
+      "square_bottom_left": "Kwadrat lewy dolny",
+      "square_bottom_right": "Kwadrat prawy dolny",
+      "square_top_left": "Kwadrat lewy górny",
+      "square_top_right": "Kwadrat prawy górny",
+      "triangle_bottom": "Trójkąt dolny",
+      "triangle_top": "Trójkąt górny",
+      "triangles_bottom": "Ząbki dolne",
+      "triangles_top": "Ząbki górne",
+      "circle": "Koło",
+      "rhombus": "Romb",
+      "border": "Obramowanie",
+      "curly_border": "Obramowanie faliste",
+      "bricks": "Cegły",
+      "gradient": "Gradient",
+      "gradient_up": "Gradient od dołu",
+      "creeper": "Godło creepera",
+      "skull": "Godło czaszki",
+      "flower": "Godło kwiatu",
+      "mojang": "Rzecz",
+      "globe": "Kula ziemska",
+      "piglin": "Ryj",
+      "flow": "Przepływ",
+      "guster": "Podmuch"
+    },
+    "colors": {
+      "white": "Biały",
+      "light_gray": "Jasnoszary",
+      "gray": "Szary",
+      "black": "Czarny",
+      "brown": "Brązowy",
+      "red": "Czerwony",
+      "orange": "Pomarańczowy",
+      "yellow": "Żółty",
+      "lime": "Jasnozielony",
+      "green": "Zielony",
+      "cyan": "Turkusowy",
+      "light_blue": "Błękitny",
+      "blue": "Niebieski",
+      "purple": "Fioletowy",
+      "magenta": "Karmazynowy",
+      "pink": "Różowy"
+    },
+    "presetNames": {
+      "creeper": "Creeper",
+      "pirate": "Piracka",
+      "sunrise": "Wschód",
+      "target": "Tarcza strzelnicza",
+      "checker": "Szachownica",
+      "nether": "Nether",
+      "ocean": "Ocean",
+      "royal": "Królewski"
+    },
+    "features": [
+      {
+        "title": "Rendering jak w grze",
+        "body": "Każdy wzór jest rysowany na tej samej siatce 20×40 pikseli, której używa gra, warstwa po warstwie — więc podgląd zgadza się z tym, co dostaniesz w świecie."
+      },
+      {
+        "title": "Baner i tarcza naraz",
+        "body": "Ten sam projekt widzisz jako wiszący baner i nałożony na tarczę, a do każdego dostajesz osobną komendę."
+      },
+      {
+        "title": "Oba formaty komend",
+        "body": "W 1.20.5 tagi NBT zastąpiono komponentami przedmiotu. Stara składnia nie zadziała na nowym serwerze i odwrotnie, więc dostajesz obie."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ile warstw może mieć baner?",
+        "a": "Sześć w survivalu, bo tyle razy da się nałożyć wzór na krośnie, zanim baner jest gotowy. Komendą można wymusić więcej, ale nadmiarowe warstwy nie przetrwają skopiowania ani ponownego wytworzenia."
+      },
+      {
+        "q": "Czemu są dwie komendy?",
+        "a": "Minecraft 1.20.5 zastąpił stary system tagów NBT komponentami przedmiotu. Składnia z nawiasami kwadratowymi działa od 1.20.5 wzwyż, a ta z klamrami od 1.13 do 1.20.4. Użycie złej daje błąd składni."
+      },
+      {
+        "q": "Jak przenieść to na tarczę?",
+        "a": "Użyj komendy na tarczę — niesie kolor bazowy i warstwy wzoru bezpośrednio. W survivalu łączysz baner z tarczą na stole rzemieślniczym, co zużywa baner."
+      },
+      {
+        "q": "Czy da się to zrobić w survivalu?",
+        "a": "Tak, na krośnie. Weź baner w kolorze bazowym, barwnik i przedmiot wzoru tam, gdzie jest wymagany, po czym nakładaj warstwy w tej samej kolejności od dołu, którą widzisz tutaj."
+      },
+      {
+        "q": "Które wzory wymagają specjalnego przedmiotu?",
+        "a": "Godła. Creeper i czaszka potrzebują odpowiedniej głowy moba, kwiat wymaga złocienia, a Rzecz — złotego jabłka z zaklęciem. Kula ziemska, ryj, przepływ i podmuch pochodzą z przedmiotów wzoru znajdowanych w świecie."
+      },
+      {
+        "q": "Czemu baner w grze wygląda lustrzanie?",
+        "a": "Baner pokazuje projekt na przedniej ścianie i odbity lustrzanie na tylnej. Tarcze są zawsze rysowane z jednej strony, więc projekt niesymetryczny w poziomie czyta się na każdym inaczej."
+      },
+      {
+        "q": "Czy kolejność warstw ma znaczenie?",
+        "a": "Bardzo duże. Każda warstwa zamalowuje te pod sobą, więc obramowanie nałożone na końcu obejmuje całość, a to samo obramowanie nałożone jako pierwsze znika pod kolejnym wzorem."
+      }
+    ]
+  },
+  "tellraw": {
+    "title": "Generator tellraw i title",
+    "sub": "Złóż sformatowaną wiadomość z segmentów, nadaj każdemu własny kolor, styl, akcję kliknięcia i dymek, po czym skopiuj gotową komendę na czat, tytuł, podtytuł albo pasek akcji.",
+    "target": "Cel",
+    "targetPh": "{'@'}a[team=red]",
+    "version": "Wersja",
+    "versions": {
+      "modern": "1.21.5+",
+      "legacy": "1.13 – 1.21.4"
+    },
+    "placement": "Gdzie",
+    "placements": {
+      "chat": "Czat",
+      "title": "Tytuł",
+      "subtitle": "Podtytuł",
+      "actionbar": "Pasek akcji"
+    },
+    "times": {
+      "fadeIn": "Pojawianie",
+      "stay": "Czas",
+      "fadeOut": "Znikanie"
+    },
+    "ticksHint": "W tickach — 20 ticków to sekunda. Domyślnie 10 / 70 / 20.",
+    "segments": "Segmenty tekstu",
+    "addSegment": "Dodaj segment",
+    "emptySegment": "Pusty segment",
+    "textPh": "Tekst segmentu…",
+    "hexColor": "Własny kolor hex",
+    "hexHint": "Kolory hex wymagają Javy 1.16 lub nowszej. Starsze serwery je ignorują i pokazują biel.",
+    "clickEvent": "Akcja kliknięcia",
+    "clickActions": {
+      "none": "Brak",
+      "run_command": "Wykonaj komendę",
+      "suggest_command": "Podpowiedz",
+      "open_url": "Otwórz link",
+      "copy_to_clipboard": "Kopiuj"
+    },
+    "clickPh": {
+      "none": "",
+      "run_command": "/spawn",
+      "suggest_command": "/msg Notch ",
+      "open_url": "https://example.com",
+      "copy_to_clipboard": "Tekst do skopiowania"
+    },
+    "hoverText": "Tekst dymka",
+    "hoverPh": "Pokazywany po najechaniu…",
+    "hoverHint": "Działa tylko na czacie. Na tytułach i pasku akcji nie da się najechać kursorem.",
+    "commandOut": "Komenda",
+    "jsonOut": "Komponent JSON",
+    "jsonHint": "Sam komponent — do datapacków, tabliczek i książek.",
+    "tipsTitle": "Warto wiedzieć",
+    "tips": [
+      {
+        "title": "Segmenty to komponenty",
+        "body": "Każdy segment staje się jednym obiektem JSON na liście. Rozbicie wiadomości pozwala jednemu słowu nieść własny kolor, akcję kliknięcia albo dymek, podczas gdy reszta zostaje zwykła."
+      },
+      {
+        "title": "Zdarzenia należą do segmentu",
+        "body": "Akcja kliknięcia i dymek działają dokładnie na tym segmencie, na którym je ustawisz — dzięki temu klikalne może być jedno słowo w środku dłuższego zdania."
+      },
+      {
+        "title": "Wersja zmienia składnię",
+        "body": "1.21.5 przemianowało clickEvent na click_event i zastąpiło ogólne pole value nazwanymi. Wybierz gałąź, na której stoi Twój serwer — zła jest odrzucana od razu."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Do czego służy tellraw?",
+        "a": "Do wysłania wiadomości, jakiej nie da się zrobić zwykłym /say: kilka kolorów w jednej linii, słowo uruchamiające komendę po kliknięciu, dymek po najechaniu. Twórcy map i pluginy budują z tego menu na czacie."
+      },
+      {
+        "q": "Czemu są dwie gałęzie wersji?",
+        "a": "W 1.21.5 Mojang przemianował pola zdarzeń — clickEvent stał się click_event, hoverEvent stał się hover_event, a ogólne pole value rozbito na command, url i value zależnie od akcji. Komenda napisana pod jedną gałąź nie zadziała na drugiej."
+      },
+      {
+        "q": "Czy open_url działa na każdym serwerze?",
+        "a": "Klient prosi gracza o potwierdzenie przed otwarciem linku, a część serwerów i launcherów blokuje to całkowicie. Do rzeczy ważnych bezpieczniejsze są run_command i suggest_command."
+      },
+      {
+        "q": "Czemu akcja kliknięcia nic nie robi na tytule?",
+        "a": "Tytuły, podtytuły i pasek akcji są rysowane na ekranie, nie na czacie, więc nie ma czego kliknąć ani najechać. Zdarzenia działają wyłącznie w wiadomościach czatu, na tabliczkach i w książkach."
+      },
+      {
+        "q": "Czy mogę wysłać to konkretnemu graczowi?",
+        "a": "Tak. Wpisz nick zamiast selektora albo użyj selektora z filtrami, na przykład {'@'}a[team=red] czy {'@'}a[distance=..10]. Pole powyżej przyjmuje wszystko, co przyjmuje gra."
+      },
+      {
+        "q": "Czy run_command wykonuje się jako gracz?",
+        "a": "Tak, z uprawnieniami gracza. Jeśli komenda wymaga uprawnień operatora, kliknięcie nie zadziała — zwykle obchodzi się to tak, że kliknięcie uruchamia command block albo funkcję."
+      },
+      {
+        "q": "Czy to działa na Bedrocku?",
+        "a": "Bedrock ma /tellraw, ale obsługuje tylko wąski podzbiór — czysty tekst i tłumaczenia, bez akcji kliknięcia, bez dymków i bez kolorów hex. Ten generator celuje w Java Edition."
+      }
+    ]
+  },
+  "armorDye": {
+    "title": "Kalkulator barwienia skórzanej zbroi",
+    "sub": "Układaj barwniki tak, jak robi to stół rzemieślniczy, zobacz dokładny kolor, jaki dadzą na skórzanej zbroi, i weź komendę /give. Albo wskaż kolor, który chcesz, a narzędzie znajdzie barwniki, które podchodzą najbliżej.",
+    "palette": "Barwniki",
+    "currentMix": "Aktualna mieszanka",
+    "noDyes": "Brak barwników — kliknij któryś powyżej, żeby zacząć.",
+    "removeOne": "Usuń jeden",
+    "dyeCount": "{n} z {max} barwników",
+    "maxDyes": "Przy zbroi na stole rzemieślniczym mieści się {n} barwników",
+    "hex": "Hex",
+    "decimal": "Dziesiętnie",
+    "pieces": {
+      "helmet": "Czapka",
+      "chestplate": "Tunika",
+      "leggings": "Spodnie",
+      "boots": "Buty"
+    },
+    "command": "Komenda give",
+    "legacy": "Stary format (1.21.4 i starsze)",
+    "matchTitle": "Dopasuj kolor",
+    "matchSub": "Wybierz dowolny kolor, a wyszukiwarka przejdzie wszystkie kombinacje barwników do zadanej liczby i pokaże najbliższą, jaką gra faktycznie potrafi uzyskać.",
+    "targetColor": "Kolor docelowy",
+    "mixedResult": "Uzyskany kolor",
+    "accuracy": "Dokładność",
+    "exact": "Trafiony dokładnie",
+    "off": "odchyłka {n}",
+    "maxDyesLabel": "Maks. barwników",
+    "needed": "Potrzebne barwniki",
+    "apply": "Użyj tej mieszanki",
+    "applied": "Mieszanka wczytana powyżej",
+    "features": [
+      {
+        "title": "Wzór prosto z gry",
+        "body": "Kanały są uśredniane, szczytowa jasność uśredniana osobno, a wynik przeskalowywany tak, by w nią trafił — razem z całkowitoliczbowym dzieleniem i obcinaniem z Javy, więc kolor jest dokładny, nie przybliżony."
+      },
+      {
+        "title": "Szukanie, nie zgadywanie",
+        "body": "Dopasowanie koloru przechodzi każdą kombinację do ośmiu barwników i zapamiętuje najbliższą. Powtórzenia są dozwolone i dlatego odpowiedź często brzmi trzy czarne plus jeden biały."
+      },
+      {
+        "title": "Oba formaty komend",
+        "body": "W 1.20.5 tag display.color zastąpiono komponentem dyed_color. Wybierz gałąź, na której stoi Twój serwer — druga to błąd składni."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak właściwie działa mieszanie barwników?",
+        "a": "Każdy barwnik wnosi swoje wartości czerwonego, zielonego i niebieskiego. Gra uśrednia każdy kanał, ale osobno uśrednia najjaśniejszy kanał każdego składnika i przeskalowuje wynik tak, by jego własny najjaśniejszy kanał w tę średnią trafił. Bez tego kroku mieszanie zawsze by przyciemniało."
+      },
+      {
+        "q": "Czemu nie mogę uzyskać dokładnie tego koloru?",
+        "a": "Barwników jest tylko 16, a slotów osiem, więc osiągalne kolory tworzą skończony zbiór — najwyżej kilkaset tysięcy. Większość dowolnych kolorów wypada blisko któregoś z nich, ale nie na nim. Dokładność pokazuje, jak duża jest odchyłka."
+      },
+      {
+        "q": "Czy kolejność barwników ma znaczenie?",
+        "a": "Nie. Wzór tylko sumuje i uśrednia, więc dowolna kolejność tych samych barwników daje ten sam kolor. Rozbicie pracy na kilka craftów zmienia wynik, bo każdy craft wrzuca swój efekt z powrotem jako kolejny składnik."
+      },
+      {
+        "q": "Czy aktualny kolor zbroi się liczy?",
+        "a": "Tak, jeśli jest już pofarbowana. Ponowne farbowanie miesza stary kolor jako dodatkowy składnik i dlatego po kilku podejściach kolory dryfują w stronę szarości. Ten kalkulator startuje z surowej skóry."
+      },
+      {
+        "q": "Ilu barwników mogę użyć naraz?",
+        "a": "Ośmiu — siatka craftingu ma dziewięć pól, a jedno zajmuje zbroja. Można łączyć crafty dla większej liczby warstw, ale każde podejście używa poprzedniego koloru jako składnika."
+      },
+      {
+        "q": "Czy da się cofnąć farbowanie?",
+        "a": "Nie farbowaniem. Kocioł z wodą zdejmuje cały kolor i przywraca zwykłą skórę. Butelki z wodą ani deszcz nie działają."
+      },
+      {
+        "q": "Czy to działa na Bedrocku?",
+        "a": "Wzór mieszania jest ten sam, więc kolory się zgadzają. Różnią się komendy — Bedrock nie ma komponentu dyed_color i inaczej obsługuje dane przedmiotów."
+      }
+    ]
+  },
+  "coords": {
+    "title": "Kalkulator koordynatów",
+    "sub": "Przeliczaj między Overworldem a Netherem, mierz odległość między dwoma punktami i sprawdzaj, do którego chunka i pliku regionu należy dana pozycja.",
+    "convertTitle": "Overworld ⇄ Nether",
+    "overworld": "Overworld",
+    "nether": "Nether",
+    "source": "źródło",
+    "swap": "Zamień kierunek",
+    "distanceTitle": "Odległość",
+    "pointA": "Punkt A",
+    "pointB": "Punkt B",
+    "d3": "Odległość 3D",
+    "d2": "W poziomie (X/Z)",
+    "chunkTitle": "Chunk i region",
+    "useOverworld": "Weź z Overworldu",
+    "useNether": "Weź z Netheru",
+    "chunk": "Chunk",
+    "inChunk": "Pozycja w chunku",
+    "chunkCorner": "Róg chunka",
+    "region": "Region",
+    "regionFile": "Plik regionu",
+    "features": [
+      {
+        "title": "Zgodne z portalami",
+        "body": "X i Z dzielą się przez osiem w jedną stronę i mnożą w drugą, a Y zostaje bez zmian. Dzielenie zaokrągla w dół, więc ujemne koordynaty trafiają we właściwy blok, a nie o jeden obok."
+      },
+      {
+        "title": "Komendy tp na obie strony",
+        "body": "Gotowe /tp dla każdego wymiaru, żeby skoczyć w odpowiadające miejsce i sprawdzić połączenie, zanim cokolwiek zbudujesz."
+      },
+      {
+        "title": "Wyszukiwanie pliku regionu",
+        "body": "Pokazuje plik .mca, w którym leży dana pozycja — ten, który kopiujesz przy backupie albo przenoszeniu pojedynczego fragmentu świata."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak działa przelicznik Netheru?",
+        "a": "Jeden blok w Netherze odpowiada ośmiu w Overworldzie, ale tylko na osiach X i Z. Y jest identyczne w obu wymiarach i dlatego portal na y=64 wychodzi na y=64."
+      },
+      {
+        "q": "Czemu moje portale łączą się w złym miejscu?",
+        "a": "Przy wejściu w portal gra szuka istniejącego w pobliżu przeliczonych koordynatów — w promieniu 128 bloków w Overworldzie i 16 w Netherze. Jeśli znajdzie, użyje go; jeśli nie, zbuduje nowy tam, gdzie zdoła. Dwa portale w Overworldzie oddalone o mniej niż 1024 bloki mogą więc dzielić jeden portal w Netherze."
+      },
+      {
+        "q": "Jak wymusić konkretne połączenie?",
+        "a": "Zbuduj oba portale samodzielnie w dokładnie odpowiadających koordynatach i podpal najpierw ten docelowy. Przy dokładnym trafieniu gra zawsze wybierze istniejący portal zamiast tworzyć nowy."
+      },
+      {
+        "q": "Czym jest chunk?",
+        "a": "Kolumną bloków 16×16 na pełną wysokość świata. Gra wczytuje, zapisuje i generuje świat chunkami, więc mają znaczenie dla redstone, spawnu mobów i wydajności."
+      },
+      {
+        "q": "Czym jest plik regionu?",
+        "a": "Plikiem .mca mieszczącym 32×32 chunki, czyli 512×512 bloków. Żeby zrobić backup albo przenieść fragment świata, kopiujesz pliki regionów pokrywające ten obszar — i po to jest nazwa pliku powyżej."
+      },
+      {
+        "q": "Czemu chunk -1 to nie chunk 0?",
+        "a": "Granice chunków wypadają na wielokrotnościach 16, a dzielenie zaokrągla w dół, więc bloki od -16 do -1 to chunk -1, a od 0 do 15 to chunk 0. Nie ma chunka zawierającego jedne i drugie."
+      },
+      {
+        "q": "Czy w Endzie przelicznik jest inny?",
+        "a": "Nie ma żadnego przelicznika — End używa tych samych koordynatów co Overworld. Portale Endu i tak odsyłają w okolice spawnu, a nie na przeliczoną pozycję."
+      }
+    ]
+  },
+  "xp": {
+    "title": "Kalkulator XP",
+    "sub": "Przeliczaj poziomy na punkty doświadczenia i odwrotnie, sprawdzaj koszt skoku z jednego poziomu na drugi i zobacz, ile to butelek doświadczenia.",
+    "convertTitle": "Poziomy ⇄ punkty",
+    "level": "Poziom",
+    "points": "Punkty doświadczenia",
+    "intoLevel": "{into} / {span} w tym poziomie",
+    "toNext": "{n} punktów do następnego poziomu",
+    "betweenTitle": "Z poziomu na poziom",
+    "fromLevel": "Z poziomu",
+    "toLevel": "Na poziom",
+    "needed": "Potrzebne punkty",
+    "bottlesAvg": "Butelki (średnio)",
+    "bottlesBest": "Najlepszy przypadek",
+    "bottlesWorst": "Najgorszy przypadek",
+    "bottleHint": "Butelka doświadczenia daje od 3 do 11 punktów, średnio 7 — więc realna liczba wypada gdzieś między skrajnościami.",
+    "sourcesTitle": "Skąd brać doświadczenie",
+    "groups": {
+      "mobs": "Moby",
+      "blocks": "Bloki i rudy",
+      "smelting": "Wytapianie (za sztukę)",
+      "other": "Inne"
+    },
+    "sources": {
+      "hostile_mob": "Większość wrogich mobów",
+      "passive_mob": "Zwierzęta",
+      "blaze": "Blaze",
+      "enderman": "Enderman",
+      "wither_skeleton": "Wither skeleton",
+      "guardian": "Strażnik",
+      "baby_bonus": "Wyhodowane młode",
+      "wither": "Wither",
+      "ender_dragon_first": "Smok Endu (pierwsze zabicie)",
+      "ender_dragon_respawn": "Smok Endu (przywołany)",
+      "coal_ore": "Ruda węgla",
+      "diamond_ore": "Ruda diamentu",
+      "emerald_ore": "Ruda szmaragdu",
+      "lapis_ore": "Ruda lapisu",
+      "redstone_ore": "Ruda redstone",
+      "nether_quartz_ore": "Ruda kwarcu",
+      "nether_gold_ore": "Ruda złota w Netherze",
+      "spawner": "Spawner",
+      "sculk": "Blok sculk",
+      "smelt_iron": "Sztabka żelaza",
+      "smelt_gold": "Sztabka złota",
+      "smelt_diamond": "Diament",
+      "smelt_food": "Ugotowane jedzenie",
+      "smelt_glass": "Szkło",
+      "bottle": "Butelka doświadczenia",
+      "breeding": "Hodowla zwierząt",
+      "fishing": "Łowienie",
+      "trading": "Handel z wieśniakiem",
+      "grindstone": "Szlifierka (zdejmowanie zaklęć)"
+    },
+    "features": [
+      {
+        "title": "Krzywa prosto z gry",
+        "body": "Doświadczenie nie rośnie liniowo — koszt poziomu skacze na 16 i jeszcze raz na 31, a gra używa w każdym przedziale innego wzoru. Wszystkie trzy są zaimplementowane, więc liczby zgadzają się z grą."
+      },
+      {
+        "title": "W obie strony",
+        "body": "Wpisz poziom, żeby dostać sumę punktów, albo wpisz punkty, żeby dostać poziom i postęp w nim — pokazany na pasku takim jak nad hotbarem."
+      },
+      {
+        "title": "Butelki jako zakres",
+        "body": "Butelka daje losowo od 3 do 11 punktów, więc pojedyncza liczba byłaby kłamstwem. Dostajesz średnią i obie skrajności."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czemu każdy poziom kosztuje więcej od poprzedniego?",
+        "a": "Poniżej 16 poziom kosztuje 2n+7 punktów, od 16 do 30 kosztuje 5n−38, a od 31 w górę 9n−158. Krzywa jest celowo stroma, żeby wysokie poziomy pozostały drogie."
+      },
+      {
+        "q": "Ile XP potrzeba na zaklęcie z poziomu 30?",
+        "a": "1395 punktów od zera. Tyle wynosi suma dla poziomu 30, a to poziom, którego stół zaklęć wymaga do najlepszych ofert."
+      },
+      {
+        "q": "Czy tracę XP po śmierci?",
+        "a": "Wypada z Ciebie siedmiokrotność poziomu, ale nie więcej niż 100 punktów, a reszta przepada. Ten limit sprawia, że śmierć na poziomie 60 kosztuje relatywnie znacznie więcej niż na dziesiątym."
+      },
+      {
+        "q": "Ile butelek na poziom 30?",
+        "a": "Około 200 średnio, choć może wyjść 127 przy szczęściu i 465 przy pechu. Przy takiej liczbie rzutów średnie zwykle się wyrównują."
+      },
+      {
+        "q": "Czy szlifierka zwraca XP?",
+        "a": "Tylko za zaklęcia pochodzące ze stołu zaklęć i tylko część. Zaklęcia nałożone z księgi nie zwracają nic."
+      },
+      {
+        "q": "Czy mending korzysta z tych samych punktów?",
+        "a": "Tak. Każdy punkt zebrany, gdy trzymasz przedmiot z mendingiem, idzie na jego naprawę zamiast na Twój pasek, po dwa punkty wytrzymałości za punkt doświadczenia."
+      },
+      {
+        "q": "Czy te liczby są takie same na Bedrocku?",
+        "a": "Krzywa poziomów jest identyczna. Część źródeł różni się nieznacznie, więc powyższe tabele opisują Java Edition."
+      }
+    ]
+  },
+  "circle": {
+    "title": "Generator okręgów",
+    "sub": "Idealne piksel po pikselu koła, elipsy i kule do budowania. Ustaw rozmiar, wybierz obrys albo wypełnienie i odczytaj, ile bloków to zajmie.",
+    "shape": "Kształt",
+    "shapes": {
+      "circle": "Koło",
+      "ellipse": "Elipsa",
+      "sphere": "Kula"
+    },
+    "style": "Styl",
+    "styles": {
+      "thin": "Cienki obrys",
+      "thick": "Gruby obrys",
+      "filled": "Wypełnione"
+    },
+    "width": "Szerokość",
+    "height": "Wysokość",
+    "heightY": "Wysokość (Y)",
+    "layer": "Warstwa",
+    "layerOf": "Warstwa {n} z {total}",
+    "layerBlocks": "Bloki w tej warstwie",
+    "totalBlocks": "Bloki łącznie",
+    "size": "Rozmiar",
+    "copyLayer": "Kopiuj warstwę jako tekst",
+    "theLayer": "warstwę",
+    "features": [
+      {
+        "title": "Symetryczne przy każdym rozmiarze",
+        "body": "Środki komórek leżą w połowie bloku, więc parzyste średnice wychodzą równo, a nie o blok szersze z jednej strony — to typowa wada ręcznie rysowanych tabelek z okręgami."
+      },
+      {
+        "title": "Kula warstwa po warstwie",
+        "body": "Kulę widzisz po jednym poziomym przekroju naraz, z liczbą bloków dla tej warstwy i dla całości, więc budujesz ją poziom po poziomie."
+      },
+      {
+        "title": "Siatka do skopiowania",
+        "body": "Warstwa kopiuje się jako zwykły tekst z # i . — wklej ją do notatki, do narzędzia schematów albo na czat komuś, kto buduje razem z Tobą."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czemu koła w Minecrafcie wyglądają nierówno?",
+        "a": "Koło rysowane na kwadratowej siatce może krzywą tylko przybliżyć. Widoczne schodki to najbliższe, co siatka potrafi — przy małych średnicach są nie do uniknięcia i wygładzają się, gdy kształt rośnie."
+      },
+      {
+        "q": "Lepiej użyć nieparzystej czy parzystej średnicy?",
+        "a": "Nieparzyste mają jeden blok w środku, co ułatwia ustawienie w osi ze słupem albo beaconem. Parzyste mają środek 2×2 i wypadają lepiej, gdy koło ma stać między blokami."
+      },
+      {
+        "q": "Czym różni się cienki obrys od grubego?",
+        "a": "Cienki to jeden pierścień bloków. Gruby trzyma dwa, przez co z daleka czyta się jak lita ściana i daje na czym budować bez szpar na skośnych schodkach."
+      },
+      {
+        "q": "Jak zbudować kulę?",
+        "a": "Warstwa po warstwie, od dołu. Suwakiem przechodzisz między przekrojami — każdy jest płaskim kołem, które rozkładasz przed wejściem o poziom wyżej."
+      },
+      {
+        "q": "Czy licznik bloków obejmuje wnętrze?",
+        "a": "Tylko przy stylu wypełnionym. Style obrysowe liczą sam pierścień, czyli to, czego potrzebujesz, gdy kształt jest ścianą albo kopułą, a nie litą bryłą."
+      },
+      {
+        "q": "Czy mogę użyć tego do kopuł?",
+        "a": "Tak. Zbuduj kulę i zatrzymaj się na środkowej warstwie — górna połowa to kopuła. Liczba bloków dla użytych warstw sumuje się po drodze."
+      },
+      {
+        "q": "Jaki jest maksymalny rozmiar?",
+        "a": "Tutaj 128 bloków na oś. Większe kształty przestają być czytelne z siatki, a przy tej skali lepiej sprawdza się narzędzie do schematów."
+      }
+    ],
+    "numbers": "Numery siatki",
+    "view3d": "Podgląd 3D",
+    "tooBig": "Za dużo bloków, żeby wyrenderować to w 3D — zmniejsz rozmiar albo przełącz na pusty w środku.",
+    "blockColor": "Kolor bloków",
+    "dimOpacity": "Pozostałe warstwy",
+    "exportTitle": "Eksport kształtu",
+    "exportSub": "Zapisz kształt jako schemat i wklej go prosto do świata, zamiast rozkładać blok po bloku.",
+    "exportHint": {
+      "create": "Format bloku struktury, czytany przez vanillę i moda Create.",
+      "worldedit": "Schemat Sponge dla WorldEdit, FAWE i większości pluginów serwerowych.",
+      "litematica": "Schemat Litematiki z nakładką budowania w grze.",
+      "minecolonies": "Blueprint dla budowniczych z MineColonies."
     }
   },
-  "faq": {
-    "eyebrow": "FAQ",
-    "heading": "Pytania i odpowiedzi.",
-    "items": {
-      "free": {
-        "q": "Czy Spectra Launcher jest darmowy?",
-        "a": "Tak — Spectra jest całkowicie darmowa i open source na licencji GNU GPLv3. Pełny kod źródłowy jest na GitHubie."
+  "ticks": {
+    "title": "Konwerter ticków",
+    "sub": "Ticki, sekundy, dni w grze i zegar w jednym miejscu. Sprawdź, gdzie dany tick wypada w dobie, czy spawnują się moby i czy da się już spać.",
+    "ticks": "Ticki",
+    "seconds": "Sekundy",
+    "mcDays": "Dni w grze",
+    "clock": "Zegar w grze",
+    "inDay": "Tick w dobie",
+    "state": "W tym momencie",
+    "cycle": "Cykl doby",
+    "sleepWindow": "Okno snu",
+    "command": "Komenda",
+    "canSleep": "Można spać",
+    "noSleep": "Za wcześnie na sen",
+    "mobsYes": "Wrogie moby spawnują się",
+    "mobsNo": "Brak naturalnego spawnu",
+    "units": {
+      "days": "Dni",
+      "hours": "Godziny",
+      "minutes": "Minuty",
+      "seconds": "Sekundy"
+    },
+    "phases": {
+      "day": "Dzień",
+      "sunset": "Zachód",
+      "night": "Noc",
+      "sunrise": "Wschód"
+    },
+    "phasesShort": {
+      "day": "Dzień",
+      "noon": "Południe",
+      "sunset": "Zachód",
+      "night": "Noc",
+      "midnight": "Północ",
+      "sunrise": "Wschód"
+    },
+    "rateTitle": "Kalkulator częstotliwości",
+    "rateSub": "Podaj, ile ticków zajmuje jeden cykl farmy albo zegara redstone, a zobaczysz, jak często zadziała.",
+    "period": "Okres (ticki)",
+    "perDay": "Razy na dobę w grze",
+    "everySeconds": "Co",
+    "features": [
+      {
+        "title": "Zegar startuje o świcie",
+        "body": "Tick 0 to szósta rano, nie północ. Przeliczenie ticku na godzinę bez tego przesunięcia rozjeżdża każdy odczyt o sześć godzin."
       },
-      "platforms": {
+      {
+        "title": "Sen i spawn to dwie różne granice",
+        "body": "Do łóżka wejdziesz o 12542, ale wrogie moby zaczynają się spawnować dopiero o 13000. Oba okna są zaznaczone na pasku doby."
+      },
+      {
+        "title": "Dowolna jednostka na wejściu",
+        "body": "Wpisz ticki albo wypełnij dni, godziny, minuty i sekundy — reszta przelicza się od tego pola, którego dotkniesz."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ile trwa pełna doba?",
+        "a": "24000 ticków, czyli 20 minut realnego czasu. Dzień trwa 12000 ticków — dziesięć minut — a reszta to zmierzch, noc i świt."
+      },
+      {
+        "q": "Ile ticków ma sekunda?",
+        "a": "20 ticków gry. Redstone liczy się inaczej: tick redstone to dwa ticki gry, więc przekaźnik na najkrótszym ustawieniu opóźnia sygnał o jeden tick redstone, czyli dziesiątą część sekundy."
+      },
+      {
+        "q": "Jakie wartości przyjmuje /time set?",
+        "a": "Ticki w obrębie doby albo nazwy: day (1000), noon (6000), night (13000) i midnight (18000). Zachód i wschód nie mają nazw, więc użyj 12000 i 23000."
+      },
+      {
+        "q": "Kiedy mogę spać?",
+        "a": "Od ticku 12542 do 23459, a podczas burzy o dowolnej porze. To nieco wcześniej, niż niebo całkiem ciemnieje, i dlatego często można się położyć, zanim pojawią się moby."
+      },
+      {
+        "q": "Kiedy spawnują się wrogie moby?",
+        "a": "Od 13000 do 22999 na powierzchni, o ile pozwala poziom światła. Pod ziemią i w ciemnych budynkach spawnują się o każdej porze, bo spawn zależy od światła, a nie od zegara."
+      },
+      {
+        "q": "Czy /time add zmienia pogodę?",
+        "a": "Nie. Pogoda ma własny licznik, więc przewinięcie czasu nie kończy burzy. Do tego służy /weather clear."
+      },
+      {
+        "q": "Jak policzyć wydajność farmy?",
+        "a": "Podziel 24000 przez liczbę ticków jednego cyklu. Kalkulator powyżej robi to za Ciebie i dodatkowo przelicza okres na sekundy, żeby dało się go zmierzyć stoperem."
+      }
+    ]
+  },
+  "anim": {
+    "title": "Generator animacji tekstu",
+    "sub": "Przepuść gradient przez tekst i dostań każdą klatkę jako gotowy blok konfiguracji. Wybierasz animację, format kolorów i dokładny kształt wyjścia.",
+    "name": "Nazwa",
+    "speed": "Interwał zmiany",
+    "style": "Animacja",
+    "format": "Format kolorów",
+    "template": "Szablon wyjścia",
+    "output": "Wyjście",
+    "frames": "{n} klatek",
+    "play": "Odtwarzaj",
+    "theConfig": "konfigurację",
+    "phName": "nazwa powyżej",
+    "phSpeed": "interwał zmiany",
+    "phOutput": "powtarza się na każdą klatkę, $t to tekst klatki",
+    "styles": {
+      "left": "Od lewej do prawej",
+      "right": "Od prawej do lewej",
+      "bounce": "Odbijanie",
+      "cycle": "Cykl całego tekstu"
+    },
+    "features": [
+      {
+        "title": "Klatki, nie filtr",
+        "body": "Serwery nie mają własnej animacji — plugin przełącza się między gotowymi liniami. Generator produkuje dokładnie te linie, po jednej na klatkę."
+      },
+      {
+        "title": "Odbijanie domyka pętlę",
+        "body": "Rampa jest odbita bez powtarzania końców, więc ostatnia klatka przechodzi w pierwszą zamiast przeskakiwać przez cały gradient."
+      },
+      {
+        "title": "Szablon pod Twój plugin",
+        "body": "Domyślny pasuje do typowego configu animowanego taba, ale blok jest zwykłym tekstem — przestaw go pod dowolny plugin, a klatki same się wpasują."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Do czego to służy?",
+        "a": "Do animowanych nazw serwera, nagłówków taba, tytułów scoreboardu i hologramów. Pluginy w rodzaju AnimatedScoreboard, TAB czy DecentHolograms przełączają listę linii, a każda linia stąd to jeden krok tego cyklu."
+      },
+      {
+        "q": "Co oznacza change-interval?",
+        "a": "Jak długo klatka pozostaje na ekranie, w milisekundach — nie w tickach. Domyślne 50 to dwadzieścia klatek na sekundę, czyli płynny ruch; 1000 przeskakiwałoby raz na sekundę. Podgląd powyżej chodzi w tym samym tempie."
+      },
+      {
+        "q": "Który format kolorów wybrać?",
+        "a": "&#rrggbb pasuje do większości pluginów czatowych, MiniMessage do wszystkiego opartego o Adventure, a §x to zapis rozumiany przez samego klienta gry. Jeśli plugin pokazuje kody jako zwykły tekst, wybrałeś zły."
+      },
+      {
+        "q": "Ile klatek dostanę?",
+        "a": "Przy stylach kierunkowych po jednej na widoczny znak. Odbijanie podwaja tę liczbę pomniejszoną o dwa końce, bo rampa wędruje tam i z powrotem."
+      },
+      {
+        "q": "Czemu spacje są pomijane?",
+        "a": "Spacja nie ma czego pokolorować, więc kod przed nią to zmarnowana długość — a do tego rozłożyłby gradient nierówno na literach, które faktycznie widać."
+      },
+      {
+        "q": "Czy mogę animować dłuższe zdanie?",
+        "a": "Możesz, ale rośnie i liczba klatek, i długość każdej linii. Przy czymkolwiek długim plik szybko puchnie — dlatego animowane nazwy zwykle są krótkie."
+      },
+      {
+        "q": "Czy to zadziała w hologramie?",
+        "a": "Tak, jeśli plugin obsługuje cykliczne linie. Wklej klatki jako listę linii i ustaw interwał tak samo."
+      }
+    ],
+    "speedHint": "W milisekundach. 50 daje 20 klatek na sekundę, 1000 zmienia raz na sekundę."
+  },
+  "motd": {
+    "title": "Generator MOTD",
+    "sub": "Zaprojektuj dwie linie, które gracze widzą obok Twojego serwera na liście, i skopiuj je dokładnie w takiej postaci, jakiej oczekuje server.properties.",
+    "visual": "Wizualnie",
+    "code": "Kod",
+    "codePh": "§6§lSpectra\n§7otwarta beta",
+    "smallCaps": "Zamień zaznaczenie na kapitaliki",
+    "selectFirst": "Najpierw zaznacz tekst",
+    "lineLength": "Linia {n}: {len} / {max}",
+    "outRaw": "Surowe MOTD",
+    "outRawHint": "Kody § z prawdziwym łamaniem linii — do pluginów i wszystkiego, co przyjmuje tekst wprost.",
+    "outProps": "server.properties",
+    "outPropsHint": "\\u00A7 zamiast §, \\n zamiast łamania linii. Wklej to jako całą linię motd.",
+    "howTitle": "Jak ustawić MOTD",
+    "steps": [
+      {
+        "title": "Napisz dwie linie",
+        "body": "Sformatuj je w edytorze albo wklej istniejące MOTD w widoku kodu. Podgląd pokazuje wpis na liście serwerów tak, jak zobaczą go gracze."
+      },
+      {
+        "title": "Skopiuj właściwe wyjście",
+        "body": "Weź server.properties dla vanilli, Papera i Spigota. Pluginy zarządzające MOTD samodzielnie zwykle chcą postaci surowej."
+      },
+      {
+        "title": "Wklej i zrestartuj",
+        "body": "Podmień całą linię motd= w server.properties, zapisz plik i zrestartuj serwer. Ta wartość jest czytana tylko przy starcie."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak długie może być MOTD?",
+        "a": "Dwie linie po około 45 widocznych znaków. Kody kolorów się do tego nie liczą, ale liczą się do limitu 59 znaków całego łańcucha, który stosuje część launcherów — mocno pokolorowane linie wychodzą więc krótsze."
+      },
+      {
+        "q": "Czemu § psuje mi server.properties?",
+        "a": "Plik jest czytany jako Java properties, który oczekuje czystego ASCII. Surowy § wychodzi jako krzaki zależnie od kodowania pliku, więc trzeba go zapisać jako \\u00A7 — i to robi drugie wyjście."
+      },
+      {
+        "q": "Jak zrobić łamanie linii?",
+        "a": "W server.properties wpisz \\n między liniami. W configu pluginu zwykle działa prawdziwe łamanie. Widoczne i tak będą tylko dwie linie."
+      },
+      {
+        "q": "Czy mogę użyć kolorów hex?",
+        "a": "Nie klasycznymi kodami. Te 16 działa wszędzie; hex wymaga pluginu, który parsuje własny format MOTD, a vanilla pokaże kod jako tekst."
+      },
+      {
+        "q": "Czemu MOTD się nie zmienia?",
+        "a": "server.properties jest czytany tylko przy starcie, więc zmiana wymaga restartu, nie przeładowania. Jeśli dalej widać stary tekst, launcher zapamiętał wpis serwera — odśwież listę albo usuń i dodaj serwer ponownie."
+      },
+      {
+        "q": "Czy kody działają na Bedrocku?",
+        "a": "Kolory tak. §n i §m są ignorowane, a MOTD ma jedną linię zamiast dwóch, więc projekt oparty o drugą linię czyta się tam inaczej."
+      },
+      {
+        "q": "Co robi kod obfuscated?",
+        "a": "§k zamienia każdy znak na losowy kilka razy na sekundę, zachowując szerokość. W MOTD przyciąga wzrok, ale jest nieczytelny, więc większość serwerów używa go najwyżej na jedno słowo."
+      }
+    ]
+  },
+  "startFile": {
+    "title": "Generator pliku startowego",
+    "sub": "Zbuduj skrypt startowy serwera: pamięć, flagi JVM, system operacyjny i zachowanie przy restarcie, gotowy do wrzucenia obok jara.",
+    "jar": "Plik jar serwera",
+    "ram": "Pamięć",
+    "calculate": "Oblicz",
+    "calcTitle": "Oszacuj pamięć",
+    "players": "Gracze",
+    "mods": "Mody",
+    "suggested": "Sugerowane",
+    "apply": "Użyj tej wartości",
+    "applied": "Ustawiono {n} GB",
+    "calcHint": "To punkt wyjścia, nie pomiar — obserwuj realne zużycie po uruchomieniu serwera i skoryguj.",
+    "flags": "Flagi JVM",
+    "os": "System operacyjny",
+    "gui": "Pokaż okno serwera",
+    "restart": "Restartuj automatycznie",
+    "download": "Pobierz",
+    "heap": "Sterta",
+    "flagCount": "Flagi",
+    "file": "Plik",
+    "hintExtreme": "Od 12 GB w górę Aikar zaleca wariant extreme — stroi G1 pod większą stertę.",
+    "hintSmall": "Wariant extreme jest przeznaczony od 12 GB w górę. Poniżej standardowe flagi wypadają lepiej.",
+    "presets": {
+      "none": "Brak",
+      "aikar": "Flagi Aikara",
+      "aikar_extreme": "Flagi Aikara (extreme, 12 GB+)",
+      "proxy": "Flagi proxy",
+      "zgc": "ZGC (duże sterty)"
+    },
+    "systems": {
+      "windows": "Windows",
+      "unix": "Linux / macOS"
+    },
+    "features": [
+      {
+        "title": "Flagi, których się faktycznie używa",
+        "body": "Zestaw Aikara to strojenie, na którym chodzi większość serwerów Paper, przepisane co do znaku — razem z dwoma wariantami G1, które różnią się rozmiarem sterty, a nie tylko liczbą w -Xmx."
+      },
+      {
+        "title": "Szacowanie pamięci",
+        "body": "Dwa suwaki, gracze i mody, dają liczbę na start. Mody ważą więcej niż gracze, bo ich koszt jest stały niezależnie od tego, ilu ludzi jest online."
+      },
+      {
+        "title": "Gotowe do uruchomienia",
+        "body": "Skrypt wychodzi kompletny pod wybrany system — pętla wsadowa na Windowsie, pętla while na Linuksie — a pobrany plik ma właściwą nazwę."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czym są flagi Aikara?",
+        "a": "Zestrojonym zestawem opcji odśmiecacza G1, który oddaje trochę pamięci w zamian za znacznie krótsze pauzy. Na serwerze długa pauza GC to widoczne zamrożenie dla wszystkich online i dlatego niemal każdy serwer Paper na nich chodzi."
+      },
+      {
+        "q": "Czy G1GC zostało usunięte w Javie 21?",
+        "a": "Nie. G1 nadal jest domyślnym kolektorem w Javie 21 i nigdzie się nie wybiera. ZGC to alternatywa, nie następca — jedyne, co zmieniło się w 21, to że ZGC zyskało tryb generacyjny, włączany flagą -XX:+ZGenerational."
+      },
+      {
+        "q": "Czy używać ZGC zamiast G1?",
+        "a": "Tylko przy dużej stercie. G1 z flagami Aikara jest bliskie optimum między 4 a 12 GB i zachowuje niewielką przewagę w przepustowości. ZGC zaczyna wygrywać od około 16 GB, gdzie trzyma pauzy grubo poniżej milisekundy wobec dziesiątek milisekund G1 — ale chce od 10 do 20 procent więcej pamięci i co najmniej czterech wolnych rdzeni, inaczej jego praca współbieżna podbiera czas tickowi serwera."
+      },
+      {
+        "q": "Czy flagi różnią się między Javą 17 a 21?",
+        "a": "Nie — zestaw Aikara jest na obu identyczny, a flagi usunięte w Javie 21 w ogóle w nim nie występują. Jedynym elementem zależnym od wersji jest moduł Vector API, który wymaga Javy 17 lub nowszej i ma osobny przełącznik powyżej."
+      },
+      {
+        "q": "Czemu -Xms i -Xmx są równe?",
+        "a": "Żeby JVM zajął całą stertę przy starcie i nigdy jej nie zmieniał. Powiększanie sterty w trakcie pracy powoduje pauzę dokładnie wtedy, gdy serwer jest już obciążony."
+      },
+      {
+        "q": "Kiedy używać wariantu extreme?",
+        "a": "Od 12 GB sterty w górę. Daje G1 większe regiony i późniejszy start zbierania, co opłaca się przy dużej stercie, a szkodzi przy małej."
+      },
+      {
+        "q": "Ile pamięci dać serwerowi?",
+        "a": "Tyle, ile potrzebuje świat i mody, ale nigdy wszystkiego, co ma maszyna — system i sam JVM potrzebują zapasu poza stertą. Kalkulator daje liczbę na start, dalej patrz na realne zużycie."
+      },
+      {
+        "q": "Do czego są flagi proxy?",
+        "a": "Do BungeeCorda, Waterfalla i Velocity. Proxy nie trzyma świata, więc strojenie celuje w krótkie pauzy i szybki start, a nie w przepustowość przy dużej stercie."
+      },
+      {
+        "q": "Co robi automatyczny restart?",
+        "a": "Owija wywołanie javy w pętlę, więc serwer wraca po crashu albo po /stop. W trakcie pięciosekundowego odliczania wciśnij Ctrl+C, żeby przerwać zamiast restartować."
+      },
+      {
+        "q": "Czemu mój .sh się nie uruchamia?",
+        "a": "Potrzebuje bitu wykonywalności: chmod +x start.sh, potem ./start.sh. Jeśli narzeka na powrót karetki, plik zapisano z windowsowymi końcami linii — przepuść go przez dos2unix."
+      },
+      {
+        "q": "Czy włączać okno serwera?",
+        "a": "Tylko przy uruchamianiu lokalnie, gdy chcesz okno z logiem i listą graczy. Na hostingu marnuje pamięć i tak nikt go nie zobaczy — właśnie to usuwa --nogui."
+      }
+    ],
+    "vector": "Moduł Vector API",
+    "vectorHint": "Wymaga Javy 17 lub nowszej i buildu z modułami inkubacyjnymi. Wyłącz, jeśli serwer nie startuje z błędem o nieznalezionym module.",
+    "javaLine": "Wersja Javy",
+    "javaLines": {
+      "21": "Java 21 – 22",
+      "23": "Java 23+"
+    },
+    "javaHint": "Tryb generacyjny włącza się jawnie do Javy 22, a od 23 jest domyślny i flaga tylko ostrzega.",
+    "hintZgcSmall": "ZGC opłaca się mniej więcej od {n} GB sterty i przy co najmniej czterech wolnych rdzeniach. Poniżej G1 z flagami Aikara zwykle wypada szybciej."
+  },
+  "display": {
+    "title": "Generator Display",
+    "sub": "Buduj komendy /summon dla encji display — tekstu, bloku i przedmiotu — z pełną kontrolą nad transformacją i podglądem 3D na żywo.",
+    "kind": "Typ encji",
+    "kinds": {
+      "text": "Tekst",
+      "block": "Blok",
+      "item": "Przedmiot"
+    },
+    "version": "Wersja",
+    "versionHintText": "1.21.5 zamieniło pole text na prawdziwy NBT; starsze wersje oczekują komponentu jako JSON-a w cudzysłowie.",
+    "versionHintItem": "Od 1.20.5 stack przedmiotu używa małego count; wcześniejsze wersje oczekują starego bajtu Count.",
+    "presets": "Gotowce",
+    "presetNames": {
+      "hologram": "Hologram",
+      "shop": "Tabliczka sklepu",
+      "billboard": "Wielki napis",
+      "warning": "Świecące ostrzeżenie",
+      "block": "Obrócony blok",
+      "item": "Lewitujący przedmiot"
+    },
+    "preview": "Podgląd 3D",
+    "originHint": "Zielony krzyż to pozycja przywołania — czyli ~ ~ ~, z którego uruchamiasz komendę. Przeciągnij, żeby obrócić, przewiń, żeby przybliżyć.",
+    "resetView": "Zresetuj widok",
+    "loadingPreview": "Ładowanie podglądu…",
+    "transformation": "Transformacja",
+    "translation": "Przesunięcie (bloki)",
+    "scaleLabel": "Skala",
+    "uniform": "Równomiernie",
+    "leftRotation": "Obrót lewy (stopnie)",
+    "rightRotation": "Obrót prawy (stopnie)",
+    "rot": {
+      "yaw": "Yaw (Y)",
+      "pitch": "Pitch (X)",
+      "roll": "Roll (Z)"
+    },
+    "orderHint": "Minecraft stosuje najpierw obrót prawy, potem skalę, potem obrót lewy, a na końcu przesunięcie. Obroty idą wokół punktu zaczepienia encji — przy blokach to róg bloku, nie jego środek.",
+    "command": "Komenda",
+    "position": "Pozycja",
+    "tooLong": "{n} znaków — czat przyjmuje maksymalnie {max}, więc wklej to do command blocka.",
+    "killLabel": "Usuwanie",
+    "textSegments": "Fragmenty tekstu",
+    "addSegment": "Dodaj fragment",
+    "emptySegment": "Pusty fragment",
+    "textPh": "Tekst…",
+    "newlineHint": "Wpisz {code} wewnątrz fragmentu, żeby złamać linię.",
+    "styles": {
+      "bold": "Pogrubienie",
+      "italic": "Kursywa",
+      "underlined": "Podkreślenie",
+      "strikethrough": "Przekreślenie",
+      "obfuscated": "Zaszyfrowany"
+    },
+    "textOptions": "Opcje tekstu",
+    "lineWidth": "Szerokość linii",
+    "alignment": "Wyrównanie",
+    "aligns": {
+      "center": "Do środka",
+      "left": "Do lewej",
+      "right": "Do prawej"
+    },
+    "background": "Tło",
+    "bgColor": "Kolor tła",
+    "bgAlpha": "Krycie (alfa)",
+    "bgHint": "Poniżej {n} tło jest odrzucane i staje się całkowicie przezroczyste.",
+    "defaultBackground": "Tło jak na czacie",
+    "textOpacity": "Krycie tekstu",
+    "opacityHint": "Wartości do 3 są rysowane jako w pełni kryjące.",
+    "shadow": "Cień tekstu",
+    "seeThrough": "Widoczny przez bloki",
+    "blockSection": "Blok",
+    "blockId": "ID bloku",
+    "blockProps": "Właściwości block state",
+    "addProp": "Dodaj",
+    "propKey": "klucz",
+    "propValue": "wartość",
+    "propsHint": "Opcjonalne pary klucz=wartość, np. axis=z dla kłód albo lit=true dla pieca.",
+    "itemSection": "Przedmiot",
+    "itemId": "ID przedmiotu",
+    "itemContext": "Kontekst wyświetlania",
+    "contextHint": "Którą transformację modelu bierze przedmiot — trzymany w ręce, w slocie GUI albo leżący na ziemi.",
+    "options": "Opcje wyświetlania",
+    "billboard": "Billboard",
+    "billboards": {
+      "fixed": "Stały",
+      "vertical": "Pionowy",
+      "horizontal": "Poziomy",
+      "center": "Pełny"
+    },
+    "billboardHint": "Jak encja obraca się do gracza: wcale, wokół osi pionowej lub poziomej, albo w obu naraz.",
+    "brightness": "Nadpisanie jasności",
+    "blockLight": "Światło bloku",
+    "skyLight": "Światło nieba",
+    "viewRange": "Zasięg widoczności",
+    "shadowRadius": "Promień cienia",
+    "shadowStrength": "Siła cienia",
+    "glowing": "Świecąca obwódka",
+    "glowOverride": "Własny kolor świecenia",
+    "glowColor": "Kolor świecenia",
+    "advanced": "Interpolacja i zaawansowane",
+    "interpolationDuration": "Czas interpolacji",
+    "startInterpolation": "Start interpolacji",
+    "teleportDuration": "Czas teleportacji",
+    "ticksHint": "W tickach gry (20 = 1 s). Kiedy później zrobisz /data merge z nową transformacją, encja płynnie do niej przejdzie w czasie interpolacji — czas teleportacji wygładza tak samo ruch po /tp.",
+    "features": [
+      {
+        "title": "Kwaterniony policzone za ciebie",
+        "body": "Obroty ustawiasz jako yaw, pitch i roll w stopniach, a na wyjściu lądują kwaterniony [x, y, z, w], których oczekuje Minecraft — składane w tej samej kolejności YXZ co w grze, więc podgląd i przywołana encja się zgadzają."
+      },
+      {
+        "title": "Tylko to, co różni się od domyślnego",
+        "body": "Pola równe wartościom domyślnym nie trafiają do komendy, więc zostaje ona czytelna. Narzędzie ostrzega, kiedy przekroczy limit 256 znaków czatu i musi wylądować w command blocku."
+      },
+      {
+        "title": "Widoczny punkt zaczepienia",
+        "body": "Zielony krzyż w scenie 3D to ~ ~ ~ — blok, z którego odpalasz komendę. Przesunięcie, skala i oba obroty są stosowane wokół niego dokładnie tak jak w grze."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Od której wersji Minecrafta działają encje display?",
+        "a": "text_display, block_display i item_display pojawiły się w Java Edition 1.19.4 i nie istnieją w Bedrocku. Wszystkie komendy tutaj celują w Javę 1.19.4 lub nowszą."
+      },
+      {
+        "q": "Po co są dwie wersje komendy?",
+        "a": "1.21.5 zmieniło sposób zapisu komponentów tekstowych w NBT — teraz to prawdziwy NBT, a nie JSON w cudzysłowie. Stacki przedmiotów zmieniły się wcześniej, w 1.20.5, gdy count zastąpiło bajt Count. Wybierz przełącznik pasujący do twojego serwera."
+      },
+      {
+        "q": "W jakiej kolejności stosowane są transformacje?",
+        "a": "Najpierw obrót prawy, potem skala, potem obrót lewy, na końcu przesunięcie. Obrót prawy przydaje się, gdy chcesz zakręcić obiektem wokół własnej osi przed skalowaniem; obrót lewy obraca już przeskalowany wynik."
+      },
+      {
+        "q": "Czemu block display jest przesunięty?",
+        "a": "Block display jest zaczepiony w rogu bloku, a nie w jego środku. Przesuń o -0.5 w osi X i Z, żeby wyśrodkować pełny blok na pozycji przywołania."
+      },
+      {
+        "q": "Czemu mój tekst jest niewidoczny?",
+        "a": "Albo skala jest bliska zeru, albo krycie tekstu za niskie, albo zasięg widoczności wypycha encję poza render distance. Alfa tła poniżej 26 też znika całkowicie — ale to ukrywa samo tło, nie tekst."
+      },
+      {
+        "q": "Jak animować display?",
+        "a": "Przywołaj encję, a potem zrób /data merge z nową transformacją i ustawionym interpolation_duration. Display przejdzie do nowej transformacji płynnie przez tyle ticków, zamiast przeskoczyć."
+      }
+    ]
+  },
+  "potion": {
+    "title": "Przewodnik po miksturach",
+    "sub": "Wszystkie warzalne mikstury w Minecraft Java 1.21 — ścieżki warzenia, czasy działania i gotowe komendy /give dla mikstur, rzucanych, przetrwałych i strzał z eliksirem.",
+    "cats": {
+      "all": "Wszystkie",
+      "positive": "Pozytywne",
+      "negative": "Negatywne",
+      "base": "Bazowe"
+    },
+    "search": "Szukaj mikstury…",
+    "noMatch": "Żadna mikstura nie pasuje do wyszukiwania.",
+    "names": {
+      "swiftness": "Szybkość",
+      "leaping": "Skoczność",
+      "strength": "Siła",
+      "healing": "Leczenie",
+      "regeneration": "Regeneracja",
+      "fire_resistance": "Odporność na ogień",
+      "water_breathing": "Oddychanie pod wodą",
+      "night_vision": "Widzenie w ciemności",
+      "invisibility": "Niewidzialność",
+      "slow_falling": "Powolne opadanie",
+      "luck": "Szczęście",
+      "turtle_master": "Mistrz żółwi",
+      "wind_charging": "Ładunek wiatru",
+      "oozing": "Sączenie",
+      "weaving": "Tkanie",
+      "infestation": "Inwazja",
+      "slowness": "Spowolnienie",
+      "poison": "Trucizna",
+      "harming": "Ranienie",
+      "weakness": "Słabość",
+      "water": "Butelka wody",
+      "awkward": "Niezręczna",
+      "mundane": "Zwyczajna",
+      "thick": "Gęsta"
+    },
+    "effects": {
+      "speed": "Szybkość",
+      "jump_boost": "Wysoki skok",
+      "strength": "Siła",
+      "instant_health": "Natychmiastowe zdrowie",
+      "regeneration": "Regeneracja",
+      "fire_resistance": "Odporność na ogień",
+      "water_breathing": "Oddychanie pod wodą",
+      "night_vision": "Widzenie w ciemności",
+      "invisibility": "Niewidzialność",
+      "slow_falling": "Powolne opadanie",
+      "luck": "Szczęście",
+      "slowness": "Spowolnienie",
+      "resistance": "Odporność",
+      "poison": "Zatrucie",
+      "instant_damage": "Natychmiastowe obrażenia",
+      "weakness": "Słabość",
+      "wind_charged": "Naładowany wiatrem",
+      "oozing": "Sączenie",
+      "weaving": "Tkanie",
+      "infested": "Zainfekowanie"
+    },
+    "instant": "Natychmiast",
+    "noEffects": "Brak efektów",
+    "brewing": "Warzenie",
+    "notBrewable": "Tej mikstury nie da się uwarzyć w Java Edition — istnieje tylko przez komendy.",
+    "alsoFrom": "Można też uwarzyć z: {from} + {ingredient}.",
+    "variantsTitle": "Warianty",
+    "variants": {
+      "base": "Podstawowa",
+      "long": "Przedłużona",
+      "strong": "Wzmocniona"
+    },
+    "exclusive": "Redstone i proszek rozjaśniający nadpisują się nawzajem — mikstura jest albo przedłużona, albo na poziomie II, nigdy jedno i drugie.",
+    "ingredients": {
+      "nether_wart": "Brodawka netheru",
+      "sugar": "Cukier",
+      "rabbit_foot": "Królicza łapka",
+      "blaze_powder": "Płomienny proszek",
+      "glistering_melon_slice": "Lśniący plaster arbuza",
+      "ghast_tear": "Łza ghasta",
+      "magma_cream": "Magmowy krem",
+      "pufferfish": "Rozdymka",
+      "golden_carrot": "Złota marchewka",
+      "phantom_membrane": "Błona fantoma",
+      "turtle_shell": "Skorupa żółwia",
+      "breeze_rod": "Różdżka wichru",
+      "slime_block": "Blok szlamu",
+      "cobweb": "Pajęczyna",
+      "stone": "Kamień",
+      "spider_eye": "Pajęcze oko",
+      "fermented_spider_eye": "Sfermentowane pajęcze oko",
+      "redstone": "Proszek redstone",
+      "glowstone": "Proszek rozjaśniający",
+      "gunpowder": "Proch strzelniczy",
+      "dragon_breath": "Smocze tchnienie"
+    },
+    "give": "Komendy /give",
+    "target": "Cel",
+    "legacy": "Stare NBT (1.13 – 1.20.4)",
+    "items": {
+      "potion": "Mikstura",
+      "splash_potion": "Mikstura rzucana",
+      "lingering_potion": "Mikstura trwała rzucana",
+      "tipped_arrow": "Strzały z eliksirem (x8)"
+    },
+    "durationNote": "Czasy podane przy każdym przedmiocie: chmura z mikstury przetrwałej nakłada efekt na ćwierć czasu picia, a strzała na jedną ósmą. Efektów natychmiastowych to nie dotyczy.",
+    "ingredientsTitle": "Co robi który składnik",
+    "roles": {
+      "blaze_powder": "Zasila warzelnik — jeden kawałek starcza na 20 warzeń. Bez niego nic się nie uwarzy.",
+      "nether_wart": "Zamienia butelkę wody w miksturę niezręczną, czyli neutralną bazę pod prawie każdy składnik efektu.",
+      "redstone": "Przedłuża czas działania. Na samej wodzie robi tylko bezużyteczną miksturę zwyczajną.",
+      "glowstone": "Podbija efekt do poziomu II i zwykle skraca czas o połowę. Na wodzie daje miksturę gęstą.",
+      "gunpowder": "Zamienia dowolną miksturę w rzucaną, nie ruszając jej efektu.",
+      "dragon_breath": "Robi z mikstury rzucanej przetrwałą, która zostawia chmurę — i jest bazą pod strzały z eliksirem.",
+      "fermented_spider_eye": "Psuje efekt na przeciwny: Szybkość i Skoczność stają się Spowolnieniem, Leczenie i Trucizna Ranieniem, Widzenie w ciemności Niewidzialnością, a sama butelka wody Słabością."
+    },
+    "features": [
+      {
+        "title": "Pełne ścieżki warzenia",
+        "body": "Każda mikstura pokazuje cały łańcuch od butelki wody, razem z dwustopniowymi przepisami, w których sfermentowane pajęcze oko przewraca gotową miksturę w jej przeciwieństwo."
+      },
+      {
+        "title": "Czasy zgodne z 1.21",
+        "body": "Warianty podstawowy, przedłużony i wzmocniony mają wypisany dokładny poziom efektu i czas, więc jeszcze przed warzeniem wiesz, czy redstone albo proszek rozjaśniający się opłaca."
+      },
+      {
+        "title": "Komendy do każdej butelki",
+        "body": "Do picia, rzucana, przetrwała i strzały z eliksirem, w składni komponentowej 1.20.5+ albo starym NBT — bez ręcznego wpisywania ID mikstur."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czemu warzenie prawie zawsze zaczyna się od brodawki netheru?",
+        "a": "Brodawka zamienia butelki wody w mikstury niezręczne, czyli neutralną bazę, której potrzebują składniki efektów. Wyjątkiem jest Słabość, warzona wprost z butelki wody sfermentowanym pajęczym okiem, oraz mikstury bazowe z samego redstone lub proszku rozjaśniającego."
+      },
+      {
+        "q": "Czy mikstura może być jednocześnie przedłużona i na poziomie II?",
+        "a": "Nie. Redstone ustawia czas, a proszek rozjaśniający moc, i każdy nadpisuje drugi. Wychodzi albo mikstura przedłużona, albo na poziomie II."
+      },
+      {
+        "q": "Jak działają strzały z eliksirem?",
+        "a": "Ułóż osiem strzał wokół mikstury przetrwałej w siatce craftingu, a dostaniesz osiem strzał z tym efektem. Po trafieniu nakładają jedną ósmą czasu picia — efekty natychmiastowe, jak Natychmiastowe obrażenia, działają z pełną siłą."
+      },
+      {
+        "q": "Czym różni się mikstura rzucana od przetrwałej?",
+        "a": "Proch strzelniczy daje miksturę rzucaną, która nakłada efekt raz przy uderzeniu, słabiej im dalej od środka. Smocze tchnienie daje przetrwałą, która zostawia chmurę nakładającą efekt na ćwierć czasu, wielokrotnie przez kilka sekund."
+      },
+      {
+        "q": "Których mikstur nie da się uwarzyć?",
+        "a": "Szczęście nie ma przepisu w Javie i istnieje tylko przez komendy, a efekty w rodzaju Lewitacji nie mają mikstury w ogóle. Przewodnik i tak podaje komendę /give dla tych, które istnieją jako przedmiot."
+      },
+      {
+        "q": "Czemu kolory mikstur różnią się od innych poradników?",
+        "a": "Próbki używają kolorów efektów prosto z gry, a przy miksturach z kilkoma efektami, jak Mistrz żółwi, gra uśrednia je z wagą według poziomu efektu — dokładnie tak jak tutaj."
+      }
+    ]
+  },
+  "rank": {
+    "title": "Generator rang",
+    "sub": "Projektuj pikselowe tagi rang na czat, listę graczy i scoreboard — wybierz ikonę, styl i gradient, a potem pobierz PNG do resource packa.",
+    "label": "Tekst rangi",
+    "labelPh": "OWNER",
+    "style": "Styl czcionki",
+    "styles": {
+      "classic": "Klasyczny",
+      "small": "Kapitaliki",
+      "compact": "Zwarty",
+      "bold": "Pogrubiony",
+      "big": "Duży",
+      "outline": "Z obrysem"
+    },
+    "styleDesc": {
+      "classic": "glify 5×7, skok 6px",
+      "small": "małe kapitaliki 5px",
+      "compact": "litery zachodzą o 1px",
+      "bold": "grubsze kreski",
+      "big": "podwójny rozmiar, 10×14",
+      "outline": "obwódka 1px, luźniejsze litery"
+    },
+    "icon": "Ikona przed nazwą",
+    "noIcon": "Bez ikony",
+    "iconNames": {
+      "crown": "Korona",
+      "star": "Gwiazda",
+      "shield": "Tarcza",
+      "sword": "Miecz",
+      "gem": "Klejnot",
+      "bolt": "Piorun",
+      "flame": "Płomień",
+      "heart": "Serce",
+      "trophy": "Puchar",
+      "leaf": "Liść",
+      "skull": "Czaszka",
+      "sparkle": "Iskra"
+    },
+    "upload": "Wgraj ikonę",
+    "uploadHint": "PNG albo WebP, najlepiej 8×8 lub 16×16 — rysujemy bez wygładzania, więc pixel art zostaje ostry. Większe obrazki są zmniejszane do wysokości tagu.",
+    "tooBig": "Plik ma ponad 256 KB — użyj małej ikony pixel art.",
+    "iconMode": "Układ ikony",
+    "iconModes": {
+      "joined": "Połączona",
+      "separate": "Osobna wyspa"
+    },
+    "iconModeHint": {
+      "joined": "Ikona i nazwa dzielą jedno tło, tak wygląda większość prefiksów na czacie.",
+      "separate": "Ikona dostaje własne pudełko z własnym obrysem, oddzielone od nazwy przezroczystą przerwą."
+    },
+    "iconGap": "Odstęp za ikoną",
+    "islandGap": "Przerwa między wyspami",
+    "compactPad": "Ciasny margines wokół wyspy z ikoną",
+    "background": "Tło",
+    "gradientMode": "Gradient",
+    "bgStart": "Początek",
+    "bgEnd": "Koniec",
+    "bgSolid": "Kolor",
+    "borderColor": "Obramowanie",
+    "palettes": "Gotowe palety",
+    "paletteNames": {
+      "cosmic": "Kosmiczny fiolet",
+      "neon": "Neonowy róż",
+      "ocean": "Oceaniczny cyjan",
+      "emerald": "Szmaragdowy las",
+      "amber": "Bursztynowe złoto",
+      "crimson": "Karmazynowa czerwień",
+      "midnight": "Nocny grafit"
+    },
+    "borders": "Obramowanie i odstępy",
+    "borderWidth": "Obramowanie na zewnątrz",
+    "textShadow": "Cień tekstu",
+    "padX": "Margines poziomy",
+    "padY": "Margines pionowy",
+    "textColor": "Kolor tekstu",
+    "outlineColor": "Kolor obrysu",
+    "preview": "Podgląd na żywo",
+    "previews": {
+      "studio": "Karta studia",
+      "chat": "Czat Minecrafta",
+      "tab": "Lista graczy"
+    },
+    "chatLine": "siema, ktoś chętny na budowanie?",
+    "tabTitle": "Gracze online",
+    "zoom": "Powiększenie",
+    "presets": "Gotowce",
+    "presetNames": {
+      "owner": "OWNER",
+      "admin": "ADMIN",
+      "partner": "PARTNER",
+      "mvip": "MVIP",
+      "mod": "MOD",
+      "helper": "HELPER",
+      "vip": "VIP",
+      "void": "VOID",
+      "player": "PLAYER"
+    },
+    "export": "Eksport",
+    "download": "Pobierz PNG",
+    "copyUrl": "Kopiuj data URL",
+    "copiedUrl": "Data URL skopiowany",
+    "exportHint": "Tag powstaje w prawdziwym rozmiarze pikselowym i jest powiększany metodą najbliższego sąsiada, więc każdy eksport zostaje ostry. Tekstury glifów w resource packach Javy kończą się na 256×256 px — pilnuj odczytu rozmiaru powyżej 8×.",
+    "features": [
+      {
+        "title": "Prawdziwe metryki Minecrafta",
+        "body": "Glify wychodzą 5 pikseli szerokie i 7 wysokie przy advance 6 pikseli, czyli na tej samej siatce co czcionka gry — tag wrzucony na czat równa się z tekstem obok, zamiast wisieć piksel wyżej."
+      },
+      {
+        "title": "Ikona połączona albo osobna",
+        "body": "Zostaw ikonę w środku tagu jak zwykły prefiks czatu, albo daj jej własne pudełko z własnym obrysem i przezroczystą przerwą — wygląd odznaki bez ręcznego dłubania."
+      },
+      {
+        "title": "Piksele do samego końca",
+        "body": "Nic nie jest wygładzane. Tag rysuje się w prawdziwym rozmiarze, a eksporty 2×, 4×, 8× i 16× to zwykłe skalowanie najbliższym sąsiadem tej samej bitmapy."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jakiej czcionki używa generator?",
+        "a": "Monocraft, czyli pikselowego kroju, który i tak jest już w tej stronie. Rasteryzujemy go w powiększeniu 8× i zbijamy progiem 50% pokrycia, co zamienia krzywe w twardą bitmapę na siatce 5×7 Minecrafta — bez rozmycia, i działa każdy znak, który font pokrywa, razem z cyframi i polskimi ogonkami."
+      },
+      {
+        "q": "Jak użyć tagu w grze?",
+        "a": "Pobierz PNG, wrzuć go do folderu textures w resource packu i podepnij w JSON-ie czcionki jako bitmap provider z własnym codepointem. Potem wstaw ten znak w prefiksie grupy LuckPerms, w drużynie scoreboardu albo wszędzie tam, gdzie wchodzi surowy tekst."
+      },
+      {
+        "q": "Jaki rozmiar powinna mieć własna ikona?",
+        "a": "Najlepiej 8×8 albo 16×16. Ikona jest skalowana do wysokości tagu bez wygładzania, więc źródło dzielące się równo zostaje ostre — przy innym zobaczysz nierówne schodki pikseli."
+      },
+      {
+        "q": "Czemu mój tag jest szerszy, niż się spodziewałem?",
+        "a": "Obramowanie rysuje się na zewnątrz, a w trybie osobnych wysp każda wyspa ma własne obramowanie plus przerwę między nimi. Zejdź z obramowaniem do 0 albo przełącz na tryb połączony, jeśli potrzebujesz węższego tagu."
+      },
+      {
+        "q": "Czy mogę użyć małych liter?",
+        "a": "Nazwa jest zamieniana na wielkie litery przed renderowaniem, tak jak pisze się prawie każdy tag rangi na serwerze. Jeśli potrzebujesz mieszanej wielkości, popraw PNG po eksporcie albo napisz, to zrobimy z tego przełącznik."
+      },
+      {
+        "q": "Czy cień tekstu odpowiada temu z Minecrafta?",
+        "a": "Tak — przesunięcie to pełna liczba pikseli w prawo i w dół, a domyślny kolor cienia to kolor tekstu przyciemniony do jednej czwartej jasności, dokładnie tak jak gra robi to na czacie."
+      }
+    ]
+  },
+  "skinStealer": {
+    "title": "Podgląd skinów",
+    "sub": "Wpisz nick albo UUID, obejrzyj skin na modelu 3D, pobierz surową teksturę i zgarnij wszystkie peleryny gracza — oficjalne i modowe.",
+    "search": "Szukaj",
+    "searchPh": "Nick albo UUID",
+    "loading": "Ładowanie…",
+    "notFound": "Nie ma konta Minecraft o nazwie „{q}”.",
+    "failed": "Mojang nie odpowiedział. Spróbuj za chwilę.",
+    "models": {
+      "classic": "Model klasyczny",
+      "slim": "Model smukły"
+    },
+    "render": "Render 3D",
+    "spin": "Obracaj",
+    "renderHint": "Przeciągnij, żeby obrócić model, przewiń, żeby przybliżyć. Warstwa zewnętrzna, smukłe ręce i wybrana peleryna renderują się tak, jak rysuje je gra.",
+    "noSkin": "To konto nie ma własnego skina.",
+    "texture": "Tekstura skina",
+    "downloadSkin": "Pobierz skin",
+    "downloadHead": "Pobierz głowę",
+    "textureHint": "Skin pobiera się jako oryginalny PNG 64×64 z zachowaną przezroczystością. Głowa to twarz razem z warstwą kapelusza, eksportowana w 8×, żeby została ostra jako awatar.",
+    "capes": "Peleryny",
+    "wear": "Załóż na model",
+    "hideCape": "Zdejmij",
+    "downloadCape": "Pobierz pelerynę",
+    "capeFailed": "Nie udało się wczytać",
+    "noCapes": "Ten gracz nie ma peleryny w żadnym ze sprawdzanych serwisów.",
+    "capesDegraded": "Sprawdzanie peleryn modowych nie doszło do skutku, więc widać tylko oficjalną.",
+    "capesHint": "Oficjalne peleryny biorą się z session servera Mojanga dla tej założonej i z crafty.gg dla wszystkich, które konto posiada. OptiFine, LabyMod i MinecraftCapes są sprawdzane każde na swoim endpoincie, przez nasz serwer — OptiFine wystawia peleryny wyłącznie po zwykłym HTTP, więc przeglądarka nie wczytałaby ich sama.",
+    "sources": {
+      "minecraft": "Mojang (oficjalna)",
+      "optifine": "OptiFine",
+      "labymod": "LabyMod",
+      "minecraftcapes": "MinecraftCapes"
+    },
+    "features": [
+      {
+        "title": "Prawdziwy model, nie płaski render",
+        "body": "Bryły, rozkład UV i warstwa zewnętrzna powiększona o pół piksela idą za modelem gracza z gry — skin smukły dostaje trzypikselowe ręce, a kapelusz odstaje od głowy, zamiast być w nią wtopiony."
+      },
+      {
+        "title": "Wszystkie peleryny w jednym miejscu",
+        "body": "Oficjalna od Mojanga plus OptiFine, LabyMod, MinecraftCapes, 5zig, TLauncher i SkinMC. Kliknij dowolną, żeby zobaczyć ją na modelu, zanim ją pobierzesz."
+      },
+      {
+        "title": "Tylko publiczne tekstury",
+        "body": "Zapytania idą przez nasz serwer, żeby nie przekroczyć limitu Mojanga, a odpowiedzi są cache'owane na sześć godzin. Nic z konta nie jest zapisywane — czytane są wyłącznie publiczne adresy skina i peleryn."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czy mogę szukać po UUID?",
+        "a": "Tak, z myślnikami albo bez. Nick i tak najpierw zamienia się na UUID, więc obie drogi kończą się na tym samym profilu z session servera."
+      },
+      {
+        "q": "Czemu gracz nie ma peleryny?",
+        "a": "Większość kont jej nie ma. Peleryny Mojanga pochodzą z Miniconów, migracji i kilku akcji, a modowe wymagają konta w konkretnym serwisie. Pusta lista znaczy, że nic nie znaleziono, a nie że wyszukiwanie padło."
+      },
+      {
+        "q": "Czym różni się model klasyczny od smukłego?",
+        "a": "Smukłe ręce mają trzy piksele szerokości zamiast czterech, co zmienia i geometrię, i obszary tekstury. Model bierze się prosto z profilu, więc render zgadza się z tym, co pokazuje gra."
+      },
+      {
+        "q": "Czy mogę użyć tego skina na swoim koncie?",
+        "a": "Pobierz PNG i wgraj go w ustawieniach konta Minecraft albo w launcherze. Skiny są publicznymi teksturami, ale wypada sprawdzić, czy autor nie ma nic przeciwko, zanim założysz jego projekt."
+      },
+      {
+        "q": "Czemu peleryna z OptiFine ma inny rozmiar?",
+        "a": "OptiFine wystawia tekstury 46×22, a Mojang 64×32. Sama peleryna leży w obu w tym samym miejscu, więc render radzi sobie z jednym i drugim — pobranie zachowuje to, co zwrócił serwis."
+      },
+      {
+        "q": "Czy Cosmetica i Sneaky Capes są obsługiwane?",
+        "a": "Nie. Endpoint peleryn Cosmetiki zwraca ten sam obrazek zastępczy dla każdego gracza, więc nie da się odróżnić prawdziwej peleryny od pustej, a domena Sneaky Capes już się nie rozwiązuje. Dojdą, jeśli któreś z nich znów zacznie działać."
+      }
+    ],
+    "equipped": "Aktualnie założona"
+  },
+  "playerHead": {
+    "title": "Głowy graczy",
+    "sub": "Wpisz nick albo UUID i skopiuj komendę /give z głową tego gracza — w składni komponentowej 1.20.5+ albo starym NBT, w dowolnej ilości.",
+    "search": "Szukaj",
+    "searchPh": "Nick albo UUID",
+    "loading": "Ładowanie…",
+    "notFound": "Nie ma konta Minecraft o nazwie „{q}”.",
+    "failed": "Mojang nie odpowiedział. Spróbuj za chwilę.",
+    "noSkin": "To konto nie ma własnego skina.",
+    "preview": "Podgląd głowy",
+    "view3d": "3D",
+    "download": "Pobierz głowę jako PNG",
+    "target": "Komu dać",
+    "amount": "Ilość",
+    "amountHint": "Od 1 do {max}, czyli pełny stack.",
+    "mode": "Źródło głowy",
+    "modes": {
+      "name": "Po nicku",
+      "texture": "Wklejona tekstura"
+    },
+    "modeHint": {
+      "name": "Najkrótsza komenda. Serwer rozwiązuje profil przy uruchomieniu, więc głowa nadąża za aktualnym skinem gracza — ale potrzebuje połączenia z Mojangiem.",
+      "texture": "Adres tekstury jest wklejony w komendę, więc działa na serwerach offline i nigdy się nie zmienia. Jest znacznie dłuższa i nie zaktualizuje się, gdy gracz zmieni skina."
+    },
+    "versions": {
+      "modern": "Składnia komponentowa",
+      "legacy": "Stare NBT"
+    },
+    "versionRange": {
+      "modern": "1.20.5+",
+      "legacy": "1.13 – 1.20.4"
+    },
+    "commandNote": "Ilość dopisuje się dopiero powyżej jednej sztuki, tak jak zapisuje to gra. Obie komendy wymagają uprawnień operatora albo command blocka.",
+    "features": [
+      {
+        "title": "Obie składnie obok siebie",
+        "body": "1.20.5 zamieniło NBT przedmiotów na komponenty, więc komenda napisana pod jedną wersję zostanie odrzucona przez drugą. Generujemy obie naraz, opisane zakresem wersji."
+      },
+      {
+        "title": "Po nicku albo z wklejoną teksturą",
+        "body": "Głowa po nicku trzyma się aktualnego skina, ale wymaga serwera online. Wariant z wklejoną teksturą niesie ją w samej komendzie, więc działa offline i zostaje zamrożony — wybierasz pod swój przypadek."
+      },
+      {
+        "title": "Głowa taka, jaką rysuje gra",
+        "body": "Podgląd to twarz plus warstwa kapelusza, czyli te same dwa obszary 8×8, które renderuje przedmiot — widzisz dokładnie to, co wyląduje w ekwipunku. Do pobrania jako PNG w 16×."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Której komendy użyć?",
+        "a": "Dopasuj do serwera: składnia komponentowa dla Javy 1.20.5 i nowszej, NBT dla 1.13 do 1.20.4. Starsze wersje niż 1.13 używały numerycznych ID przedmiotów i nie są tu obsługiwane."
+      },
+      {
+        "q": "Po co wklejać teksturę?",
+        "a": "Na serwerze offline albo w świecie bez internetu serwer nie rozwiąże nicku na skina, więc głowa po nicku wyrenderuje się jako domyślna. Wariant z wklejoną teksturą niesie adres sam ze sobą i zawsze się wyświetli."
+      },
+      {
+        "q": "Czy głowa zmieni się, gdy gracz zmieni skina?",
+        "a": "Ta po nicku tak — serwer rozwiązuje profil na nowo. Ta z wklejoną teksturą zostaje z tym skinem, który był aktualny w chwili wygenerowania komendy."
+      },
+      {
+        "q": "Jak zdobyć głowę gracza w survivalu?",
+        "a": "Wypada tylko wtedy, gdy gracza zabije wybuch naładowanego creepera. Wszystko inne — dekoracje, sklepy, mapy — leci przez komendy."
+      },
+      {
+        "q": "Czy da się ją nosić?",
+        "a": "Tak, głowa wchodzi w slot hełmu. Można ją też postawić na bloku, wsadzić w ramkę albo położyć na klocku dźwiękowym, co zmienia wydawany przez niego dźwięk."
+      },
+      {
+        "q": "Czy to działa na Bedrocku?",
+        "a": "Nie. Bedrock nie ma składni give dla dowolnych głów graczy — te komendy celują wyłącznie w Java Edition."
+      }
+    ]
+  },
+  "skinPoses": {
+    "title": "Pozy skinów",
+    "sub": "Wyrenderuj dowolnego gracza w jednej z 29 póz i siedmiu kadrów — wybierz z galerii albo wklej adres prosto na swoją stronę.",
+    "search": "Szukaj",
+    "searchPh": "Nick albo UUID",
+    "loading": "Renderowanie…",
+    "notFound": "Nie ma konta Minecraft o nazwie „{q}”.",
+    "failed": "Render się nie udał. Spróbuj za chwilę.",
+    "gallery": "Galeria póz",
+    "crop": "Kadr",
+    "size": "Rozmiar",
+    "download": "Pobierz PNG",
+    "apiTitle": "Użyj jako API",
+    "apiCopy": "Kopiuj adres",
+    "apiCopied": "Adres skopiowany",
+    "apiHint": "Każdy render to zwykły GET — bez klucza i bez rejestracji. Odpowiedzi są cache'owane na sześć godzin i wysyłane z otwartym CORS, więc można je podlinkować wprost na stronie, w embedzie Discorda albo na karcie sklepu.",
+    "route": "Ścieżka",
+    "params": "Parametry",
+    "paramSize": "Rozmiar wyjścia w pikselach, od 32 do 1024. Domyślnie 512.",
+    "renderedBy": "Renderuje nasz własny rasteryzator programowy — bez GPU, więc chodzi wszędzie tam, gdzie chodzi strona.",
+    "poses": {
+      "default": "Domyślna",
+      "front": "Z przodu",
+      "isometric": "Izometryczna",
+      "walking": "Marsz",
+      "running": "Bieg",
+      "crouching": "Skradanie",
+      "sitting": "Siedzenie",
+      "sleeping": "Sen",
+      "cheering": "Wiwatowanie",
+      "waving": "Machanie",
+      "pointing": "Wskazywanie",
+      "crossed": "Ręce skrzyżowane",
+      "lunging": "Wypad",
+      "kicking": "Kopnięcie",
+      "archer": "Łucznik",
+      "facepalm": "Facepalm",
+      "dead": "Martwy",
+      "floating": "Unoszenie",
+      "looking": "Patrzenie w górę",
+      "relaxing": "Odpoczynek",
+      "marching": "Defilada",
+      "trudging": "Brnięcie",
+      "hero": "Bohater",
+      "flexing": "Prężenie",
+      "thinking": "Zamyślenie",
+      "kneeling": "Klęczenie",
+      "climbing": "Wspinaczka",
+      "spiderman": "Spiderman",
+      "lookat": "Spojrzenie w kamerę"
+    },
+    "crops": {
+      "full": "Cała postać",
+      "bust": "Popiersie",
+      "face": "Twarz",
+      "head": "Głowa",
+      "default": "Domyślny",
+      "processed": "Z warstwą",
+      "barebones": "Bez warstwy"
+    },
+    "cropHint": {
+      "full": "Wszystko, kadr na cały model.",
+      "bust": "Głowa, tułów i ręce.",
+      "face": "Głowa na wprost, bez kąta kamery.",
+      "head": "Sama głowa, pod kątem kamery pozy.",
+      "default": "Ten sam kadr co cała postać.",
+      "processed": "Cała postać z warstwą zewnętrzną.",
+      "barebones": "Cała postać bez warstwy zewnętrznej."
+    },
+    "features": [
+      {
+        "title": "Renderowane u nas, nie pożyczane",
+        "body": "Pozy powstają we własnym rasteryzatorze programowym — bufor głębi i teksturowane trójkąty, bez GPU. Nie ma więc zewnętrznej usługi, która może paść, a ten sam kod chodzi w testach i na serwerze."
+      },
+      {
+        "title": "Adres, nie pobieranie",
+        "body": "Każdy render to zwykły GET z otwartym CORS i sześciogodzinnym cache, więc adres wkleja się wprost na stronę, w embed Discorda albo na kartę sklepu i działa dalej bez zaglądania tu ponownie."
+      },
+      {
+        "title": "Dwadzieścia dwie pozy, siedem kadrów",
+        "body": "Każda poza działa z każdym kadrem, więc ta sama postać bywa całosylwetkowym ujęciem, popiersiem na kartę rangi i twarzą na awatar — wszystko z jednego nicku."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak osadzić render?",
+        "a": "Wskaż tagiem obrazka na /render/:type/:player/:crop. Gracz to nick albo UUID, a size przyjmuje od 32 do 1024 pikseli. Bez klucza i bez rejestracji."
+      },
+      {
+        "q": "Czym różni się processed od barebones?",
+        "a": "Oba kadrują całą postać. Processed rysuje warstwę zewnętrzną — kapelusz, kurtkę, rękawy — a barebones ją zdejmuje, co przydaje się, gdy druga warstwa zasłania sylwetkę pod spodem."
+      },
+      {
+        "q": "Czemu face różni się od head?",
+        "a": "Head zachowuje kąt kamery z pozy, więc wychodzi na trzy czwarte. Face całkiem ten kąt zdejmuje i patrzy na wprost, czego zwykle potrzebują awatary."
+      },
+      {
+        "q": "Czy obsługuje smukłe skiny?",
+        "a": "Tak. Model bierze się z profilu, więc konta smukłe dostają trzypikselowe ręce z przesuniętym barkiem — kąty pozy działają tak samo w obu wariantach."
+      },
+      {
+        "q": "Jak często render się odświeża?",
+        "a": "Odpowiedzi są cache'owane na sześć godzin. Zmienisz skina i render nadgoni w tym oknie, bez dobijania się do Mojanga przy każdym wejściu na stronę."
+      },
+      {
+        "q": "Czy mogę tego użyć na swojej stronie?",
+        "a": "Tak, po to jest. To publiczny endpoint z otwartym CORS. Trzymaj się rozsądnego ruchu — mocne automaty mogą z czasem dostać limit."
+      }
+    ],
+    "light": "Oświetlenie",
+    "fx": "Efekt",
+    "lights": {
+      "flat": "Płaskie",
+      "studio": "Studio",
+      "soft": "Miękkie",
+      "dramatic": "Dramatyczne",
+      "sunset": "Zachód",
+      "night": "Noc"
+    },
+    "effects": {
+      "none": "Brak",
+      "comic": "Komiks",
+      "statue": "Posąg",
+      "ice": "Lód",
+      "hologram": "Hologram",
+      "plastic": "Plastik"
+    },
+    "paramLight": "oświetlenie: flat, studio, soft, dramatic, sunset, night",
+    "paramFx": "efekt: none, comic, statue, ice, hologram, plastic",
+    "style": "Styl",
+    "styles": {
+      "nametag": "Plakietka z nickiem",
+      "cape": "Peleryna",
+      "voxel": "Warstwa 3D"
+    },
+    "paramCape": "peleryna gracza: cape=1",
+    "paramVoxel": "druga warstwa jako klocki: voxel=1",
+    "paramTag": "plakietka: nametag=1 albo własny tekst",
+    "paramCam": "kamera: yaw=-360..360, pitch=-89..89",
+    "paramRim": "światło konturowe: rim=0..200",
+    "rim": "Światło konturowe",
+    "docsTitle": "Dokumentacja API",
+    "docsIntro": "Endpoint jest publiczny, bez klucza. Zwraca PNG z przezroczystym tłem, nagłówkiem CORS dla wszystkich domen i cache na sześć godzin.",
+    "docsPath": "Ścieżka",
+    "docsQuery": "Parametry zapytania",
+    "docsExamples": "Przykłady",
+    "docsType": "Nazwa pozy",
+    "docsPlayer": "Nick gracza (1-16 znaków) albo UUID, z myślnikami lub bez. Wielkość liter nie ma znaczenia.",
+    "docsCrop": "Kadr",
+    "docsYaw": "Obrót kamery w poziomie, nadpisuje kamerę pozy. Dodatni pokazuje lewy bok gracza, około 180 to widok od tyłu.",
+    "docsPitch": "Obrót kamery w pionie, nadpisuje kamerę pozy. Dodatni patrzy z góry.",
+    "docsNotes": "Wszystkie parametry są opcjonalne. Zła wartość light albo fx daje 400 z listą dopuszczalnych, nieznana poza lub kadr daje 404. Nieznany gracz albo konto bez skina daje 404. Każdy zestaw parametrów ma osobny wpis w cache.",
+    "exBasic": "Podstawowy render",
+    "exBust": "Popiersie ze światłem",
+    "exFx": "Efekt komiksowy",
+    "exCape": "Peleryna od tyłu",
+    "exVoxel": "Warstwa 3D i plakietka",
+    "exHead": "Sama głowa"
+  },
+  "skinEditor": {
+    "sub": "Maluj skina wprost po modelu 3D albo po teksturze obok. Warstwy, siatka, model klasyczny i smukły, eksport do PNG 64x64.",
+    "texture": "Tekstura",
+    "model": "Model",
+    "grid": "Siatka",
+    "layerBase": "Warstwa bazowa",
+    "layerOverlay": "Nakładka",
+    "classic": "Klasyczny",
+    "slim": "Smukły",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "upload": "Wczytaj plik PNG",
+    "reset": "Od nowa",
+    "download": "Pobierz",
+    "searchPh": "nick gracza",
+    "notFound": "Nie znaleziono gracza {q}",
+    "badFile": "Nie udało się wczytać pliku",
+    "hint": "Malujesz w obu widokach naraz. W 3D przeciągnięcie po modelu maluje, a przeciągnięcie obok obraca kamerę. Skróty: P ołówek, F wypełnianie, E gumka, S cieniowanie, D dither, I pipeta, M symetria, Ctrl+Z cofnij.",
+    "tools": {
+      "pencil": "Ołówek",
+      "fill": "Wypełnianie",
+      "eraser": "Gumka",
+      "picker": "Pipeta",
+      "shade": "Cieniowanie",
+      "dither": "Dither"
+    },
+    "symmetry": "Symetria",
+    "lighten": "Jaśniej",
+    "darken": "Ciemniej",
+    "palettes": {
+      "skin": "Skóra",
+      "hair": "Włosy",
+      "eyes": "Oczy",
+      "cloth": "Ubrania",
+      "grey": "Odcienie szarości",
+      "dye": "Barwniki Minecraft"
+    },
+    "features": [
+      {
+        "title": "Dwa widoki, jedna tekstura",
+        "body": "Malujesz po modelu 3D albo po siatce 64x64 obok — oba zapisują do tego samego pliku. Trafienie w model zamienia się na piksel tekstury przez współrzędne UV, więc detal poprawisz w 2D, a całość ocenisz w 3D."
+      },
+      {
+        "title": "Symetria liczona po ściankach",
+        "body": "Odbicie nie jest zwykłym lustrem obrazka. Każdy teksel ma wyznaczonego partnera po drugiej stronie modelu, z zamianą ścianek lewej i prawej oraz obu kończyn, więc lewy rękaw powstaje razem z prawym."
+      },
+      {
+        "title": "Wszystko w przeglądarce",
+        "body": "Żaden piksel nie leci na serwer. Wczytanie po nicku pobiera tylko sam adres tekstury z Mojanga, reszta — malowanie, cofanie, eksport PNG — dzieje się u ciebie lokalnie."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Jak wgrać gotowy skin do Minecrafta?",
+        "a": "Pobierz plik przyciskiem i wgraj go na minecraft.net w ustawieniach profilu albo w launcherze. Edytor nie może zrobić tego za ciebie, bo zmiana skina na koncie wymaga twojego tokenu logowania do Mojanga, którego strona nie ma i mieć nie powinna."
+      },
+      {
+        "q": "Po co są dwa przełączniki warstw?",
+        "a": "Skin ma warstwę bazową i nakładkę, czyli kapelusz, kurtkę i rękawy. Malujesz zawsze w tę warstwę, która jest na wierzchu pod kursorem, więc żeby dostać się do ciała pod kurtką, wyłącz nakładkę."
+      },
+      {
+        "q": "Czym różni się model klasyczny od smukłego?",
+        "a": "Szerokością ramion: klasyczny ma 4 piksele, smukły 3. To inne współrzędne w teksturze, więc skin narysowany dla jednego będzie miał widoczny szew na drugim. Przycisk \"od nowa\" wczytuje domyślną skórkę pasującą do wybranego modelu."
+      },
+      {
+        "q": "Do czego służy dither?",
+        "a": "Kładzie kolor na co drugim tekselu, w szachownicę. Miesza się optycznie z tym, co jest pod spodem, i pozwala udawać odcień pośredni bez wprowadzania nowego koloru — klasyczna sztuczka pikselartu."
+      },
+      {
+        "q": "Czy mogę wczytać stary skin 64x32?",
+        "a": "Tak. Format sprzed 1.8 nie ma lewej ręki ani nogi, więc przy wczytaniu edytor sam dorabia je jako odbicie prawych, ściankę po ściance, i czyści czarne tło kapelusza, które w tamtym formacie oznaczało przezroczystość."
+      },
+      {
+        "q": "Gdzie zapisuje się moja praca?",
+        "a": "Nigdzie — na razie żyje tylko w otwartej karcie. Przed zamknięciem strony pobierz PNG, inaczej zmiany przepadną."
+      }
+    ]
+  },
+  "launcherPage": {
+    "metaTitle": "Launcher",
+    "kicker": "Spectra Launcher",
+    "title1": "Graj.",
+    "title2": "Resztą zajmie się launcher.",
+    "sub": "Mody z Modrinth i CurseForge jednym kliknięciem, każda instancja osobno, światy i skiny pod ręką. Java instaluje się sama. Za darmo, z otwartym kodem.",
+    "free": "Za darmo, bez reklam",
+    "rows": [
+      {
+        "title": "Mody instalujesz, nie polujesz na nie",
+        "body": "Modrinth i CurseForge przeszukujesz z wnętrza launchera. Klikasz „Instaluj\", a Spectra dobiera wersję pasującą do twojej instancji i dociąga wszystkie zależności. Mody wyłączasz suwakiem, bez kasowania, a launcher sam mówi, kiedy wyszła nowsza wersja. Całe modpacki wchodzą jednym kliknięciem."
+      },
+      {
+        "title": "Każda instancja to osobny świat",
+        "body": "Własna wersja gry, własne mody, własne zapisy. Ciężki modpack nie tknie twojego vanilla survivala, a przed każdym eksperymentem możesz zduplikować instancję jako kopię zapasową. RAM, argumenty Javy i loader ustawiasz osobno dla każdej — a samą Javę launcher znajduje i instaluje za ciebie."
+      },
+      {
+        "title": "Koniec z grzebaniem w AppData",
+        "body": "Wszystkie światy ze wszystkich instancji na jednej liście, gotowe do wejścia jednym kliknięciem. Wszystkie zrzuty ekranu w jednej galerii. Skórki z podglądem 3D, pelerynami i zmianą od ręki. Nie musisz nawet wiedzieć, gdzie te pliki leżą."
+      }
+    ],
+    "extrasTitle": "Drobiazgi, które robią różnicę",
+    "extras": [
+      {
+        "title": "Quick Play",
+        "body": "Wskakujesz prosto do świata albo na serwer, z pominięciem menu głównego. Minecraft 1.20 i nowszy."
+      },
+      {
+        "title": "Lista serwerów",
+        "body": "Widzisz, czy twój serwer stoi, ilu graczy na nim siedzi i jaki masz ping — jeszcze przed odpaleniem gry."
+      },
+      {
+        "title": "Pomoc przy crashu",
+        "body": "Gra się wywaliła? Launcher sam znajduje raport i pozwala go wysłać jednym kliknięciem. Do tego podgląd logów na żywo."
+      },
+      {
+        "title": "Import z innych launcherów",
+        "body": "Prism, CurseForge i aplikacja Modrinth wchodzą bez przepisywania. Eksport instancji do .mrpack albo .zip."
+      },
+      {
+        "title": "Motywy i kolor akcentu",
+        "body": "Ciemny, czysta czerń pod OLED albo złote Zębatkowo. Do tego własny kolor akcentu i pełne polskie tłumaczenie."
+      },
+      {
+        "title": "Microsoft albo offline",
+        "body": "Logujesz się kontem Microsoft przez Xbox Live albo grasz na koncie offline. Wybór należy do ciebie."
+      }
+    ],
+    "accountTitle": "Twoje mody. Twoi znajomi.",
+    "accountSub": "Launcher działa bez konta i tak zostanie. Konto Spectry dokłada tylko to, czego nie da się zrobić samemu na jednym komputerze.",
+    "accountCta": "Załóż konto",
+    "accountNote": "Za darmo. Bez maila reklamowego, bez sprzedawania danych.",
+    "account": [
+      {
+        "title": "Wyślij całą instancję",
+        "body": "Twoja paczka modów trafia pod jeden kod. Znajomy klika raz i ma dokładnie ten sam zestaw co ty — z wersją gry, loaderem i konfiguracją."
+      },
+      {
+        "title": "Aktualizujesz — oni wiedzą",
+        "body": "Dorzucasz mod do paczki, a osoby, które ją mają, dostają powiadomienie o nowej wersji. Launcher pamięta, kto na czym siedzi."
+      },
+      {
+        "title": "Znajomi i status",
+        "body": "Lista znajomych z informacją, kto jest online. Zapraszasz po nicku, bez szukania po Discordzie."
+      },
+      {
+        "title": "Profil z twoim skinem",
+        "body": "Podpinasz konto Minecraft i twój nick oraz skórka lądują na profilu widocznym dla znajomych."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Czy launcher jest darmowy?",
+        "a": "Tak, w całości i na zawsze. Nie ma wersji premium, reklam ani niczego do kupienia w środku. Kod jest otwarty na licencji GPLv3, więc możesz sprawdzić, co program robi, zanim go uruchomisz."
+      },
+      {
+        "q": "Czy potrzebuję kupionego Minecrafta?",
+        "a": "Do gry na serwerach premium i logowania kontem Microsoft — tak, launcher nie omija zakupu gry. Możesz też dodać konto offline, jeśli grasz lokalnie albo na serwerze, który tego nie wymaga."
+      },
+      {
+        "q": "Mam już instancje w Prismie albo CurseForge. Zaczynam od zera?",
+        "a": "Nie. Spectra importuje istniejące instancje z Prisma, CurseForge i aplikacji Modrinth. W drugą stronę też działa — każdą instancję wyeksportujesz do .mrpack albo .zip."
+      },
+      {
+        "q": "Windows blokuje instalator, co teraz?",
+        "a": "To SmartScreen, który ostrzega przy każdej nowej aplikacji bez płatnego podpisu. Kliknij „Więcej informacji\", a potem „Uruchom mimo to\". Podpisywanie kodu jest w planach. Pobieraj wyłącznie z naszej strony albo z GitHuba i porównaj sumę SHA256 z tą w notce wydania."
+      },
+      {
+        "q": "Czy konto jest wymagane?",
+        "a": "Nie. Cały launcher — instancje, mody, światy, skórki — działa bez logowania na Spectrze. Konto dokłada tylko rzeczy społecznościowe: wysyłanie paczek znajomym, powiadomienia o aktualizacjach i listę znajomych."
+      },
+      {
+        "q": "Czy launcher coś o mnie zbiera?",
+        "a": "Anonimowa telemetria to losowy identyfikator instalacji i zgrubne liczniki — bez nicku, maila i zawartości gry. Status na Discordzie i liczenie czasu gry są domyślnie wyłączone, a raport z crasha wysyła się wyłącznie wtedy, gdy sam klikniesz."
+      },
+      {
         "q": "Jakie platformy są wspierane?",
-        "a": "Windows, macOS (Apple Silicon ARM i Intel x64) oraz Linux przez paczki .AppImage i .deb."
+        "a": "Windows, macOS (Apple Silicon i Intel) oraz Linux przez paczki .AppImage i .deb. Wszystkie buildy znajdziesz wyżej."
       },
-      "java": {
+      {
         "q": "Czy muszę sam instalować Javę?",
         "a": "Spectra pomaga zarządzać Javą za Ciebie. Zalecana jest Java 17+, a 21 dla najnowszych wersji Minecrafta."
       },
-      "loaders": {
+      {
         "q": "Jakich loaderów modów mogę użyć?",
-        "a": "Fabric, Forge, NeoForge, Quilt oraz zwykła Vanilla. Loader w instancji możesz zmienić w każdej chwili."
+        "a": "Fabric, Forge, NeoForge, Quilt oraz zwykła Vanilla. Loader w instancji zmienisz w każdej chwili."
       },
-      "mods": {
+      {
         "q": "Skąd pochodzą mody?",
-        "a": "Z wbudowanych przeglądarek Modrinth i CurseForge — szukaj, podglądaj i instaluj bez wychodzenia z aplikacji."
+        "a": "Z wbudowanych przeglądarek Modrinth i CurseForge — szukasz, podglądasz i instalujesz bez wychodzenia z aplikacji."
       },
-      "account": {
-        "q": "Czy potrzebuję konta Minecraft?",
-        "a": "Tylko jeśli chcesz grać na serwerach online wymagane jest ważne konto Microsoft / Minecraft. Ale możesz również używać konta offline do grania w trybie singleplayer i na serwerach które mają wyłączoną funkcję online."
+      {
+        "q": "Czy mogę trzymać kilka wersji Minecrafta obok siebie?",
+        "a": "Tak. Każda instancja ma własną wersję, loader, mody, światy i ustawienia, więc nic z jednej nie popsuje drugiej."
+      },
+      {
+        "q": "Czy mogę wysłać paczkę modów znajomemu?",
+        "a": "Tak. Udostępniasz instancję z launchera i dostajesz krótki kod. Kto go otworzy, instaluje tę samą paczkę, a przy aktualizacji dostanie o niej znać."
+      },
+      {
+        "q": "Czy skiny i peleryny działają?",
+        "a": "Tak, po podpięciu konta Minecraft. Na stronie masz też edytor skinów, podbieracz skinów i API do renderów, którego użyjesz gdziekolwiek."
+      },
+      {
+        "q": "Czy kod jest otwarty?",
+        "a": "Tak, GPLv3 na GitHubie. Możesz go czytać, zbudować samodzielnie albo wysłać pull request."
+      },
+      {
+        "q": "Jak dostaję aktualizacje?",
+        "a": "Launcher sam mówi, gdy jest nowa wersja. Każdy build możesz też pobrać z sekcji instalatorów powyżej."
+      }
+    ],
+    "ctaTitle": "Pobierz i odpal w minutę",
+    "ctaSub": "Instalator waży tyle co nic, a pierwsza instancja powstaje w kilka kliknięć. Java i pliki gry dociągną się same.",
+    "dlTitle": "Wszystkie instalatory",
+    "dlSub": "Wybierz plik pasujący do Twojego systemu. Każdy build pochodzi prosto z GitHub Releases.",
+    "dlNote": "Wolisz zbudować samodzielnie? Pełny kod źródłowy jest na GitHubie na licencji GPLv3.",
+    "dlAll": "Wszystkie wydania",
+    "dlSource": "Kod na GitHubie",
+    "platforms": {
+      "windows": {
+        "name": "Windows",
+        "sub": "Windows 10 i 11"
+      },
+      "macos": {
+        "name": "macOS",
+        "sub": "macOS 11 i nowszy"
+      },
+      "linux": {
+        "name": "Linux",
+        "sub": "Większość dystrybucji"
+      }
+    },
+    "builds": {
+      "winInstaller": {
+        "label": "Instalator",
+        "hint": ".exe — zalecany"
+      },
+      "winMsi": {
+        "label": "Paczka MSI",
+        "hint": ".msi — do wdrożeń"
+      },
+      "macArm": {
+        "label": "Apple Silicon",
+        "hint": "M1 i nowsze"
+      },
+      "macIntel": {
+        "label": "Intel",
+        "hint": "Starsze Maki"
+      },
+      "linuxAppImage": {
+        "label": "AppImage",
+        "hint": "Działa niemal wszędzie"
+      },
+      "linuxDeb": {
+        "label": "Paczka Debiana",
+        "hint": ".deb — Debian, Ubuntu"
       }
     }
   },
-  "cta": {
-    "heading": "Gotowy, by zagrać?",
-    "subheading": "Pobierz Spectrę i zbierz każdą instancję, moda i świat do jednej pięknej aplikacji.",
-    "download": "Pobierz na {os}",
-    "star": "Daj gwiazdkę na GitHubie"
-  },
-  "footer": {
-    "tagline": "Nowoczesny, open-source'owy launcher na komputer do moddowanego Minecrafta. Tworzony przez MakotoPD.",
-    "license": "{version} · Licencja GNU GPLv3",
-    "product": "Produkt",
-    "resources": "Zasoby",
-    "links": {
-      "features": "Funkcje",
-      "loaders": "Loadery modów",
-      "download": "Pobierz",
-      "github": "GitHub",
-      "bug": "Zgłoś błąd",
-      "releases": "Wydania",
-      "faq": "FAQ"
-    },
-    "legalLeft": "© {year} Spectra Launcher. Niepowiązany z Mojang ani Microsoft.",
-    "legalRight": "Minecraft jest znakiem towarowym Mojang Studios."
-  },
-  "lang": {
-    "label": "Język"
-  },
-  "share": {
-    "metaTitle": "{name} — udostępniona paczka",
-    "metaDescription": "Otwórz udostępnioną paczkę modów w Spectra Launcher.",
-    "eyebrow": "Udostępniona paczka",
-    "codeLabel": "Kod",
-    "modCount": "Modów: {n}",
-    "openBtn": "Otwórz w Spectra Launcher",
-    "openHint": "Przeglądarka poprosi o zgodę na uruchomienie launchera.",
-    "noLauncher": "Nie masz jeszcze Spectra Launcher?",
-    "getLauncher": "Pobierz Spectrę",
-    "footerMeta": "{size} · pobrań: {downloads} · wygasa {expires}",
-    "notFoundTitle": "Ten kod już nie działa",
-    "notFoundDesc": "Kody wygasają po 7 dniach. Poproś o nowy.",
-    "backHome": "Wróć na stronę główną"
-  },
   "auth": {
-    "title": "Logowanie — Spectra",
+    "title": "Logowanie",
     "signInTitle": "Zaloguj się",
     "signUpTitle": "Załóż konto",
     "subtitle": "Jedno konto dla listy znajomych i udostępnianych paczek.",
@@ -221,7 +2373,16 @@
     "verifyBody": "Konto jest założone. Otwórz link, który właśnie wysłaliśmy, żeby dokończyć logowanie.",
     "verifySpam": "Nic nie przyszło po minucie? Zajrzyj do spamu.",
     "verifyResend": "Wyślij link ponownie",
-    "verifyResent": "Wysłane. Daj mu chwilę."
+    "verifyResent": "Wysłane. Daj mu chwilę.",
+    "legal": "Zakładając konto akceptujesz {terms} i {privacy}."
+  },
+  "launcherAuth": {
+    "title": "Logowanie do launchera",
+    "hint": "Przeglądarka poprosi o zgodę na otwarcie Spectra Launcher.",
+    "openAgain": "Otwórz launcher",
+    "failed": "Nie udało się utworzyć tokenu. Spróbuj jeszcze raz z poziomu launchera.",
+    "signedInAs": "Zalogowany na tym koncie",
+    "closeHint": "Możesz zamknąć tę kartę, gdy launcher przejmie logowanie."
   },
   "account": {
     "title": "Twoje konto",
@@ -266,7 +2427,21 @@
     "usernameAvailable": "Ta nazwa jest wolna.",
     "usernameTaken": "Ta nazwa jest już zajęta.",
     "usernameInvalid": "3–30 znaków: litery, cyfry, kropka lub podkreślnik.",
-    "usernameFix": "Najpierw wybierz inną nazwę użytkownika."
+    "usernameFix": "Najpierw wybierz inną nazwę użytkownika.",
+    "privacy": "Prywatność",
+    "privacyHint": "Decydujesz, co widzą na Twoim profilu osoby z zewnątrz.",
+    "friendsVisibility": "Lista znajomych",
+    "friendsVisibilityOptions": {
+      "mutual": {
+        "title": "Tylko wspólni znajomi",
+        "body": "Odwiedzający widzi wyłącznie te osoby, które zna także on. Niezalogowani nie widzą nikogo."
+      },
+      "public": {
+        "title": "Publiczna",
+        "body": "Każdy, kto wejdzie na Twój profil, widzi pełną listę znajomych."
+      }
+    },
+    "viewProfile": "Zobacz profil publiczny"
   },
   "friends": {
     "title": "Znajomi",
@@ -285,16 +2460,391 @@
     "notFound": "Nie ma takiego gracza",
     "metaDescription": "Profil {name} w Spectra Launcher.",
     "joined": "Dołączył(a) {date}",
+    "locatorColor": "Kolor paska lokalizatora gracza {name}",
     "friends": "Znajomi ({n})",
+    "online": "{n} online",
     "noFriends": "Brak znajomych.",
-    "shared": "Dzieli się paczkami ze znajomymi przez Spectra Launcher."
+    "shared": "Dzieli się paczkami ze znajomymi przez Spectra Launcher.",
+    "status": {
+      "online": "Online",
+      "in_game": "W grze",
+      "dnd": "Nie przeszkadzać",
+      "offline": "Offline"
+    },
+    "friendsMutual": "Wspólni znajomi ({n})",
+    "friendsPrivate": "Lista znajomych jest widoczna tylko dla wspólnych znajomych.",
+    "friendsSignIn": "Zaloguj się, żeby zobaczyć, kogo znacie oboje.",
+    "noMutual": "Nie macie wspólnych znajomych.",
+    "capes": "Peleryny",
+    "commands": "Komendy i API",
+    "head": "Głowa gracza",
+    "renderApi": "Adres renderu",
+    "morePoses": "Więcej póz w Skin Poses",
+    "share": "Udostępnij",
+    "embed": "Skopiuj kod osadzenia",
+    "copied": "Skopiowano.",
+    "stats": "Statystyki",
+    "statPacks": "Udostępnione paczki",
+    "statDownloads": "Pobrania paczek",
+    "statFriends": "Znajomi",
+    "expand": "Powiększ",
+    "shrink": "Zmniejsz",
+    "animIdle": "Bezczynność",
+    "animWalk": "Chodzenie",
+    "animCrouch": "Kucanie",
+    "keysHint": "Kliknij postać, żeby machnęła ręką. Przytrzymaj Shift, żeby kucnęła, albo W, żeby szła."
   },
-  "launcherAuth": {
-    "title": "Logowanie do launchera",
-    "hint": "Przeglądarka poprosi o zgodę na otwarcie Spectra Launcher.",
-    "openAgain": "Otwórz launcher",
-    "failed": "Nie udało się utworzyć tokenu. Spróbuj jeszcze raz z poziomu launchera.",
-    "signedInAs": "Zalogowany na tym koncie",
-    "closeHint": "Możesz zamknąć tę kartę, gdy launcher przejmie logowanie."
+  "share": {
+    "metaTitle": "{name} — udostępniona paczka",
+    "metaDescription": "Otwórz udostępnioną paczkę modów w Spectra Launcher.",
+    "eyebrow": "Udostępniona paczka",
+    "codeLabel": "Kod",
+    "modCount": "Modów: {n}",
+    "openBtn": "Otwórz w Spectra Launcher",
+    "openHint": "Przeglądarka poprosi o zgodę na uruchomienie launchera.",
+    "noLauncher": "Nie masz jeszcze Spectra Launcher?",
+    "getLauncher": "Pobierz Spectrę",
+    "footerMeta": "{size} · pobrań: {downloads} · wygasa {expires}",
+    "notFoundTitle": "Ten kod już nie działa",
+    "notFoundDesc": "Kody wygasają po 7 dniach. Poproś o nowy.",
+    "backHome": "Wróć na stronę główną",
+    "mods": "Mody"
+  },
+  "activity": {
+    "title": "Aktywność",
+    "empty": "Brak aktywności. Pojawi się tutaj, gdy launcher zacznie ją zgłaszać.",
+    "nothing": "brak aktywności",
+    "launches": "uruchomień: {n}",
+    "less": "mniej",
+    "more": "więcej",
+    "statsTitle": "Spectra staty",
+    "firstJoin": "Pierwsze uruchomienie",
+    "lastOnline": "Ostatnio online",
+    "perDay": "Średnio w dniu gry",
+    "week": "Ostatnie 7 dni"
+  },
+  "badges": {
+    "title": "Odznaki",
+    "sub": "Wyróżnienia przyznawane za to, co robisz w Spectrze. Kliknij odznakę, żeby zobaczyć, kto ją ma.",
+    "holders": "posiada: {n}",
+    "holdersTitle": "Kto ma tę odznakę",
+    "noHolders": "Nikt jeszcze jej nie ma.",
+    "empty": "Nie ma jeszcze żadnych odznak.",
+    "notFound": "Nie ma takiej odznaki"
+  },
+  "secret": {
+    "title": "Kod",
+    "sub": "Jeśli gdzieś go znalazłeś, wpisz go tutaj.",
+    "placeholder": "wpisz kod",
+    "submit": "Sprawdź",
+    "nope": "Nic z tego.",
+    "won": "Zdobyto odznakę: {name}",
+    "seeBadge": "Zobacz odznakę",
+    "signIn": "Zaloguj się, żeby odznaka miała gdzie trafić."
+  },
+  "privacy": {
+    "title": "Polityka prywatności",
+    "intro": "Co zbieramy, po co, komu to przekazujemy i co możesz z tym zrobić. Bez ogólników — poniżej jest lista konkretnych danych, które przetwarza ta strona i launcher.",
+    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "sections": [
+      {
+        "title": "Kto odpowiada za dane",
+        "body": [
+          "Administratorem danych jest %CONTROLLER%, prowadzący projekt Spectra. W sprawach dotyczących danych osobowych napisz na %EMAIL%.",
+          "Spectra nie jest oficjalnym produktem Minecrafta i nie jest powiązana z Mojang Studios ani Microsoftem."
+        ]
+      },
+      {
+        "title": "Korzystanie bez konta",
+        "body": [
+          "Strona i wszystkie narzędzia działają bez logowania. Launcher również: instancje, mody, światy i skórki nie wymagają konta Spectry.",
+          "Bez konta nie tworzymy Twojego profilu ani nie zapisujemy historii korzystania. Serwer zapisuje standardowe logi żądań, o których mowa niżej."
+        ]
+      },
+      {
+        "title": "Dane konta",
+        "body": [
+          "Zakładając konto, podajesz adres e-mail i hasło. Hasła nie przechowujemy — zapisujemy wyłącznie jego skrót kryptograficzny, z którego nie da się odtworzyć oryginału.",
+          "Do konta należą też: nazwa użytkownika, nazwa wyświetlana, opcjonalny awatar oraz — jeśli ją włączysz — konfiguracja weryfikacji dwuetapowej.",
+          "Jeśli logujesz się przez Discorda, Google, GitHuba albo Microsoft, otrzymujemy od nich identyfikator konta, adres e-mail, nazwę i zdjęcie profilowe. Nie dostajemy Twojego hasła do tamtej usługi."
+        ]
+      },
+      {
+        "title": "Profil Minecraft",
+        "body": [
+          "Możesz podpiąć konto Minecraft. Zapisujemy wtedy jego UUID i nick, żeby pokazać skórkę i pelerynę na profilu publicznym.",
+          "Podpięcie jest dobrowolne i możesz je cofnąć. Sam skin i peleryna nie są u nas przechowywane — pobieramy je z serwerów Mojanga w momencie wyświetlenia."
+        ]
+      },
+      {
+        "title": "Dane społecznościowe",
+        "body": [
+          "Lista znajomych, zaproszenia i powiadomienia są zapisywane, bo bez nich te funkcje nie mogłyby działać.",
+          "Launcher wysyła sygnał obecności, dzięki któremu znajomi widzą, czy jesteś online i czy gra jest uruchomiona. Obecność możesz ukryć w ustawieniach.",
+          "To, kto widzi Twoją listę znajomych, ustawiasz sam w zakładce Prywatność na stronie konta. Domyślnie widzą ją tylko wspólni znajomi."
+        ]
+      },
+      {
+        "title": "Udostępniane paczki modów",
+        "body": [
+          "Udostępniając instancję, wysyłasz na nasz serwer jej zawartość oraz metadane: nazwę, wersję gry, loader i liczbę modów. Pliki trafiają do magazynu obiektowego Cloudflare R2.",
+          "Zapisujemy też, komu paczka została wysłana i którą jej wersję zainstalowano — dzięki temu odbiorcy dostają powiadomienie o aktualizacji.",
+          "Kody udostępnień wygasają, a wraz z nimi usuwane są pliki."
+        ]
+      },
+      {
+        "title": "Aktywność i odznaki",
+        "body": [
+          "Jeśli launcher jest zalogowany, zapisujemy dzienne podsumowanie: liczbę uruchomień i czas gry. Służy to wyłącznie wykresowi aktywności i statystykom na Twoim profilu publicznym. Jest to domyślnie włączone i możesz to wyłączyć — launcher pyta o to przy pierwszym uruchomieniu, a ten sam przełącznik zostaje w jego ustawieniach prywatności.",
+          "Odznaki przyznawane automatycznie zapisują moment przyznania."
+        ]
+      },
+      {
+        "title": "Analityka strony",
+        "body": [
+          "Do liczenia odwiedzin używamy Umami — narzędzia, które hostujemy na własnym serwerze pod adresem analytics.makoto.com.pl. Dane nie trafiają do żadnej firmy trzeciej.",
+          "Umami nie zapisuje ciasteczek ani niczego innego na Twoim urządzeniu i nie tworzy identyfikatora pozwalającego śledzić Cię między witrynami. Zbiera zbiorcze informacje: adres odwiedzonej strony, skąd przyszedłeś, przybliżony kraj, rodzaj urządzenia i przeglądarki.",
+          "Adres IP jest używany wyłącznie chwilowo do ustalenia kraju i nie jest przechowywany. Nie da się z tych danych ustalić, kim jesteś.",
+          "Zapisujemy też zdarzenia mówiące, z czego korzystasz — na przykład że kliknięto pobieranie launchera albo otwarto konkretne narzędzie. Są to liczniki bez powiązania z kontem."
+        ]
+      },
+      {
+        "title": "Telemetria launchera",
+        "body": [
+          "Launcher wysyła anonimową telemetrię: losowy identyfikator instalacji, wersję aplikacji, system operacyjny, architekturę i język, a także zgrubne liczniki zdarzeń.",
+          "Ten identyfikator nie jest powiązany z kontem ani z żadną daną osobową i trzymamy go w osobnej tabeli właśnie po to, żeby takiego powiązania nie dało się zrobić.",
+          "Raport z awarii wysyłany jest wyłącznie wtedy, gdy sam klikniesz, żeby go wysłać. Reszta tego, co launcher wysyła, łącznie ze statusem na Discordzie pokazującym, w co grasz, jest domyślnie włączona i da się wyłączyć — launcher pyta o to przy pierwszym uruchomieniu, a te same przełączniki zostają w jego ustawieniach prywatności."
+        ]
+      },
+      {
+        "title": "Logi serwera",
+        "body": [
+          "Serwer zapisuje standardowe logi żądań: adres IP, datę, adres strony, kod odpowiedzi i nagłówek przeglądarki. Służą wykrywaniu awarii i nadużyć.",
+          "Ruch obsługuje Cloudflare, które przetwarza te same dane w celu ochrony przed atakami."
+        ]
+      },
+      {
+        "title": "Podstawy prawne",
+        "body": [
+          "Dane konta i funkcji społecznościowych przetwarzamy w celu wykonania umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO).",
+          "Logi, ochronę przed nadużyciami i anonimową telemetrię przetwarzamy w oparciu o nasz uzasadniony interes (art. 6 ust. 1 lit. f RODO), którym jest utrzymanie i rozwój usługi.",
+          "Podpięcie konta Minecraft i publiczne udostępnienie listy znajomych odbywa się na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO), którą możesz w każdej chwili wycofać."
+        ]
+      },
+      {
+        "title": "Komu przekazujemy dane",
+        "body": [
+          "Cloudflare — hosting, sieć dostarczania treści, ochrona przed botami i magazyn plików.",
+          "Mojang Studios i Microsoft — gdy wyświetlamy skórkę lub pelerynę, odpytujemy ich serwery o publiczne dane profilu Minecraft.",
+          "Dostawcy logowania zewnętrznego — Discord, Google, GitHub, Microsoft — wyłącznie w zakresie samego logowania.",
+          "Nie sprzedajemy danych i nie przekazujemy ich do celów reklamowych."
+        ]
+      },
+      {
+        "title": "Jak długo przechowujemy dane",
+        "body": [
+          "Dane konta trzymamy do momentu jego usunięcia. Usunięcie konta kasuje profil, listę znajomych, powiadomienia, odznaki, aktywność, awatar i udostępnione paczki.",
+          "Udostępnione paczki znikają wraz z wygaśnięciem kodu. Logi serwera i anonimowa telemetria są przechowywane przez ograniczony czas potrzebny do analizy problemów."
+        ]
+      },
+      {
+        "title": "Twoje prawa",
+        "body": [
+          "Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz sprzeciwu wobec przetwarzania opartego na uzasadnionym interesie.",
+          "Większość z tych rzeczy zrobisz sam na stronie konta: zmienisz dane, ustawisz widoczność, odepniesz konta zewnętrzne i usuniesz konto.",
+          "W pozostałych sprawach napisz na %EMAIL%. Przysługuje Ci też skarga do Prezesa Urzędu Ochrony Danych Osobowych."
+        ]
+      },
+      {
+        "title": "Bezpieczeństwo",
+        "body": [
+          "Połączenie ze stroną jest szyfrowane. Hasła przechowujemy wyłącznie jako skróty, a konto możesz dodatkowo zabezpieczyć weryfikacją dwuetapową.",
+          "Żaden system nie jest w pełni odporny na naruszenia. Jeśli dojdzie do incydentu zagrażającego Twoim prawom, poinformujemy Cię o nim."
+        ]
+      },
+      {
+        "title": "Dzieci",
+        "body": [
+          "Usługa nie jest kierowana do osób poniżej 16 roku życia. Jeśli wiemy, że konto należy do młodszej osoby bez zgody opiekuna, usuwamy je."
+        ]
+      },
+      {
+        "title": "Zmiany",
+        "body": [
+          "Politykę możemy aktualizować. Data ostatniej zmiany jest na górze tej strony, a o istotnych zmianach poinformujemy na stronie lub w launcherze."
+        ]
+      }
+    ]
+  },
+  "terms": {
+    "title": "Regulamin",
+    "intro": "Zasady korzystania ze strony Spectra i ze Spectra Launchera.",
+    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "sections": [
+      {
+        "title": "Czego dotyczy regulamin",
+        "body": [
+          "Usługę prowadzi %CONTROLLER%, prowadzący projekt Spectra. Regulamin obejmuje tę stronę, jej narzędzia oraz Spectra Launcher.",
+          "Korzystając z usługi, akceptujesz te zasady. Jeśli się na nie nie zgadzasz, nie korzystaj z niej."
+        ]
+      },
+      {
+        "title": "Czym jest Spectra",
+        "body": [
+          "Spectra Launcher to darmowy program uruchamiający Minecrafta i zarządzający modami. Nie sprzedajemy gry ani nie omijamy konieczności jej zakupu.",
+          "Do gry na serwerach wymagających konta premium potrzebujesz własnego, legalnie nabytego konta Minecraft.",
+          "Spectra nie jest oficjalnym produktem Minecrafta i nie jest zatwierdzona ani powiązana z Mojang Studios."
+        ]
+      },
+      {
+        "title": "Konto",
+        "body": [
+          "Konto jest dobrowolne — launcher działa bez niego. Zakładając je, odpowiadasz za poprawność podanych danych i za zachowanie hasła w tajemnicy.",
+          "Jedna osoba zakłada jedno konto. Zakaz podszywania się pod innych i zakaz nazw wprowadzających w błąd.",
+          "Konto możesz usunąć w każdej chwili na stronie konta."
+        ]
+      },
+      {
+        "title": "Treści użytkownika",
+        "body": [
+          "Odpowiadasz za to, co wysyłasz: awatar, nazwę, udostępniane paczki modów i skórki.",
+          "Wysyłając treść, potwierdzasz, że masz do niej prawa, i udzielasz nam ograniczonej licencji na jej przechowywanie i wyświetlanie w zakresie potrzebnym do działania usługi.",
+          "Udostępniając paczkę, pamiętaj, że mody mają własnych autorów i własne licencje — część z nich zabrania dalszego rozpowszechniania plików."
+        ]
+      },
+      {
+        "title": "Czego nie wolno",
+        "body": [
+          "Łamać prawa, praw autorskich ani cudzej prywatności.",
+          "Rozpowszechniać złośliwego oprogramowania, treści nielegalnych, nienawistnych lub nękających.",
+          "Obchodzić zabezpieczeń, przeciążać usługi, zbierać danych innych użytkowników ani automatycznie zakładać kont.",
+          "Wykorzystywać usługi do omijania zakupu Minecrafta lub uwierzytelniania Mojanga."
+        ]
+      },
+      {
+        "title": "Licencja launchera",
+        "body": [
+          "Spectra Launcher jest oprogramowaniem otwartym na licencji GPLv3. Kod jest publicznie dostępny i możesz z niego korzystać na warunkach tej licencji.",
+          "Znaki towarowe Minecraft i Mojang należą do Mojang Studios i Microsoftu. Nazwy Modrinth i CurseForge należą do ich właścicieli."
+        ]
+      },
+      {
+        "title": "Dostępność i brak gwarancji",
+        "body": [
+          "Usługa jest udostępniana w stanie, w jakim jest. Nie gwarantujemy nieprzerwanego działania ani tego, że będzie wolna od błędów.",
+          "Możemy zmieniać, ograniczać lub wyłączać poszczególne funkcje. O istotnych zmianach poinformujemy z wyprzedzeniem, jeśli będzie to możliwe."
+        ]
+      },
+      {
+        "title": "Odpowiedzialność",
+        "body": [
+          "W zakresie dozwolonym przez prawo nie odpowiadamy za szkody pośrednie, utratę danych ani utracone korzyści wynikające z korzystania z usługi.",
+          "Nie ogranicza to odpowiedzialności, której zgodnie z prawem nie można wyłączyć, w szczególności za szkodę wyrządzoną umyślnie.",
+          "Nie odpowiadamy za treść i działanie modów, paczek i serwerów osób trzecich."
+        ]
+      },
+      {
+        "title": "Zawieszenie i usunięcie konta",
+        "body": [
+          "Konto łamiące regulamin możemy zawiesić lub usunąć. Gdy to możliwe, uprzedzimy i wskażemy powód.",
+          "Od decyzji możesz się odwołać, pisząc na adres kontaktowy."
+        ]
+      },
+      {
+        "title": "Zmiany regulaminu",
+        "body": [
+          "Regulamin możemy zmieniać. Data ostatniej zmiany jest na górze strony, a dalsze korzystanie z usługi po zmianie oznacza jej akceptację."
+        ]
+      },
+      {
+        "title": "Prawo właściwe",
+        "body": [
+          "Do regulaminu stosuje się prawo polskie. Nie pozbawia Cię to ochrony wynikającej z bezwzględnie obowiązujących przepisów kraju Twojego zamieszkania."
+        ]
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Pliki cookie",
+    "intro": "Ta strona nie prowadzi analityki ani reklamy. Używamy tylko tego, bez czego usługa nie zadziała, oraz jednego ciasteczka zapamiętującego język.",
+    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "sections": [
+      {
+        "title": "Czym są pliki cookie",
+        "body": [
+          "To niewielkie pliki zapisywane przez przeglądarkę. Pozwalają na przykład rozpoznać, że jesteś zalogowany, albo zapamiętać wybrany język."
+        ]
+      },
+      {
+        "title": "Dlaczego nie pytamy o zgodę",
+        "body": [
+          "Zgody wymagają ciasteczka, które nie są niezbędne — przede wszystkim śledzące i reklamowe. My takich nie stawiamy.",
+          "Analityki też to dotyczy: używamy Umami na własnym serwerze, które nie zapisuje ciasteczek ani niczego innego na Twoim urządzeniu, więc nie ma tu czego akceptować ani odrzucać.",
+          "Pokazywanie okna zgody, które niczego nie włącza ani nie wyłącza, byłoby wprowadzaniem w błąd. Zamiast tego informujemy i pokazujemy pełną listę poniżej.",
+          "Gdyby kiedykolwiek pojawiło się narzędzie stawiające ciasteczka, dostaniesz prawdziwy wybór, zanim cokolwiek zostanie zapisane."
+        ]
+      }
+    ],
+    "tableTitle": "Co dokładnie zapisujemy",
+    "colName": "Nazwa",
+    "colKind": "Rodzaj",
+    "colLife": "Czas życia",
+    "colWhy": "Po co",
+    "kind": {
+      "essential": "Niezbędne",
+      "functional": "Funkcjonalne",
+      "security": "Bezpieczeństwo"
+    },
+    "life": {
+      "session": "Do wylogowania",
+      "year": "Rok",
+      "cloudflare": "Ustalany przez Cloudflare"
+    },
+    "why": {
+      "better_auth_session_token": "Utrzymuje zalogowanie. Bez niego każde przejście na inną stronę wymagałoby ponownego logowania.",
+      "spectra_lang": "Zapamiętuje wybrany język, żeby nie wracał do domyślnego przy każdej wizycie.",
+      "cf_clearance": "Stawiane przez Cloudflare przy weryfikacji, że nie jesteś botem. Pojawia się tylko wtedy, gdy taka weryfikacja zostanie uruchomiona."
+    },
+    "storageTitle": "Pamięć przeglądarki",
+    "storage": {
+      "notice": "zapamiętuje, że pasek informacyjny o ciasteczkach został już zamknięty. Nie opuszcza Twojej przeglądarki."
+    },
+    "manageTitle": "Zarządzanie",
+    "manageBody": "Ciasteczka usuniesz w ustawieniach przeglądarki — możesz też zablokować je dla tej strony, ale wtedy nie zadziała logowanie. Poniższy przycisk czyści to, co możemy wyczyścić sami: zapamiętany język i zamknięcie paska informacyjnego.",
+    "clear": "Wyczyść moje ustawienia",
+    "cleared": "Wyczyszczone."
+  },
+  "footer": {
+    "tagline": "Launcher i narzędzia do Minecrafta",
+    "disclaimer": "Spectra nie jest oficjalnym produktem Minecrafta. Nie jest zatwierdzona ani powiązana z Mojang Studios ani Microsoftem."
+  },
+  "cookieNotice": {
+    "body": "Używamy tylko ciasteczek niezbędnych do działania strony i jednego zapamiętującego język. Żadnej analityki ani reklam.",
+    "more": "Szczegóły",
+    "ok": "Rozumiem"
+  },
+  "error": {
+    "home": "Strona główna",
+    "back": "Wróć",
+    "404": {
+      "title": "Nie ma takiej strony",
+      "body": "Adres nie pasuje do niczego, co tu stoi. Mogła zmienić nazwę, zniknąć albo nigdy jej nie było."
+    },
+    "403": {
+      "title": "Brak dostępu",
+      "body": "To konto nie ma uprawnień do tej strony. Jeśli to pomyłka, zaloguj się na właściwe konto."
+    },
+    "401": {
+      "title": "Najpierw zaloguj się",
+      "body": "Ta strona jest tylko dla zalogowanych. Zaloguj się i spróbuj jeszcze raz."
+    },
+    "500": {
+      "title": "Coś się posypało",
+      "body": "Błąd jest po naszej stronie, nie po twojej. Spróbuj za chwilę — jeśli wróci, daj znać."
+    },
+    "default": {
+      "title": "Coś poszło nie tak",
+      "body": "Nie udało się otworzyć tej strony. Spróbuj jeszcze raz albo wróć na stronę główną."
+    }
   }
 }

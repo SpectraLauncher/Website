@@ -1,4 +1,3 @@
-// Marks notifications read — the ids the client just displayed, or all of them.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

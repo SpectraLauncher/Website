@@ -1,4 +1,3 @@
-// CORS preflight for the telemetry ingest endpoint (desktop app → cross-origin).
 export default defineEventHandler((event) => {
   setHeader(event, 'access-control-allow-origin', '*')
   setHeader(event, 'access-control-allow-methods', 'POST, OPTIONS')

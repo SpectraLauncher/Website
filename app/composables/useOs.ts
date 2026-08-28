@@ -1,5 +1,3 @@
-// Detects the visitor's OS for the "Download for {os}" label.
-// Defaults to Windows for SSR, refined on the client after mount.
 export function useOs() {
   const os = useState<'Windows' | 'macOS' | 'Linux'>('os', () => 'Windows')
 

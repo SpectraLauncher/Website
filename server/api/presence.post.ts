@@ -1,8 +1,3 @@
-// The launcher's heartbeat and the player's own choice, in one place.
-//
-// `mode` is what they picked; `playing` is whether a game is running right now.
-// Sending nothing but the heartbeat is the common case — the launcher folds it
-// into the notification poll it already makes every 30 seconds.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

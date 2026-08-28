@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100%" height="100%" viewBox="0 0 320 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" shape-rendering="crispEdges">
+    <style>
+        .st1, .st2, .st3 { opacity: 0; }
+        .st1 { animation: titleIn 12s ease-in-out 0s infinite; }
+        .st2 { animation: show 12s ease-in-out -4s infinite; }
+        .st3 { animation: show 12s ease-in-out -8s infinite; }
+
+        .st1 {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes titleIn {
+            0%   { opacity: 0; scale: 0.86; }
+            4%   { opacity: 1; scale: 1; }
+            28%  { opacity: 1; scale: 1; }
+            32%  { opacity: 0; scale: 1.06; }
+            100% { opacity: 0; scale: 0.86; }
+        }
+
+        @keyframes show {
+            0%   { opacity: 0; }
+            4%   { opacity: 1; }
+            28%  { opacity: 1; }
+            32%  { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        .caret { animation: blink 1.1s steps(1) infinite; }
+
+        @keyframes blink {
+            0%, 49%   { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .st1, .st2, .st3, .caret { animation: none; }
+            .st1 { opacity: 1; }
+        }
+    </style>
+    <g id="screen">
+        <rect x="4" y="4" width="312" height="192" fill="#24365c"/>
+        <rect x="4" y="4" width="312" height="40" fill="#39527e"/>
+        <rect x="4" y="124" width="312" height="8" fill="#6ba043"/>
+        <rect x="4" y="132" width="312" height="12" fill="#4f7a33"/>
+        <rect x="4" y="144" width="312" height="52" fill="#6b4a2f"/>
+        <rect x="20" y="116" width="24" height="8" fill="#6ba043"/>
+        <rect x="72" y="116" width="24" height="8" fill="#6ba043"/>
+        <rect x="124" y="116" width="24" height="8" fill="#6ba043"/>
+        <rect x="176" y="116" width="24" height="8" fill="#6ba043"/>
+        <rect x="228" y="116" width="24" height="8" fill="#6ba043"/>
+        <rect x="280" y="116" width="24" height="8" fill="#6ba043"/>
+    </g>
+    <g id="frame">
+        <rect x="0" y="0" width="320" height="4" fill="#8b8b8b"/>
+        <rect x="0" y="0" width="4" height="200" fill="#8b8b8b"/>
+        <rect x="0" y="196" width="320" height="4" fill="#2f2f2f"/>
+        <rect x="316" y="0" width="4" height="200" fill="#2f2f2f"/>
+    </g>
+    <g id="crosshair" opacity="0.85">
+        <rect x="151" y="102" width="18" height="3" fill="#ffffff"/>
+        <rect x="158.5" y="94" width="3" height="18" fill="#ffffff"/>
+    </g>
+    <g id="hotbar">
+        <rect x="68" y="166" width="184" height="24" fill="#8b8b8b"/>
+        <rect x="70" y="168" width="180" height="20" fill="#1e1e1e"/>
+        <rect x="70" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="90" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="110" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="130" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="150" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="170" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="190" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="210" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="230" y="168" width="1" height="20" fill="#373737"/>
+        <rect x="108" y="166" width="24" height="24" fill="#ffffff" opacity="0.85"/>
+        <rect x="110" y="168" width="20" height="20" fill="#1e1e1e"/>
+    </g>
+    <g class="st1">
+        <rect x="92" y="53" width="58" height="14" fill="#3f3f3f"/>
+        <rect x="90" y="51" width="58" height="14" fill="#ffffff"/>
+        <rect x="156" y="53" width="40" height="14" fill="#3f3f3f"/>
+        <rect x="154" y="51" width="40" height="14" fill="#ffffff"/>
+        <rect x="202" y="53" width="30" height="14" fill="#3f3f3f"/>
+        <rect x="200" y="51" width="30" height="14" fill="#ffff55"/>
+    </g>
+    <g class="st2">
+        <rect x="92" y="53" width="58" height="14" fill="#3f3f3f"/>
+        <rect x="90" y="51" width="58" height="14" fill="#ffffff"/>
+        <rect x="156" y="53" width="40" height="14" fill="#3f3f3f"/>
+        <rect x="154" y="51" width="40" height="14" fill="#ffffff"/>
+        <rect x="202" y="53" width="30" height="14" fill="#3f3f3f"/>
+        <rect x="200" y="51" width="30" height="14" fill="#ffff55"/>
+        <rect x="102" y="82" width="34" height="8" fill="#3f3f3f"/>
+        <rect x="100" y="80" width="34" height="8" fill="#d8d8d8"/>
+        <rect x="142" y="82" width="46" height="8" fill="#3f3f3f"/>
+        <rect x="140" y="80" width="46" height="8" fill="#d8d8d8"/>
+        <rect x="194" y="82" width="28" height="8" fill="#3f3f3f"/>
+        <rect x="192" y="80" width="28" height="8" fill="#d8d8d8"/>
+    </g>
+    <g class="st3">
+        <rect x="12" y="140" width="176" height="16" fill="#000000" opacity="0.4"/>
+        <rect x="20" y="146" width="10" height="8" fill="#3f3f3f"/>
+        <rect x="18" y="144" width="10" height="8" fill="#55ffff"/>
+        <rect x="35" y="146" width="36" height="8" fill="#3f3f3f"/>
+        <rect x="33" y="144" width="36" height="8" fill="#55ffff"/>
+        <rect x="76" y="146" width="10" height="8" fill="#3f3f3f"/>
+        <rect x="74" y="144" width="10" height="8" fill="#ffffff"/>
+        <rect x="91" y="146" width="44" height="8" fill="#3f3f3f"/>
+        <rect x="89" y="144" width="44" height="8" fill="#ffffff"/>
+        <rect x="140" y="146" width="26" height="8" fill="#3f3f3f"/>
+        <rect x="138" y="144" width="26" height="8" fill="#55ff55"/>
+        <rect x="169" y="143" width="4" height="10" fill="#ffffff" class="caret"/>
+    </g>
+</svg>

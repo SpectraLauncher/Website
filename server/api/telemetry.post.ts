@@ -1,14 +1,3 @@
-// Ingest endpoint for the launcher's anonymous telemetry.
-//
-// Body shape (one batch per call):
-//   {
-//     install_id: string,           // random UUID generated once per install
-//     version?, os?, arch?, locale?, // coarse environment
-//     events: [{ event: string, props?: object }]
-//   }
-//
-// No IP is stored. An optional `x-spectra-key` header (SPECTRA_INGEST_KEY) just
-// filters out random internet noise — it is not a secret.
 
 interface IncomingEvent {
   event?: unknown
@@ -27,10 +16,8 @@ const MAX_EVENTS = 50
 const MAX_PROPS_BYTES = 2000
 
 export default defineEventHandler(async (event) => {
-  // The launcher is a Tauri desktop app, so requests are cross-origin.
   setHeader(event, 'access-control-allow-origin', '*')
 
-  // Soft anti-spam: if a key is configured, require it.
   const key = ingestKey()
   if (key) {
     if (getHeader(event, 'x-spectra-key') !== key) {
@@ -55,8 +42,6 @@ export default defineEventHandler(async (event) => {
   const now = Date.now()
   const day = dayKey(now)
 
-  // One statement for the whole batch: fewer round-trips than a row at a time,
-  // and the client is a game launcher on a home connection.
   const values: unknown[] = []
   const tuples: string[] = []
   for (const e of list.slice(0, MAX_EVENTS)) {
@@ -84,7 +69,6 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  // Trim old rows now and then rather than on a timer.
   if (Math.random() < 0.02) await pruneOld()
 
   return { ok: true, accepted: tuples.length }

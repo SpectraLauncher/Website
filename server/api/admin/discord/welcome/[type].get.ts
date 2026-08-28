@@ -1,10 +1,8 @@
-// The welcome (or farewell) message as it is stored. Sending it is the bot's
-// job — it happens on a gateway event, which this app has no connection for.
 
 const TYPES = new Set(['welcome', 'farewell'])
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const type = String(getRouterParam(event, 'type') ?? '')
@@ -23,8 +21,6 @@ export default defineEventHandler(async (event) => {
   )
 
   return {
-    // A guild that has never been configured gets the same shape as one that
-    // has, so the form has nothing to special-case.
     config: {
       enabled: row?.enabled ?? false,
       channelId: row?.channel_id ?? null,
@@ -32,7 +28,6 @@ export default defineEventHandler(async (event) => {
       content: row?.content ?? '',
       embed: row?.embed_json ?? {},
     },
-    // Substituted by the bot at send time, listed here so the editor can say so.
     variables: ['{username}', '{displayname}', '{mention}', '{servername}', '{membercount}', '{id}'],
   }
 })

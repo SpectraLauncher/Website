@@ -1,74 +1,42 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme {
-  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
 :root {
   color-scheme: dark;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background: #05080f;
-  color: #eaf1fb;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-::selection {
-  background: rgba(56, 189, 248, 0.35);
-  color: #fff;
-}
-
-/* Offset anchored sections so the sticky header doesn't cover their tops. */
-section[id] {
-  scroll-margin-top: 5rem;
-}
-
-/* Ambient design animations (ported from the Spectra Launcher design). */
-@keyframes spectrafloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-16px); }
-}
-@keyframes spectradrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(40px, -30px) scale(1.1); }
-  66% { transform: translate(-30px, 20px) scale(0.95); }
-}
-@keyframes spectragrid {
-  to { background-position: 0 -88px; }
-}
-@keyframes spectrapulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-/* When JS/GSAP is available, keep animated elements hidden until their
-   entrance tween runs (prevents a flash of un-animated content). */
-.gsap [data-reveal],
-.gsap [data-hero],
-.gsap [data-hero-art] {
+/* Pairs with app/plugins/gsap.ts: reveal targets start hidden only when JS is
+   available, so there is no flash of un-animated content — and no permanently
+   invisible content when JS is off. */
+.gsap [data-reveal] {
   opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gsap [data-reveal],
-  .gsap [data-hero],
-  .gsap [data-hero-art] {
+  .gsap [data-reveal] {
     opacity: 1;
   }
-  [style*="spectrafloat"],
-  [style*="spectradrift"],
-  [style*="spectragrid"],
-  [style*="spectrapulse"] {
-    animation: none !important;
-  }
+}
+
+/* Monocraft — font w stylu Minecrafta, self-hostowany, bo @nuxt/fonts ma
+   wyłączonego providera Google (patrz komentarz w nuxt.config.ts).
+   Fallback jest per-glif: znaki, których Monocraft nie ma (np. kapitaliki),
+   przeglądarka bierze z kolejnego fontu w stosie zamiast rysować kwadraty. */
+@font-face {
+  font-family: 'Monocraft';
+  src: url('/fonts/Monocraft.woff2') format('woff2'),
+       url('/fonts/Monocraft.ttf') format('truetype');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+.mc-font,
+.mc-preview,
+.mc-editor {
+  font-family: 'Monocraft', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  letter-spacing: 0.02em;
+  /* pobrany wariant ma ligatury programistyczne — w grze "->" to dwa znaki,
+     nie strzalka, wiec podglad musi je pokazywac osobno */
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
 }

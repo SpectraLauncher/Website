@@ -1,6 +1,3 @@
-// Throws one notification away for good.
-//
-// Marking it read only greys it out; this is the "I have dealt with it" button.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

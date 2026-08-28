@@ -1,10 +1,3 @@
-// Every table this app owns, created on boot next to better-auth's own
-// migration.
-//
-// Timestamps stay epoch-milliseconds `bigint` instead of `timestamptz`: they
-// cross the wire to a Rust launcher and a browser, both of which speak epoch
-// ms, and converting in three places invites the bug where one of them is off
-// by a timezone.
 
 import { usePool } from './db'
 
@@ -66,6 +59,47 @@ export async function ensureSchema() {
       PRIMARY KEY (code, user_id)
     );
     CREATE INDEX IF NOT EXISTS idx_share_recipient_user ON share_recipient(user_id);
+
+    -- Odznaki. Kolumna rule wybiera warunek z rejestru BADGE_RULES, a rule_value
+    -- niesie jego parametr — liczbe, date albo tekst (patrz server/utils/badges.ts).
+    CREATE TABLE IF NOT EXISTS badge (
+      slug        TEXT PRIMARY KEY,
+      name        TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      image       TEXT,
+      rule        TEXT NOT NULL DEFAULT 'manual',
+      rule_value  TEXT,
+      created     BIGINT NOT NULL
+    );
+
+    -- Para konto-odznaka jest kluczem, wiec ponowne przyznanie nie duplikuje
+    -- wiersza i nie trzeba nigdzie sprawdzac, czy ktos juz ja ma.
+    CREATE TABLE IF NOT EXISTS user_badge (
+      user_id TEXT   NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      slug    TEXT   NOT NULL REFERENCES badge(slug) ON DELETE CASCADE,
+      awarded BIGINT NOT NULL,
+      PRIMARY KEY (user_id, slug)
+    );
+    CREATE INDEX IF NOT EXISTS idx_user_badge_slug ON user_badge(slug);
+
+    -- Aktywnosc konta dzien po dniu, pod wykres na profilu publicznym.
+    --
+    -- Osobno od tabeli events, i to celowo: tamta jest anonimowa z zalozenia
+    -- (losowy identyfikator instalacji, zero powiazania z kontem) i ma taka
+    -- zostac. Tutaj wiemy, czyja jest aktywnosc, bo launcher wysyla ja z
+    -- zalogowana sesja — dwa rozne kontrakty, dwie rozne tabele.
+    --
+    -- Kolumna day to 'YYYY-MM-DD' w UTC, ten sam ksztalt co w events, zeby dalo
+    -- sie je kiedys zestawiac. Klucz na parze (konto, dzien) sprawia, ze dosylanie
+    -- tego samego dnia dodaje, a nie duplikuje wierszy.
+    CREATE TABLE IF NOT EXISTS user_activity (
+      user_id  TEXT    NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      day      TEXT    NOT NULL,
+      launches INTEGER NOT NULL DEFAULT 0,
+      seconds  INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (user_id, day)
+    );
+    CREATE INDEX IF NOT EXISTS idx_user_activity_day ON user_activity(user_id, day DESC);
 
     -- Anonymous telemetry. No PII: a random per-install id and coarse counts.
     CREATE TABLE IF NOT EXISTS events (
@@ -187,10 +221,6 @@ export async function ensureSchema() {
     );
   `)
 
-  // better-auth maps a `number` field to `integer`, and epoch milliseconds do
-  // not fit in four bytes — the heartbeat failed with "out of range". Widened
-  // here, and only when it has not been widened already, so boot does not
-  // rewrite the table every time.
   const narrow = await pool.query(`
     SELECT 1 FROM information_schema.columns
     WHERE table_name = 'user' AND column_name = 'lastSeen' AND data_type = 'integer'
@@ -199,53 +229,20 @@ export async function ensureSchema() {
     await pool.query('ALTER TABLE "user" ALTER COLUMN "lastSeen" TYPE BIGINT')
   }
 
-  // One Minecraft profile belongs to one account. better-auth creates the
-  // columns (see `additionalFields`); the uniqueness is ours to enforce, and it
-  // is what stops two people claiming the same name.
   await pool.query(`
     CREATE UNIQUE INDEX IF NOT EXISTS uniq_user_mc_uuid ON "user"("mcUuid")
     WHERE "mcUuid" IS NOT NULL
   `)
 
-  // Two notifications for the same person, of the same kind, in the same
-  // millisecond are the same notification — a double-fired insert, not two
-  // events. The index is what makes that unrepresentable.
   await pool.query(`
     CREATE UNIQUE INDEX IF NOT EXISTS uniq_notification_moment
       ON notification(user_id, kind, created)
   `)
 }
 
-/**
- * better-auth 1.7 stopped identifying an external account by `providerId` alone
- * and started using the pair (`issuer`, `accountId`). Its own migration cannot
- * add the column: `issuer` is NOT NULL with no default, and a populated
- * `account` table has nothing to backfill it with — so it refuses and boot fails
- * with "Cannot add required column issuer to populated table account".
- *
- * We add and backfill it ourselves, before `runMigrations()` runs, so by the
- * time better-auth inspects the table the column is already there and correct.
- *
- * The values are not ours to invent — they have to match exactly what 1.7
- * computes at sign-in, or the row will not be found and the user gets a second
- * account. Taken from the provider definitions in @better-auth/core:
- *
- *   credential            local:credential          (createLocalAccountIssuer)
- *   google                https://accounts.google.com
- *   microsoft             the `iss` claim of the account's own id_token
- *   any other OAuth       local:oauth:<providerId>  (createOAuthAccountIssuer)
- *
- * Microsoft also changed which claim identifies the account: 1.6 stored the
- * pairwise, app-specific `sub`, 1.7 stores the stable directory `oid`. Both
- * claims sit in the id_token we already have on the row, so the rewrite is
- * exact and nobody has to sign in again.
- */
 export async function ensureAccountIssuer() {
   const pool = usePool()
 
-  // A fresh database has no `account` table yet: better-auth is about to create
-  // it, with `issuer` already part of the definition. Nothing to migrate, and
-  // an ALTER here would throw before `runMigrations()` ever got to run.
   const table = await pool.query(`
     SELECT 1 FROM information_schema.tables WHERE table_name = 'account'
   `)
@@ -257,8 +254,6 @@ export async function ensureAccountIssuer() {
   `)
   if (column.rowCount) return
 
-  // Nullable first — the whole point is that NOT NULL cannot be added to rows
-  // that have no value yet.
   await pool.query('ALTER TABLE account ADD COLUMN issuer TEXT')
 
   const client = await pool.connect()
@@ -272,7 +267,6 @@ export async function ensureAccountIssuer() {
       WHERE "providerId" NOT IN ('credential', 'google', 'microsoft')
     `)
 
-    // Microsoft: issuer and accountId both come out of the stored id_token.
     const ms = await client.query<{ id: string, idToken: string | null }>(
       `SELECT id, "idToken" FROM account WHERE "providerId" = 'microsoft'`
     )
@@ -281,10 +275,6 @@ export async function ensureAccountIssuer() {
       const iss = typeof claims?.iss === 'string' ? claims.iss : null
       const oid = typeof claims?.oid === 'string' ? claims.oid : null
       if (!iss || !oid) {
-        // No id_token to read, so there is no honest value to write. Leaving it
-        // NULL trips the NOT NULL below on purpose: a wrong issuer is worse
-        // than a failed boot, because it silently splits one person into two
-        // accounts on their next sign-in.
         console.error(`[db] account ${row.id}: microsoft row has no usable id_token — cannot derive issuer/oid`)
         continue
       }
@@ -296,8 +286,6 @@ export async function ensureAccountIssuer() {
       throw new Error(`${blank.rows[0]!.n} account row(s) have no issuer — refusing to finish the migration`)
     }
 
-    // Collisions would make the unique index fail with a message that says
-    // nothing about which rows are at fault. Say it here instead.
     const dupes = await client.query<{ issuer: string, accountId: string, n: number }>(`
       SELECT issuer, "accountId", count(*)::int AS n FROM account
       GROUP BY issuer, "accountId" HAVING count(*) > 1
@@ -314,8 +302,6 @@ export async function ensureAccountIssuer() {
     console.info(`[db] backfilled account.issuer for better-auth 1.7 (${ms.rowCount} microsoft row(s) re-keyed to oid)`)
   } catch (e) {
     await client.query('ROLLBACK')
-    // The ADD COLUMN above is outside the transaction, so a half-migrated table
-    // would look "already done" on the next boot and skip the backfill. Undo it.
     await pool.query('ALTER TABLE account DROP COLUMN IF EXISTS issuer')
     throw e
   } finally {
@@ -323,7 +309,6 @@ export async function ensureAccountIssuer() {
   }
 }
 
-/** Payload of a JWT, without verifying it — these are our own stored tokens. */
 function decodeJwtClaims(token: string | null): Record<string, unknown> | null {
   const part = token?.split('.')[1]
   if (!part) return null

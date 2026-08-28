@@ -1,13 +1,4 @@
 <script setup lang="ts">
-// The Discord half of the admin panel.
-//
-// Everything here is a REST call to Discord or a row in our own tables. The bot
-// process (dc-bot repo) is never contacted: it holds the gateway connection and
-// reacts to things that happen *on* Discord, while this side only ever acts
-// because someone clicked. The two meet in the database and nowhere else.
-//
-// Split out of admin.vue because it is six screens' worth of state; the page
-// itself only decides which tab is showing.
 
 import type { EmbedDraft } from './DiscordEmbedBuilder.vue'
 import type { RowDraft } from './DiscordComponentsBuilder.vue'
@@ -19,12 +10,12 @@ type Pane = 'overview' | 'messages' | 'moderation' | 'welcome' | 'tickets' | 'co
 const pane = ref<Pane>('overview')
 
 const PANES = [
-  { id: 'overview', label: 'Overview', icon: 'i-lucide-gauge' },
-  { id: 'messages', label: 'Messages', icon: 'i-lucide-message-square' },
-  { id: 'moderation', label: 'Moderation', icon: 'i-lucide-gavel' },
-  { id: 'welcome', label: 'Welcome', icon: 'i-lucide-door-open' },
-  { id: 'tickets', label: 'Tickets', icon: 'i-lucide-ticket' },
-  { id: 'config', label: 'Config', icon: 'i-lucide-settings' },
+  { id: 'overview', label: 'Przegląd', icon: 'i-lucide-gauge' },
+  { id: 'messages', label: 'Wiadomości', icon: 'i-lucide-message-square' },
+  { id: 'moderation', label: 'Moderacja', icon: 'i-lucide-gavel' },
+  { id: 'welcome', label: 'Powitania', icon: 'i-lucide-door-open' },
+  { id: 'tickets', label: 'Zgłoszenia', icon: 'i-lucide-ticket' },
+  { id: 'config', label: 'Ustawienia', icon: 'i-lucide-settings' },
 ] as const
 
 const busy = ref('')
@@ -40,7 +31,6 @@ function fail(e: unknown, fallback: string) {
   return err?.data?.message || err?.statusMessage || fallback
 }
 
-/** Wraps a call so every button shares the same busy/error/notice handling. */
 async function run(key: string, fn: () => Promise<string | void>) {
   busy.value = key
   error.value = ''
@@ -49,13 +39,12 @@ async function run(key: string, fn: () => Promise<string | void>) {
     const message = await fn()
     if (message) notice.value = message
   } catch (e) {
-    error.value = fail(e, 'Discord refused that')
+    error.value = fail(e, 'Discord odrzucił tę operację')
   } finally {
     busy.value = ''
   }
 }
 
-// --- overview --------------------------------------------------------------
 interface Stats {
   configured: boolean
   guild?: {
@@ -80,7 +69,6 @@ async function loadStats() {
   })
 }
 
-// --- channels & roles (shared by several panes) ----------------------------
 interface Named { id: string, name: string }
 interface PostableChannel extends Named { category: string | null }
 
@@ -89,22 +77,27 @@ const textChannels = ref<Named[]>([])
 const categories = ref<Named[]>([])
 const roles = ref<{ id: string, name: string, color: number }[]>([])
 
+const NONE = 'none'
+
+const noneFirst = (label: string, items: Array<{ label: string, value: string }>) =>
+  [{ label, value: NONE }, ...items]
+
+const fromNone = (value: string | null | undefined) => (!value || value === NONE ? null : value)
+const toNone = (value: string | null | undefined) => value || NONE
+
 const channelItems = computed(() => channels.value.map(c => ({
   label: c.category ? `${c.category} / #${c.name}` : `#${c.name}`,
   value: c.id,
 })))
 const textChannelItems = computed(() =>
-  [{ label: '— none —', value: '' }, ...textChannels.value.map(c => ({ label: `#${c.name}`, value: c.id }))])
+  noneFirst('— brak —', textChannels.value.map(c => ({ label: `#${c.name}`, value: c.id }))))
 const categoryItems = computed(() =>
-  [{ label: '— none —', value: '' }, ...categories.value.map(c => ({ label: c.name, value: c.id }))])
+  noneFirst('— brak —', categories.value.map(c => ({ label: c.name, value: c.id }))))
 
 async function loadChannels() {
   channels.value = (await $fetch<{ channels: PostableChannel[] }>('/api/admin/discord/channels')).channels
 }
 
-// --- server emoji ----------------------------------------------------------
-// Loaded once and shared by every builder on the page: the list changes rarely
-// and the endpoint caches it anyway.
 const emojis = ref<GuildEmoji[]>([])
 
 async function loadEmojis() {
@@ -112,13 +105,10 @@ async function loadEmojis() {
   try {
     emojis.value = (await $fetch<{ emojis: GuildEmoji[] }>('/api/admin/discord/emojis')).emojis
   } catch (e) {
-    // A server with no custom emoji, or a bot that cannot read them, is not a
-    // reason to fail the pane — the picker just stays disabled.
     console.warn('[discord] emoji unavailable', e)
   }
 }
 
-// --- messages --------------------------------------------------------------
 interface DiscordMessage {
   id: string
   content: string
@@ -133,15 +123,11 @@ const draft = ref('')
 const allowMentions = ref(false)
 const editingId = ref<string | null>(null)
 
-// The builder's half of the composer. Embeds and rows are arrays because
-// Discord allows several of each on one message.
 const msgEmbeds = ref<EmbedDraft[]>([])
 const msgRows = ref<RowDraft[]>([])
-/** Which of the three the composer is showing — all three feed one message. */
 const composer = ref<'text' | 'embeds' | 'buttons'>('text')
 
 const MAX_EMBEDS = 10
-/** Discord counts this across every embed on the message, not per embed. */
 const EMBED_BUDGET = 6000
 const embedCharacters = computed(() => msgEmbeds.value.reduce((sum, e) =>
   sum + e.title.length + e.description.length + e.author.name.length + e.footer.text.length
@@ -162,7 +148,6 @@ async function loadMessages() {
 }
 watch(msgChannelId, loadMessages)
 
-/** Loads an existing message back into the composer, turning Send into Save. */
 function startEditMessage(m: DiscordMessage) {
   editingId.value = m.id
   draft.value = m.content
@@ -206,14 +191,12 @@ async function submitMessage() {
     await loadMessages()
 
     const sent = wasEdit ? 'Message updated.' : `Posted to #${msgChannelName.value}.`
-    // The message went out either way — this is the part worth knowing about.
     return res.unhandled?.length
       ? `${sent} Nothing handles ${res.unhandled.join(', ')} yet, so those buttons will fail when pressed.`
       : sent
   })
 }
 
-// --- moderation ------------------------------------------------------------
 interface Member {
   id: string
   username: string
@@ -289,7 +272,6 @@ async function deleteWarning(id: number) {
   })
 }
 
-// --- welcome ---------------------------------------------------------------
 interface WelcomeConfig {
   enabled: boolean
   channelId: string | null
@@ -308,18 +290,13 @@ async function loadWelcome() {
   await run('welcome', async () => {
     const res = await $fetch<{ config: WelcomeConfig, variables: string[] }>(
       `/api/admin/discord/welcome/${welcomeType.value}`)
-    Object.assign(welcome, res.config, { channelId: res.config.channelId ?? '' })
+    Object.assign(welcome, res.config, { channelId: toNone(res.config.channelId) })
     welcomeVars.value = res.variables
     welcomeEmbed.value = embedToDraft(res.config.embed)
   })
 }
 watch(welcomeType, loadWelcome)
 
-/**
- * The preview substitutes the variables with sample values, because an embed
- * reading "Welcome {mention} to {servername}" tells you nothing about whether
- * the line will fit or how it will wrap.
- */
 const SAMPLE_VARS: Record<string, string> = {
   username: 'patryk', displayname: 'Patryk', mention: '@Patryk',
   servername: 'Spectra', membercount: '412', id: '123456789012345678',
@@ -345,7 +322,7 @@ async function saveWelcome() {
       method: 'POST',
       body: {
         enabled: welcome.enabled,
-        channelId: welcome.channelId || null,
+        channelId: fromNone(welcome.channelId),
         messageType: welcome.messageType,
         content: welcome.content,
         embed: welcomeEmbed.value,
@@ -355,7 +332,6 @@ async function saveWelcome() {
   })
 }
 
-// --- tickets ---------------------------------------------------------------
 interface Ticket {
   id: number
   channelId: string
@@ -388,7 +364,6 @@ async function showTicket(id: number) {
   })
 }
 
-// --- config ----------------------------------------------------------------
 interface BotConfig {
   logChannel: string | null
   ticketCategory: string | null
@@ -409,7 +384,7 @@ const config = reactive<BotConfig>({
 
 const voiceChannels = ref<Named[]>([])
 const voiceChannelItems = computed(() =>
-  [{ label: '— off —', value: '' }, ...voiceChannels.value.map(c => ({ label: `🔊 ${c.name}`, value: c.id }))])
+  noneFirst('— wyłączone —', voiceChannels.value.map(c => ({ label: `🔊 ${c.name}`, value: c.id }))))
 const panelTitle = ref('Need a hand?')
 const panelDescription = ref('Press the button below and a private channel will open for you.')
 
@@ -424,16 +399,14 @@ async function loadConfig() {
     }>('/api/admin/discord/config')
     Object.assign(config, {
       ...res.config,
-      // Nulls become empty strings: a USelect bound to null shows no selection
-      // at all rather than the "none" option.
-      logChannel: res.config.logChannel ?? '',
-      ticketCategory: res.config.ticketCategory ?? '',
-      ticketArchiveCategory: res.config.ticketArchiveCategory ?? '',
-      ticketPanelChannel: res.config.ticketPanelChannel ?? '',
-      voiceHub: res.config.voiceHub ?? '',
-      voiceCategory: res.config.voiceCategory ?? '',
-      releaseChannel: res.config.releaseChannel ?? '',
-      releaseRole: res.config.releaseRole ?? '',
+      logChannel: toNone(res.config.logChannel),
+      ticketCategory: toNone(res.config.ticketCategory),
+      ticketArchiveCategory: toNone(res.config.ticketArchiveCategory),
+      ticketPanelChannel: toNone(res.config.ticketPanelChannel),
+      voiceHub: toNone(res.config.voiceHub),
+      voiceCategory: toNone(res.config.voiceCategory),
+      releaseChannel: toNone(res.config.releaseChannel),
+      releaseRole: toNone(res.config.releaseRole),
     })
     textChannels.value = res.textChannels
     voiceChannels.value = res.voiceChannels
@@ -442,10 +415,18 @@ async function loadConfig() {
   })
 }
 
+const NULLABLE = [
+  'logChannel', 'ticketCategory', 'ticketArchiveCategory', 'ticketPanelChannel',
+  'voiceHub', 'voiceCategory', 'releaseChannel', 'releaseRole',
+] as const
+
 async function saveConfig() {
   await run('save-config', async () => {
-    await $fetch('/api/admin/discord/config', { method: 'POST', body: { ...config } })
-    return 'Configuration saved.'
+    const body: Record<string, unknown> = { ...config }
+    for (const key of NULLABLE) body[key] = fromNone(body[key] as string)
+
+    await $fetch('/api/admin/discord/config', { method: 'POST', body })
+    return 'Konfiguracja zapisana.'
   })
 }
 
@@ -454,7 +435,7 @@ async function postTicketPanel() {
     await $fetch('/api/admin/discord/ticket-panel', {
       method: 'POST',
       body: {
-        channelId: config.ticketPanelChannel,
+        channelId: fromNone(config.ticketPanelChannel),
         title: panelTitle.value,
         description: panelDescription.value,
       },
@@ -463,9 +444,6 @@ async function postTicketPanel() {
   })
 }
 
-// --- loading ---------------------------------------------------------------
-// Each pane fetches the first time it is opened; the overview is what loads on
-// mount, because that is what the tab shows.
 const loaded = new Set<Pane>()
 watch(pane, async (to) => {
   if (loaded.has(to)) return
@@ -487,7 +465,7 @@ defineExpose({ reload: loadStats })
 const when = (ms: number) => new Date(ms).toLocaleString()
 const whenIso = (iso: string) => new Date(iso).toLocaleString()
 const roleItems = computed(() =>
-  [{ label: '— no ping —', value: '' }, ...roles.value.map(r => ({ label: `@${r.name}`, value: r.id }))])
+  noneFirst('— bez pinga —', roles.value.map(r => ({ label: `@${r.name}`, value: r.id }))))
 
 const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
 </script>
@@ -497,19 +475,17 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
     <p v-if="error" class="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300">{{ error }}</p>
     <p v-if="notice" class="rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{{ notice }}</p>
 
-    <!-- not configured -->
     <UCard v-if="stats && !stats.configured">
-      <template #header><h2 class="font-semibold">Discord is not configured</h2></template>
+      <template #header><h2 class="font-semibold">Discord nie jest skonfigurowany</h2></template>
       <p class="text-sm text-white/60">
         Set <code class="rounded bg-white/8 px-1.5 py-0.5 font-mono text-xs">DISCORD_BOT_TOKEN</code> and
         <code class="rounded bg-white/8 px-1.5 py-0.5 font-mono text-xs">DISCORD_GUILD_ID</code>
-        in the environment and restart. Sending, editing and moderation work with nothing else running.
-        Welcomes and tickets additionally need the bot process from the <b>dc-bot</b> repo.
+        w środowisku i zrestartuj. Wysyłanie, edycja i moderacja działają bez niczego więcej.
+        Powitania i zgłoszenia wymagają dodatkowo procesu bota z repozytorium <b>dc-bot</b>.
       </p>
     </UCard>
 
     <template v-else-if="stats?.guild">
-      <!-- sub-nav -->
       <div class="flex flex-wrap gap-1">
         <button
           v-for="p in PANES"
@@ -523,38 +499,35 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
         </button>
       </div>
 
-      <!-- overview -->
       <div v-if="pane === 'overview'" class="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <UCard v-for="card in [
-          { label: 'Members', value: stats.guild.memberCount },
+          { label: 'Członkowie', value: stats.guild.memberCount },
           { label: 'Online', value: stats.guild.onlineCount },
-          { label: 'Channels', value: stats.guild.channels },
-          { label: 'Open tickets', value: stats.openTickets ?? 0 },
-          { label: 'Warnings', value: stats.warnings ?? 0 },
+          { label: 'Kanały', value: stats.guild.channels },
+          { label: 'Otwarte zgłoszenia', value: stats.openTickets ?? 0 },
+          { label: 'Ostrzeżenia', value: stats.warnings ?? 0 },
         ]" :key="card.label" :ui="{ body: 'p-4' }">
           <div class="text-2xl font-bold">{{ card.value.toLocaleString() }}</div>
           <div class="mt-1 text-xs text-white/50">{{ card.label }}</div>
         </UCard>
       </div>
 
-      <!-- messages -->
       <div v-else-if="pane === 'messages'" class="space-y-4">
         <UCard>
           <template #header>
-            <h2 class="font-semibold">{{ editingId ? 'Edit message' : 'Send a message' }}</h2>
+            <h2 class="font-semibold">{{ editingId ? 'Edytuj wiadomość' : 'Wyślij wiadomość' }}</h2>
           </template>
           <div class="space-y-3">
-            <USelect v-model="msgChannelId" :items="channelItems" placeholder="Pick a channel…" class="w-full max-w-md" />
+            <USelect v-model="msgChannelId" :items="channelItems" placeholder="Wybierz kanał…" class="w-full max-w-md" />
 
             <div class="grid gap-4 lg:grid-cols-2">
-              <!-- editor -->
               <div class="space-y-3">
                 <div class="flex gap-1 rounded-lg bg-white/[0.03] p-1">
                   <button
                     v-for="mode in ([
-                      { id: 'text', label: 'Text', badge: draft.length ? String(draft.length) : '' },
-                      { id: 'embeds', label: 'Embeds', badge: msgEmbeds.length ? String(msgEmbeds.length) : '' },
-                      { id: 'buttons', label: 'Buttons', badge: msgRows.length ? String(msgRows.length) : '' },
+                      { id: 'text', label: 'Tekst', badge: draft.length ? String(draft.length) : '' },
+                      { id: 'embeds', label: 'Embedy', badge: msgEmbeds.length ? String(msgEmbeds.length) : '' },
+                      { id: 'buttons', label: 'Przyciski', badge: msgRows.length ? String(msgRows.length) : '' },
                     ] as const)"
                     :key="mode.id"
                     type="button"
@@ -568,7 +541,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 </div>
 
                 <template v-if="composer === 'text'">
-                  <UTextarea v-model="draft" :rows="8" :maxlength="2000" placeholder="What should the bot say? Markdown works." class="w-full" />
+                  <UTextarea v-model="draft" :rows="8" :maxlength="2000" placeholder="Co ma napisać bot? Markdown działa." class="w-full" />
                   <div class="flex items-center gap-2">
                     <DiscordEmojiPicker :emojis="emojis" />
                     <span class="ms-auto font-mono text-[11px] text-white/35">{{ draft.length }}/2000</span>
@@ -590,15 +563,11 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                   <div class="flex items-center gap-3">
                     <UButton
                       size="xs" color="neutral" variant="soft" icon="i-lucide-plus"
-                      :label="`Add embed (${msgEmbeds.length}/${MAX_EMBEDS})`"
+                      :label="`Dodaj embed (${msgEmbeds.length}/${MAX_EMBEDS})`"
                       :disabled="msgEmbeds.length >= MAX_EMBEDS"
                       @click="msgEmbeds.push(emptyEmbed())"
                     />
-                    <!-- Inserts wherever the caret is, so it works for the
-                         description, a field value, the footer — any of them. -->
                     <DiscordEmojiPicker :emojis="emojis" />
-                    <!-- The 6000 is a whole-message budget; running past it is
-                         the failure people hit last, after everything else fits. -->
                     <span
                       class="ms-auto font-mono text-[11px]"
                       :class="embedCharacters > EMBED_BUDGET ? 'text-red-300' : 'text-white/35'"
@@ -609,9 +578,8 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 <DiscordComponentsBuilder v-else v-model="msgRows" :emojis="emojis" />
               </div>
 
-              <!-- preview -->
               <div class="space-y-2">
-                <p class="text-[11px] uppercase tracking-wide text-white/35">Preview</p>
+                <p class="text-[11px] uppercase tracking-wide text-white/35">Podgląd</p>
                 <DiscordMessagePreview
                   :content="draft" :embeds="msgEmbeds" :components="msgRows"
                   :bot-name="stats?.bot?.username"
@@ -622,21 +590,19 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             <div class="flex flex-wrap items-center gap-3 border-t border-white/8 pt-3">
               <UButton
                 :icon="editingId ? 'i-lucide-save' : 'i-lucide-send'"
-                :label="editingId ? 'Save changes' : 'Send'"
+                :label="editingId ? 'Zapisz zmiany' : 'Wyślij'"
                 :disabled="composerEmpty || !msgChannelId || embedCharacters > EMBED_BUDGET"
                 :loading="busy === 'send'"
                 @click="submitMessage"
               />
-              <UButton v-if="editingId" color="neutral" variant="ghost" label="Cancel" @click="resetComposer" />
-              <!-- Editing never re-pings: Discord notifies on mentions added by
-                   an edit, which would surprise a whole channel at once. -->
-              <UCheckbox v-if="!editingId" v-model="allowMentions" label="Allow @everyone and role pings" />
+              <UButton v-if="editingId" color="neutral" variant="ghost" label="Anuluj" @click="resetComposer" />
+              <UCheckbox v-if="!editingId" v-model="allowMentions" label="Pozwól pingować @everyone i role" />
             </div>
           </div>
         </UCard>
 
         <UCard v-if="msgChannelId" :ui="{ body: 'p-0' }">
-          <template #header><h2 class="font-semibold">Bot messages in #{{ msgChannelName }}</h2></template>
+          <template #header><h2 class="font-semibold">Wiadomości bota na #{{ msgChannelName }}</h2></template>
           <p v-if="!messages.length" class="p-6 text-sm text-white/40">
             Nothing the bot posted in the last 50 messages here. Discord only allows editing its own.
           </p>
@@ -650,8 +616,6 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                   <span v-if="m.components.length"> · {{ m.components.length }} button row(s)</span>
                 </p>
               </div>
-              <!-- Loads the whole message back into the builder now, embeds and
-                   buttons included, so an embed-only message is editable too. -->
               <UButton
                 size="xs" color="neutral" variant="soft" icon="i-lucide-pencil"
                 @click="startEditMessage(m)"
@@ -661,11 +625,10 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
         </UCard>
       </div>
 
-      <!-- moderation -->
       <div v-else-if="pane === 'moderation'" class="space-y-4">
         <UCard>
-          <template #header><h2 class="font-semibold">Find a member</h2></template>
-          <UInput v-model="memberQuery" icon="i-lucide-search" placeholder="Username or nickname…" class="w-full max-w-md" />
+          <template #header><h2 class="font-semibold">Znajdź osobę</h2></template>
+          <UInput v-model="memberQuery" icon="i-lucide-search" placeholder="Nazwa użytkownika albo pseudonim…" class="w-full max-w-md" />
 
           <ul v-if="members.length" class="mt-3 divide-y divide-white/6 rounded-lg bg-white/[0.02]">
             <li
@@ -685,8 +648,6 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                   {{ m.displayName }}
                   <span class="text-white/35">@{{ m.username }}</span>
                 </div>
-                <!-- The whole point of joining `account`: a snowflake becomes a
-                     person you can recognise from the rest of the panel. -->
                 <div class="truncate text-[11px] text-white/40">
                   <span v-if="m.spectra">
                     Spectra: @{{ m.spectra.username }}
@@ -696,37 +657,37 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                   <span v-else>no linked Spectra account</span>
                 </div>
               </div>
-              <UIcon v-if="m.mutedUntil" name="i-lucide-volume-x" class="size-4 text-amber-300" title="Currently muted" />
+              <UIcon v-if="m.mutedUntil" name="i-lucide-volume-x" class="size-4 text-amber-300" title="Aktualnie wyciszony" />
             </li>
           </ul>
         </UCard>
 
         <UCard v-if="selected">
-          <template #header><h2 class="font-semibold">Act on {{ selected.displayName }}</h2></template>
+          <template #header><h2 class="font-semibold">Działanie na {{ selected.displayName }}</h2></template>
           <div class="space-y-3">
-            <UInput v-model="modReason" placeholder="Reason (shown in the audit log)" class="w-full" />
+            <UInput v-model="modReason" placeholder="Powód (trafia do dziennika audytu)" class="w-full" />
             <div class="flex flex-wrap items-end gap-3">
               <div>
-                <label class="mb-1 block text-[11px] text-white/40">Mute minutes</label>
+                <label class="mb-1 block text-[11px] text-white/40">Wyciszenie na ile minut</label>
                 <UInput v-model.number="muteMinutes" type="number" :min="1" :max="40320" class="w-28" />
               </div>
               <div>
-                <label class="mb-1 block text-[11px] text-white/40">Ban: purge days</label>
+                <label class="mb-1 block text-[11px] text-white/40">Ban: ile dni wiadomości usunąć</label>
                 <UInput v-model.number="purgeDays" type="number" :min="0" :max="7" class="w-28" />
               </div>
             </div>
             <div class="flex flex-wrap gap-2">
-              <UButton color="warning" variant="soft" icon="i-lucide-volume-x" label="Mute" :loading="busy === 'mute'" @click="moderate('mute')" />
-              <UButton color="success" variant="soft" icon="i-lucide-volume-2" label="Unmute" :loading="busy === 'unmute'" @click="moderate('unmute')" />
-              <UButton color="warning" icon="i-lucide-user-minus" label="Kick" :loading="busy === 'kick'" @click="moderate('kick')" />
-              <UButton color="error" icon="i-lucide-hammer" label="Ban" :loading="busy === 'ban'" @click="moderate('ban')" />
-              <UButton color="neutral" variant="soft" icon="i-lucide-undo-2" label="Unban" :loading="busy === 'unban'" @click="moderate('unban')" />
+              <UButton color="warning" variant="soft" icon="i-lucide-volume-x" label="Wycisz" :loading="busy === 'mute'" @click="moderate('mute')" />
+              <UButton color="success" variant="soft" icon="i-lucide-volume-2" label="Odcisz" :loading="busy === 'unmute'" @click="moderate('unmute')" />
+              <UButton color="warning" icon="i-lucide-user-minus" label="Wyrzuć" :loading="busy === 'kick'" @click="moderate('kick')" />
+              <UButton color="error" icon="i-lucide-hammer" label="Zbanuj" :loading="busy === 'ban'" @click="moderate('ban')" />
+              <UButton color="neutral" variant="soft" icon="i-lucide-undo-2" label="Odbanuj" :loading="busy === 'unban'" @click="moderate('unban')" />
             </div>
           </div>
         </UCard>
 
         <UCard :ui="{ body: 'p-0' }">
-          <template #header><h2 class="font-semibold">Warnings</h2></template>
+          <template #header><h2 class="font-semibold">Ostrzeżenia</h2></template>
           <p v-if="!warnings.length" class="p-6 text-sm text-white/40">
             None yet. These are written by the bot's <code class="font-mono">/warn</code> command and by bans issued here.
           </p>
@@ -748,31 +709,30 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
         </UCard>
       </div>
 
-      <!-- welcome -->
       <div v-else-if="pane === 'welcome'" class="space-y-4">
         <UCard>
           <template #header>
             <div class="flex items-center justify-between gap-3">
-              <h2 class="font-semibold">Automatic messages</h2>
+              <h2 class="font-semibold">Wiadomości automatyczne</h2>
               <USelect
                 v-model="welcomeType"
-                :items="[{ label: 'On join', value: 'welcome' }, { label: 'On leave', value: 'farewell' }]"
+                :items="[{ label: 'Przy wejściu', value: 'welcome' }, { label: 'Przy wyjściu', value: 'farewell' }]"
                 class="w-40"
               />
             </div>
           </template>
 
           <div class="space-y-3">
-            <UCheckbox v-model="welcome.enabled" label="Enabled" />
+            <UCheckbox v-model="welcome.enabled" label="Włączone" />
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Channel</label>
+              <label class="mb-1 block text-[11px] text-white/40">Kanał</label>
               <USelect v-model="welcome.channelId" :items="textChannelItems" class="w-full max-w-md" />
             </div>
             <div>
               <label class="mb-1 block text-[11px] text-white/40">Format</label>
               <USelect
                 v-model="welcome.messageType"
-                :items="[{ label: 'Plain text', value: 'text' }, { label: 'Embed', value: 'embed' }]"
+                :items="[{ label: 'Zwykły tekst', value: 'text' }, { label: 'Embed', value: 'embed' }]"
                 class="w-40"
               />
             </div>
@@ -782,7 +742,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 <UTextarea
                   v-if="welcome.messageType === 'text'"
                   v-model="welcome.content" :rows="6" :maxlength="2000" class="w-full"
-                  placeholder="Welcome {mention} to {servername}!"
+                  placeholder="Witaj {mention} na {servername}!"
                 />
                 <DiscordEmbedBuilder v-else v-model="welcomeEmbed" />
                 <DiscordEmojiPicker :emojis="emojis" />
@@ -790,7 +750,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
 
               <div class="space-y-2">
                 <p class="text-[11px] uppercase tracking-wide text-white/35">
-                  Preview — with sample values
+                  Podgląd — z przykładowymi wartościami
                 </p>
                 <DiscordMessagePreview
                   :content="welcome.messageType === 'text' ? fillVars(welcome.content) : ''"
@@ -802,44 +762,45 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             </div>
 
             <p class="text-[11px] text-white/40">
-              Substituted by the bot when it sends:
-              <button
-                v-for="v in welcomeVars" :key="v" type="button"
-                class="me-1 rounded bg-white/8 px-1 py-0.5 font-mono transition hover:bg-white/15 hover:text-white"
-                title="Append to the text"
-                @click="welcome.messageType === 'text'
-                  ? welcome.content += v
-                  : welcomeEmbed.description += v"
-              >{{ v }}</button>
+              <span>Bot podmienia je przy wysyłce:</span>
+              <span v-if="welcomeVars.length" class="ms-1 inline-flex flex-wrap gap-1">
+                <button
+                  v-for="v in welcomeVars" :key="v" type="button"
+                  class="rounded bg-white/8 px-1 py-0.5 font-mono transition hover:bg-white/15 hover:text-white"
+                  title="Dopisz do treści"
+                  @click="welcome.messageType === 'text'
+                    ? welcome.content += v
+                    : welcomeEmbed.description += v"
+                >{{ v }}</button>
+              </span>
             </p>
 
             <UButton
-              icon="i-lucide-save" label="Save"
+              icon="i-lucide-save" label="Zapisz"
               :loading="busy === 'save-welcome'"
               @click="saveWelcome"
             />
             <p class="text-[11px] text-white/35">
-              Saving only stores the message. Sending it happens on a gateway event, which is the bot's job —
-              nothing will be posted until dc-bot is running.
+              Zapis odkłada samą wiadomość. Wysyłką zajmuje się bot przy zdarzeniu z gatewaya, więc
+              nic się nie opublikuje, dopóki dc-bot nie działa.
             </p>
           </div>
         </UCard>
       </div>
 
-      <!-- tickets -->
       <div v-else-if="pane === 'tickets'" class="space-y-4">
         <div class="flex items-center gap-3">
           <USelect
             v-model="ticketFilter"
-            :items="[{ label: 'All', value: 'all' }, { label: 'Open', value: 'open' }, { label: 'Closed', value: 'closed' }]"
+            :items="[{ label: 'Wszystkie', value: 'all' }, { label: 'Otwarte', value: 'open' }, { label: 'Zamknięte', value: 'closed' }]"
             class="w-36"
           />
-          <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-refresh-cw" label="Reload" @click="loadTickets" />
+          <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-refresh-cw" label="Przeładuj" @click="loadTickets" />
         </div>
 
         <UCard :ui="{ body: 'p-0' }">
           <p v-if="!tickets.length" class="p-6 text-sm text-white/40">
-            No tickets. They appear here once the bot creates them.
+            Brak zgłoszeń. Pojawią się tutaj, gdy bot je utworzy.
           </p>
           <ul v-else class="divide-y divide-white/6">
             <li v-for="t in tickets" :key="t.id" class="flex items-center gap-3 p-3">
@@ -857,7 +818,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
               </div>
               <UButton
                 size="xs" color="neutral" variant="soft" icon="i-lucide-file-text"
-                :disabled="!t.hasTranscript" :title="t.hasTranscript ? 'Read the transcript' : 'No transcript — still open'"
+                :disabled="!t.hasTranscript" :title="t.hasTranscript ? 'Przeczytaj zapis' : 'Brak zapisu — wciąż otwarte'"
                 :loading="busy === `ticket-${t.id}`" @click="showTicket(t.id)"
               />
             </li>
@@ -867,61 +828,57 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
         <UCard v-if="openTicket?.transcript">
           <template #header>
             <div class="flex items-center justify-between gap-3">
-              <h2 class="font-semibold">Transcript · ticket #{{ openTicket.id }}</h2>
-              <UButton color="neutral" variant="ghost" size="xs" label="Close" @click="openTicket = null" />
+              <h2 class="font-semibold">Zapis · zgłoszenie #{{ openTicket.id }}</h2>
+              <UButton color="neutral" variant="ghost" size="xs" label="Zamknij" @click="openTicket = null" />
             </div>
           </template>
-          <!-- The transcript is Discord messages turned into markup, i.e. text
-               other people wrote. `sandbox` with nothing granted means it can
-               neither run scripts nor reach this origin. -->
           <iframe
             :srcdoc="openTicket.transcript"
             sandbox=""
             class="h-[32rem] w-full rounded-lg border border-white/10 bg-white"
-            title="Ticket transcript"
+            title="Zapis zgłoszenia"
           />
         </UCard>
       </div>
 
-      <!-- config -->
       <div v-else-if="pane === 'config'" class="space-y-4">
         <UCard>
-          <template #header><h2 class="font-semibold">Bot configuration</h2></template>
+          <template #header><h2 class="font-semibold">Konfiguracja bota</h2></template>
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Mod-log channel</label>
+              <label class="mb-1 block text-[11px] text-white/40">Kanał dziennika moderacji</label>
               <USelect v-model="config.logChannel" :items="textChannelItems" class="w-full" />
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Ticket category</label>
+              <label class="mb-1 block text-[11px] text-white/40">Kategoria zgłoszeń</label>
               <USelect v-model="config.ticketCategory" :items="categoryItems" class="w-full" />
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Ticket archive category</label>
+              <label class="mb-1 block text-[11px] text-white/40">Kategoria archiwum zgłoszeń</label>
               <USelect v-model="config.ticketArchiveCategory" :items="categoryItems" class="w-full" />
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Ticket channel prefix</label>
+              <label class="mb-1 block text-[11px] text-white/40">Przedrostek kanału zgłoszenia</label>
               <UInput v-model="config.ticketPrefix" class="w-full" placeholder="ticket-" />
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Launcher releases</label>
+              <label class="mb-1 block text-[11px] text-white/40">Wydania launchera</label>
               <USelect v-model="config.releaseChannel" :items="textChannelItems" class="w-full" />
               <p class="mt-1 text-[11px] text-white/30">
-                Where a new launcher version is announced. Off means nothing is posted.
+                Gdzie ogłaszana jest nowa wersja launchera. Wyłączone znaczy, że nic się nie publikuje.
               </p>
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Ping on a release</label>
+              <label class="mb-1 block text-[11px] text-white/40">Ping przy wydaniu</label>
               <USelect v-model="config.releaseRole" :items="roleItems" class="w-full" />
               <p class="mt-1 text-[11px] text-white/30">
-                Only this role is allowed to notify anyone in that message.
+                Tylko ta rola może kogokolwiek powiadomić w tej wiadomości.
               </p>
             </div>
           </div>
 
           <div class="mt-4">
-            <label class="mb-1.5 block text-[11px] text-white/40">Support roles — these see every ticket and get pinged</label>
+            <label class="mb-1.5 block text-[11px] text-white/40">Role wsparcia — widzą każde zgłoszenie i dostają ping</label>
             <div class="flex flex-wrap gap-1.5">
               <button
                 v-for="r in roles" :key="r.id" type="button"
@@ -936,11 +893,11 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             </div>
           </div>
 
-          <UButton class="mt-4" icon="i-lucide-save" label="Save configuration" :loading="busy === 'save-config'" @click="saveConfig" />
+          <UButton class="mt-4" icon="i-lucide-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
         </UCard>
 
         <UCard>
-          <template #header><h2 class="font-semibold">Temporary voice channels</h2></template>
+          <template #header><h2 class="font-semibold">Kanały głosowe na chwilę</h2></template>
           <p class="mb-3 text-sm text-white/50">
             Joining the hub gives someone a voice channel of their own and moves them into it.
             It disappears when the last person leaves. Nobody ever stays in the hub itself —
@@ -948,41 +905,41 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
           </p>
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Hub channel</label>
+              <label class="mb-1 block text-[11px] text-white/40">Kanał zbiorczy</label>
               <USelect v-model="config.voiceHub" :items="voiceChannelItems" class="w-full" />
             </div>
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Create them in</label>
+              <label class="mb-1 block text-[11px] text-white/40">Twórz je w</label>
               <USelect v-model="config.voiceCategory" :items="categoryItems" class="w-full" />
               <p class="mt-1 text-[11px] text-white/30">Leave empty to use the hub's own category.</p>
             </div>
           </div>
           <p class="mt-3 text-[11px] text-white/35">
-            Handled by the bot, so it needs dc-bot running with <b>Manage Channels</b> and
-            <b>Move Members</b>. Owners get <code class="rounded bg-white/8 px-1 font-mono">/vc rename</code>,
+            Handled by the bot, so it needs dc-bot running with <b>Zarządzanie kanałami</b> and
+            <b>Przenoszenie osób</b>. Owners get <code class="rounded bg-white/8 px-1 font-mono">/vc rename</code>,
             <code class="rounded bg-white/8 px-1 font-mono">limit</code>,
             <code class="rounded bg-white/8 px-1 font-mono">lock</code>,
             <code class="rounded bg-white/8 px-1 font-mono">unlock</code> and
             <code class="rounded bg-white/8 px-1 font-mono">kick</code> for their own channel.
           </p>
-          <UButton class="mt-4" icon="i-lucide-save" label="Save configuration" :loading="busy === 'save-config'" @click="saveConfig" />
+          <UButton class="mt-4" icon="i-lucide-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
         </UCard>
 
         <UCard>
-          <template #header><h2 class="font-semibold">Ticket panel</h2></template>
+          <template #header><h2 class="font-semibold">Panel zgłoszeń</h2></template>
           <p class="mb-3 text-sm text-white/50">
             Posts the message with the “open a ticket” button. Pressing it is handled by the bot,
             so the button does nothing until dc-bot is running.
           </p>
           <div class="space-y-3">
             <div>
-              <label class="mb-1 block text-[11px] text-white/40">Post into</label>
+              <label class="mb-1 block text-[11px] text-white/40">Publikuj na</label>
               <USelect v-model="config.ticketPanelChannel" :items="textChannelItems" class="w-full max-w-md" />
             </div>
-            <UInput v-model="panelTitle" class="w-full max-w-md" placeholder="Title" />
-            <UTextarea v-model="panelDescription" :rows="3" class="w-full" placeholder="Description" />
+            <UInput v-model="panelTitle" class="w-full max-w-md" placeholder="Tytuł" />
+            <UTextarea v-model="panelDescription" :rows="3" class="w-full" placeholder="Opis" />
             <UButton
-              icon="i-lucide-send" label="Post the panel"
+              icon="i-lucide-send" label="Opublikuj panel"
               :disabled="!config.ticketPanelChannel" :loading="busy === 'ticket-panel'"
               @click="postTicketPanel"
             />

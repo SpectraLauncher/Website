@@ -1,4 +1,3 @@
-// Unfriends, or withdraws a request we sent. Either side of the row may do it.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

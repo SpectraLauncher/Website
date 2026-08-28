@@ -1,19 +1,13 @@
-// Sends a friend request. `query` is a username or an e-mail address — the
-// e-mail is only ever used to look someone up, it is never echoed back.
 
-/** Deliberately small: a stuck request queue is a spam vector. */
 const MAX_PENDING_OUT = 25
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
   const { query, userId } = await readBody<{ query?: string, userId?: string }>(event) ?? {}
 
-  // Picked from the search list: no ambiguity about who this is meant for.
   const target = userId
     ? await getUser(String(userId))
     : await findUser(String(query ?? ''))
-  // Same answer whether or not the account exists — otherwise this endpoint
-  // turns into "is this e-mail registered with Spectra?".
   if (!target || target.id === me.id) {
     throw createError({ statusCode: 404, statusMessage: 'no such user' })
   }
@@ -26,7 +20,6 @@ export default defineEventHandler(async (event) => {
 
   if (existing) {
     if (existing.status === 'blocked') throw createError({ statusCode: 403, statusMessage: 'no such user' })
-    // They already asked us — treat a second request as accepting theirs.
     if (existing.status === 'pending' && existing.requester_id === target.id) {
       await exec('UPDATE friendship SET status = $1 WHERE id = $2', ['accepted', existing.id])
       await notify({ userId: target.id, kind: 'friend_accepted', actorId: me.id })

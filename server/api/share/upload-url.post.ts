@@ -1,12 +1,3 @@
-// Step 1 of sharing a pack: hand the launcher a URL it can PUT the zip to.
-//
-// The pack never passes through this server. Cloudflare rejects request bodies
-// over 100 MB, and buffering a gigabyte in Node would be wrong even if it
-// didn't — so the bytes go straight to R2 under a signature that is good for
-// one object and one deadline.
-//
-// Step 2 is `share/[code]/complete.post.ts`, which is what actually makes the
-// code resolve. An upload that never completes changes nothing.
 
 export default defineEventHandler(async (event) => {
   const cfg = useRuntimeConfig()
@@ -18,8 +9,6 @@ export default defineEventHandler(async (event) => {
   const r2 = useR2()
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'pack storage is not configured' })
 
-  // Gigabyte uploads are tied to an identity. Signed-out sharing still works
-  // through the older route, which stays capped at what the proxy allows.
   const owner = await optionalUser(event)
   if (!owner) throw createError({ statusCode: 401, statusMessage: 'sign in to share large packs' })
 
@@ -54,8 +43,6 @@ export default defineEventHandler(async (event) => {
     mods: Number(body.mods) || 0,
   }
 
-  // Re-sharing the same instance keeps its code, so everyone who installed it
-  // still has a working link. The revision is only bumped on completion.
   const existing = instanceId
     ? await one<{ code: string, revision: number, uploaded: boolean }>(
       'SELECT code, revision, uploaded FROM shares WHERE owner_id = $1 AND instance_id = $2',
@@ -68,7 +55,6 @@ export default defineEventHandler(async (event) => {
 
   if (existing) {
     code = existing.code
-    // A first upload that never completed keeps its revision number.
     revision = existing.uploaded ? existing.revision + 1 : existing.revision
     await exec(
       `UPDATE shares SET name = $1, mc_version = $2, loader = $3, mods = $4,

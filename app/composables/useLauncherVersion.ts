@@ -1,5 +1,3 @@
-// Shared launcher version/download info, fetched once from our cached
-// /api/version route (which reads the GitHub latest.json updater manifest).
 
 const RELEASES = 'https://github.com/MakotoPD/Spectra-Launcher/releases/latest'
 

@@ -1,11 +1,6 @@
-// Aggregated telemetry for the admin dashboard. Cookie-gated (see login.post.ts).
-// Everything is computed on the fly with plain SQL — small data, Postgres is fast.
 
 interface Bucket { label: string, value: number }
 
-// The grouping fragments, spelled out. They are column names and JSONB paths
-// rather than values, so they cannot be passed as $n — an allowlist is what
-// keeps them from ever becoming something a request chose.
 const GROUPABLE = new Set([
   'version', 'os', 'locale', 'arch',
   "props->>'loader'", "props->>'mc'", "props->>'name'",
@@ -16,7 +11,6 @@ function groupExpr(expr: string): string {
   return expr
 }
 
-/** Distinct installs grouped by a column/expression, top N. */
 function distinctInstallsBy(name: string, since: string, limit = 8) {
   const expr = groupExpr(name)
   // sql-safe: expr comes from GROUPABLE, never from the request
@@ -28,7 +22,6 @@ function distinctInstallsBy(name: string, since: string, limit = 8) {
   )
 }
 
-/** Event count grouped by a props expression, top N. */
 function countBy(eventName: string, name: string, since: string, limit = 8) {
   const expr = groupExpr(name)
   // sql-safe: expr comes from GROUPABLE, never from the request
@@ -41,7 +34,7 @@ function countBy(eventName: string, name: string, since: string, limit = 8) {
 }
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   try {
     return await buildStats()
   } catch (e) {
@@ -68,7 +61,6 @@ async function buildStats() {
     crashes30: await count("SELECT COUNT(*)::int AS n FROM events WHERE event = 'crash' AND day >= $1", [d30]),
   }
 
-  // Daily active installs over the last 30 days (fill gaps with 0).
   const rawActive = await q<Bucket>(
     `SELECT day AS label, COUNT(DISTINCT install_id)::int AS value
      FROM events WHERE day >= $1 GROUP BY day ORDER BY day`,
@@ -95,17 +87,12 @@ async function buildStats() {
   }
 }
 
-/**
- * Instance sharing (server/utils/share.ts). A failure here must not take the
- * telemetry dashboard down with it.
- */
 async function buildShareStats(now: number) {
   try {
     const ms = (days: number) => now - days * 86_400_000
     const count = async (sql: string, params: unknown[] = []) =>
       Number((await one<{ n: number | null }>(sql, params))?.n ?? 0)
 
-    // Created per day for the last 30 days (gaps filled with 0).
     const raw = await q<Bucket>(
       `SELECT to_char(to_timestamp(created / 1000) AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS label,
               COUNT(*)::int AS value
@@ -129,7 +116,6 @@ async function buildShareStats(now: number) {
         created30: await count('SELECT COUNT(*)::int AS n FROM shares WHERE created >= $1', [ms(29)]),
         active: await count('SELECT COUNT(*)::int AS n FROM shares WHERE expires > $1', [now]),
         downloads30: await count('SELECT COALESCE(SUM(downloads), 0)::int AS n FROM shares WHERE created >= $1', [ms(29)]),
-        // What the bucket is actually holding right now.
         storedBytes: await count('SELECT COALESCE(SUM(size), 0)::bigint AS n FROM shares WHERE object_key IS NOT NULL'),
       },
       series,

@@ -1,13 +1,3 @@
-// Ban, kick, mute, unmute and unban — all of them from the panel, all of them
-// plain REST calls, none of them needing the bot process to be running.
-//
-// One endpoint rather than five files: the five differ by a verb and a URL and
-// share every line of validation, logging and mod-log posting around them.
-//
-// Whatever happens here is also written to `discord_warnings`-adjacent history
-// by way of the mod-log channel, the same one the bot's slash commands post to,
-// so a moderator reading the log cannot tell — and does not need to care —
-// whether an action came from Discord or from this panel.
 
 import { exec, one } from '../../../utils/db'
 
@@ -21,11 +11,10 @@ const ACTION_COLOURS: Record<Action, number> = {
   unban: 0x57f287,
 }
 
-// Discord's own ceiling for a timeout.
 const MAX_MUTE_MINUTES = 40320
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const body = await readBody<{
@@ -46,7 +35,6 @@ export default defineEventHandler(async (event) => {
   const guild = `/guilds/${cfg.guildId}`
   switch (action) {
     case 'ban': {
-      // Discord takes the purge window in seconds and only accepts 0–7 days.
       const seconds = Math.min(Math.max(Number(body.deleteMessageSeconds) || 0, 0), 604800)
       await discordRequest(cfg, 'PUT', `${guild}/bans/${userId}`, {
         delete_message_seconds: seconds,
@@ -83,11 +71,6 @@ export default defineEventHandler(async (event) => {
   return { ok: true }
 })
 
-/**
- * Mirrors the action into the configured log channel, in the same shape the
- * bot's own commands use. Failure is swallowed: a missing or misconfigured log
- * channel must not undo a ban that already happened.
- */
 async function postModLog(
   cfg: DiscordConfig,
   { action, userId, reason, minutes }: { action: Action, userId: string, reason: string, minutes?: number },
@@ -111,8 +94,6 @@ async function postModLog(
     allowed_mentions: { parse: [] },
   }).catch(e => console.error('[discord] mod log', e))
 
-  // A ban is the one action worth keeping our own record of, so the warnings
-  // view can show it beside the warnings that led there.
   if (action === 'ban') {
     await exec(
       `INSERT INTO discord_warnings (guild_id, user_id, moderator_id, reason, created)

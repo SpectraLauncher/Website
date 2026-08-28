@@ -1,9 +1,4 @@
 <script setup lang="ts">
-// Cloudflare Turnstile, rendered explicitly so the token can be handed to
-// better-auth as the `x-captcha-response` header.
-//
-// A token is single-use: after every submit — successful or not — the parent
-// must call `reset()`, otherwise the second attempt fails verification.
 
 const props = defineProps<{ siteKey: string }>()
 const emit = defineEmits<{ (e: 'token', value: string): void }>()
@@ -32,8 +27,6 @@ onMounted(async () => {
   try {
     await loadScript()
   } catch {
-    // Blocked by an extension or offline: leave the box empty. Sign-in will
-    // fail closed on the server, which is the safe direction.
     return
   }
   if (!el.value || !window.turnstile) return

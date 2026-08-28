@@ -1,14 +1,8 @@
-// Posts the "open a ticket" message — the one with the button members press.
-//
-// Sending it is a REST call, so it happens here. Reacting to the button is a
-// gateway event, so that happens in the bot: it listens for the custom id
-// `open_ticket` and takes it from there. The two halves only agree on that
-// string, which is why it is spelled out in both places rather than derived.
 
 const OPEN_TICKET_ID = 'open_ticket'
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const body = await readBody<{ channelId?: string, title?: string, description?: string, label?: string }>(event) ?? {}
@@ -22,8 +16,6 @@ export default defineEventHandler(async (event) => {
 
   const config = await one<{ ticket_category: string | null }>(
     'SELECT ticket_category FROM discord_config WHERE guild_id = $1', [cfg.guildId])
-  // The button would open nothing without somewhere to put the channel, and a
-  // dead button in a public channel is worse than no button.
   if (!config?.ticket_category) {
     throw createError({
       statusCode: 400,

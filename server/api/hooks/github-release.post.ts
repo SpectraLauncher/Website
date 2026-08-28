@@ -1,28 +1,10 @@
-// Announces a launcher release on Discord, from GitHub's `release` webhook.
-//
-// The trigger is deliberately the webhook and not a step in the launcher's build
-// workflow: that workflow creates a *draft* release, so at build time there is
-// nothing anyone can download yet. `action: published` is the moment the draft
-// is made public, which is the moment worth announcing.
-//
-// Sending lives here rather than in the bot for the reason the bot's README
-// gives: a message the panel could have sent is a plain HTTPS request, and the
-// gateway connection is only needed for things that happen *on* Discord.
 
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
-/** Embed descriptions cap at 4096; the rest is room for the "read the rest" line. */
 const MAX_NOTES = 3800
 
-/** The green off the launcher's Play button. */
 const SPECTRA_GREEN = 0x3fb877
 
-/**
- * The generated release body leads with a markdown table of download links, and
- * Discord renders no tables — it would arrive as a wall of pipes and dashes. The
- * changelog below that heading is the half worth reading here; the links live one
- * click away, on the release the embed title points at.
- */
 function changelogOnly(body: string): string {
   const at = body.indexOf("What's Changed")
   if (at === -1) return body.trim()
@@ -50,12 +32,6 @@ interface ReleasePayload {
   }
 }
 
-/**
- * Download buttons, built from the files GitHub says are actually on the
- * release rather than from a guess at their names — the workflow renames
- * assets (spaces become dots) and a button pointing at a 404 is worse than no
- * button. One row, and Discord allows five buttons in it.
- */
 const PLATFORMS: { label: string, emoji: string, match: (name: string) => boolean }[] = [
   { label: 'Windows', emoji: '🪟', match: n => n.endsWith('-setup.exe') },
   { label: 'macOS (M1+)', emoji: '🍎', match: n => n.endsWith('aarch64.dmg') },
@@ -72,7 +48,6 @@ function downloadButtons(assets: ReleaseAsset[], releaseUrl: string) {
       : []
   }).slice(0, 5)
 
-  // Nothing recognised (a hand-made release, say): one button to the page.
   if (!buttons.length && releaseUrl) {
     return [{ type: 1, components: [{ type: 2, style: 5, label: 'Downloads', url: releaseUrl }] }]
   }
@@ -85,23 +60,17 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 501, statusMessage: 'GITHUB_WEBHOOK_SECRET is not set' })
   }
 
-  // The signature covers the bytes GitHub sent, so the raw body has to be
-  // hashed before anything parses or re-serialises it.
   const raw = await readRawBody(event, 'utf8')
   if (!raw) throw createError({ statusCode: 400, statusMessage: 'empty body' })
 
   const sent = Buffer.from(getHeader(event, 'x-hub-signature-256') ?? '')
   const expected = Buffer.from(`sha256=${createHmac('sha256', secret).update(raw).digest('hex')}`)
-  // timingSafeEqual throws on a length mismatch, so that is checked first — and
-  // a wrong length is a wrong signature anyway.
   if (sent.length !== expected.length || !timingSafeEqual(sent, expected)) {
     throw createError({ statusCode: 401, statusMessage: 'bad signature' })
   }
 
   const payload = JSON.parse(raw) as ReleasePayload
   const release = payload.release
-  // Everything below is "nothing to do", not a failure: answering 4xx would make
-  // GitHub mark the delivery failed and retry something that will never change.
   if (payload.action !== 'published') return { ok: true, skipped: `action ${payload.action}` }
   if (!release?.id || release.draft || release.prerelease) {
     return { ok: true, skipped: 'draft or prerelease' }
@@ -118,8 +87,6 @@ export default defineEventHandler(async (event) => {
 
   const tag = String(release.tag_name ?? '')
 
-  // Claiming the id before posting is what makes a redelivery quiet. If the send
-  // then fails the claim is released, so the retry GitHub sends can still work.
   const claimed = await exec(
     `INSERT INTO discord_releases (release_id, tag, posted) VALUES ($1, $2, $3)
      ON CONFLICT (release_id) DO NOTHING`,
@@ -149,9 +116,6 @@ export default defineEventHandler(async (event) => {
         }],
         components: downloadButtons(release.assets ?? [], url),
         ...(role ? { content: `<@&${role}>` } : {}),
-        // Only the chosen role is allowed to notify anyone. Release notes are
-        // free to contain an @ that means something elsewhere, and an embed is
-        // not a place to discover that it pinged the server.
         allowed_mentions: role ? { roles: [role] } : { parse: [] },
       })
     return { ok: true, messageId: sentMessage.id }

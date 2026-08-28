@@ -1,8 +1,6 @@
-// Removes one warning. Scoped to the configured guild so an id from somewhere
-// else cannot be used to reach across into another server's history.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const id = Number(getRouterParam(event, 'id'))

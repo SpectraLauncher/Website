@@ -1,27 +1,14 @@
 <script setup lang="ts">
-// The server's own emoji, in a grid.
-//
-// Two ways out, because the two places an emoji goes are different things:
-//
-//   · in text it is markup — `<:name:id>`, which Discord renders on send. That
-//     is inserted straight into whichever field the caret is in.
-//   · on a button it is a structured field — `{ id, name, animated }`. Pasting
-//     the markup into a button label puts the literal text `<:name:id>` on it.
-//
-// So the picker emits the whole emoji and lets the caller decide, rather than
-// handing back a string that is only right in one of the two places.
 
 export interface GuildEmoji {
   id: string
   name: string
   animated: boolean
-  /** What to type in message text for this emoji to render. */
   markup: string
 }
 
 const props = defineProps<{
   emojis: GuildEmoji[]
-  /** 'text' inserts markup at the caret; 'button' just emits the emoji. */
   mode?: 'text' | 'button'
 }>()
 
@@ -36,24 +23,18 @@ const filtered = computed(() => {
   return props.emojis.filter(e => e.name.toLowerCase().includes(query))
 })
 
-/** Discord serves every emoji from here; .gif only renders for animated ones. */
 const url = (emoji: GuildEmoji) =>
   `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'png'}?size=44`
 
 function choose(emoji: GuildEmoji) {
   if (props.mode !== 'button') insertAtCaret(emoji.markup)
   emit('select', emoji)
-  // Left open on purpose: putting three emoji in a row is the common case, and
-  // reopening the picker between each is the sort of thing that makes a tool
-  // annoying to use.
   search.value = ''
 }
 </script>
 
 <template>
   <div class="relative">
-    <!-- mousedown.prevent keeps the caret in the field being typed into, which
-         is what makes inserting at the cursor possible at all. -->
     <UButton
       size="xs" color="neutral" variant="soft" icon="i-lucide-smile"
       :title="emojis.length ? 'Server emoji' : 'This server has no custom emoji'"

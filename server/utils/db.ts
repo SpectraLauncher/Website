@@ -1,5 +1,3 @@
-// One Postgres pool for the whole server: accounts, friends, notifications,
-// share codes and telemetry all live in the same database.
 
 import pg from 'pg'
 
@@ -7,8 +5,6 @@ let pool: pg.Pool | null = null
 
 export function usePool(): pg.Pool {
   if (pool) return pool
-  // Parked on globalThis as well: dev reloads this module on every edit, and a
-  // fresh pool per reload would leak connections until the server refused more.
   const cache = globalThis as typeof globalThis & { __spectraPool?: pg.Pool }
   if (cache.__spectraPool) {
     pool = cache.__spectraPool
@@ -26,7 +22,6 @@ export function usePool(): pg.Pool {
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
   })
-  // A pool error (server restart, network blip) must not take the process down.
   created.on('error', e => console.error('[db] idle client error', e))
 
   pool = created
@@ -34,19 +29,16 @@ export function usePool(): pg.Pool {
   return pool
 }
 
-/** Rows for a query. Params are `$1, $2, …` — never string-interpolated. */
 export async function q<T = any>(sql: string, params: unknown[] = []): Promise<T[]> {
   const res = await usePool().query(sql, params)
   return res.rows as T[]
 }
 
-/** The first row, or undefined. */
 export async function one<T = any>(sql: string, params: unknown[] = []): Promise<T | undefined> {
   const rows = await q<T>(sql, params)
   return rows[0]
 }
 
-/** How many rows a write touched. */
 export async function exec(sql: string, params: unknown[] = []): Promise<number> {
   const res = await usePool().query(sql, params)
   return res.rowCount ?? 0

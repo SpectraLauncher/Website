@@ -1,8 +1,6 @@
-// Saves the bot's guild configuration. The bot re-reads this on every event, so
-// a change here takes effect on the next join or button click — no restart.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const body = await readBody<{
@@ -18,16 +16,12 @@ export default defineEventHandler(async (event) => {
     releaseRole?: string | null
   }>(event) ?? {}
 
-  // Every channel/category field is optional and clearable, so "not a
-  // snowflake" and "explicitly empty" have to stay distinguishable.
   const id = (value: unknown, field: string) => {
     if (value === null || value === undefined || value === '') return null
     return requireSnowflake(value, field)
   }
 
   const prefix = String(body.ticketPrefix ?? 'ticket-')
-    // Discord lowercases channel names and drops anything outside this set, so
-    // a prefix containing more than this would silently not be the prefix.
     .toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 16) || 'ticket-'
 
   await exec(
@@ -62,8 +56,6 @@ export default defineEventHandler(async (event) => {
 
   if (Array.isArray(body.ticketRoles)) {
     const roles = body.ticketRoles.filter(isSnowflake)
-    // Replace wholesale: the form always submits the complete set, and working
-    // out a diff would only be a way to get it wrong.
     await exec('DELETE FROM discord_ticket_roles WHERE guild_id = $1', [cfg.guildId])
     if (roles.length) {
       await exec(

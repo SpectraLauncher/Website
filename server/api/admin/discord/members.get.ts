@@ -1,13 +1,6 @@
-// Member lookup for the moderation forms.
-//
-// Discord's own search endpoint does the matching, so the panel never has to
-// hold a copy of the member list. Each hit is then checked against `account` —
-// a member who has signed into Spectra with Discord shows up with their
-// username and Minecraft name attached, which is the difference between
-// moderating a snowflake and moderating a person you can recognise.
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
   const cfg = requireDiscord()
 
   const query = String(getQuery(event).q ?? '').trim()
@@ -33,7 +26,6 @@ export default defineEventHandler(async (event) => {
         avatar: m.user.avatar,
         bot: !!m.user.bot,
         joinedAt: m.joined_at,
-        // Discord models a mute as "cannot talk until"; a past date is not one.
         mutedUntil: m.communication_disabled_until
           && new Date(m.communication_disabled_until) > new Date()
           ? m.communication_disabled_until

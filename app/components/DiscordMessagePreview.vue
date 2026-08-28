@@ -1,13 +1,4 @@
 <script setup lang="ts">
-// What the message will look like in Discord.
-//
-// Worth the effort because an embed is not laid out the way its editor is: the
-// thumbnail sits beside the text rather than under it, inline fields pack three
-// to a row, and the colour bar is on the left. Reading those from a form is
-// guesswork; the point of a preview is to stop guessing.
-//
-// The markdown here is Discord's subset, not CommonMark — no headings, no
-// images, and `__underline__` rather than italic.
 
 import type { EmbedDraft } from './DiscordEmbedBuilder.vue'
 import type { RowDraft } from './DiscordComponentsBuilder.vue'
@@ -27,13 +18,6 @@ const BUTTON_CSS: Record<number, string> = {
   5: 'bg-[#4e5058] text-white',
 }
 
-/**
- * Discord's markdown, rendered.
- *
- * Escaped first, then formatted: the input is text an admin typed, and it ends
- * up as innerHTML. Doing it the other way round would make `<img onerror=…>` in
- * a description into markup that runs.
- */
 function renderMarkdown(text: string): string {
   if (!text) return ''
   return text
@@ -43,22 +27,17 @@ function renderMarkdown(text: string): string {
     .replace(/\*\*\*(.+?)\*\*\*/gs, '<strong><em>$1</em></strong>')
     .replace(/\*\*(.+?)\*\*/gs, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/gs, '<em>$1</em>')
-    // Underline in Discord, not italic — the one place it parts with CommonMark.
     .replace(/__(.+?)__/gs, '<u>$1</u>')
     .replace(/~~(.+?)~~/gs, '<del>$1</del>')
     .replace(/`([^`]+)`/g, '<code class="rounded bg-black/40 px-1 font-mono text-[0.85em]">$1</code>')
     .replace(/^&gt; (.+)$/gm, '<span class="block border-l-2 border-white/25 pl-2 text-white/60">$1</span>')
     .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<span class="text-[#00a8fc]">$1</span>')
-    // Custom emoji, matched in their escaped form because `<` became `&lt;`
-    // above. Both captures are constrained to word characters and digits by the
-    // pattern itself, so neither can carry anything out into the attribute.
     .replace(/&lt;(a?):(\w+):(\d+)&gt;/g, (_, animated, name, id) =>
       `<img src="https://cdn.discordapp.com/emojis/${id}.${animated ? 'gif' : 'png'}?size=44"`
       + ` alt=":${name}:" title=":${name}:" class="inline-block size-[1.375em] align-[-0.3em]">`)
     .replace(/\n/g, '<br>')
 }
 
-/** Discord serves every custom emoji from here. */
 const emojiUrl = (id: string, animated?: boolean) =>
   `https://cdn.discordapp.com/emojis/${id}.${animated ? 'gif' : 'png'}?size=44`
 
@@ -74,10 +53,6 @@ const isEmpty = computed(() =>
 
 const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
-/**
- * Inline fields sit three to a row; a non-inline one always spans the width.
- * Modelled with a 3-column grid, which is what Discord's own layout amounts to.
- */
 const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
 </script>
 
@@ -100,7 +75,6 @@ const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
         <!-- eslint-disable-next-line vue/no-v-html -- escaped in renderMarkdown -->
         <div v-if="content.trim()" class="mt-0.5 break-words" v-html="renderMarkdown(content)" />
 
-        <!-- embeds -->
         <div
           v-for="(embed, i) in visibleEmbeds" :key="i"
           class="mt-2 max-w-[520px] overflow-hidden rounded border-l-4 bg-[#2b2d31]"
@@ -135,7 +109,6 @@ const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
               </div>
             </div>
 
-            <!-- Beside the text, not below it — the layout an editor cannot show. -->
             <img
               v-if="embed.thumbnail.url" :src="embed.thumbnail.url" alt=""
               class="size-20 shrink-0 rounded object-cover"
@@ -152,7 +125,6 @@ const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
           </div>
         </div>
 
-        <!-- buttons and dropdowns -->
         <div v-for="(row, ri) in visibleRows" :key="`row-${ri}`" class="mt-2 flex flex-wrap gap-2">
           <template v-for="(component, ci) in row.components" :key="ci">
             <button
@@ -161,8 +133,6 @@ const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
               class="flex items-center gap-1.5 rounded px-4 py-1.5 text-[14px] font-medium"
               :class="BUTTON_CSS[component.style ?? 2]"
             >
-              <!-- A button's emoji is a field, not markup in the label — a
-                   custom one carries an id, a unicode one is just the character. -->
               <img
                 v-if="component.emoji?.id"
                 :src="emojiUrl(component.emoji.id, component.emoji.animated)"

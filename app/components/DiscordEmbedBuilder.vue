@@ -1,13 +1,4 @@
 <script setup lang="ts">
-// One embed, edited field by field.
-//
-// The shape is Discord's own, not a friendlier one of our own invention: what
-// this produces is what goes on the wire. `image` and `thumbnail` are `{ url }`
-// objects because the API says so, and flattening them here would only mean
-// unflattening them somewhere less visible.
-//
-// Every counter is the real limit from the API reference. They exist so the
-// message is not written, sent, and only then refused.
 
 export interface EmbedField { name: string, value: string, inline: boolean }
 
@@ -36,10 +27,8 @@ const LIMITS = {
   fields: 25,
 }
 
-/** Only the title section starts open — the rest are usually left alone. */
 const open = reactive({ author: false, body: true, images: false, fields: false, footer: false })
 
-/** A short preview of what a collapsed section holds, so it need not be opened. */
 const summary = (text: string, max = 24) =>
   !text ? '' : text.length > max ? `${text.slice(0, max)}…` : text
 
@@ -48,7 +37,6 @@ function addField() {
   embed.value.fields.push({ name: '', value: '', inline: false })
 }
 
-/** Discord counts these six toward the 6000-per-message budget, nothing else. */
 const usedCharacters = computed(() =>
   embed.value.title.length
   + embed.value.description.length
@@ -58,13 +46,11 @@ const usedCharacters = computed(() =>
 
 defineExpose({ usedCharacters })
 
-/** Discord's own blurple, and the palette its client uses for embeds. */
 const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed4245', '#eb459e', '#2b2d31']
 </script>
 
 <template>
   <div class="space-y-2">
-    <!-- colour -->
     <div class="flex items-center gap-3 rounded-lg bg-white/[0.03] p-3">
       <span class="size-7 shrink-0 rounded-full border border-white/15" :style="{ background: embed.color }" />
       <div class="min-w-0">
@@ -82,7 +68,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
       </div>
     </div>
 
-    <!-- author -->
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.author = !open.author">
         <UIcon name="i-lucide-user" class="size-4 text-white/40" />
@@ -106,7 +91,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
       </div>
     </div>
 
-    <!-- title & description -->
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.body = !open.body">
         <UIcon name="i-lucide-heading" class="size-4 text-white/40" />
@@ -133,7 +117,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
       </div>
     </div>
 
-    <!-- images -->
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.images = !open.images">
         <UIcon name="i-lucide-image" class="size-4 text-white/40" />
@@ -153,7 +136,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
       </div>
     </div>
 
-    <!-- fields -->
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.fields = !open.fields">
         <UIcon name="i-lucide-table-2" class="size-4 text-white/40" />
@@ -165,8 +147,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
         <div v-for="(field, i) in embed.fields" :key="i" class="rounded-lg bg-white/[0.03] p-2.5">
           <div class="mb-2 flex items-center gap-2">
             <span class="text-[11px] font-medium text-white/40">Field {{ i + 1 }}</span>
-            <!-- Discord lays inline fields out three to a row; a non-inline one
-                 always takes the full width. -->
             <UCheckbox v-model="field.inline" label="Inline" :ui="{ label: 'text-[11px]' }" />
             <UButton
               class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-x"
@@ -190,7 +170,6 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
       </div>
     </div>
 
-    <!-- footer -->
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.footer = !open.footer">
         <UIcon name="i-lucide-panel-bottom" class="size-4 text-white/40" />

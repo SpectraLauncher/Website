@@ -1,13 +1,3 @@
-// Spectra accounts — the identity that friends lists and instance sharing hang
-// off. Everything auth-shaped (passwords, sessions, OAuth, TOTP, reset mails)
-// is better-auth's job; we only wire it to Postgres and tell it how to send mail.
-//
-// Env:
-//   DATABASE_URL         — Postgres, shared with everything else on the server
-//   BETTER_AUTH_SECRET   — signing secret (required in prod)
-//   RESEND_API_KEY       — optional; without it verification/reset mails are
-//                          only logged, and e-mail verification is not enforced
-//   <PROVIDER>_CLIENT_ID / _CLIENT_SECRET for discord, google, github, microsoft
 
 import type { H3Event } from 'h3'
 import { betterAuth } from 'better-auth'
@@ -18,7 +8,6 @@ import { uniqueUsername } from './username'
 
 let auth: ReturnType<typeof betterAuth> | null = null
 
-/** Providers are only offered if their credentials are actually configured. */
 function socialProviders() {
   const ids = ['discord', 'google', 'github', 'microsoft'] as const
   const out: Record<string, { clientId: string, clientSecret: string }> = {}
@@ -30,23 +19,14 @@ function socialProviders() {
   return out
 }
 
-/** Which providers the sign-in page should render buttons for. */
 export function enabledProviders(): string[] {
   return Object.keys(socialProviders())
 }
 
-/** Public Turnstile key, or '' when the captcha is switched off. */
 export function turnstileSiteKey(): string {
-  // A widget without a server-side secret would be decoration, so both halves
-  // have to be present before the sign-in page renders one.
   return process.env.TURNSTILE_SECRET_KEY ? (process.env.TURNSTILE_SITE_KEY || '') : ''
 }
 
-/**
- * Sends one transactional mail through Resend's REST API. No SDK — it is a
- * single POST. Without a key the mail is logged instead, so a fresh dev setup
- * still lets you click the verification link out of the terminal.
- */
 async function sendMail(to: string, subject: string, html: string) {
   const key = process.env.RESEND_API_KEY
   if (!key) {
@@ -58,15 +38,10 @@ async function sendMail(to: string, subject: string, html: string) {
       method: 'POST',
       headers: { authorization: `Bearer ${key}` },
       body: {
-        // Must sit on a domain the API key is authorised for, otherwise Resend
-        // answers 403 "not authorized to send emails from <domain>".
         from: process.env.MAIL_FROM || 'Spectra <noreply@makoto.com.pl>',
         to,
         subject,
         html,
-        // A plain-text alternative next to the HTML — spam filters mark
-        // HTML-only mail down, and these are the mails that must arrive. The
-        // <head> goes first, or the preview text lands in the body twice.
         text: html
           .replace(/<head[\s\S]*?<\/head>/i, '')
           .replace(/<div style="display:none[\s\S]*?<\/div>/i, '')
@@ -76,28 +51,15 @@ async function sendMail(to: string, subject: string, html: string) {
       },
     })
   } catch (e: any) {
-    // better-auth swallows a throw from here, which turns a misconfigured
-    // sender into "the mail simply never arrives". Say so in the log instead.
     console.error('[mail] Resend rejected the send:', e?.data?.message || e?.message || e)
   }
 }
 
-/**
- * Origin for images inside e-mails. A mail is read on someone else's machine,
- * so assets must point at production even when a dev server sent it.
- */
 function mailAssetOrigin() {
   const configured = (process.env.NUXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
   return configured && !configured.includes('localhost') ? configured : 'https://spectra.makoto.com.pl'
 }
 
-/**
- * One transactional mail body: logo, headline, a line of copy, a button, and
- * the same link in plain text underneath for clients that swallow buttons.
- *
- * Tables and inline styles are not nostalgia — Outlook still ignores flexbox,
- * grid and most of a <style> block, so this is the layout that survives.
- */
 function mailTemplate(opts: {
   preheader: string
   title: string
@@ -158,7 +120,6 @@ function mailTemplate(opts: {
 </body></html>`
 }
 
-/** Lazily builds the better-auth instance (env is read at request time). */
 export function useAuth() {
   if (auth) return auth
   const hasMail = !!process.env.RESEND_API_KEY
@@ -170,8 +131,6 @@ export function useAuth() {
     secret: process.env.BETTER_AUTH_SECRET,
     emailAndPassword: {
       enabled: true,
-      // Only enforced once mail actually goes out — otherwise nobody could ever
-      // finish a signup on a server without a Resend key.
       requireEmailVerification: hasMail,
       sendResetPassword: async ({ user, url }) => {
         await sendMail(user.email, 'Reset your Spectra password', mailTemplate({
@@ -202,62 +161,46 @@ export function useAuth() {
     },
     user: {
       additionalFields: {
-        // The Minecraft profile behind this account. `input: false` matters:
-        // these may only ever be written by the verified path in
-        // `api/me/minecraft.post.ts`, never by a client update.
         mcUuid: { type: 'string', required: false, input: false },
         mcUsername: { type: 'string', required: false, input: false },
-        // Presence: what the player chose to show ('visible' | 'dnd' | 'hidden'),
-        // when their launcher last checked in, and whether a game is running.
-        // Written only by the presence endpoints, never by a client update.
         presence: { type: 'string', required: false, input: false },
         lastSeen: { type: 'number', required: false, input: false },
         playing: { type: 'boolean', required: false, input: false },
-        // Set from the admin panel only. `requireUser` turns it into a 403, and
-        // banning also drops the account's sessions so it takes effect at once
-        // rather than whenever the current one happens to expire.
         banned: { type: 'boolean', required: false, input: false },
+        friendsVisibility: { type: 'string', required: false, input: true },
       },
     },
     databaseHooks: {
       user: {
         create: {
           async before(user) {
-            // A provider signup carries name, email and image and nothing else,
-            // so `username` would stay null — leaving the account without a
-            // public profile and unfindable in the friend search.
-            //
-            // The username plugin registers its own create.before hook, but
-            // hooks run in order with the plugins first, and its hook only
-            // normalises a username that is already present. By the time this
-            // runs, nothing downstream will touch the value again — so what is
-            // returned here has to be final: already lowercased, already free.
             const candidate = user as { username?: string | null, name?: string | null, email?: string }
             if (candidate.username) return
 
             const username = await uniqueUsername(
               candidate.name || candidate.email?.split('@')[0] || 'player')
-            // Only the changed keys — the hook runner merges onto the rest.
             return { data: { username, displayUsername: username } }
+          },
+          async after(user) {
+            try {
+              await syncBadges({ userId: user.id })
+            }
+            catch (e) {
+              console.error('[badges] sync after signup:', e)
+            }
           },
         },
       },
     },
     socialProviders: socialProviders(),
     account: {
-      // Signing in with Discord and later with Google on the same verified
-      // address lands on one account instead of two half-empty ones.
       accountLinking: { enabled: true, trustedProviders: ['discord', 'google', 'github', 'microsoft'] },
     },
     plugins: [
       username(),
       twoFactor({ issuer: 'Spectra Launcher' }),
-      // The launcher talks to this API with `Authorization: Bearer <token>`
-      // instead of cookies; `oneTimeToken` is how it gets one (see /launcher/auth).
       bearer(),
       oneTimeToken(),
-      // Turnstile in front of sign-up, sign-in and password resets. Only armed
-      // when a secret is configured, so local dev needs no Cloudflare account.
       ...(process.env.TURNSTILE_SECRET_KEY
         ? [captcha({ provider: 'cloudflare-turnstile', secretKey: process.env.TURNSTILE_SECRET_KEY })]
         : []),
@@ -266,24 +209,15 @@ export function useAuth() {
   return auth
 }
 
-/**
- * The signed-in user for an API route, or 401. Works for both callers: the
- * website sends a session cookie, the launcher an `Authorization: Bearer`
- * header — better-auth resolves either from the same request headers.
- */
 export async function requireUser(event: H3Event) {
   const session = await useAuth().api.getSession({ headers: event.headers })
   if (!session?.user) throw createError({ statusCode: 401, statusMessage: 'sign in first' })
-  // Banning drops the sessions too, so this is the belt to that braces: a
-  // token minted before the ban, or a session created by some path that
-  // outruns the delete, still gets nowhere.
   if ((session.user as { banned?: boolean }).banned) {
     throw createError({ statusCode: 403, statusMessage: 'account suspended' })
   }
   return session.user
 }
 
-/** Same, but returns null instead of throwing — for routes that also serve anonymous callers. */
 export async function optionalUser(event: H3Event) {
   const session = await useAuth().api.getSession({ headers: event.headers }).catch(() => null)
   return session?.user ?? null

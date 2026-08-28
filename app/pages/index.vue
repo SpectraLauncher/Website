@@ -1,11 +1,14 @@
+<script setup lang="ts">
+useHead({ titleTemplate: '%s' })
+</script>
+
 <template>
   <div>
-    <HeroSection />
-    <ShowcaseSection />
-    <FeaturesSection />
-    <LoadersSection />
-    <DownloadSection />
-    <FaqSection />
-    <CtaSection />
+    <Navbar/>
+    <HeroSection/>
+    <PillarsSection/>
+    <FeaturedTools/>
+    <LauncherSection/>
+    <DiscordCta/>
   </div>
 </template>

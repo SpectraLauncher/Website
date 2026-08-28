@@ -1,17 +1,10 @@
-// Edits one account from the admin panel: display name, username, ban state.
-//
-// The username rules are better-auth's, restated here because this route writes
-// the column directly rather than going through `updateUser` — an admin has no
-// session for the account they are editing, so the plugin's own validation
-// never sees this. Diverging from it would let the panel save a username its
-// owner could then never change.
 
 const MIN_LENGTH = 3
 const MAX_LENGTH = 30
 const SHAPE = /^[a-z0-9_.]+$/
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
 
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing id' })
@@ -21,8 +14,6 @@ export default defineEventHandler(async (event) => {
   if (!target) throw createError({ statusCode: 404, statusMessage: 'no such user' })
 
   if (body.username !== undefined) {
-    // Lowercased to match the plugin's normalizer, which is what every lookup
-    // in this app compares against.
     const username = String(body.username).trim().toLowerCase()
     if (username.length < MIN_LENGTH || username.length > MAX_LENGTH || !SHAPE.test(username)) {
       throw createError({
@@ -46,8 +37,6 @@ export default defineEventHandler(async (event) => {
   if (body.banned !== undefined) {
     const banned = !!body.banned
     await exec('UPDATE "user" SET banned = $1 WHERE id = $2', [banned, id])
-    // A ban has to bite now, not at the next session expiry — and the launcher
-    // holds long-lived bearer tokens that resolve to these same rows.
     if (banned) await exec('DELETE FROM session WHERE "userId" = $1', [id])
   }
 

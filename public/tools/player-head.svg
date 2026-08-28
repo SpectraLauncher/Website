@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100%" height="100%" viewBox="0 0 240 284" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" shape-rendering="crispEdges">
+    <style>
+        .bob, .shadow, .spark {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .bob { animation: bob 4.6s ease-in-out infinite; }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-7px); }
+        }
+
+        .shadow { animation: shrink 4.6s ease-in-out infinite; }
+
+        @keyframes shrink {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50%      { transform: scale(0.78); opacity: 0.22; }
+        }
+
+        .blink { opacity: 0; animation: blinkEyes 6.2s step-end infinite; }
+
+        @keyframes blinkEyes {
+            0%, 92%   { opacity: 0; }
+            93%, 97%  { opacity: 1; }
+            98%, 100% { opacity: 0; }
+        }
+
+        .spark { animation: twinkle 3.6s ease-in-out infinite; }
+        .s2 { animation-delay: -1.3s; animation-duration: 4.8s; }
+        .s3 { animation-delay: -2.5s; animation-duration: 4.1s; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.12; transform: scale(0.55); }
+            50%      { opacity: 0.95; transform: scale(1); }
+        }
+
+        .caret { animation: blinkCaret 1.06s step-end infinite; }
+
+        @keyframes blinkCaret {
+            0%, 49%   { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bob, .shadow, .blink, .spark, .caret { animation: none; }
+        }
+    </style>
+    <ellipse class="shadow" cx="120" cy="200" rx="61.2" ry="9" fill="#0b1020"/>
+    <g class="bob">
+        <rect x="48" y="34" width="144" height="144" fill="#c98e58"/>
+        <rect x="48" y="34" width="144" height="36" fill="#3a2817"/>
+        <rect x="48" y="70" width="18" height="36" fill="#3a2817"/>
+        <rect x="174" y="70" width="18" height="36" fill="#3a2817"/>
+        <rect x="48" y="34" width="144" height="18" fill="#5b4023"/>
+        <rect x="48" y="52" width="36" height="18" fill="#241708"/>
+        <rect x="138" y="52" width="36" height="18" fill="#241708"/>
+        <rect x="66" y="106" width="18" height="18" fill="#f1f5f9"/>
+        <rect x="84" y="106" width="18" height="18" fill="#4f46e5"/>
+        <rect x="138" y="106" width="18" height="18" fill="#f1f5f9"/>
+        <rect x="156" y="106" width="18" height="18" fill="#4f46e5"/>
+        <rect x="84" y="142" width="72" height="18" fill="#a97141"/>
+        <rect x="102" y="124" width="36" height="18" fill="#e0a873"/>
+        <rect x="48" y="34" width="18" height="144" fill="#e0a873" opacity="0.22"/>
+        <rect x="174" y="34" width="18" height="144" fill="#a97141" opacity="0.35"/>
+        <g class="blink">
+            <rect x="66" y="106" width="36" height="18" fill="#c98e58"/>
+            <rect x="138" y="106" width="36" height="18" fill="#c98e58"/>
+            <rect x="66" y="106" width="36" height="18" fill="#a97141" opacity="0.5"/>
+            <rect x="138" y="106" width="36" height="18" fill="#a97141" opacity="0.5"/>
+        </g>
+    </g>
+    <g class="spark">
+        <rect x="18" y="20" width="5" height="25" fill="#67e8f9"/>
+        <rect x="8" y="30" width="25" height="5" fill="#67e8f9"/>
+    </g>
+    <g class="spark s2">
+        <rect x="210" y="50" width="4" height="20" fill="#67e8f9"/>
+        <rect x="202" y="58" width="20" height="4" fill="#67e8f9"/>
+    </g>
+    <g class="spark s3">
+        <rect x="26" y="100" width="4" height="20" fill="#67e8f9"/>
+        <rect x="18" y="108" width="20" height="4" fill="#67e8f9"/>
+    </g>
+    <g id="cmd">
+        <rect x="16" y="210" width="208" height="2" fill="#a9b1bd"/>
+        <rect x="16" y="212" width="2" height="54" fill="#87909e"/>
+        <rect x="16" y="266" width="208" height="2" fill="#222936"/>
+        <rect x="222" y="212" width="2" height="54" fill="#2c3444"/>
+        <rect x="18" y="212" width="204" height="54" fill="#0a0f16"/>
+        <rect x="18" y="212" width="204" height="16" fill="#141b24"/>
+        <rect x="26" y="216" width="6" height="6" fill="#ef4444"/>
+        <rect x="38" y="216" width="6" height="6" fill="#f59e0b"/>
+        <rect x="50" y="216" width="6" height="6" fill="#22c55e"/>
+        <rect x="30" y="240" width="28" height="9" fill="#e6eef8"/>
+        <rect x="65" y="240" width="44" height="9" fill="#67e8f9"/>
+        <rect x="116" y="240" width="34" height="9" fill="#4ade80"/>
+        <rect x="157" y="240" width="56" height="9" fill="#64748b"/>
+        <rect x="220" y="238" width="3" height="13" fill="#e6eef8" class="caret"/>
+    </g>
+</svg>

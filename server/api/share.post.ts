@@ -1,15 +1,7 @@
-// Upload route for launchers older than the presigned-PUT flow: the pack comes
-// in as a request body, and this server relays it into R2 rather than keeping
-// it. Capped at what Cloudflare will pass through — current launchers ask
-// `/api/share/upload-url` instead and are not limited by it.
-//
-// Metadata for the landing page comes from the query string so the server never
-// has to open the archive: ?name=&mc=&loader=&mods=&instance=
 
 export default defineEventHandler(async (event) => {
   const cfg = useRuntimeConfig()
 
-  // Same soft anti-spam key the telemetry ingest uses.
   const ingest = ingestKey()
   if (ingest && getHeader(event, 'x-spectra-key') !== ingest) {
     throw createError({ statusCode: 401, statusMessage: 'invalid key' })
@@ -51,8 +43,6 @@ export default defineEventHandler(async (event) => {
     )
     : undefined
 
-  // Re-sharing the same instance is a *push*: same code, next revision, so
-  // everyone who already installed it keeps a working link.
   const code = existing?.code ?? await newCode()
   const revision = existing ? existing.revision + 1 : 1
   const key = packKey(code, revision)

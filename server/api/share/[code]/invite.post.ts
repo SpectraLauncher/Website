@@ -1,8 +1,3 @@
-// Sends an already-uploaded pack to friends: no new code, no new upload — just
-// a row saying "they have it" plus a notification their launcher will pick up.
-//
-// Only accepted friends can be invited. Otherwise the share code turns into a
-// way to push arbitrary files at any username on the site.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

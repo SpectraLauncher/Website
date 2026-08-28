@@ -1,5 +1,3 @@
-// Takes a friend off a shared pack. Their copy stays installed — this only
-// stops future update notifications.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

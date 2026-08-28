@@ -1,5 +1,3 @@
-// The "Share" tab's data: every pack this account has shared, who has it, and
-// whether they are still on an older revision than the one that is up.
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
@@ -27,7 +25,6 @@ export default defineEventHandler(async (event) => {
       created: Number(s.created),
       expires: Number(s.expires),
       size: Number(s.size),
-      // Renewing is only offered near the end — see share/[code]/extend.
       canExtend: Number(s.expires) - now <= EXTEND_WINDOW_MS,
       recipients: recipients
         .filter(r => r.code === s.code)
