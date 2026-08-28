@@ -90,7 +90,9 @@ const monthLabels = computed(() => {
     const month = new Intl.DateTimeFormat(locale.value, { month: 'short', timeZone: 'UTC' })
       .format(new Date(`${first.day}T00:00:00Z`))
 
-    if (month !== previous) {
+    const room = !out.length || index - out[out.length - 1]!.index >= 3
+
+    if (month !== previous && room) {
       out.push({ index, label: month })
       previous = month
     }
@@ -128,7 +130,7 @@ const tooltip = (cell: Cell) => {
 
       <div class="flex gap-[3px]">
         <div class="flex w-8 shrink-0 flex-col gap-[3px] pe-1 text-[10px] text-dimmed">
-          <span v-for="d in 7" :key="d" class="flex h-3 items-center justify-end">
+          <span v-for="d in 7" :key="d" class="flex flex-1 items-center justify-end leading-none">
             {{ WEEKDAYS.includes(d - 1) ? dayName(d - 1) : '' }}
           </span>
         </div>
