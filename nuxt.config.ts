@@ -41,6 +41,10 @@ export default defineNuxtConfig({
     providers: {
       google: false,
     },
+    families: [
+      { name: 'Inter', src: '/fonts/Inter-400.ttf', weight: 400 },
+      { name: 'Inter', src: '/fonts/Inter-600.ttf', weight: 600 },
+    ],
   },
 
   css: ['~/assets/css/main.css'],
@@ -75,10 +79,6 @@ export default defineNuxtConfig({
   sitemap: {
     exclude: PRIVATE_PATHS.map(path => `${path}**`),
     sources: ['/api/__sitemap__/urls']
-  },
-
-  ogImage: {
-    fonts: ['Inter:400', 'Inter:600']
   },
 
   linkChecker: {
