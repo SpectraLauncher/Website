@@ -3,7 +3,7 @@
 const props = withDefaults(defineProps<{
   days: Array<{ day: string, launches: number, seconds: number }>
   weeks?: number
-}>(), { weeks: 26 })
+}>(), { weeks: 53 })
 
 const { t, locale } = useI18n()
 
@@ -113,12 +113,12 @@ const tooltip = (cell: Cell) => {
 
 <template>
   <div class="overflow-x-auto">
-    <div class="inline-block min-w-full">
+    <div class="min-w-full">
       <div class="mb-1 flex gap-[3px] ps-8 text-[10px] text-dimmed">
         <div
           v-for="(week, index) in grid"
           :key="index"
-          class="w-3 shrink-0"
+          class="min-w-2 flex-1"
         >
           <span v-if="monthLabels.find(m => m.index === index)" class="whitespace-nowrap">
             {{ monthLabels.find(m => m.index === index)!.label }}
@@ -136,12 +136,12 @@ const tooltip = (cell: Cell) => {
         <div
           v-for="(week, index) in grid"
           :key="index"
-          class="flex shrink-0 flex-col gap-[3px]"
+          class="flex min-w-2 flex-1 flex-col gap-[3px]"
         >
           <span
             v-for="cell in week"
             :key="cell.day"
-            class="size-3 rounded-[3px]"
+            class="aspect-square w-full rounded-[3px]"
             :class="level(cell) < 0 ? 'bg-transparent' : SHADE[level(cell)]"
             :title="level(cell) < 0 ? '' : tooltip(cell)"
           ></span>

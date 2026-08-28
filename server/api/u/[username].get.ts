@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
     [user.id],
   )
 
-  const since = new Date(Date.now() - 182 * 86_400_000).toISOString().slice(0, 10)
+  const since = new Date(Date.now() - 371 * 86_400_000).toISOString().slice(0, 10)
   const activity = await q<{ day: string, launches: number, seconds: number }>(
     `SELECT day, launches, seconds FROM user_activity
      WHERE user_id = $1 AND day >= $2 ORDER BY day`,
