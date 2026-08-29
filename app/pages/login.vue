@@ -35,7 +35,7 @@ const captchaHeaders = computed(() =>
   captchaToken.value ? { 'x-captcha-response': captchaToken.value } : {})
 const blocked = computed(() => loading.value || (captchaOn.value && !captchaToken.value))
 
-const next = computed(() => (route.query.next ? String(route.query.next) : localePath('/account')))
+const next = computed(() => safeNext(route.query.next, localePath('/account')))
 
 const isSignForm = computed(() => mode.value === 'signin' || mode.value === 'signup')
 

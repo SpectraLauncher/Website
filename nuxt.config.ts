@@ -82,6 +82,19 @@ export default defineNuxtConfig({
     }
   },
 
+  routeRules: {
+    '/**': {
+      headers: {
+        'strict-transport-security': 'max-age=31536000; includeSubDomains',
+        'x-content-type-options': 'nosniff',
+        'referrer-policy': 'strict-origin-when-cross-origin',
+        'content-security-policy': "frame-ancestors 'self'",
+        'x-frame-options': 'SAMEORIGIN',
+        'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+      },
+    },
+  },
+
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
     name: 'Spectra',
