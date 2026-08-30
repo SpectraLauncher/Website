@@ -31,8 +31,6 @@ async function call(path, { token, method = 'GET', body, raw, rawType, query } =
       // better-auth rejects a null Origin (CSRF); non-browser clients — this
       // script, and the launcher — must name the origin they are talking to.
       origin: ORIGIN,
-      // Same soft anti-spam key the launcher sends on share uploads.
-      'x-spectra-key': process.env.SPECTRA_INGEST_KEY ?? '',
       // Cloudflare's dummy token: accepted by the test secret, rejected by a real one.
       'x-captcha-response': 'XXXX.DUMMY.TOKEN.XXXX',
       ...(token ? { authorization: `Bearer ${token}` } : {}),

@@ -2379,11 +2379,13 @@
   },
   "launcherAuth": {
     "title": "Logowanie do launchera",
-    "hint": "Przeglądarka poprosi o zgodę na otwarcie Spectra Launcher.",
+    "hint": "Potwierdź poniżej, aby przekazać to konto do Spectra Launcher na tym komputerze.",
     "openAgain": "Otwórz launcher",
     "failed": "Nie udało się utworzyć tokenu. Spróbuj jeszcze raz z poziomu launchera.",
     "signedInAs": "Zalogowany na tym koncie",
-    "closeHint": "Możesz zamknąć tę kartę, gdy launcher przejmie logowanie."
+    "closeHint": "Możesz zamknąć tę kartę, gdy launcher przejmie logowanie.",
+    "authorize": "Autoryzuj launcher",
+    "warning": "Kontynuuj tylko, jeśli sam(a) zacząłeś to z launchera. Link poniżej loguje launcher na Twoje konto."
   },
   "account": {
     "title": "Twoje konto",

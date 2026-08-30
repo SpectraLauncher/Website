@@ -1,11 +1,12 @@
 
+// Legacy inline upload, kept for launchers older than the streaming route in
+// `share/upload-url.post.ts`. Both now require a signed-in owner: this writes
+// straight into R2, so it can never be open to anonymous callers.
 export default defineEventHandler(async (event) => {
   const cfg = useRuntimeConfig()
 
-  const ingest = ingestKey()
-  if (ingest && getHeader(event, 'x-spectra-key') !== ingest) {
-    throw createError({ statusCode: 401, statusMessage: 'invalid key' })
-  }
+  const owner = await requireUser(event)
+  rateLimit(event, { key: `share-upload:${owner.id}`, limit: 10, windowMs: 60_000 })
 
   const body = await readRawBody(event, false)
   if (!body?.length) {
@@ -27,7 +28,6 @@ export default defineEventHandler(async (event) => {
   await pruneShares()
 
   const now = Date.now()
-  const owner = await optionalUser(event)
   const instanceId = clampStr(q1.instance, 64) ?? null
   const meta = {
     name: clampStr(q1.name, 80) ?? 'Minecraft instance',
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     mods: Number(q1.mods) || 0,
   }
 
-  const existing = owner && instanceId
+  const existing = instanceId
     ? await one<{ code: string, revision: number, object_key: string | null }>(
       'SELECT code, revision, object_key FROM shares WHERE owner_id = $1 AND instance_id = $2',
       [owner.id, instanceId],
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
       await notify({
         userId: r.user_id,
         kind: 'instance_update',
-        actorId: owner!.id,
+        actorId: owner.id,
         shareCode: code,
         data: { name: meta.name, revision },
       })
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
                            owner_id, instance_id, revision, uploaded, object_key)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 1, TRUE, $11)`,
       [code, now, expires, meta.name, meta.mc_version, meta.loader, meta.mods, body.length,
-        owner?.id ?? null, instanceId, key],
+        owner.id, instanceId, key],
     )
   }
 

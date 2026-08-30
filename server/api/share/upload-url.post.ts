@@ -1,16 +1,12 @@
 
 export default defineEventHandler(async (event) => {
   const cfg = useRuntimeConfig()
-  const ingest = ingestKey()
-  if (ingest && getHeader(event, 'x-spectra-key') !== ingest) {
-    throw createError({ statusCode: 401, statusMessage: 'invalid key' })
-  }
+
+  const owner = await requireUser(event)
+  rateLimit(event, { key: `share-upload:${owner.id}`, limit: 10, windowMs: 60_000 })
 
   const r2 = useR2()
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'pack storage is not configured' })
-
-  const owner = await optionalUser(event)
-  if (!owner) throw createError({ statusCode: 401, statusMessage: 'sign in to share large packs' })
 
   const body = await readBody<{
     size?: number

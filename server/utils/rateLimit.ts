@@ -57,6 +57,41 @@ export function rateLimit(event: H3Event, options: { key: string, limit: number,
   throw createError({ statusCode: 429, statusMessage: 'too many requests' })
 }
 
+// Per-IP limits for the endpoints anyone can reach without an account. The
+// launcher used to send a shared `x-spectra-key`, but a constant compiled into
+// a desktop binary is public by definition, so these limits — not a key — are
+// what keeps the anonymous surface usable. Endpoints keyed by user id keep
+// their own inline limits instead.
+//
+// ponytail: in-process buckets, so this resets on deploy and is per-replica.
+// Move to Cloudflare rate-limiting rules (or a shared store) before scaling out.
+
+const SENSITIVE_AUTH = [
+  '/api/auth/sign-in',
+  '/api/auth/sign-up',
+  '/api/auth/forget-password',
+  '/api/auth/reset-password',
+  '/api/auth/two-factor',
+  '/api/auth/one-time-token',
+]
+
+// GET /api/share/ABC123 — a 6-character code is guessable if you may guess fast.
+const SHARE_CODE = /^\/api\/share\/[^/]+$/
+
+export function limitFor(path: string, method: string): { name: string, limit: number } | null {
+  if (path === '/api/telemetry') return { name: 'telemetry', limit: 30 }
+  if (path.startsWith('/api/mc-')) return { name: 'mojang', limit: 60 }
+  if (method === 'GET' && SHARE_CODE.test(path)) return { name: 'share-get', limit: 20 }
+
+  if (path.startsWith('/api/auth/')) {
+    return SENSITIVE_AUTH.some(p => path.startsWith(p))
+      ? { name: 'auth-sensitive', limit: 10 }
+      : { name: 'auth', limit: 120 }
+  }
+
+  return null
+}
+
 export function resetRateLimits() {
   buckets.clear()
 }

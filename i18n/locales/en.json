@@ -2379,11 +2379,13 @@
   },
   "launcherAuth": {
     "title": "Signing in to the launcher",
-    "hint": "Your browser will ask for permission to open Spectra Launcher.",
+    "hint": "Confirm below to hand this account to Spectra Launcher on this computer.",
     "openAgain": "Open the launcher",
     "failed": "Could not create a launcher token. Try again from the launcher.",
     "signedInAs": "Signed in as this account",
-    "closeHint": "You can close this tab once the launcher takes over."
+    "closeHint": "You can close this tab once the launcher takes over.",
+    "authorize": "Authorize the launcher",
+    "warning": "Only continue if you started this from the launcher. The link below signs the launcher in as you."
   },
   "account": {
     "title": "Your account",

@@ -5,13 +5,18 @@ const localePath = useLocalePath()
 const auth = useAuthClient()
 const session = useAuthSession()
 
-const state = ref<'working' | 'ready' | 'error'>('working')
+// A one-time token signs the launcher in as this account, so it is minted on an
+// explicit click — never on page load. Otherwise any link to this page would
+// hand a session to whatever app claimed the `spectra://` scheme.
+const state = ref<'idle' | 'working' | 'ready' | 'error'>('idle')
 const deepLink = ref('')
 const me = computed(() => session.value.data?.user as any)
 
 async function handOff() {
-  const res = await auth.oneTimeToken.generate()
-  const token = (res.data as any)?.token
+  state.value = 'working'
+
+  const res = await auth.oneTimeToken.generate().catch(() => null)
+  const token = (res?.data as any)?.token
 
   if (!token) return void (state.value = 'error')
 
@@ -21,14 +26,11 @@ async function handOff() {
 }
 
 watchEffect(() => {
-  if (!import.meta.client || session.value.isPending || state.value !== 'working') return
+  if (!import.meta.client || session.value.isPending) return
 
   if (!session.value.data) {
     navigateTo(`${localePath('/login')}?next=${encodeURIComponent(localePath('/launcher/auth'))}`)
-    return
   }
-
-  handOff()
 })
 
 useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
@@ -82,6 +84,25 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
 
             <UIcon v-if="state === 'ready'" name="i-lucide-check" class="size-4 text-primary" />
           </div>
+
+          <template v-if="state === 'idle' || state === 'working'">
+            <p class="mt-5 flex gap-2.5 rounded-xl border border-amber-400/20 bg-amber-400/5 px-3.5 py-3 text-xs/relaxed text-muted">
+              <UIcon name="i-lucide-shield-alert" class="mt-0.5 size-4 shrink-0 text-amber-400" />
+              <span>{{ t('launcherAuth.warning') }}</span>
+            </p>
+
+            <UButton
+              block
+              size="lg"
+              color="neutral"
+              class="mt-4"
+              icon="i-lucide-check"
+              :loading="state === 'working'"
+              :disabled="!me || state === 'working'"
+              :label="t('launcherAuth.authorize')"
+              @click="handOff"
+            />
+          </template>
 
           <template v-if="state === 'ready'">
             <UButton

@@ -15,20 +15,19 @@ interface IncomingBatch {
 const MAX_EVENTS = 50
 const MAX_PROPS_BYTES = 2000
 
+const INSTALL_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export default defineEventHandler(async (event) => {
   setHeader(event, 'access-control-allow-origin', '*')
 
-  const key = ingestKey()
-  if (key) {
-    if (getHeader(event, 'x-spectra-key') !== key) {
-      throw createError({ statusCode: 401, statusMessage: 'invalid key' })
-    }
-  }
-
+  // Anonymous by design — the launcher has no account when it reports. A shared
+  // key cannot protect this: anything shipped in a desktop binary is public.
+  // The per-IP limit lives in server/utils/rateLimit.ts; the strict
+  // payload shape below is the other half of the control.
   const body = await readBody<IncomingBatch>(event)
   const installId = clampStr(body?.install_id, 64)
-  if (!installId) {
-    throw createError({ statusCode: 400, statusMessage: 'install_id required' })
+  if (!installId || !INSTALL_ID_RE.test(installId)) {
+    throw createError({ statusCode: 400, statusMessage: 'install_id must be a uuid' })
   }
 
   const list = Array.isArray(body?.events) ? (body!.events as IncomingEvent[]) : []
