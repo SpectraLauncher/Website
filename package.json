@@ -47,7 +47,6 @@
     "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/seo": "^5.3.14",
     "@resvg/resvg-js": "^2.6.2",
-    "@takumi-rs/core": "^2.12.0",
     "@tiptap/extension-text-style": "^3.30.3",
     "@tiptap/pm": "^3.30.3",
     "@tiptap/starter-kit": "^3.30.3",
