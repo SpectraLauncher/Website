@@ -167,6 +167,7 @@ export function useAuth() {
         lastSeen: { type: 'number', required: false, input: false },
         playing: { type: 'boolean', required: false, input: false },
         banned: { type: 'boolean', required: false, input: false },
+        role: { type: 'string', required: false, input: false },
         friendsVisibility: { type: 'string', required: false, input: true },
       },
     },

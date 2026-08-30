@@ -1,5 +1,23 @@
+// node --experimental-strip-types test/admin-gate-check.mjs
 import assert from 'node:assert/strict'
-import { parseAdminEmails, isAdminEmail } from '../server/utils/admin.ts'
+import { parseAdminEmails, isAdminEmail, isAdmin } from '../server/utils/admin.ts'
+
+// --- the gate: a column, nothing else -------------------------------------
+
+assert.ok(isAdmin({ role: 'admin' }), 'rola admin otwiera panel')
+assert.ok(!isAdmin({ role: 'user' }), 'zwykla rola nie')
+assert.ok(!isAdmin({ role: null }), 'brak roli nie')
+assert.ok(!isAdmin({}), 'brak pola nie')
+assert.ok(!isAdmin(null))
+assert.ok(!isAdmin(undefined))
+
+// Sedno zmiany: sam adres z listy juz nic nie daje. Konto zalozone na adresie
+// admina — czy to przez niezweryfikowana rejestracje, czy przez providera OAuth
+// gotowego potwierdzic cudzy adres — nie jest adminem.
+assert.ok(!isAdmin({ email: 'patrydab4@gmail.com' }), 'sam adres nie wystarcza')
+assert.ok(!isAdmin({ email: 'patrydab4@gmail.com', role: 'user' }), 'adres nie bije roli')
+
+// --- lista adresow: uzywana wylacznie do promocji pierwszego admina --------
 
 const fallback = parseAdminEmails('')
 assert.deepEqual(fallback, ['patrydab4@gmail.com'], 'pusta zmienna ma dac wbudowana liste')
@@ -25,4 +43,4 @@ const many = parseAdminEmails(' a@x.pl , B@Y.pl ,, ')
 assert.deepEqual(many, ['a@x.pl', 'b@y.pl'], 'lista ma byc przycieta i male litery')
 assert.ok(!isAdminEmail('patrydab4@gmail.com', many), 'jawna lista wypiera wbudowana')
 
-console.log('admin-gate: ok')
+console.log('✓ admin: brama na roli w bazie, adresy tylko do pierwszej promocji')

@@ -14,7 +14,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
       <div class="relative container mx-auto grid items-center gap-8 px-4 py-12 md:gap-11 md:py-20 lg:grid-cols-[1fr_1.1fr]">
         <div>
           <div class="mb-4 text-sm font-semibold text-white flex items-center gap-2 bg-black/10 rounded-md w-fit py-1 px-2">
-            <NuxtImg src="/logo-transparent.png" width="24" height="24" lazy />
+            <img src="/logo-transparent.png" width="24" height="24" alt="" loading="lazy">
             {{ t('home.launcherKicker') }}
           </div>
           <h2 class="mb-4 text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{{ t('home.launcherTitle') }}</h2>
@@ -55,7 +55,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
 
         <GlassCard v-reveal class="p-3">
           
-          <NuxtImg
+          <img
             src="/screenshots/MainMenu.png"
             alt="Spectra Launcher"
             class="block w-full rounded-2xl"

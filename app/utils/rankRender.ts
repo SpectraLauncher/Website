@@ -12,7 +12,6 @@ export interface GlyphBitmap {
 
 const glyphCache = new Map<string, GlyphBitmap>()
 
-export const clearGlyphCache = () => glyphCache.clear()
 
 export async function ensureFont() {
   if (!document.fonts?.load) return

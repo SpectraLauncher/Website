@@ -13,7 +13,7 @@ const LEGAL = [
   <footer class="border-t border-white/10 bg-black/30">
     <div class="container mx-auto flex flex-wrap items-center justify-between gap-6 px-4 py-10">
       <div class="flex items-center gap-3">
-        <NuxtImg src="/logo-transparent.png" width="28" height="28" alt="" />
+        <img src="/logo-transparent.png" width="28" height="28" alt="" />
         <div>
           <p class="text-sm font-semibold">Spectra</p>
           <p class="text-xs text-dimmed">{{ t('footer.tagline') }}</p>

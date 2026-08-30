@@ -130,7 +130,7 @@ useSchemaOrg(computed(() => [
         <div class="grid items-center gap-12 lg:grid-cols-[1fr_1.15fr]">
           <div>
             <div class="mb-5 flex w-fit items-center gap-2 rounded-md bg-black/20 px-2 py-1 text-sm font-semibold backdrop-blur-sm">
-              <NuxtImg src="/logo-transparent.png" width="22" height="22" />
+              <img src="/logo-transparent.png" width="22" height="22" alt="" />
               {{ t('launcherPage.kicker') }}
             </div>
 
@@ -171,7 +171,7 @@ useSchemaOrg(computed(() => [
           </div>
 
           <GlassCard v-reveal class="p-3">
-            <NuxtImg
+            <img
               src="/screenshots/MainMenu.png"
               alt="Spectra Launcher"
               class="block w-full rounded-2xl"
@@ -195,7 +195,7 @@ useSchemaOrg(computed(() => [
           <p class="max-w-[54ch] text-muted">{{ row.body }}</p>
         </div>
         <GlassCard class="p-2.5" :class="i % 2 ? 'lg:order-1' : ''">
-          <NuxtImg
+          <img
             :src="`/screenshots/${row.shot}`"
             :alt="row.title"
             class="block w-full rounded-2xl"

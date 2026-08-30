@@ -69,7 +69,7 @@ defineExpose({ items })
 
             <div class="relative w-full flex justify-between items-center">
                 <NuxtLink :to="localePath('/')" class="flex items-center">
-                    <NuxtImg src="/logo-transparent.png" alt="Logo" class="h-8 md:h-10" />
+                    <img src="/logo-transparent.png" alt="Logo" class="h-8 md:h-10" />
                     <p class="ml-2 text-lg font-bold md:text-xl">Spectra</p>
                 </NuxtLink>
 

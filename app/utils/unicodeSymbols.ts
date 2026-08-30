@@ -137,5 +137,3 @@ export const escapeSeq = (symbol: string) =>
     })
     .join('')
 
-export const ALL_SYMBOLS = SYMBOL_GROUPS.flatMap(g => g.symbols)
-export const MC_GROUPS = SYMBOL_GROUPS.filter(g => g.mc)

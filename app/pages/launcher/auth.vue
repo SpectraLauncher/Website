@@ -48,7 +48,7 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
         <div class="rounded-3xl border border-zinc-600/50 bg-black/40 p-6 backdrop-blur-sm sm:p-8">
           <div class="text-center">
             <div class="flex items-center justify-center gap-3">
-              <NuxtImg src="/logo-transparent.png" width="38" height="38" alt="" />
+              <img src="/logo-transparent.png" width="38" height="38" alt="" />
               <UIcon
                 :name="state === 'error' ? 'i-lucide-x' : 'i-lucide-arrow-right'"
                 class="size-4"

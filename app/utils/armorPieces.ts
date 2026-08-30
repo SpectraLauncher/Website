@@ -1,4 +1,3 @@
-export type ArmorCell = '.' | 'd' | 'l' | 'b' | 's'
 
 export const ARMOR_SIZE = 16
 

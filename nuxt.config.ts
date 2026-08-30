@@ -52,12 +52,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
   modules: [
-    '@nuxt/image',
     '@nuxt/ui',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
-    'nuxt-ai-ready',
-    '@pinia/nuxt'
+    'nuxt-ai-ready'
   ],
 
   nitro: {
@@ -79,19 +77,6 @@ export default defineNuxtConfig({
       failOnError: true,
       routes: PRERENDER.flatMap(path => [path, `/pl${path}`])
     }
-  },
-
-  routeRules: {
-    '/**': {
-      headers: {
-        'strict-transport-security': 'max-age=31536000; includeSubDomains',
-        'x-content-type-options': 'nosniff',
-        'referrer-policy': 'strict-origin-when-cross-origin',
-        'content-security-policy': "frame-ancestors 'self'",
-        'x-frame-options': 'SAMEORIGIN',
-        'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=()',
-      },
-    },
   },
 
   site: {

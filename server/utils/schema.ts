@@ -240,6 +240,29 @@ export async function ensureSchema() {
   `)
 }
 
+// Admin is a column, not an e-mail address. `ADMIN_EMAILS` only seeds the very
+// first admin on a database that has none; after that the column is the truth
+// and changing the environment variable does nothing.
+export async function ensureAdminRole(): Promise<number> {
+  const pool = usePool()
+  await pool.query('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS role TEXT')
+
+  const existing = await pool.query<{ n: number }>(
+    `SELECT count(*)::int AS n FROM "user" WHERE role = 'admin'`)
+  if (existing.rows[0]!.n > 0) return 0
+
+  const emails = bootstrapAdminEmails()
+  const promoted = await pool.query(
+    `UPDATE "user" SET role = 'admin' WHERE lower(email) = ANY($1)`, [emails])
+
+  if (!promoted.rowCount) {
+    console.warn('[db] no admin account yet and none of ADMIN_EMAILS ('
+      + `${emails.join(', ')}) matches a registered address. Sign up with one of them, or run:`
+      + `\n      UPDATE "user" SET role = 'admin' WHERE username = '<your-username>';`)
+  }
+  return promoted.rowCount ?? 0
+}
+
 export async function ensureAccountIssuer() {
   const pool = usePool()
 
