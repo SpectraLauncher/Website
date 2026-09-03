@@ -96,7 +96,7 @@ export default defineEventHandler(async (event) => {
   const notes = changelogOnly(String(release.body ?? ''))
   const url = release.html_url ?? ''
   const version = tag.replace(/^v/, '')
-  const site = process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl'
+  const site = process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app'
   const role = row?.release_role ?? null
 
   try {

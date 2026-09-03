@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     adminEmails: process.env.ADMIN_EMAILS || '',
     public: {
 
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',
       umamiSrc: process.env.NUXT_PUBLIC_UMAMI_SRC || '',
       umamiId: process.env.NUXT_PUBLIC_UMAMI_ID || '',
       controller: process.env.NUXT_PUBLIC_CONTROLLER || '',
@@ -80,7 +80,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',
     name: 'Spectra',
     description: 'The modern desktop launcher for modded Minecraft, plus free browser tools for players and server owners.',
     defaultLocale: 'en'
@@ -103,7 +103,7 @@ export default defineNuxtConfig({
     identity: {
       type: 'Organization',
       name: 'Spectra Launcher',
-      url: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+      url: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',
       logo: '/logo.png',
       sameAs: ['https://github.com/MakotoPD/Spectra-Launcher']
     }
@@ -118,7 +118,7 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'prefix_except_default',
     defaultLocale: 'en',
-    baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl',
+    baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',
     bundle: { optimizeTranslationDirective: false },
     locales: [
       { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },

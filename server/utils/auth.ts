@@ -57,7 +57,7 @@ async function sendMail(to: string, subject: string, html: string) {
 
 function mailAssetOrigin() {
   const configured = (process.env.NUXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
-  return configured && !configured.includes('localhost') ? configured : 'https://spectra.makoto.com.pl'
+  return configured && !configured.includes('localhost') ? configured : 'https://usespectra.app'
 }
 
 function mailTemplate(opts: {
@@ -110,7 +110,7 @@ function mailTemplate(opts: {
       </td></tr>
 
       <tr><td align="center" style="padding:22px 8px 0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;color:#475569;">
-        <a href="${site}" style="color:#64748b;text-decoration:none;">spectra.makoto.com.pl</a>
+        <a href="${site}" style="color:#64748b;text-decoration:none;">usespectra.app</a>
         &nbsp;·&nbsp; A free, open-source Minecraft launcher.
       </td></tr>
 
@@ -127,7 +127,7 @@ export function useAuth() {
   auth = betterAuth({
     database: usePool(),
     baseURL: process.env.NUXT_PUBLIC_SITE_URL
-      || (import.meta.dev ? 'http://localhost:3000' : 'https://spectra.makoto.com.pl'),
+      || (import.meta.dev ? 'http://localhost:3000' : 'https://usespectra.app'),
     secret: process.env.BETTER_AUTH_SECRET,
     emailAndPassword: {
       enabled: true,

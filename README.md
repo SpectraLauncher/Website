@@ -5,7 +5,7 @@ a landing page for the launcher, 22 browser tools for Minecraft players and
 server owners, public player profiles, a badge system, modpack share links and
 an admin panel. English and Polish, server-rendered.
 
-Production: <https://spectra.makoto.com.pl>
+Production: <https://usespectra.app>
 
 ## Stack
 

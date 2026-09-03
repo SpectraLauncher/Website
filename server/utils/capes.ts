@@ -75,7 +75,7 @@ export async function fetchOwnedCapes(uuid: string): Promise<OwnedCape[]> {
     {
       timeout: 8000,
       retry: 0,
-      headers: { accept: 'application/json', 'user-agent': 'SpectraTools (+https://spectra.makoto.com.pl)' }
+      headers: { accept: 'application/json', 'user-agent': 'SpectraTools (+https://usespectra.app)' }
     }
   ).catch(() => null)
 

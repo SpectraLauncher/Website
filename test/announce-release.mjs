@@ -26,7 +26,7 @@ for (const line of envFile.split('\n')) {
 
 const REPO = process.env.RELEASE_REPO || 'MakotoPD/Spectra-Launcher'
 const SECRET = process.env.GITHUB_WEBHOOK_SECRET
-const SITE = process.env.SITE || process.env.NUXT_PUBLIC_SITE_URL || 'https://spectra.makoto.com.pl'
+const SITE = process.env.SITE || process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app'
 const tag = process.argv[2]
 
 if (!SECRET) {

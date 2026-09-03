@@ -6,7 +6,7 @@ withDefaults(defineProps<{
 }>(), {
   title: 'Spectra',
   description: '',
-  label: 'spectra.makoto.com.pl',
+  label: 'usespectra.app',
 })
 </script>
 
