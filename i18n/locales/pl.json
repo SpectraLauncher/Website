@@ -2876,6 +2876,27 @@
       "noPreview": "Ten plik nie ma podglądu 3D.",
       "partial": "podgląd pokazuje część budowli",
       "preview": "Podgląd"
+    },
+    "anyVersion": "Dowolna wersja",
+    "noVersions": "Nie ma jeszcze żadnej wersji.",
+    "compatibility": "Zgodność",
+    "loaders": "Loadery",
+    "gameVersions": "Minecraft",
+    "resourcepacks": {
+      "title": "Resourcepacki",
+      "sub": "Paczki tekstur i dźwięków. Format paczki jest czytany z pack.mcmeta, więc podana zgodność to ta, którą deklaruje sam plik."
+    },
+    "shaders": {
+      "title": "Shaderpacki",
+      "sub": "Shadery pod Iris, OptiFine i Canvas. Shaderpacki nie mają manifestu, więc silnik rozpoznajemy po zawartości archiwum."
+    },
+    "mods": {
+      "title": "Mody",
+      "sub": "Mody na Fabric, Quilt, Forge i NeoForge. Loader i wersja pochodzą z jara, a nie z formularza, który ktoś wypełnił."
+    },
+    "modpacks": {
+      "title": "Modpacki",
+      "sub": "Gotowe zestawy modów do zainstalowania za jednym razem."
     }
   }
 }

@@ -2876,6 +2876,27 @@
       "noPreview": "No 3D preview for this file.",
       "partial": "preview shows part of the build",
       "preview": "Preview"
+    },
+    "anyVersion": "Any version",
+    "noVersions": "No versions published yet.",
+    "compatibility": "Compatibility",
+    "loaders": "Loaders",
+    "gameVersions": "Minecraft",
+    "resourcepacks": {
+      "title": "Resource packs",
+      "sub": "Texture and sound packs. The pack format is read out of pack.mcmeta, so the listed compatibility is the one the file itself declares."
+    },
+    "shaders": {
+      "title": "Shader packs",
+      "sub": "Shaders for Iris, OptiFine and Canvas. Shader packs carry no manifest, so the engine is worked out from what the archive contains."
+    },
+    "mods": {
+      "title": "Mods",
+      "sub": "Mods for Fabric, Quilt, Forge and NeoForge. Loader and version come from the jar, not from a form someone filled in."
+    },
+    "modpacks": {
+      "title": "Modpacks",
+      "sub": "Ready-made sets of mods you can install in one go."
     }
   }
 }
