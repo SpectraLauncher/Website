@@ -58,6 +58,7 @@
     "aws4fetch": "^1.0.20",
     "better-auth": "^1.7.1",
     "gsap": "^3.15.0",
+    "markdown-it": "^15.0.1",
     "nodemailer": "^9.1.1",
     "nuxt": "^4.5.2",
     "nuxt-ai-ready": "^2.0.1",
@@ -72,6 +73,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.126",
     "@iconify-json/simple-icons": "^1.2.93",
+    "@types/markdown-it": "^14.2.0",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.23.1",
     "@types/three": "^0.185.4",

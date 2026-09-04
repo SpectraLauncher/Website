@@ -2852,5 +2852,26 @@
       "title": "Coś poszło nie tak",
       "body": "Nie udało się otworzyć tej strony. Spróbuj jeszcze raz albo wróć na stronę główną."
     }
+  },
+  "catalog": {
+    "search": "Szukaj",
+    "searchPlaceholder": "Szukaj po nazwie…",
+    "results": "Wyników: {n}",
+    "downloads": "Pobrań: {n}",
+    "empty": "Nic tu jeszcze nie ma.",
+    "notFound": "Nie ma takiej strony",
+    "versions": "Wersje",
+    "links": "Odnośniki",
+    "schematics": {
+      "title": "Schematy budowli",
+      "sub": "Gotowe budowle do wklejenia do świata. Każdy plik jest czytany wprost, więc lista bloków i zestawienie materiałów pochodzą z samego schematu."
+    },
+    "schematic": {
+      "details": "Szczegóły",
+      "size": "Wymiary",
+      "blocks": "Bloków",
+      "format": "Format",
+      "materials": "Materiały"
+    }
   }
 }

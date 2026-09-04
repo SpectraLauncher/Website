@@ -2852,5 +2852,26 @@
       "title": "Something went wrong",
       "body": "This page could not be opened. Try again, or head back to the home page."
     }
+  },
+  "catalog": {
+    "search": "Search",
+    "searchPlaceholder": "Search by name…",
+    "results": "{n} results",
+    "downloads": "{n} downloads",
+    "empty": "Nothing here yet.",
+    "notFound": "No such page",
+    "versions": "Versions",
+    "links": "Links",
+    "schematics": {
+      "title": "Build schematics",
+      "sub": "Ready-made builds to paste into your world. Every upload is read straight from the file, so the block list and material count come from the schematic itself."
+    },
+    "schematic": {
+      "details": "Details",
+      "size": "Size",
+      "blocks": "Blocks",
+      "format": "Format",
+      "materials": "Materials"
+    }
   }
 }
