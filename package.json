@@ -41,7 +41,9 @@
     "check:badges": "node --experimental-strip-types test/badge-rules-check.mjs",
     "check:startfile": "node --experimental-strip-types test/start-file-check.mjs",
     "check:admingate": "node --experimental-strip-types test/admin-gate-check.mjs",
-    "check:cfproxy": "node --experimental-strip-types test/curseforge-proxy-check.mjs"
+    "check:cfproxy": "node --experimental-strip-types test/curseforge-proxy-check.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nuxt/ui": "4.11.0",
@@ -73,11 +75,13 @@
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.23.1",
     "@types/three": "^0.185.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "sharp"
+      "sharp",
+      "esbuild"
     ]
   }
 }
