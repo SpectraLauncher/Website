@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await countDownload(found.version.id, found.project.id)
+  await recordDownload(found.project.id).catch(e => console.error('[attribution] download', e))
 
   const url = publicContentUrl(found.file.object_key)
   if (!url) throw createError({ statusCode: 501, statusMessage: 'content storage is not configured' })

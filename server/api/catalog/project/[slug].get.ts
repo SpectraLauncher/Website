@@ -12,6 +12,8 @@ export default defineEventHandler(async (event) => {
   const files = await filesForVersions(versions.map(v => v.id))
   const gallery = await galleryOf(project!.id)
   const owner = await projectOwner(project!.owner_id, project!.org_id)
+
+  await recordView(event, project!.id).catch(e => console.error('[attribution] view', e))
   const price = Number(project!.price ?? 0)
 
   const owned = price > 0 && viewer

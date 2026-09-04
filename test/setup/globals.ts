@@ -26,6 +26,11 @@ g.createError = (input: { statusCode?: number, statusMessage?: string }) => new 
 g.defineEventHandler = vi.fn()
 g.defineCachedEventHandler = vi.fn()
 
+// Attribution reads request headers; a test supplies them as a plain object.
+g.getHeader = (event: { headers?: Record<string, string> }, name: string) =>
+  event?.headers?.[name.toLowerCase()]
+g.getRequestIP = (event: { ip?: string }) => event?.ip ?? 'unknown'
+
 export const runtimeConfig: Record<string, unknown> = {
   adminEmails: '',
   public: { siteUrl: 'https://usespectra.app', catalogPublic: false },

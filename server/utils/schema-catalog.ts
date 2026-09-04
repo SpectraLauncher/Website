@@ -134,6 +134,36 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  // Daily attribution per project. Views and downloads are what a revenue split
+  // is computed from, and they cannot be reconstructed after the fact, so they
+  // are collected from the day the catalog opens rather than from the day a
+  // payout system exists.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS project_metric (
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      day        TEXT NOT NULL,
+      views      INTEGER NOT NULL DEFAULT 0,
+      downloads  INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (project_id, day)
+    );
+    CREATE INDEX IF NOT EXISTS idx_project_metric_day ON project_metric (day);
+  `)
+
+  // One row per visitor per project per day, purely so a refresh does not count
+  // twice. The visitor column is a keyed hash of address and user agent with a
+  // salt that changes daily: it cannot be reversed into either, and it stops
+  // being linkable to the same person the next day. Rows are pruned once they
+  // can no longer affect deduplication.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS project_view_seen (
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      day        TEXT NOT NULL,
+      visitor    TEXT NOT NULL,
+      PRIMARY KEY (project_id, day, visitor)
+    );
+    CREATE INDEX IF NOT EXISTS idx_view_seen_day ON project_view_seen (day);
+  `)
+
   // One Stripe Connect account per seller, which is an account or an
   // organization. Payouts and identity checks live on Stripe's side; what is
   // kept here is only the pointer and enough state to know whether a sale may
