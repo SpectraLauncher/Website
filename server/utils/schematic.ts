@@ -42,6 +42,48 @@ function fail(message: string): never {
   throw new SchematicError(message)
 }
 
+// Every dimension here comes out of the uploaded file and is spent on an
+// allocation, so each one needs a ceiling before it is used.
+export const SCHEMATIC_LIMITS = {
+  maxDimension: 32_768,
+  maxVolume: 64 * 1024 * 1024,
+  maxPalette: 65_536,
+  maxBlockIdLength: 256,
+}
+
+// The three axes can each be individually plausible while their product is an
+// allocation bomb — 32767 cubed is legal per axis and 3.5e13 entries in total.
+// The product is what has to be checked, and before anything is allocated.
+export function boundedVolume(size: { x: number, y: number, z: number }): number {
+  const x = Math.abs(size.x)
+  const y = Math.abs(size.y)
+  const z = Math.abs(size.z)
+
+  for (const [axis, value] of [['x', x], ['y', y], ['z', z]] as const) {
+    if (!Number.isFinite(value) || value > SCHEMATIC_LIMITS.maxDimension) {
+      fail(`axis ${axis} is ${value}, over the ${SCHEMATIC_LIMITS.maxDimension} limit`)
+    }
+  }
+
+  const volume = x * y * z
+  if (volume > SCHEMATIC_LIMITS.maxVolume) {
+    fail(`schematic declares ${volume} blocks, over the ${SCHEMATIC_LIMITS.maxVolume} limit`)
+  }
+  return volume
+}
+
+function boundedPalette(entries: BlockState[]): BlockState[] {
+  if (entries.length > SCHEMATIC_LIMITS.maxPalette) {
+    fail(`palette has ${entries.length} entries, over the ${SCHEMATIC_LIMITS.maxPalette} limit`)
+  }
+  for (const entry of entries) {
+    if (entry.id.length > SCHEMATIC_LIMITS.maxBlockIdLength) {
+      fail('a block identifier is longer than the limit')
+    }
+  }
+  return entries
+}
+
 // --- stan bloku ----------------------------------------------------------
 
 export function parseStateString(raw: string): BlockState {
@@ -341,7 +383,7 @@ function summarize(
   extra: { name?: string | null, author?: string | null, dataVersion?: number | null,
     unknown?: string[] } = {},
 ): SchematicInfo {
-  const volume = Math.abs(size.x) * Math.abs(size.y) * Math.abs(size.z)
+  const volume = boundedVolume(size)
   const present = counted.filter(c => c.count > 0 && !NOT_AN_ITEM.has(c.state.id))
 
   const palette = [...new Set(present.map(c => c.state.id))].sort()
@@ -388,12 +430,23 @@ export function parseLitematic(root: NbtCompound): SchematicInfo {
     const states = asLongArray(body?.BlockStates)
     if (!body || !size || !paletteRaw || !states) continue
 
-    const palette = paletteRaw.map(entry => stateFromCompound(asCompound(entry) ?? {}))
-    const volume = Math.abs(asNumber(size.x) ?? 0)
-      * Math.abs(asNumber(size.y) ?? 0)
-      * Math.abs(asNumber(size.z) ?? 0)
+    const palette = boundedPalette(paletteRaw.map(e => stateFromCompound(asCompound(e) ?? {})))
+    const volume = boundedVolume({
+      x: asNumber(size.x) ?? 0,
+      y: asNumber(size.y) ?? 0,
+      z: asNumber(size.z) ?? 0,
+    })
 
-    counted.push(...tally(unpackSpanning(states, paletteBits(palette.length), volume), palette))
+    // The array either holds exactly the packed volume or the file is wrong.
+    // Checking here turns a confusing mid-unpack failure into one clear message.
+    const bits = paletteBits(palette.length)
+    const expected = Math.ceil(volume * bits / 64)
+    if (states.length !== expected) {
+      fail(`region declares ${volume} blocks at ${bits} bits, which needs `
+        + `${expected} longs, but the array holds ${states.length}`)
+    }
+
+    counted.push(...tally(unpackSpanning(states, bits, volume), palette))
   }
 
   const enclosing = asCompound(meta?.EnclosingSize)
@@ -425,7 +478,7 @@ export function parseSponge(root: NbtCompound): SchematicInfo {
     y: asNumber(body.Height) ?? 0,
     z: asNumber(body.Length) ?? 0,
   }
-  const volume = Math.abs(size.x) * Math.abs(size.y) * Math.abs(size.z)
+  const volume = boundedVolume(size)
 
   // Paleta jest mapa nazwa -> indeks, a nie lista, wiec kolejnosc kluczy nic nie
   // znaczy i trzeba ja przelozyc na tablice po wartosci indeksu.
@@ -437,6 +490,8 @@ export function parseSponge(root: NbtCompound): SchematicInfo {
   for (let i = 0; i < palette.length; i++) {
     palette[i] ??= { id: 'minecraft:air', props: {} }
   }
+
+  boundedPalette(palette)
 
   return summarize('sponge', size, tally(readVarInts(data, volume), palette), {
     dataVersion: asNumber(body.DataVersion) ?? null,
@@ -458,7 +513,8 @@ export function parseStructure(root: NbtCompound): SchematicInfo {
     z: asNumber(sizeList[2]) ?? 0,
   }
 
-  const palette = paletteRaw.map(entry => stateFromCompound(asCompound(entry) ?? {}))
+  boundedVolume(size)
+  const palette = boundedPalette(paletteRaw.map(e => stateFromCompound(asCompound(e) ?? {})))
   const counts = new Uint32Array(palette.length)
 
   for (const entry of blocks) {

@@ -39,6 +39,11 @@ export class NbtError extends Error {}
 // Zagniezdzenie jest tania bronia: kilka kilobajtow otwierajacych sie list
 // wystarczy, zeby przewrocic stos rekurencyjnemu czytnikowi.
 const MAX_DEPTH = 512
+
+// Sam limit glebokosci nie wystarcza: plik plaski, ale z milionami malutkich
+// tagow, przechodzi go bez trudu i zjada pamiec na samych obiektach.
+const MAX_TAGS = 8 * 1024 * 1024
+
 const MAX_DECOMPRESSED = 256 * 1024 * 1024
 
 function fail(message: string): never {
@@ -60,7 +65,13 @@ export function decompressNbt(body: Uint8Array): Buffer {
 }
 
 class Reader {
+  private tags = 0
+
   constructor(private buf: Buffer, private at = 0) {}
+
+  private tag() {
+    if (++this.tags > MAX_TAGS) fail('NBT ma wiecej tagow, niz wynosi limit')
+  }
 
   private need(bytes: number) {
     if (this.at + bytes > this.buf.length) fail('NBT urywa sie w polowie wartosci')
@@ -135,6 +146,7 @@ class Reader {
 
   value(type: number, depth: number): NbtValue {
     if (depth > MAX_DEPTH) fail('NBT jest zagniezdzony glebiej niz limit')
+    this.tag()
 
     switch (type) {
       case TAG_BYTE: return this.i8()

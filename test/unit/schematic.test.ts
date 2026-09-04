@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest'
 
 import { asCompound, asNumber, readNbt } from '../../server/utils/nbt'
 import {
+  SCHEMATIC_LIMITS,
   type SchematicInfo,
+  boundedVolume,
   detectFormat,
   itemsFor,
   legacyState,
@@ -268,5 +270,27 @@ describe('materialsOf', () => {
       { state: parseStateString('minecraft:spruce_stairs[facing=south]'), count: 4 },
       { state: parseStateString('minecraft:air'), count: 100 },
     ])).toEqual([{ item: 'minecraft:spruce_stairs', count: 7 }])
+  })
+})
+
+describe('limity twardosci', () => {
+  it('przepuszcza normalny rozmiar', () => {
+    expect(boundedVolume({ x: 15, y: 16, z: 15 })).toBe(3600)
+  })
+
+  it('odrzuca pojedyncza os ponad limit', () => {
+    expect(() => boundedVolume({ x: SCHEMATIC_LIMITS.maxDimension + 1, y: 1, z: 1 }))
+      .toThrow(/axis x/)
+  })
+
+  // Kazda os miesci sie w limicie, a iloczyn to 68 miliardow blokow. Bez tego
+  // sprawdzenia unpackSpanning probuje zaalokowac na to tablice.
+  it('odrzuca objetosc, ktorej zadna pojedyncza os nie zdradza', () => {
+    expect(() => boundedVolume({ x: 4096, y: 4096, z: 4096 })).toThrow(/over the/)
+  })
+
+  it('odrzuca NaN i nieskonczonosc', () => {
+    expect(() => boundedVolume({ x: Number.NaN, y: 1, z: 1 })).toThrow()
+    expect(() => boundedVolume({ x: Number.POSITIVE_INFINITY, y: 1, z: 1 })).toThrow()
   })
 })
