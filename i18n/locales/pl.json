@@ -3086,5 +3086,26 @@
       "withdrawn": "Wycofany"
     },
     "verifiedOrg": "Zweryfikowana organizacja"
+  },
+  "seller": {
+    "title": "Sprzedaż",
+    "intro": "Ustaw cenę projektu, a pieniądze trafiają wprost na Twoje konto. Wypłaty i weryfikacja tożsamości idą przez Stripe, więc ta strona nigdy nie widzi numeru konta ani dokumentu.",
+    "ownAccount": "Twoje konto",
+    "start": "Skonfiguruj",
+    "continue": "Dokończ konfigurację",
+    "failed": "Nie udało się.",
+    "rateStandard": "Prowizja od sprzedaży: 1%.",
+    "ratePartner": "Prowizja od sprzedaży: 0,5%, bo to konto ma status partnera.",
+    "applyReduced": "Złóż wniosek o status partnera albo weryfikację organizacji",
+    "howTitle": "Jak to działa",
+    "howStripe": "Stripe obsługuje płatność, weryfikację tożsamości i wypłatę. Dane karty nigdy nie trafiają na tę stronę.",
+    "howDirect": "Sprzedaż ląduje na Twoim koncie, a u nas zostaje tylko prowizja.",
+    "howLicence": "Cenę ustalasz Ty i Ty odpowiadasz za to, że masz prawo sprzedawać to, co publikujesz.",
+    "states": {
+      "none": "Nieskonfigurowane",
+      "started": "Niedokończone",
+      "review": "W weryfikacji",
+      "ready": "Gotowe"
+    }
   }
 }

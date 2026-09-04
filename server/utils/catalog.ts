@@ -30,6 +30,8 @@ export interface ProjectRow {
   environment: string[]
   links: Record<string, string>
   meta: Record<string, unknown>
+  price: number
+  currency: string
   downloads: string | number
   follows: number
   created: string | number
@@ -72,7 +74,7 @@ export function num(value: string | number | null | undefined): number {
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
   status, license, license_url, icon, categories, game_versions, loaders, environment,
-  links, meta, downloads, follows, created, updated, published`
+  links, meta, price, currency, downloads, follows, created, updated, published`
 
 const VERSION_COLUMNS = `id, project_id, number, name, changelog, channel,
   game_versions, loaders, meta, downloads, created`
@@ -171,6 +173,8 @@ export interface ProjectInput {
   meta?: unknown
   orgId?: unknown
   authorship?: unknown
+  price?: unknown
+  currency?: unknown
 }
 
 function text(value: unknown, max: number): string {
@@ -274,6 +278,18 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     throw createError({ statusCode: 400, statusMessage: 'a project needs an owner' })
   }
 
+  const price = input.price === undefined ? current.price : Math.floor(Number(input.price) || 0)
+  if (price < 0 || (price > 0 && (price < MIN_PRICE_MINOR || price > MAX_PRICE_MINOR))) {
+    throw createError({ statusCode: 400, statusMessage: 'price is outside the allowed range' })
+  }
+
+  const currency = input.currency === undefined
+    ? current.currency
+    : String(input.currency).toLowerCase()
+  if (!isCurrency(currency)) {
+    throw createError({ statusCode: 400, statusMessage: 'unsupported currency' })
+  }
+
   const status = typeof input.status === 'string' ? input.status : current.status
   if (!isProjectStatus(status)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown status' })
@@ -287,7 +303,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, meta = $12, published = $13, updated = $14,
-       owner_id = $15, org_id = $16
+       owner_id = $15, org_id = $16, price = $17, currency = $18
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -310,6 +326,8 @@ export async function updateProject(id: string | number, input: ProjectInput): P
       Date.now(),
       ownerId,
       orgId,
+      price,
+      currency,
     ],
   )
 

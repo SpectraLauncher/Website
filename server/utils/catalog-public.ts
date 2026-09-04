@@ -70,9 +70,13 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
     object_key: string
     status: string
     updated: string
+    price: number
+    owner_id: string | null
+    org_id: string | null
   }>(
     `SELECT f.id AS file_id, f.version_id, v.project_id,
-            f.filename, f.object_key, p.status, p.updated
+            f.filename, f.object_key, p.status, p.updated,
+            p.price, p.owner_id, p.org_id
      FROM version_file f
      JOIN version v ON v.id = f.version_id
      JOIN project p ON p.id = v.project_id
@@ -84,7 +88,14 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
   return {
     file: { object_key: row.object_key, filename: row.filename, id: row.file_id } as FileRow,
     version: { id: row.version_id, project_id: row.project_id } as VersionRow,
-    project: { id: row.project_id, status: row.status, updated: row.updated } as ProjectRow,
+    project: {
+      id: row.project_id,
+      status: row.status,
+      updated: row.updated,
+      price: row.price,
+      owner_id: row.owner_id,
+      org_id: row.org_id,
+    } as unknown as ProjectRow,
   }
 }
 

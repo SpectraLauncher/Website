@@ -188,3 +188,21 @@ export async function describeRequest(row: VerificationRow): Promise<DescribedRe
     },
   }
 }
+
+// The standing a sale is charged at, resolved from whoever owns the project.
+export async function sellerStanding(
+  ownerId: string | null,
+  orgId: string | null,
+): Promise<SellerStanding> {
+  if (orgId) {
+    const org = await one<{ verified: boolean }>(
+      'SELECT COALESCE(verified, FALSE) AS verified FROM organization WHERE id = $1', [orgId])
+    return { partner: false, verifiedOrg: Boolean(org?.verified) }
+  }
+
+  if (!ownerId) return { partner: false, verifiedOrg: false }
+
+  const user = await one<{ partner: boolean }>(
+    'SELECT COALESCE(partner, FALSE) AS partner FROM "user" WHERE id = $1', [ownerId])
+  return { partner: Boolean(user?.partner), verifiedOrg: false }
+}

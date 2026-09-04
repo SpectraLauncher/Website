@@ -134,6 +134,60 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  // One Stripe Connect account per seller, which is an account or an
+  // organization. Payouts and identity checks live on Stripe's side; what is
+  // kept here is only the pointer and enough state to know whether a sale may
+  // go through at all.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS seller (
+      id            TEXT PRIMARY KEY,
+      user_id       TEXT REFERENCES "user"(id) ON DELETE CASCADE,
+      org_id        TEXT,
+      stripe_account TEXT NOT NULL,
+      charges_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+      payouts_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+      details_submitted BOOLEAN NOT NULL DEFAULT FALSE,
+      country       TEXT,
+      created       BIGINT NOT NULL,
+      updated       BIGINT NOT NULL,
+      CONSTRAINT seller_one_subject CHECK (num_nonnulls(user_id, org_id) = 1)
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_user ON seller (user_id) WHERE user_id IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_org ON seller (org_id) WHERE org_id IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_account ON seller (stripe_account);
+  `)
+
+  // What someone bought, and for how much. The buyer keeps access to the version
+  // they paid for even if the project later changes price or disappears from the
+  // listings, which is why this stores the amounts rather than reading them back
+  // off the project.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS purchase (
+      id           TEXT PRIMARY KEY,
+      buyer_id     TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      project_id   TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      seller_id    TEXT REFERENCES seller(id) ON DELETE SET NULL,
+      amount       INTEGER NOT NULL,
+      currency     TEXT NOT NULL,
+      fee          INTEGER NOT NULL,
+      status       TEXT NOT NULL DEFAULT 'pending',
+      session_id   TEXT,
+      intent_id    TEXT,
+      created      BIGINT NOT NULL,
+      completed    BIGINT
+    );
+    CREATE INDEX IF NOT EXISTS idx_purchase_buyer ON purchase (buyer_id, project_id);
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_session ON purchase (session_id)
+      WHERE session_id IS NOT NULL;
+    CREATE INDEX IF NOT EXISTS idx_purchase_status ON purchase (status, created);
+  `)
+
+  // A buyer owns a project once, not once per attempt.
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_owned
+      ON purchase (buyer_id, project_id) WHERE status = 'paid'
+  `)
+
   // Applications for partner status and organization verification. Both lower
   // the commission, so neither is a switch someone can flip on themselves.
   await pool.query(`

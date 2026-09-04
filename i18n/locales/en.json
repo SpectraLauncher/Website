@@ -3086,5 +3086,26 @@
       "withdrawn": "Withdrawn"
     },
     "verifiedOrg": "Verified organization"
+  },
+  "seller": {
+    "title": "Selling",
+    "intro": "Set a price on a project and the money goes straight to your account. Payouts and identity checks run on Stripe, so this site never sees a bank account or a document.",
+    "ownAccount": "Your account",
+    "start": "Set up",
+    "continue": "Continue setup",
+    "failed": "That did not go through.",
+    "rateStandard": "Commission on a sale: 1%.",
+    "ratePartner": "Commission on a sale: 0.5%, because this account has partner standing.",
+    "applyReduced": "Apply for partner standing or organization verification",
+    "howTitle": "How it works",
+    "howStripe": "Stripe handles the payment, the identity check and the payout. Card details never touch this site.",
+    "howDirect": "A sale lands on your connected account and only the commission stays here.",
+    "howLicence": "You decide the price and you answer for having the right to sell what you publish.",
+    "states": {
+      "none": "Not set up",
+      "started": "Unfinished",
+      "review": "Under review",
+      "ready": "Ready"
+    }
   }
 }
