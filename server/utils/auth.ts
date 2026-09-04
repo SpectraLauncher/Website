@@ -1,9 +1,11 @@
 
 import type { H3Event } from 'h3'
 import { betterAuth } from 'better-auth'
-import { bearer, captcha, oneTimeToken, twoFactor, username } from 'better-auth/plugins'
+import { bearer, captcha, oneTimeToken, organization, twoFactor, username } from 'better-auth/plugins'
 import { createTransport } from 'nodemailer'
 
+import { isAdmin } from './admin'
+import { catalogIsPublic } from './catalog-gate'
 import { usePool } from './db'
 import { uniqueUsername } from './username'
 
@@ -249,6 +251,29 @@ export function useAuth() {
     plugins: [
       username(),
       twoFactor({ issuer: 'Spectra Launcher' }),
+      // Organizacje sa wspolwlascicielem projektow w katalogu — patrz kolumna
+      // project.org_id. Zakladanie ich chodzi za ta sama flaga co reszta
+      // katalogu, bo inaczej funkcja wyciekalaby uzytkownikom na dlugo przed
+      // tym, zanim katalog w ogole zobaczy swiatlo dzienne.
+      organization({
+        creatorRole: 'owner',
+        allowUserToCreateOrganization: user => catalogIsPublic() || isAdmin(user),
+        sendInvitationEmail: async (data) => {
+          const site = mailAssetOrigin()
+          await sendMail(data.email, `Join ${data.organization.name} on Spectra`, mailTemplate({
+            preheader: `${data.inviter.user.name || 'Someone'} invited you to ${data.organization.name}.`,
+            eyebrow: 'Organization invite',
+            title: `Join ${data.organization.name}`,
+            body: `${data.inviter.user.name || 'Someone'} invited you to join `
+              + `${data.organization.name} on Spectra as ${data.role}. `
+              + 'Accepting lets you publish and manage the projects it owns.',
+            ctaUrl: `${site}/org/invite/${data.id}`,
+            ctaLabel: 'View invite',
+            footnote: 'If you were not expecting this, you can ignore this message — '
+              + 'the invite expires on its own.',
+          }))
+        },
+      }),
       bearer(),
       oneTimeToken(),
       ...(process.env.TURNSTILE_SECRET_KEY

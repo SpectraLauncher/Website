@@ -26,6 +26,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     adminEmails: process.env.ADMIN_EMAILS || '',
+    // Jedna flaga na caly katalog tresci. Dopoki jest wylaczona, kazda trasa
+    // katalogu odpowiada 404 wszystkim poza adminem — patrz server/utils/catalog-gate.ts.
+    catalogPublic: process.env.CATALOG_PUBLIC === 'true',
     public: {
 
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',

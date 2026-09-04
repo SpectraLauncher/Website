@@ -1,5 +1,6 @@
 import { getMigrations } from 'better-auth/db/migration'
 import { ensureAccountIssuer, ensureAdminRole, ensureSchema } from '../utils/schema'
+import { ensureCatalogSchema } from '../utils/schema-catalog'
 import { backfillUsernames } from '../utils/username'
 
 export default defineNitroPlugin(async () => {
@@ -23,6 +24,7 @@ export default defineNitroPlugin(async () => {
     const { runMigrations } = await getMigrations(useAuth().options)
     await runMigrations()
     await ensureSchema()
+    await ensureCatalogSchema()
 
     const promoted = await ensureAdminRole()
     if (promoted) console.info(`[db] promoted ${promoted} account(s) to admin from ADMIN_EMAILS`)
