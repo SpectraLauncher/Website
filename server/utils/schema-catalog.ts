@@ -132,6 +132,18 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  // Selling. Price is in minor units of the currency so nothing ever rounds, and
+  // zero means free, which is what every project starts as.
+  await pool.query(`ALTER TABLE project ADD COLUMN IF NOT EXISTS price INTEGER NOT NULL DEFAULT 0`)
+  await pool.query(`ALTER TABLE project ADD COLUMN IF NOT EXISTS currency TEXT NOT NULL DEFAULT 'EUR'`)
+
+  // Who claimed authorship, when, and against which wording. Stored rather than
+  // checked in a form, because the claim is the thing that carries weight later
+  // and a checkbox that leaves no record proves nothing.
+  await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_by TEXT')
+  await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_at BIGINT')
+  await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_terms TEXT')
+
   // Environment is a real column rather than a JSONB field because it is a
   // browse filter, and a browse filter that cannot use an index is a browse
   // filter that gets slower every month.

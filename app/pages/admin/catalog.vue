@@ -132,6 +132,10 @@ const ownerOptions = computed(() => [
 
 const creating = ref(false)
 const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: '' })
+const authorship = ref(false)
+
+const AUTHORSHIP_TEXT = 'Jestem autorem tej pracy albo mam prawa do jej publikowania '
+  + 'i rozpowszechniania tutaj, i biorę odpowiedzialność za to oświadczenie.'
 
 const versionDraft = reactive({
   number: '',
@@ -198,7 +202,7 @@ async function open(id: string) {
 }
 
 async function create() {
-  if (!draft.title.trim()) return
+  if (!draft.title.trim() || !authorship.value) return
   busy.value = 'create'
   error.value = ''
   try {
@@ -209,12 +213,14 @@ async function create() {
         type: draft.type,
         slug: draft.slug || undefined,
         orgId: draft.orgId || undefined,
+        authorship: true,
       },
     })
     selected.value = res.project
     creating.value = false
     draft.title = ''
     draft.slug = ''
+    authorship.value = false
     announce('Projekt utworzony jako szkic.')
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
@@ -481,8 +487,19 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                   value-key="value"
                 />
               </div>
+
+              <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <input v-model="authorship" type="checkbox" class="mt-0.5 size-4 shrink-0 accent-primary">
+                <span class="text-sm text-muted">{{ AUTHORSHIP_TEXT }}</span>
+              </label>
+
               <div class="mt-4 flex gap-2">
-                <UButton label="Utwórz" :loading="busy === 'create'" @click="create" />
+                <UButton
+                  label="Utwórz"
+                  :loading="busy === 'create'"
+                  :disabled="!authorship || !draft.title.trim()"
+                  @click="create"
+                />
                 <UButton variant="ghost" color="neutral" label="Anuluj" @click="creating = false" />
               </div>
             </div>

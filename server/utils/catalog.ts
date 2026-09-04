@@ -167,6 +167,7 @@ export interface ProjectInput {
   links?: unknown
   meta?: unknown
   orgId?: unknown
+  authorship?: unknown
 }
 
 function text(value: unknown, max: number): string {
@@ -204,6 +205,16 @@ export async function createProject(input: ProjectInput, ownerId: string): Promi
     throw createError({ statusCode: 409, statusMessage: 'slug is taken' })
   }
 
+  // The claim is refused rather than defaulted. A project with no recorded
+  // declaration is one nobody can be held to later, which is the whole point of
+  // recording it.
+  if (input.authorship !== AUTHORSHIP_TERMS && input.authorship !== true) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'the authorship declaration has to be accepted',
+    })
+  }
+
   const orgId = text(input.orgId, 64) || null
   const now = Date.now()
 
@@ -223,6 +234,8 @@ export async function createProject(input: ProjectInput, ownerId: string): Promi
       JSON.stringify(stringMap(input.links)),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
       now,
+      ownerId,
+      AUTHORSHIP_TERMS,
     ],
   )
 
