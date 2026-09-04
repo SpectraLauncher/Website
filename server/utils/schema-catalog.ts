@@ -15,6 +15,8 @@ import { usePool } from './db'
 export async function ensureCatalogSchema() {
   const pool = usePool()
 
+  await adoptTextIds(pool)
+
   await pool.query(`
     -- Project. game_versions and loaders are denormalised here as the union over
     -- versions — a listing asks for "mods for 1.20.1 on Fabric", not "versions
@@ -24,7 +26,7 @@ export async function ensureCatalogSchema() {
     --
     -- The owner is an account OR an organization, exactly one of the two.
     CREATE TABLE IF NOT EXISTS project (
-      id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      id            TEXT PRIMARY KEY,
       slug          TEXT NOT NULL UNIQUE,
       type          TEXT NOT NULL,
       owner_id      TEXT REFERENCES "user"(id) ON DELETE CASCADE,
@@ -57,8 +59,8 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_project_org           ON project (org_id);
 
     CREATE TABLE IF NOT EXISTS version (
-      id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      project_id    BIGINT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      id            TEXT PRIMARY KEY,
+      project_id    TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
       number        TEXT NOT NULL,
       name          TEXT NOT NULL DEFAULT '',
       changelog     TEXT NOT NULL DEFAULT '',
@@ -79,8 +81,8 @@ export async function ensureCatalogSchema() {
     -- the launcher has to speak it, but sha1 is collision-broken and does not get
     -- to decide where a file lives.
     CREATE TABLE IF NOT EXISTS version_file (
-      id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      version_id BIGINT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
+      id         TEXT PRIMARY KEY,
+      version_id TEXT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
       filename   TEXT   NOT NULL,
       size       BIGINT NOT NULL,
       sha1       TEXT   NOT NULL,
@@ -97,19 +99,19 @@ export async function ensureCatalogSchema() {
     -- A dependency points at a project here, a specific version here, or at a
     -- foreign catalog (external = { source: 'modrinth', id: '...' }) — exactly one.
     CREATE TABLE IF NOT EXISTS version_dependency (
-      id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      version_id  BIGINT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
+      id          TEXT PRIMARY KEY,
+      version_id  TEXT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
       kind        TEXT   NOT NULL DEFAULT 'required',
-      project_id  BIGINT REFERENCES project(id) ON DELETE CASCADE,
-      depends_on  BIGINT REFERENCES version(id) ON DELETE CASCADE,
+      project_id  TEXT REFERENCES project(id) ON DELETE CASCADE,
+      depends_on  TEXT REFERENCES version(id) ON DELETE CASCADE,
       external    JSONB,
       CONSTRAINT dependency_one_target CHECK (num_nonnulls(project_id, depends_on, external) = 1)
     );
     CREATE INDEX IF NOT EXISTS idx_dependency_version ON version_dependency (version_id);
 
     CREATE TABLE IF NOT EXISTS project_gallery (
-      id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      project_id BIGINT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      id         TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
       url        TEXT NOT NULL,
       title      TEXT NOT NULL DEFAULT '',
       ordering   INTEGER NOT NULL DEFAULT 0,
@@ -173,4 +175,33 @@ export async function ensureCatalogSchema() {
     console.warn('[db] pg_trgm unavailable - catalog search without typo tolerance:',
       (e as Error).message)
   }
+}
+
+// Catalog ids started out as BIGINT counters and became random base62 strings,
+// because a counter makes an unlisted project findable by walking /project/1
+// upwards. The tables are rebuilt rather than migrated in place, which is only
+// safe while they hold nothing — so this refuses loudly rather than guessing if
+// they do not.
+async function adoptTextIds(pool: ReturnType<typeof usePool>) {
+  const column = await pool.query<{ data_type: string }>(`
+    SELECT data_type FROM information_schema.columns
+    WHERE table_name = 'project' AND column_name = 'id'
+  `)
+
+  const current = column.rows[0]?.data_type
+  if (!current || current === 'text') return
+
+  const counted = await pool.query<{ n: number }>('SELECT count(*)::int AS n FROM project')
+  const rows = counted.rows[0]?.n ?? 0
+
+  if (rows > 0) {
+    throw new Error(`catalog tables still use integer ids and hold ${rows} project(s). `
+      + 'Rebuilding would drop them, so this has to be migrated by hand: add a text id '
+      + 'column, backfill it, repoint the foreign keys, then swap the primary key.')
+  }
+
+  console.info('[db] rebuilding empty catalog tables with text ids')
+  await pool.query(`
+    DROP TABLE IF EXISTS version_dependency, project_gallery, version_file, version, project CASCADE
+  `)
 }

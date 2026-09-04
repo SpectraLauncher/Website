@@ -1,4 +1,6 @@
 
+import { looksLikeId } from './ids'
+
 export const SLUG_MIN = 3
 export const SLUG_MAX = 64
 
@@ -51,15 +53,21 @@ export function normalizeSlug(raw: string): string {
     .slice(0, SLUG_MAX)
 }
 
-export type SlugProblem = 'too-short' | 'too-long' | 'reserved' | 'numeric'
+export type SlugProblem = 'too-short' | 'too-long' | 'reserved' | 'numeric' | 'id-shaped'
 
-// A purely numeric slug would collide with id lookup, which the v2 API accepts
-// alongside slugs — `/v2/project/12` has to mean exactly one thing.
+// A slug has to be distinguishable from an id, because the v2 API and
+// /project/<id> both accept either on the same path.
 export function slugProblem(slug: string): SlugProblem | null {
   if (slug.length < SLUG_MIN) return 'too-short'
   if (slug.length > SLUG_MAX) return 'too-long'
   if (/^\d+$/.test(slug)) return 'numeric'
+  // Reserved is checked first because it is the more useful answer: "launcher"
+  // happens to be eight lowercase characters, and telling someone it collides
+  // with a route helps more than telling them it looks like an id.
   if (RESERVED_SLUGS.has(slug)) return 'reserved'
+  // /project/<id> accepts an id or a slug on the same path, so a slug shaped
+  // like an id would make that path ambiguous.
+  if (looksLikeId(slug)) return 'id-shaped'
   return null
 }
 

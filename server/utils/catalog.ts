@@ -1,5 +1,6 @@
 
 import { exec, one, q } from './db'
+import { isPublicId, newId } from './ids'
 import {
   LISTED_STATUSES,
   isLicense,
@@ -69,14 +70,14 @@ export function num(value: string | number | null | undefined): number {
   return value === null || value === undefined ? 0 : Number(value)
 }
 
-const PROJECT_COLUMNS = `id::text, slug, type, owner_id, org_id, title, summary, description,
+const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
   status, license, license_url, icon, categories, game_versions, loaders, environment,
   links, meta, downloads, follows, created, updated, published`
 
-const VERSION_COLUMNS = `id::text, project_id::text, number, name, changelog, channel,
+const VERSION_COLUMNS = `id, project_id, number, name, changelog, channel,
   game_versions, loaders, meta, downloads, created`
 
-const FILE_COLUMNS = `id::text, version_id::text, filename, size, sha1, sha512,
+const FILE_COLUMNS = `id, version_id, filename, size, sha1, sha512,
   is_primary, object_key, created`
 
 // --- reads ---------------------------------------------------------------
@@ -87,13 +88,15 @@ export async function projectBySlug(slug: string): Promise<ProjectRow | undefine
     `SELECT ${PROJECT_COLUMNS} FROM project WHERE slug = $1`, [slug])
 }
 
-// A caller may hold either a slug or a numeric id — the v2 API accepts both on
-// the same path, which is why purely numeric slugs are rejected at creation.
+// A caller may hold either a slug or an id, and both arrive on the same path.
+// Ids are tried first; slugs shaped like one are refused at creation, so the two
+// can never mean different projects.
 export async function projectByIdOrSlug(key: string): Promise<ProjectRow | undefined> {
-  if (/^\d+$/.test(key)) {
+  if (isPublicId(key)) {
     // sql-safe: PROJECT_COLUMNS is a constant column list
-    return await one<ProjectRow>(
-      `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = $1`, [Number(key)])
+    const found = await one<ProjectRow>(
+      `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = $1`, [key])
+    if (found) return found
   }
   return await projectBySlug(key)
 }
@@ -128,7 +131,7 @@ export async function filesForVersions(versionIds: Array<string | number>): Prom
 
 export async function galleryOf(projectId: string | number) {
   return await q<{ id: string, url: string, title: string, ordering: number, featured: boolean }>(
-    `SELECT id::text, url, title, ordering, featured FROM project_gallery
+    `SELECT id, url, title, ordering, featured FROM project_gallery
      WHERE project_id = $1 ORDER BY ordering, id`, [projectId])
 }
 
@@ -236,6 +239,7 @@ export async function createProject(input: ProjectInput, ownerId: string): Promi
       now,
       ownerId,
       AUTHORSHIP_TERMS,
+      newId(),
     ],
   )
 
@@ -342,7 +346,7 @@ export async function createVersion(
   const channel = isVersionChannel(input.channel) ? input.channel : 'release'
 
   const existing = await one<{ id: string }>(
-    'SELECT id::text FROM version WHERE project_id = $1 AND number = $2', [projectId, number])
+    'SELECT id FROM version WHERE project_id = $1 AND number = $2', [projectId, number])
   if (existing) throw createError({ statusCode: 409, statusMessage: 'version number is taken' })
 
   // sql-safe: VERSION_COLUMNS is a constant column list
@@ -356,6 +360,7 @@ export async function createVersion(
       stringList(input.gameVersions, 200), stringList(input.loaders, 20),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
       Date.now(),
+      newId(),
     ],
   )
 
@@ -391,7 +396,7 @@ export async function attachFile(versionId: string | number, file: FileInput): P
      RETURNING ${FILE_COLUMNS}`,
     [
       versionId, file.filename, file.size, file.sha1, file.sha512,
-      file.primary ?? true, file.key, Date.now(),
+      file.primary ?? true, file.key, Date.now(), newId(),
     ],
   )
   return row!

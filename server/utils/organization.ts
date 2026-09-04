@@ -93,7 +93,7 @@ export async function orgProjects(orgId: string, includeDrafts: boolean): Promis
 
   // sql-safe: `filter` is one of two constant fragments chosen above, never request text
   return await q<ProjectRow>(
-    `SELECT id::text, slug, type, owner_id, org_id, title, summary, description, status,
+    `SELECT id, slug, type, owner_id, org_id, title, summary, description, status,
             license, license_url, icon, categories, game_versions, loaders, links, meta,
             downloads, follows, created, updated, published
      FROM project WHERE org_id = $1 ${filter}

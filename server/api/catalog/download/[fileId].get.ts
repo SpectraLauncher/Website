@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const viewer = await requireCatalogRead(event)
 
   const fileId = String(getRouterParam(event, 'fileId') ?? '')
-  if (!/^\d+$/.test(fileId)) throw createError({ statusCode: 404, statusMessage: 'no such file' })
+  if (!isPublicId(fileId)) throw createError({ statusCode: 404, statusMessage: 'no such file' })
 
   const found = await downloadTarget(fileId)
   if (!found || !await visibleProject(found.project, viewer)) {

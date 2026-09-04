@@ -71,7 +71,7 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
     status: string
     updated: string
   }>(
-    `SELECT f.id::text AS file_id, f.version_id::text, v.project_id::text,
+    `SELECT f.id AS file_id, f.version_id, v.project_id,
             f.filename, f.object_key, p.status, p.updated
      FROM version_file f
      JOIN version v ON v.id = f.version_id

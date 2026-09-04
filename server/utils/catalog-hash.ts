@@ -31,13 +31,13 @@ export async function versionsByHash(
   // sql-safe: `column` is one of two constants chosen above, never request text
   const rows = await q<Record<string, any>>(
     `SELECT ${column} AS hash,
-            f.id::text AS f_id, f.version_id::text AS f_version, f.filename, f.size,
+            f.id AS f_id, f.version_id AS f_version, f.filename, f.size,
             f.sha1, f.sha512, f.is_primary, f.object_key, f.created AS f_created,
-            v.id::text AS v_id, v.project_id::text AS v_project, v.number, v.name,
+            v.id AS v_id, v.project_id AS v_project, v.number, v.name,
             v.changelog, v.channel, v.game_versions AS v_game_versions,
             v.loaders AS v_loaders, v.meta AS v_meta, v.downloads AS v_downloads,
             v.created AS v_created,
-            p.id::text AS p_id, p.slug, p.type, p.status, p.title, p.summary,
+            p.id AS p_id, p.slug, p.type, p.status, p.title, p.summary,
             p.description, p.license, p.license_url, p.icon, p.categories,
             p.game_versions AS p_game_versions, p.loaders AS p_loaders, p.links,
             p.meta AS p_meta, p.downloads AS p_downloads, p.follows,
