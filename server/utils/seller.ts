@@ -62,6 +62,10 @@ export async function ensureSellerAccount(input: {
     business_profile: {
       product_description: 'Minecraft content sold on usespectra.app',
     },
+  }, {
+    // Two clicks race here otherwise: the second insert is refused by the unique
+    // index, but Stripe already holds an account nothing points at.
+    idempotencyKey: `seller:${input.orgId ?? input.userId}`,
   })
 
   const now = Date.now()
@@ -145,6 +149,18 @@ export async function purchasesOf(buyerId: string): Promise<PurchaseRow[]> {
     `SELECT ${PURCHASE_COLUMNS} FROM purchase
      WHERE buyer_id = $1 AND status = 'paid' ORDER BY completed DESC NULLS LAST`,
     [buyerId],
+  )
+}
+
+export async function pendingPurchase(
+  buyerId: string,
+  projectId: string,
+): Promise<PurchaseRow | undefined> {
+  // sql-safe: PURCHASE_COLUMNS is a constant column list
+  return await one<PurchaseRow>(
+    `SELECT ${PURCHASE_COLUMNS} FROM purchase
+     WHERE buyer_id = $1 AND project_id = $2 AND status = 'pending'`,
+    [buyerId, projectId],
   )
 }
 

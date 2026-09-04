@@ -212,10 +212,17 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_purchase_status ON purchase (status, created);
   `)
 
-  // A buyer owns a project once, not once per attempt.
   await pool.query(`
     CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_owned
       ON purchase (buyer_id, project_id) WHERE status = 'paid'
+  `)
+
+  // Without this a buyer can open two checkout sessions for one project, pay
+  // both, and have the second webhook rejected by the index above — money taken
+  // with no entitlement written.
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_open
+      ON purchase (buyer_id, project_id) WHERE status = 'pending'
   `)
 
   // Applications for partner status and organization verification. Both lower

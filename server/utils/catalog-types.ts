@@ -88,3 +88,42 @@ export function isLicense(value: unknown): value is License {
 export function projectPath(type: ProjectType, slug: string): string {
   return `/${TYPE_PREFIX[type]}/${slug}`
 }
+
+export const ENVIRONMENTS = ['client', 'server'] as const
+export type Environment = typeof ENVIRONMENTS[number]
+
+// Registry: the categories offered per project type. Adding one is a line here
+// plus a translation under catalog.categoryNames; nothing else reads the list.
+export const CATEGORIES: Record<ProjectType, readonly string[]> = {
+  mod: [
+    'adventure', 'cursed', 'decoration', 'economy', 'equipment', 'food',
+    'game-mechanics', 'library', 'magic', 'management', 'minigame', 'mobs',
+    'optimization', 'social', 'storage', 'technology', 'transportation', 'utility',
+  ],
+  modpack: [
+    'adventure', 'challenging', 'combat', 'kitchen-sink', 'lightweight',
+    'magic', 'multiplayer', 'optimization', 'quests', 'technology',
+  ],
+  resourcepack: [
+    'audio', 'blocks', 'combat', 'decoration', 'entities', 'environment',
+    'equipment', 'fonts', 'gui', 'items', 'locale', 'models', 'realistic',
+    'simplistic', 'themed', 'tweaks', 'vanilla-like',
+  ],
+  shader: [
+    'atmosphere', 'bloom', 'cartoon', 'colored-lighting', 'fantasy', 'foliage',
+    'path-tracing', 'pbr', 'performance', 'realistic', 'reflections',
+    'semi-realistic', 'shadows', 'vanilla-like',
+  ],
+  schematic: [
+    'base', 'farm', 'house', 'interior', 'landscape', 'medieval', 'modern',
+    'redstone', 'ship', 'statue', 'storage', 'tower', 'transport',
+  ],
+}
+
+export function isEnvironment(value: unknown): value is Environment {
+  return ENVIRONMENTS.includes(value as Environment)
+}
+
+export function categoriesFor(type: ProjectType): readonly string[] {
+  return CATEGORIES[type] ?? []
+}

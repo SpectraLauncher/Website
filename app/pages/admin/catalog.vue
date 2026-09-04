@@ -44,6 +44,7 @@ interface Version {
 
 interface FullProject extends ShortProject {
   orgId: string | null
+  environment: string[]
   price: number
   currency: string
   description: string
@@ -61,6 +62,7 @@ interface Warning {
 
 interface Analysis {
   detected: string | null
+  environment: string[]
   title: string | null
   slug: string | null
   summary: string | null
@@ -123,6 +125,20 @@ const filterType = ref('')
 const selected = ref<FullProject | null>(null)
 const gameVersions = ref<string[]>([])
 const organizations = ref<Array<{ id: string, slug: string, name: string }>>([])
+const vocabulary = ref<{ categories: Record<string, string[]>, environments: string[] }>({
+  categories: {},
+  environments: [],
+})
+
+const categoryOptions = computed(() =>
+  (vocabulary.value.categories[selected.value?.type ?? ''] ?? [])
+    .map(value => ({ value, label: t(`catalog.categoryNames.${value}`) })))
+
+const environmentOptions = computed(() =>
+  vocabulary.value.environments.map(value => ({
+    value,
+    label: t(`catalog.environments.${value}`),
+  })))
 
 // An empty value means the project belongs to the signed-in account; the schema
 // allows exactly one of the two owners, never both and never neither.
@@ -181,6 +197,12 @@ async function loadOrganizations() {
     const res = await $fetch<{ organizations: typeof organizations.value }>('/api/org/mine')
     organizations.value = res.organizations
   } catch { organizations.value = [] }
+}
+
+async function loadVocabulary() {
+  try {
+    vocabulary.value = await $fetch('/api/admin/catalog/vocabulary')
+  } catch { vocabulary.value = { categories: {}, environments: [] } }
 }
 
 async function loadGameVersions() {
@@ -246,6 +268,8 @@ async function save() {
         orgId: p.orgId ?? '',
         price: Math.round(Number(p.price) || 0),
         currency: p.currency || 'eur',
+        categories: p.categories,
+        environment: p.environment,
       },
     })
     selected.value = { ...res.project, versions: p.versions }
@@ -290,6 +314,9 @@ async function upload(event: Event) {
     versionDraft.number ||= res.analysis.version || ''
     if (res.analysis.loaders.length) versionDraft.loaders = res.analysis.loaders
     if (res.analysis.gameVersions.length) versionDraft.gameVersions = res.analysis.gameVersions
+    if (selected.value && res.analysis.environment.length && !selected.value.environment.length) {
+      selected.value.environment = res.analysis.environment
+    }
 
     if (!selected.value && res.analysis.title) {
       draft.title = res.analysis.title
@@ -370,6 +397,7 @@ onMounted(() => {
   loadProjects()
   loadGameVersions()
   loadOrganizations()
+  loadVocabulary()
 })
 
 useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
@@ -561,6 +589,22 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                   v-model="selected.orgId"
                   :items="ownerOptions"
                   value-key="value"
+                  class="sm:col-span-2"
+                />
+                <USelectMenu
+                  v-model="selected.categories"
+                  :items="categoryOptions"
+                  value-key="value"
+                  multiple
+                  :placeholder="t('catalog.categories')"
+                  class="sm:col-span-2"
+                />
+                <USelectMenu
+                  v-model="selected.environment"
+                  :items="environmentOptions"
+                  value-key="value"
+                  multiple
+                  :placeholder="t('catalog.environment')"
                   class="sm:col-span-2"
                 />
                 <UInput

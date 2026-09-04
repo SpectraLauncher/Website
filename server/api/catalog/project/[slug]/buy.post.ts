@@ -16,6 +16,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'you already own this' })
   }
 
+  const stripe = requireStripe()
+
+  // An attempt already under way is resumed rather than duplicated. Paying twice
+  // for one project is money taken that no entitlement would record.
+  const pending = await pendingPurchase(buyer.id, project!.id)
+  if (pending?.session_id) {
+    const existing = await stripe.checkout.sessions.retrieve(pending.session_id)
+      .catch(() => null)
+
+    if (existing?.status === 'open' && existing.url) return { url: existing.url }
+    await failPurchase(pending.session_id)
+  }
+
   const seller = await sellerFor(project!.owner_id, project!.org_id)
   if (!canSell(seller)) {
     throw createError({ statusCode: 409, statusMessage: 'this seller cannot take payments yet' })
@@ -24,7 +37,6 @@ export default defineEventHandler(async (event) => {
   const standing = await sellerStanding(project!.owner_id, project!.org_id)
   const fee = commissionMinorUnits(price, standing)
 
-  const stripe = requireStripe()
   const site = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
   const currency = String(project!.currency ?? 'eur').toLowerCase()
 

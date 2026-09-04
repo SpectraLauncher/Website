@@ -18,6 +18,7 @@ export interface UploadAnalysis {
   loaders: string[]
   gameVersionRange: string | null
   gameVersions: string[]
+  environment: string[]
   meta: Record<string, unknown>
   // Translation keys with parameters, not sentences — the client decides the
   // language, and the server has no idea which one that is.
@@ -36,6 +37,7 @@ function blank(): UploadAnalysis {
     loaders: [],
     gameVersionRange: null,
     gameVersions: [],
+    environment: [],
     meta: {},
     warnings: [],
   }
@@ -56,6 +58,9 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
   if (info.kind === 'mod') {
     out.detected = 'mod'
     out.loaders = info.loaders
+    out.environment = info.environment === 'client'
+      ? ['client']
+      : info.environment === 'server' ? ['server'] : ['client', 'server']
     out.meta = { modId: info.modId, environment: info.environment }
     // Quilt loads Fabric mods unchanged, so a Fabric jar is usable on both and
     // saying so is a fact about the loader, not a guess about the mod.
@@ -65,12 +70,14 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
   if (info.kind === 'shader') {
     out.detected = 'shader'
     out.loaders = info.shaderEngines
+    out.environment = ['client']
     out.meta = { engines: info.shaderEngines }
   }
 
   if (info.kind === 'resourcepack') {
     out.detected = 'resourcepack'
     out.loaders = ['minecraft']
+    out.environment = ['client']
     out.meta = { packFormat: info.packFormat }
     out.summary ??= info.description
   }

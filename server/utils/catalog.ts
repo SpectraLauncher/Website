@@ -3,6 +3,8 @@ import { exec, one, q } from './db'
 import { isPublicId, newId } from './ids'
 import {
   LISTED_STATUSES,
+  categoriesFor,
+  isEnvironment,
   isLicense,
   isProjectStatus,
   isProjectType,
@@ -172,6 +174,7 @@ export interface ProjectInput {
   links?: unknown
   meta?: unknown
   orgId?: unknown
+  environment?: unknown
   authorship?: unknown
   price?: unknown
   currency?: unknown
@@ -303,7 +306,8 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, meta = $12, published = $13, updated = $14,
-       owner_id = $15, org_id = $16, price = $17, currency = $18
+       owner_id = $15, org_id = $16, price = $17, currency = $18,
+       environment = $19
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -317,7 +321,10 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         : (isLicense(input.license) ? input.license : null),
       input.licenseUrl === undefined ? current.license_url : (text(input.licenseUrl, 500) || null),
       input.icon === undefined ? current.icon : (text(input.icon, 500) || null),
-      input.categories === undefined ? current.categories : stringList(input.categories, 20),
+      input.categories === undefined
+        ? current.categories
+        : stringList(input.categories, 20)
+          .filter(c => categoriesFor(current.type).includes(c)),
       JSON.stringify(input.links === undefined ? current.links : stringMap(input.links)),
       JSON.stringify(input.meta === undefined
         ? current.meta
@@ -328,6 +335,9 @@ export async function updateProject(id: string | number, input: ProjectInput): P
       orgId,
       price,
       currency,
+      input.environment === undefined
+        ? current.environment
+        : stringList(input.environment, 4).filter(isEnvironment),
     ],
   )
 
