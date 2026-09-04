@@ -2,6 +2,7 @@
 definePageMeta({ middleware: 'admin' })
 
 const localePath = useLocalePath()
+const { t } = useI18n()
 
 interface ShortProject {
   id: string
@@ -51,6 +52,11 @@ interface FullProject extends ShortProject {
   versions: Version[]
 }
 
+interface Warning {
+  code: string
+  params: Record<string, string>
+}
+
 interface Analysis {
   detected: string | null
   title: string | null
@@ -63,34 +69,22 @@ interface Analysis {
   gameVersionRange: string | null
   gameVersions: string[]
   meta: Record<string, unknown>
-  warnings: string[]
+  warnings: Warning[]
 }
 
-const TYPES = [
-  { value: 'schematic', label: 'Schemat' },
-  { value: 'resourcepack', label: 'Resourcepack' },
-  { value: 'shader', label: 'Shaderpack' },
-  { value: 'mod', label: 'Mod' },
-  { value: 'modpack', label: 'Modpack' },
-]
+const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'modpack'] as const
+const STATUS_IDS = ['draft', 'published', 'unlisted', 'archived', 'rejected', 'removed'] as const
 
-const STATUSES = [
-  { value: 'draft', label: 'Szkic — tylko dla właściciela' },
-  { value: 'published', label: 'Opublikowany — widoczny i na listach' },
-  { value: 'unlisted', label: 'Tylko z linku — nie trafia na listy' },
-  { value: 'archived', label: 'Zarchiwizowany — widoczny, bez rozwoju' },
-  { value: 'rejected', label: 'Odrzucony przez moderację' },
-  { value: 'removed', label: 'Usunięty' },
-]
+const TYPES = computed(() =>
+  TYPE_IDS.map(id => ({ value: id, label: t(`catalog.admin.types.${id}`) })))
 
-const STATUS_LABELS: Record<string, string> = {
-  draft: 'szkic',
-  published: 'live',
-  unlisted: 'z linku',
-  archived: 'archiwum',
-  rejected: 'odrzucony',
-  removed: 'usunięty',
-}
+const STATUSES = computed(() =>
+  STATUS_IDS.map(id => ({ value: id, label: t(`catalog.admin.statuses.${id}`) })))
+
+const statusBadge = (status: string) =>
+  (STATUS_IDS as readonly string[]).includes(status)
+    ? t(`catalog.admin.badges.${status}`)
+    : status
 
 const STATUS_COLORS: Record<string, 'success' | 'warning' | 'error' | 'neutral'> = {
   published: 'success',
@@ -126,16 +120,13 @@ const organizations = ref<Array<{ id: string, slug: string, name: string }>>([])
 // An empty value means the project belongs to the signed-in account; the schema
 // allows exactly one of the two owners, never both and never neither.
 const ownerOptions = computed(() => [
-  { value: '', label: 'Moje konto' },
+  { value: '', label: t('catalog.admin.myAccount') },
   ...organizations.value.map(org => ({ value: org.id, label: org.name })),
 ])
 
 const creating = ref(false)
 const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: '' })
 const authorship = ref(false)
-
-const AUTHORSHIP_TEXT = 'Jestem autorem tej pracy albo mam prawa do jej publikowania '
-  + 'i rozpowszechniania tutaj, i biorę odpowiedzialność za to oświadczenie.'
 
 const versionDraft = reactive({
   number: '',
@@ -156,7 +147,7 @@ const pendingFile = ref<{
 const analysis = ref<Analysis | null>(null)
 
 function fail(e: any) {
-  error.value = e?.data?.statusMessage || e?.message || 'Coś poszło nie tak.'
+  error.value = e?.data?.statusMessage || e?.message || t('catalog.admin.genericError')
 }
 
 function announce(message: string) {
@@ -221,7 +212,7 @@ async function create() {
     draft.title = ''
     draft.slug = ''
     authorship.value = false
-    announce('Projekt utworzony jako szkic.')
+    announce(t('catalog.admin.created'))
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
@@ -249,19 +240,19 @@ async function save() {
       },
     })
     selected.value = { ...res.project, versions: p.versions }
-    announce('Zapisane.')
+    announce(t('catalog.admin.saved'))
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
 async function remove() {
   if (!selected.value) return
-  if (!confirm(`Usunąć „${selected.value.title}" wraz z wersjami i plikami?`)) return
+  if (!confirm(t('catalog.admin.confirmDelete', { title: selected.value.title }))) return
   busy.value = 'delete'
   try {
     await $fetch(`/api/admin/catalog/projects/${selected.value.id}`, { method: 'DELETE' })
     selected.value = null
-    announce('Projekt usunięty.')
+    announce(t('catalog.admin.deleted'))
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
@@ -330,7 +321,7 @@ async function addVersion() {
     versionDraft.changelog = ''
     pendingFile.value = null
     analysis.value = null
-    announce('Wersja dodana.')
+    announce(t('catalog.admin.versionAdded'))
     await open(selected.value.id)
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
@@ -338,7 +329,7 @@ async function addVersion() {
 
 async function removeVersion(id: string) {
   if (!selected.value) return
-  if (!confirm('Usunąć tę wersję?')) return
+  if (!confirm(t('catalog.admin.confirmDeleteVersion'))) return
   busy.value = 'version'
   try {
     await $fetch(`/api/admin/catalog/versions/${id}`, { method: 'DELETE' })
@@ -361,7 +352,7 @@ onMounted(() => {
   loadOrganizations()
 })
 
-useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
+useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
 </script>
 
 <template>
@@ -379,10 +370,8 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
             </span>
 
             <div class="min-w-0 flex-1">
-              <h1 class="text-2xl font-semibold tracking-tight">Katalog</h1>
-              <p class="truncate text-sm text-muted">
-                {{ total }} {{ total === 1 ? 'projekt' : 'projektów' }} · widoczne wyłącznie dla administratora
-              </p>
+              <h1 class="text-2xl font-semibold tracking-tight">{{ t('catalog.admin.title') }}</h1>
+              <p class="truncate text-sm text-muted">{{ t('catalog.admin.subtitle', { n: total }) }}</p>
             </div>
 
             <UButton
@@ -391,14 +380,14 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               size="lg"
               class="rounded-xl"
               icon="i-lucide-arrow-left"
-              label="Panel"
+              :label="t('catalog.admin.backToPanel')"
               :to="localePath('/admin')"
             />
             <UButton
               size="lg"
               class="rounded-xl"
               icon="i-lucide-plus"
-              label="Nowy projekt"
+              :label="t('catalog.admin.newProject')"
               @click="creating = true; selected = null"
             />
           </div>
@@ -426,7 +415,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
             <div class="flex gap-2">
               <UInput
                 v-model="search"
-                placeholder="Szukaj…"
+                :placeholder="t('catalog.admin.searchPlaceholder')"
                 icon="i-lucide-search"
                 class="flex-1"
                 @keyup.enter="loadProjects"
@@ -443,7 +432,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
             <USelect
               v-model="filterType"
               class="mt-2 w-full"
-              :items="[{ value: '', label: 'Wszystkie typy' }, ...TYPES]"
+              :items="[{ value: '', label: t('catalog.admin.allTypes') }, ...TYPES]"
               value-key="value"
               @update:model-value="loadProjects"
             />
@@ -461,25 +450,25 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                       variant="subtle"
                       size="sm"
                       :color="STATUS_COLORS[project.status] ?? 'neutral'"
-                      :label="STATUS_LABELS[project.status] ?? project.status"
+                      :label="statusBadge(project.status)"
                     />
                   </span>
                   <span class="truncate text-xs text-dimmed">{{ project.path }}</span>
                 </button>
               </li>
               <li v-if="!projects.length && busy !== 'list'" class="px-3 py-6 text-center text-sm text-dimmed">
-                Nic tu jeszcze nie ma.
+                {{ t('catalog.admin.emptyList') }}
               </li>
             </ul>
           </aside>
 
           <main class="space-y-4">
             <div v-if="creating" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <h2 class="mb-4 text-lg font-semibold">Nowy projekt</h2>
+              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.newProject') }}</h2>
               <div class="grid gap-3 sm:grid-cols-2">
-                <UInput v-model="draft.title" placeholder="Tytuł" />
+                <UInput v-model="draft.title" :placeholder="t('catalog.admin.projectTitle')" />
                 <USelect v-model="draft.type" :items="TYPES" value-key="value" />
-                <UInput v-model="draft.slug" placeholder="slug (opcjonalnie)" />
+                <UInput v-model="draft.slug" :placeholder="t('catalog.admin.slugOptional')" />
                 <USelect
                   v-if="organizations.length"
                   v-model="draft.orgId"
@@ -490,17 +479,22 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
 
               <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
                 <input v-model="authorship" type="checkbox" class="mt-0.5 size-4 shrink-0 accent-primary">
-                <span class="text-sm text-muted">{{ AUTHORSHIP_TEXT }}</span>
+                <span class="text-sm text-muted">{{ t('catalog.admin.authorship') }}</span>
               </label>
 
               <div class="mt-4 flex gap-2">
                 <UButton
-                  label="Utwórz"
+                  :label="t('catalog.admin.create')"
                   :loading="busy === 'create'"
                   :disabled="!authorship || !draft.title.trim()"
                   @click="create"
                 />
-                <UButton variant="ghost" color="neutral" label="Anuluj" @click="creating = false" />
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  :label="t('catalog.admin.cancel')"
+                  @click="creating = false"
+                />
               </div>
             </div>
 
@@ -518,21 +512,21 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                   :loading="busy === 'delete'"
                   @click="remove"
                 />
-                <UButton label="Zapisz" :loading="busy === 'save'" @click="save" />
+                <UButton :label="t('catalog.admin.save')" :loading="busy === 'save'" @click="save" />
               </div>
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <UInput v-model="selected.title" placeholder="Tytuł" />
+                <UInput v-model="selected.title" :placeholder="t('catalog.admin.projectTitle')" />
                 <UInput v-model="selected.slug" placeholder="slug" />
                 <UInput
                   v-model="selected.summary"
-                  placeholder="Krótki opis (lista, karta)"
+                  :placeholder="t('catalog.admin.summary')"
                   class="sm:col-span-2"
                 />
                 <UTextarea
                   v-model="selected.description"
                   :rows="8"
-                  placeholder="Pełny opis, markdown"
+                  :placeholder="t('catalog.admin.description')"
                   class="sm:col-span-2"
                 />
                 <USelect v-model="selected.status" :items="STATUSES" value-key="value" />
@@ -540,7 +534,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                   v-model="selected.license"
                   :items="LICENSES"
                   value-key="value"
-                  placeholder="Licencja"
+                  :placeholder="t('catalog.admin.license')"
                 />
                 <USelect
                   v-if="organizations.length"
@@ -552,8 +546,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               </div>
 
               <p class="mt-3 text-xs text-dimmed">
-                Publiczny adres: <code>{{ selected.path }}</code> — działa dopiero po ustawieniu
-                CATALOG_PUBLIC, a status musi być „opublikowany”.
+                {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
               </p>
             </div>
 
@@ -561,7 +554,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               v-if="selected"
               class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
             >
-              <h2 class="mb-4 text-lg font-semibold">Wersje</h2>
+              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.versions') }}</h2>
 
               <ul v-if="selected.versions.length" class="mb-6 space-y-2">
                 <li
@@ -573,7 +566,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                     <span class="font-mono text-sm">{{ version.number }}</span>
                     <UBadge variant="subtle" size="sm" :label="version.channel" />
                     <span class="text-xs text-dimmed">
-                      {{ version.gameVersions.join(', ') || 'brak wersji gry' }}
+                      {{ version.gameVersions.join(', ') || t('catalog.admin.noGameVersions') }}
                       <template v-if="version.loaders.length"> · {{ version.loaders.join(', ') }}</template>
                     </span>
                     <span class="flex-1"></span>
@@ -602,25 +595,27 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                 <label class="flex cursor-pointer items-center gap-3">
                   <UIcon name="i-lucide-upload" class="size-5 text-primary" />
                   <span class="text-sm">
-                    {{ pendingFile ? pendingFile.filename : 'Wybierz plik — metadane wyciągną się same' }}
+                    {{ pendingFile ? pendingFile.filename : t('catalog.admin.pickFile') }}
                   </span>
                   <input type="file" class="hidden" @change="upload">
                 </label>
 
-                <div v-if="busy === 'upload'" class="mt-2 text-xs text-dimmed">Czytam plik…</div>
+                <div v-if="busy === 'upload'" class="mt-2 text-xs text-dimmed">
+                  {{ t('catalog.admin.readingFile') }}
+                </div>
 
                 <div v-if="analysis" class="mt-3 space-y-2 text-xs">
                   <p v-if="analysis.detected" class="text-muted">
-                    Rozpoznano: <strong>{{ analysis.detected }}</strong>
+                    {{ t('catalog.admin.detected', { kind: analysis.detected }) }}
                     <template v-if="analysis.gameVersionRange">
-                      · zakres z manifestu <code>{{ analysis.gameVersionRange }}</code>
+                      · {{ t('catalog.admin.declaredRange', { range: analysis.gameVersionRange }) }}
                     </template>
                   </p>
-                  <p v-for="warning in analysis.warnings" :key="warning" class="text-warning">
-                    {{ warning }}
+                  <p v-for="warning in analysis.warnings" :key="warning.code" class="text-warning">
+                    {{ t(warning.code, warning.params) }}
                   </p>
                   <div v-if="materials.length" class="text-muted">
-                    Materiały:
+                    {{ t('catalog.admin.materials') }}:
                     <span v-for="material in materials" :key="material.item" class="text-dimmed">
                       {{ material.count }}× {{ material.item.replace('minecraft:', '') }},
                     </span>
@@ -629,27 +624,31 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               </div>
 
               <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <UInput v-model="versionDraft.number" placeholder="Numer wersji, np. 1.4.2" />
+                <UInput v-model="versionDraft.number" :placeholder="t('catalog.admin.versionNumber')" />
                 <USelect v-model="versionDraft.channel" :items="CHANNELS" value-key="value" />
-                <UInput v-model="versionDraft.name" placeholder="Nazwa wersji (opcjonalnie)" class="sm:col-span-2" />
+                <UInput
+                  v-model="versionDraft.name"
+                  :placeholder="t('catalog.admin.versionName')"
+                  class="sm:col-span-2"
+                />
                 <UTextarea
                   v-model="versionDraft.changelog"
                   :rows="3"
-                  placeholder="Changelog"
+                  :placeholder="t('catalog.admin.changelog')"
                   class="sm:col-span-2"
                 />
                 <USelectMenu
                   v-model="versionDraft.gameVersions"
                   :items="gameVersions"
                   multiple
-                  placeholder="Wersje gry"
+                  :placeholder="t('catalog.admin.gameVersions')"
                   class="sm:col-span-2"
                 />
               </div>
 
               <UButton
                 class="mt-4"
-                label="Dodaj wersję"
+                :label="t('catalog.admin.addVersion')"
                 icon="i-lucide-plus"
                 :loading="busy === 'version'"
                 :disabled="!versionDraft.number.trim()"
@@ -662,7 +661,7 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               class="rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm"
             >
               <UIcon name="i-lucide-package-open" class="mx-auto size-10 text-dimmed" />
-              <p class="mt-3 text-sm text-muted">Wybierz projekt z listy albo utwórz nowy.</p>
+              <p class="mt-3 text-sm text-muted">{{ t('catalog.admin.pickOne') }}</p>
             </div>
           </main>
         </div>

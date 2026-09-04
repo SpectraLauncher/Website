@@ -19,7 +19,9 @@ export interface UploadAnalysis {
   gameVersionRange: string | null
   gameVersions: string[]
   meta: Record<string, unknown>
-  warnings: string[]
+  // Translation keys with parameters, not sentences — the client decides the
+  // language, and the server has no idea which one that is.
+  warnings: Array<{ code: string, params: Record<string, string> }>
 }
 
 function blank(): UploadAnalysis {
@@ -75,16 +77,17 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
 
   if (info.kind === 'datapack') {
     out.detected = null
-    out.warnings.push('this looks like a datapack, which the catalog does not carry yet')
+    out.warnings.push({ code: 'catalog.warn.datapack', params: {} })
   }
 
   if (!out.gameVersions.length && out.gameVersionRange) {
-    out.warnings.push(`could not resolve the declared range "${out.gameVersionRange}" `
-      + 'into known releases — pick the versions by hand')
+    out.warnings.push({
+      code: 'catalog.warn.unresolvedRange',
+      params: { range: out.gameVersionRange },
+    })
   }
   if (!out.gameVersionRange && out.detected === 'mod') {
-    out.warnings.push('the manifest declares no Minecraft dependency, so no versions '
-      + 'could be derived from it')
+    out.warnings.push({ code: 'catalog.warn.noDependency', params: {} })
   }
 
   return out
@@ -109,11 +112,16 @@ function fromSchematic(info: SchematicInfo): UploadAnalysis {
   }
 
   if (info.requiredMods.length) {
-    out.warnings.push(`uses blocks from outside vanilla: ${info.requiredMods.join(', ')}`)
+    out.warnings.push({
+      code: 'catalog.warn.moddedBlocks',
+      params: { mods: info.requiredMods.join(', ') },
+    })
   }
   if (info.unknown.length) {
-    out.warnings.push(`${info.unknown.length} legacy block id(s) could not be named, `
-      + 'so the material list is incomplete')
+    out.warnings.push({
+      code: 'catalog.warn.unknownLegacyIds',
+      params: { n: String(info.unknown.length) },
+    })
   }
 
   return out
@@ -140,7 +148,10 @@ export async function analyzeUpload(
     return out
   } catch (e) {
     const out = blank()
-    out.warnings.push(`could not read ${filename}: ${(e as Error).message}`)
+    out.warnings.push({
+      code: 'catalog.warn.unreadable',
+      params: { filename, reason: (e as Error).message },
+    })
     return out
   }
 }
@@ -157,9 +168,9 @@ async function attachPreview(out: UploadAnalysis, body: Uint8Array, sha512: stri
     if (url) out.meta.preview = url
     out.meta.previewShown = payload.shown
     if (payload.truncated) {
-      out.warnings.push('the build is large enough that the 3D preview shows only part of it')
+      out.warnings.push({ code: 'catalog.warn.previewTruncated', params: {} })
     }
   } catch (e) {
-    out.warnings.push(`no 3D preview: ${(e as Error).message}`)
+    out.warnings.push({ code: 'catalog.warn.noPreview', params: { reason: (e as Error).message } })
   }
 }

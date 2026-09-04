@@ -2924,6 +2924,84 @@
       "rejectInvite": "Decline",
       "openOrg": "Open the organization",
       "signIn": "Sign in"
+    },
+    "warn": {
+      "datapack": "This looks like a datapack, which the catalog does not carry yet.",
+      "unresolvedRange": "Could not resolve the declared range \"{range}\" into known releases — pick the versions by hand.",
+      "noDependency": "The manifest declares no Minecraft dependency, so no versions could be derived from it.",
+      "moddedBlocks": "Uses blocks from outside vanilla: {mods}.",
+      "unknownLegacyIds": "{n} legacy block id(s) could not be named, so the material list is incomplete.",
+      "unreadable": "Could not read {filename}: {reason}",
+      "previewTruncated": "The build is large enough that the 3D preview shows only part of it.",
+      "noPreview": "No 3D preview: {reason}"
+    },
+    "sale": {
+      "unknownLicense": "No licence is recorded here, so nothing can tell you whether selling this is allowed. Make sure you hold the rights.",
+      "nonCommercial": "{license} forbids commercial use. Unless you hold the rights some other way, putting a price on this breaks its own licence.",
+      "copyleft": "{license} lets you sell this, but every buyer may ask you for the source and may pass the work on themselves. A price does not restrict that."
+    },
+    "admin": {
+      "title": "Catalog",
+      "subtitle": "{n} projects · visible to administrators only",
+      "backToPanel": "Panel",
+      "newProject": "New project",
+      "searchPlaceholder": "Search…",
+      "allTypes": "All types",
+      "emptyList": "Nothing here yet.",
+      "pickOne": "Pick a project from the list, or create one.",
+      "projectTitle": "Title",
+      "slugOptional": "slug (optional)",
+      "create": "Create",
+      "cancel": "Cancel",
+      "save": "Save",
+      "summary": "Short description, for lists and cards",
+      "description": "Full description, markdown",
+      "license": "Licence",
+      "myAccount": "My account",
+      "publicAddress": "Public address: {path} — live only once CATALOG_PUBLIC is set and the status is published.",
+      "versions": "Versions",
+      "noGameVersions": "no game versions",
+      "pickFile": "Choose a file — the metadata reads itself",
+      "readingFile": "Reading the file…",
+      "detected": "Detected: {kind}",
+      "declaredRange": "declared range {range}",
+      "materials": "Materials",
+      "versionNumber": "Version number, e.g. 1.4.2",
+      "versionName": "Version name (optional)",
+      "changelog": "Changelog",
+      "gameVersions": "Game versions",
+      "addVersion": "Add version",
+      "authorship": "I am the author of this work, or I hold the rights to publish and distribute it here, and I accept responsibility for that claim.",
+      "created": "Project created as a draft.",
+      "saved": "Saved.",
+      "deleted": "Project deleted.",
+      "versionAdded": "Version added.",
+      "genericError": "That did not work.",
+      "confirmDelete": "Delete \"{title}\" along with its versions and files?",
+      "confirmDeleteVersion": "Delete this version?",
+      "types": {
+        "schematic": "Schematic",
+        "resourcepack": "Resource pack",
+        "shader": "Shader pack",
+        "mod": "Mod",
+        "modpack": "Modpack"
+      },
+      "statuses": {
+        "draft": "Draft — owner only",
+        "published": "Published — visible and listed",
+        "unlisted": "Link only — stays off the listings",
+        "archived": "Archived — visible, no longer developed",
+        "rejected": "Rejected by moderation",
+        "removed": "Removed"
+      },
+      "badges": {
+        "draft": "draft",
+        "published": "live",
+        "unlisted": "link only",
+        "archived": "archived",
+        "rejected": "rejected",
+        "removed": "removed"
+      }
     }
   }
 }

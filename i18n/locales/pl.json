@@ -2924,6 +2924,84 @@
       "rejectInvite": "Odrzuć",
       "openOrg": "Otwórz organizację",
       "signIn": "Zaloguj się"
+    },
+    "warn": {
+      "datapack": "To wygląda na datapack, którego katalog jeszcze nie obsługuje.",
+      "unresolvedRange": "Nie udało się rozwinąć zakresu \"{range}\" na znane wydania — wybierz wersje ręcznie.",
+      "noDependency": "Manifest nie deklaruje zależności od Minecrafta, więc nie dało się z niego wyprowadzić wersji.",
+      "moddedBlocks": "Używa bloków spoza waniliowego Minecrafta: {mods}.",
+      "unknownLegacyIds": "Nie udało się nazwać {n} starych ID bloków, więc lista materiałów jest niepełna.",
+      "unreadable": "Nie udało się odczytać {filename}: {reason}",
+      "previewTruncated": "Budowla jest na tyle duża, że podgląd 3D pokazuje tylko jej część.",
+      "noPreview": "Brak podglądu 3D: {reason}"
+    },
+    "sale": {
+      "unknownLicense": "Nie zapisano tu licencji, więc nic nie powie Ci, czy wolno to sprzedawać. Upewnij się, że masz prawa.",
+      "nonCommercial": "{license} zakazuje użycia komercyjnego. Jeśli nie masz praw z innego tytułu, ustawienie ceny łamie tę licencję.",
+      "copyleft": "{license} pozwala to sprzedawać, ale każdy kupujący może zażądać od Ciebie źródeł i sam przekazać pracę dalej. Cena tego nie ogranicza."
+    },
+    "admin": {
+      "title": "Katalog",
+      "subtitle": "Projektów: {n} · widoczne wyłącznie dla administratora",
+      "backToPanel": "Panel",
+      "newProject": "Nowy projekt",
+      "searchPlaceholder": "Szukaj…",
+      "allTypes": "Wszystkie typy",
+      "emptyList": "Nic tu jeszcze nie ma.",
+      "pickOne": "Wybierz projekt z listy albo utwórz nowy.",
+      "projectTitle": "Tytuł",
+      "slugOptional": "slug (opcjonalnie)",
+      "create": "Utwórz",
+      "cancel": "Anuluj",
+      "save": "Zapisz",
+      "summary": "Krótki opis, na listy i karty",
+      "description": "Pełny opis, markdown",
+      "license": "Licencja",
+      "myAccount": "Moje konto",
+      "publicAddress": "Publiczny adres: {path} — działa dopiero po ustawieniu CATALOG_PUBLIC i przy statusie opublikowanym.",
+      "versions": "Wersje",
+      "noGameVersions": "brak wersji gry",
+      "pickFile": "Wybierz plik — metadane wyciągną się same",
+      "readingFile": "Czytam plik…",
+      "detected": "Rozpoznano: {kind}",
+      "declaredRange": "zakres z manifestu {range}",
+      "materials": "Materiały",
+      "versionNumber": "Numer wersji, np. 1.4.2",
+      "versionName": "Nazwa wersji (opcjonalnie)",
+      "changelog": "Changelog",
+      "gameVersions": "Wersje gry",
+      "addVersion": "Dodaj wersję",
+      "authorship": "Jestem autorem tej pracy albo mam prawa do jej publikowania i rozpowszechniania tutaj, i biorę odpowiedzialność za to oświadczenie.",
+      "created": "Projekt utworzony jako szkic.",
+      "saved": "Zapisane.",
+      "deleted": "Projekt usunięty.",
+      "versionAdded": "Wersja dodana.",
+      "genericError": "Nie udało się.",
+      "confirmDelete": "Usunąć „{title}\" wraz z wersjami i plikami?",
+      "confirmDeleteVersion": "Usunąć tę wersję?",
+      "types": {
+        "schematic": "Schemat",
+        "resourcepack": "Resourcepack",
+        "shader": "Shaderpack",
+        "mod": "Mod",
+        "modpack": "Modpack"
+      },
+      "statuses": {
+        "draft": "Szkic — tylko dla właściciela",
+        "published": "Opublikowany — widoczny i na listach",
+        "unlisted": "Tylko z linku — nie trafia na listy",
+        "archived": "Zarchiwizowany — widoczny, bez rozwoju",
+        "rejected": "Odrzucony przez moderację",
+        "removed": "Usunięty"
+      },
+      "badges": {
+        "draft": "szkic",
+        "published": "live",
+        "unlisted": "z linku",
+        "archived": "archiwum",
+        "rejected": "odrzucony",
+        "removed": "usunięty"
+      }
     }
   }
 }

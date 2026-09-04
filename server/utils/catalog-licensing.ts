@@ -8,7 +8,10 @@ export type SaleNoteLevel = 'none' | 'obligation' | 'conflict'
 
 export interface SaleNote {
   level: SaleNoteLevel
-  message: string
+  // A translation key with its parameters, never a sentence: a message written
+  // here could only ever exist in one language.
+  code: string
+  params: Record<string, string>
 }
 
 // Forbids commercial use outright. Selling one of these is the seller putting
@@ -31,39 +34,24 @@ export function allowsCommercialUse(license: string | null): boolean {
 
 export function saleNote(license: string | null): SaleNote {
   if (!license || license === 'other') {
-    return {
-      level: 'obligation',
-      message: 'No licence is recorded for this project, so nothing here can tell you '
-        + 'whether selling it is allowed. Make sure you hold the rights.',
-    }
+    return { level: 'obligation', code: 'catalog.sale.unknownLicense', params: {} }
   }
 
   if (NON_COMMERCIAL.includes(license)) {
-    return {
-      level: 'conflict',
-      message: `${license} forbids commercial use. Unless you hold the rights to this work `
-        + 'by some other route, putting a price on it breaks its own licence.',
-    }
+    return { level: 'conflict', code: 'catalog.sale.nonCommercial', params: { license } }
   }
 
   if (COPYLEFT.includes(license)) {
-    return {
-      level: 'obligation',
-      message: `${license} lets you sell this, but every buyer may ask you for the source `
-        + 'and may pass the work on themselves. A price does not restrict that.',
-    }
+    return { level: 'obligation', code: 'catalog.sale.copyleft', params: { license } }
   }
 
-  return { level: 'none', message: '' }
+  return { level: 'none', code: '', params: {} }
 }
 
 // The wording someone agrees to when they publish. Stored with the project by
 // its identifier, so a later change to this text does not silently rewrite what
 // past sellers were shown.
 export const AUTHORSHIP_TERMS = 'authorship-v1'
-
-export const AUTHORSHIP_TEXT = 'I am the author of this work, or I hold the rights to '
-  + 'publish and distribute it here, and I accept responsibility for that claim.'
 
 export function isKnownLicense(value: unknown): value is License {
   return LICENSES.includes(value as License)
