@@ -1,6 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { TOOLS } from './app/utils/tools'
 
+const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
+
+// Every URL prefix the catalog owns. While CATALOG_PUBLIC is off these join
+// PRIVATE_PATHS, which is what keeps them out of robots.txt and the sitemap.
+// They are never prerendered, which is what keeps them out of llms.txt and the
+// markdown mirrors nuxt-ai-ready writes for prerendered pages.
+const CATALOG_PATHS = ['/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org']
+
 const PRIVATE_PATHS = [
   '/admin',
   '/account',
@@ -8,7 +16,8 @@ const PRIVATE_PATHS = [
   '/reset-password',
   '/secret',
   '/launcher/auth',
-  '/s/'
+  '/s/',
+  ...(CATALOG_PUBLIC ? [] : CATALOG_PATHS)
 ]
 
 const PRERENDER = [
