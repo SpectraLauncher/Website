@@ -39,6 +39,9 @@ export interface CatalogProjectData {
   created: number
   updated: number
   versions: CatalogVersion[]
+  price?: number
+  currency?: string
+  owned?: boolean
   owner?: {
     kind: 'user' | 'organization'
     slug: string | null
@@ -58,6 +61,31 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
 const body = computed(() => renderMarkdown(props.project.description))
+
+const buying = ref(false)
+const buyProblem = ref('')
+
+const priceLabel = computed(() => {
+  const price = props.project.price ?? 0
+  if (!price) return null
+  return new Intl.NumberFormat(locale.value, {
+    style: 'currency',
+    currency: (props.project.currency ?? 'eur').toUpperCase(),
+  }).format(price / 100)
+})
+
+async function buy() {
+  buying.value = true
+  buyProblem.value = ''
+  try {
+    const res = await $fetch<{ url: string }>(
+      `/api/catalog/project/${encodeURIComponent(props.project.slug)}/buy`, { method: 'POST' })
+    await navigateTo(res.url, { external: true })
+  } catch (e: any) {
+    buyProblem.value = e?.data?.statusMessage || e?.message || t('catalog.buyFailed')
+    buying.value = false
+  }
+}
 
 const when = (ms: number) =>
   new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(new Date(ms))
@@ -112,6 +140,10 @@ const sizeLabel = (bytes: number) =>
             <UIcon name="i-lucide-calendar" class="size-4" />
             {{ when(project.updated) }}
           </span>
+          <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
+            <UIcon name="i-lucide-tag" class="size-4" />
+            {{ priceLabel }}
+          </span>
           <span v-if="project.license" class="inline-flex items-center gap-1.5">
             <UIcon name="i-lucide-scale" class="size-4" />
             <a
@@ -125,6 +157,27 @@ const sizeLabel = (bytes: number) =>
           </span>
         </div>
       </div>
+    </div>
+
+    <div v-if="priceLabel" class="mt-6">
+      <UButton
+        v-if="!project.owned"
+        size="lg"
+        class="rounded-xl"
+        icon="i-lucide-shopping-cart"
+        :loading="buying"
+        :label="t('catalog.buyFor', { price: priceLabel })"
+        @click="buy"
+      />
+      <UBadge
+        v-else
+        variant="subtle"
+        color="success"
+        size="lg"
+        icon="i-lucide-check"
+        :label="t('catalog.owned')"
+      />
+      <p v-if="buyProblem" class="mt-2 text-sm text-error">{{ buyProblem }}</p>
     </div>
 
     <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">

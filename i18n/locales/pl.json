@@ -3012,7 +3012,9 @@
         "archived": "archiwum",
         "rejected": "odrzucony",
         "removed": "usunięty"
-      }
+      },
+      "price": "Cena w groszach (0 = darmowy)",
+      "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym."
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",
@@ -3050,7 +3052,10 @@
       "sponge": "Sponge",
       "structure": "Blok struktury",
       "mcedit": "MCEdit (stary)"
-    }
+    },
+    "buyFor": "Kup za {price}",
+    "owned": "Masz to w bibliotece",
+    "buyFailed": "Nie udało się otworzyć płatności."
   },
   "verification": {
     "title": "Weryfikacja",

@@ -59,6 +59,8 @@ export function shortProject(row: ProjectRow) {
     loaders: row.loaders,
     downloads: num(row.downloads),
     follows: row.follows,
+    price: Number(row.price ?? 0),
+    currency: row.currency,
     created: num(row.created),
     updated: num(row.updated),
   }

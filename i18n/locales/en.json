@@ -3012,7 +3012,9 @@
         "archived": "archived",
         "rejected": "rejected",
         "removed": "removed"
-      }
+      },
+      "price": "Price in cents (0 = free)",
+      "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free."
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",
@@ -3050,7 +3052,10 @@
       "sponge": "Sponge",
       "structure": "Structure block",
       "mcedit": "MCEdit (legacy)"
-    }
+    },
+    "buyFor": "Buy for {price}",
+    "owned": "You own this",
+    "buyFailed": "Checkout could not be opened."
   },
   "verification": {
     "title": "Verification",

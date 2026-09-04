@@ -44,6 +44,8 @@ interface Version {
 
 interface FullProject extends ShortProject {
   orgId: string | null
+  price: number
+  currency: string
   description: string
   license: string | null
   licenseUrl: string | null
@@ -96,6 +98,11 @@ const CHANNELS = [
   { value: 'release', label: 'Release' },
   { value: 'beta', label: 'Beta' },
   { value: 'alpha', label: 'Alpha' },
+]
+
+const CURRENCIES = [
+  { value: 'eur', label: 'EUR' },
+  { value: 'usd', label: 'USD' },
 ]
 
 const LICENSES = [
@@ -237,6 +244,8 @@ async function save() {
         categories: p.categories,
         links: p.links,
         orgId: p.orgId ?? '',
+        price: Math.round(Number(p.price) || 0),
+        currency: p.currency || 'eur',
       },
     })
     selected.value = { ...res.project, versions: p.versions }
@@ -340,6 +349,17 @@ async function removeVersion(id: string) {
 
 const sizeLabel = (bytes: number) =>
   bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} kB`
+
+const saleNote = computed(() => {
+  const license = selected.value?.license
+  if (!Number(selected.value?.price)) return null
+  if (!license || license === 'other') return t('catalog.sale.unknownLicense')
+  if (license === 'CC-BY-NC-SA-4.0') return t('catalog.sale.nonCommercial', { license })
+  if (['GPL-3.0-only', 'LGPL-3.0-only', 'LGPL-2.1-only', 'MPL-2.0', 'CC-BY-SA-4.0'].includes(license)) {
+    return t('catalog.sale.copyleft', { license })
+  }
+  return null
+})
 
 const materials = computed(() => {
   const list = (analysis.value?.meta?.materials ?? []) as Array<{ item: string, count: number }>
@@ -543,7 +563,25 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                   value-key="value"
                   class="sm:col-span-2"
                 />
+                <UInput
+                  v-model.number="selected.price"
+                  type="number"
+                  min="0"
+                  :placeholder="t('catalog.admin.price')"
+                />
+                <USelect v-model="selected.currency" :items="CURRENCIES" value-key="value" />
               </div>
+
+              <p class="mt-2 text-xs text-dimmed">{{ t('catalog.admin.priceHint') }}</p>
+
+              <UAlert
+                v-if="saleNote"
+                color="warning"
+                variant="subtle"
+                class="mt-3 rounded-2xl"
+                icon="i-lucide-scale"
+                :description="saleNote"
+              />
 
               <p class="mt-3 text-xs text-dimmed">
                 {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
