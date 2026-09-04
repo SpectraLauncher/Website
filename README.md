@@ -198,3 +198,13 @@ included.
   "X is not defined" — `pnpm check:autoimport` catches it.
 - **Admin returns 404, not 403.** The panel does not confirm its own existence
   to accounts that cannot use it.
+
+## Licence
+
+AGPL-3.0-only, see `LICENCE`.
+
+Note what the A adds over plain GPL: section 13 means anyone who *uses*
+usespectra.app over the network — not just anyone who receives a copy of it —
+can ask for the source of the version they are talking to. Running a modified
+fork as a public service without publishing that fork is the one thing this
+licence forbids.
