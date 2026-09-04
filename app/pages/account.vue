@@ -177,6 +177,15 @@ const savePrivacy = (value: FriendsVisibility) => run('privacy', async () => {
 
 const newEmail = ref('')
 
+const resendVerification = () => run('verify', async () => {
+  const res = await auth.sendVerificationEmail({
+    email: user.value.email,
+    callbackURL: localePath('/account')
+  })
+  if (!res?.error) notice.value = t('auth.verifyResent')
+  return res
+})
+
 const changeEmail = () => run('email', async () => {
   const res = await auth.changeEmail({ newEmail: newEmail.value, callbackURL: localePath('/account') })
   if (!res?.error) notice.value = t('account.emailPending')
@@ -354,7 +363,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   variant="subtle"
                   :color="user.emailVerified ? 'success' : 'warning'"
                   :icon="user.emailVerified ? 'i-lucide-badge-check' : 'i-lucide-mail-warning'"
-                  :label="user.emailVerified ? t('account.verified') : t('account.unverified')"
+                  :label="user.emailVerified ? t('account.verified') : t('account.unverifiedBadge')"
                 />
               </div>
             </div>
@@ -381,6 +390,28 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
             />
           </div>
         </div>
+
+        <UAlert
+          v-if="user && !user.emailVerified"
+          color="warning"
+          variant="subtle"
+          orientation="vertical"
+          class="mb-4 rounded-3xl"
+          icon="i-lucide-mail-warning"
+          :title="t('auth.verifyTitle')"
+          :description="`${t('account.unverified')} ${t('account.verifyWhy')}`"
+        >
+          <template #actions>
+            <UButton
+              color="warning"
+              size="sm"
+              class="rounded-lg"
+              :loading="busy === 'verify'"
+              :label="t('auth.verifyResend')"
+              @click="resendVerification"
+            />
+          </template>
+        </UAlert>
 
         <div class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm lg:grid lg:grid-cols-[230px_1fr]">
           <nav class="flex gap-1 overflow-x-auto border-b border-white/10 p-3 lg:flex-col lg:border-b-0 lg:border-r">

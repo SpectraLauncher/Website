@@ -2375,7 +2375,8 @@
     "verifySpam": "Nothing after a minute? Check the spam folder.",
     "verifyResend": "Send the link again",
     "verifyResent": "Sent. Give it a moment.",
-    "legal": "By creating an account you accept the {terms} and the {privacy}."
+    "legal": "By creating an account you accept the {terms} and the {privacy}.",
+    "verifyBodySignIn": "This account is not confirmed yet. We just sent a fresh link — open it to finish signing in."
   },
   "launcherAuth": {
     "title": "Signing in to the launcher",
@@ -2444,7 +2445,9 @@
         "body": "Anyone visiting your profile sees the whole friend list."
       }
     },
-    "viewProfile": "View public profile"
+    "viewProfile": "View public profile",
+    "unverifiedBadge": "Unverified",
+    "verifyWhy": "Confirm it to keep access to your account and to reset your password if you ever lose it."
   },
   "friends": {
     "title": "Friends",

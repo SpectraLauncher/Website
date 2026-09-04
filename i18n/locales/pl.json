@@ -2375,7 +2375,8 @@
     "verifySpam": "Nic nie przyszło po minucie? Zajrzyj do spamu.",
     "verifyResend": "Wyślij link ponownie",
     "verifyResent": "Wysłane. Daj mu chwilę.",
-    "legal": "Zakładając konto akceptujesz {terms} i {privacy}."
+    "legal": "Zakładając konto akceptujesz {terms} i {privacy}.",
+    "verifyBodySignIn": "To konto nie jest jeszcze potwierdzone. Właśnie wysłaliśmy nowy link — otwórz go, żeby dokończyć logowanie."
   },
   "launcherAuth": {
     "title": "Logowanie do launchera",
@@ -2444,7 +2445,9 @@
         "body": "Każdy, kto wejdzie na Twój profil, widzi pełną listę znajomych."
       }
     },
-    "viewProfile": "Zobacz profil publiczny"
+    "viewProfile": "Zobacz profil publiczny",
+    "unverifiedBadge": "Niezweryfikowany",
+    "verifyWhy": "Potwierdź go, żeby zachować dostęp do konta i móc zresetować hasło, gdybyś je kiedyś zgubił."
   },
   "friends": {
     "title": "Znajomi",

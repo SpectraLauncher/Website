@@ -191,6 +191,9 @@ export function useAuth() {
     },
     emailVerification: {
       sendOnSignUp: true,
+      // An account that predates the mail setup can no longer sign in, and the
+      // sign-up form refuses a known address — without this it has no way out.
+      sendOnSignIn: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
         await sendMail(user.email, 'Confirm your Spectra account', mailTemplate({

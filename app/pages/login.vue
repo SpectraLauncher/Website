@@ -39,6 +39,8 @@ const next = computed(() => safeNext(route.query.next, localePath('/account')))
 
 const isSignForm = computed(() => mode.value === 'signin' || mode.value === 'signup')
 
+const cameFromSignIn = ref(false)
+
 async function run(fn: () => Promise<any>) {
   loading.value = true
   error.value = ''
@@ -62,7 +64,15 @@ async function signIn() {
     { email: form.email, password: form.password },
     { headers: captchaHeaders.value }
   ))
-  if (res?.error) return
+  if (res?.error) {
+    // better-auth has already sent a fresh link (emailVerification.sendOnSignIn).
+    if (res.error.code === 'EMAIL_NOT_VERIFIED') {
+      error.value = ''
+      cameFromSignIn.value = true
+      mode.value = 'verify'
+    }
+    return
+  }
   if (res?.data?.twoFactorRedirect) return void (mode.value = 'twofactor')
   await navigateTo(next.value)
 }
@@ -177,7 +187,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
                 <UIcon name="i-lucide-mail-check" class="size-6 text-primary" />
               </span>
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.verifyTitle') }}</h1>
-              <p class="mt-2 text-sm/relaxed text-muted">{{ t('auth.verifyBody') }}</p>
+              <p class="mt-2 text-sm/relaxed text-muted">{{ t(cameFromSignIn ? 'auth.verifyBodySignIn' : 'auth.verifyBody') }}</p>
               <p class="mt-3 break-all rounded-xl bg-white/5 px-3 py-2 text-sm font-medium">{{ form.email }}</p>
               <p class="mt-3 text-xs/relaxed text-dimmed">{{ t('auth.verifySpam') }}</p>
             </div>
