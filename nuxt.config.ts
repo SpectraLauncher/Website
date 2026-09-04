@@ -8,7 +8,8 @@ const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 // They are never prerendered, which is what keeps them out of llms.txt and the
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
 const CATALOG_PATHS = [
-  '/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project'
+  '/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project',
+  '/verification'
 ]
 
 const PRIVATE_PATHS = [

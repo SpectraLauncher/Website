@@ -35,6 +35,7 @@ interface Org {
   summary: string
   description: string
   links: Record<string, string>
+  verified: boolean
   created: number
 }
 
@@ -149,7 +150,15 @@ useSeoMeta({
           </div>
 
           <div class="min-w-0 flex-1">
-            <h1 class="text-3xl font-semibold tracking-tight">{{ org.name }}</h1>
+            <h1 class="flex items-center gap-2 text-3xl font-semibold tracking-tight">
+              {{ org.name }}
+              <UIcon
+                v-if="org.verified"
+                name="i-lucide-badge-check"
+                class="size-6 shrink-0 text-primary"
+                :title="t('verification.verifiedOrg')"
+              />
+            </h1>
             <p v-if="org.summary" class="mt-2 max-w-2xl text-base/relaxed text-muted">
               {{ org.summary }}
             </p>
@@ -160,15 +169,25 @@ useSeoMeta({
             </p>
           </div>
 
-          <UButton
-            v-if="canEdit && !editing"
-            variant="subtle"
-            color="neutral"
-            class="self-start rounded-xl"
-            icon="i-lucide-pencil"
-            :label="t('catalog.org.edit')"
-            @click="startEditing"
-          />
+          <div v-if="canEdit && !editing" class="flex gap-2 self-start">
+            <UButton
+              variant="subtle"
+              color="neutral"
+              class="rounded-xl"
+              icon="i-lucide-pencil"
+              :label="t('catalog.org.edit')"
+              @click="startEditing"
+            />
+            <UButton
+              v-if="!org.verified && data?.role === 'owner'"
+              variant="ghost"
+              color="neutral"
+              class="rounded-xl"
+              icon="i-lucide-badge-check"
+              :label="t('verification.apply')"
+              :to="localePath('/verification')"
+            />
+          </div>
         </div>
 
         <UAlert

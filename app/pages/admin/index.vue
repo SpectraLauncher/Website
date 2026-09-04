@@ -368,6 +368,15 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               color="neutral"
               size="lg"
               class="rounded-xl"
+              icon="i-lucide-badge-check"
+              :label="$t('verification.queueTitle')"
+              :to="localePath('/admin/verification')"
+            />
+            <UButton
+              variant="outline"
+              color="neutral"
+              size="lg"
+              class="rounded-xl"
               icon="i-lucide-refresh-cw"
               :loading="busy === 'stats' || busy === 'users'"
               label="Odśwież"

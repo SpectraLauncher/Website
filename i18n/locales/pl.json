@@ -3051,5 +3051,40 @@
       "structure": "Blok struktury",
       "mcedit": "MCEdit (stary)"
     }
+  },
+  "verification": {
+    "title": "Weryfikacja",
+    "intro": "Konta partnerskie i zweryfikowane organizacje płacą połowę prowizji od sprzedaży. O obu decyduje moderacja, nie sam wniosek.",
+    "apply": "Złóż wniosek",
+    "submit": "Wyślij wniosek",
+    "withdraw": "Wycofaj",
+    "yourApplications": "Twoje wnioski",
+    "moderatorNote": "Moderator",
+    "failed": "Nie udało się.",
+    "pickOrg": "Wybierz organizację",
+    "bodyPlaceholder": "Napisz, kim jesteś i co publikujesz. Wszystko, czego moderator potrzebuje, żeby powiedzieć tak.",
+    "linksPlaceholder": "Po jednym w linii: nazwa, spacja, adres.\nyoutube https://youtube.com/c/twojkanal\ngithub https://github.com/twojanazwa",
+    "alreadyPartner": "To konto ma już status partnera.",
+    "needOwnedOrg": "Organizację może zgłosić tylko jej właściciel, a to konto żadnej nie posiada.",
+    "rates": "Standardowa prowizja to 1%, obniżona do 0,5% dla partnerów i zweryfikowanych organizacji. Zobacz",
+    "terms": "regulamin",
+    "queueTitle": "Kolejka weryfikacji",
+    "queueCount": "Oczekujących: {n}",
+    "queueEmpty": "Nic nie czeka.",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
+    "rejectNeedsNote": "Odrzucenie wymaga uzasadnienia — to je przeczyta wnioskodawca.",
+    "notePlaceholder": "Notatka dla wnioskodawcy",
+    "kinds": {
+      "partner": "Konto partnerskie",
+      "organization": "Weryfikacja organizacji"
+    },
+    "statuses": {
+      "pending": "Oczekuje",
+      "approved": "Zatwierdzony",
+      "rejected": "Odrzucony",
+      "withdrawn": "Wycofany"
+    },
+    "verifiedOrg": "Zweryfikowana organizacja"
   }
 }

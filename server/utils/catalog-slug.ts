@@ -14,7 +14,7 @@ export const SLUG_MAX = 64
 // through if it is missing from this list.
 const ROUTES = [
   'account', 'admin', 'badges', 'cookies', 'launcher', 'login', 'privacy',
-  'reset-password', 's', 'secret', 'terms', 'tools', 'u',
+  'reset-password', 's', 'secret', 'terms', 'tools', 'u', 'verification',
 ]
 
 const TYPE_PREFIXES = ['mod', 'pack', 'shader', 'resourcepack', 'schematic', 'org']

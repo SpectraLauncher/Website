@@ -8,7 +8,9 @@ import { describe, expect, it } from 'vitest'
 // nie odpala niczego.
 const GATED_DIRS = [
   'server/api/admin/catalog',
+  'server/api/admin/verification',
   'server/api/catalog',
+  'server/api/verification',
   'server/api/org',
   'server/api/v2',
 ]

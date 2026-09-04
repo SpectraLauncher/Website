@@ -134,6 +134,49 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  // Applications for partner status and organization verification. Both lower
+  // the commission, so neither is a switch someone can flip on themselves.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS verification_request (
+      id          TEXT PRIMARY KEY,
+      kind        TEXT NOT NULL,
+      user_id     TEXT REFERENCES "user"(id) ON DELETE CASCADE,
+      org_id      TEXT,
+      status      TEXT NOT NULL DEFAULT 'pending',
+      body        TEXT NOT NULL DEFAULT '',
+      links       JSONB NOT NULL DEFAULT '{}',
+      reviewed_by TEXT,
+      reviewed_at BIGINT,
+      review_note TEXT NOT NULL DEFAULT '',
+      created     BIGINT NOT NULL,
+      CONSTRAINT verification_one_subject CHECK (num_nonnulls(user_id, org_id) = 1)
+    );
+    CREATE INDEX IF NOT EXISTS idx_verification_status ON verification_request (status, created);
+    CREATE INDEX IF NOT EXISTS idx_verification_user ON verification_request (user_id);
+    CREATE INDEX IF NOT EXISTS idx_verification_org ON verification_request (org_id);
+  `)
+
+  // One open application per subject, so a queue cannot be flooded by resubmitting.
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_verification_open_user
+      ON verification_request (user_id) WHERE status = 'pending' AND user_id IS NOT NULL
+  `)
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_verification_open_org
+      ON verification_request (org_id) WHERE status = 'pending' AND org_id IS NOT NULL
+  `)
+
+  // Both flags are columns rather than fields inside metadata, and deliberately:
+  // the organization edit endpoint rewrites metadata wholesale, so a flag living
+  // there would be wiped by an owner editing their own description — or worse,
+  // set by them.
+  await pool.query('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS partner BOOLEAN NOT NULL DEFAULT FALSE')
+
+  const orgTable2 = await pool.query(`SELECT to_regclass('public.organization') AS t`)
+  if (orgTable2.rows[0]?.t) {
+    await pool.query('ALTER TABLE organization ADD COLUMN IF NOT EXISTS verified BOOLEAN NOT NULL DEFAULT FALSE')
+  }
+
   // Selling. Price is in minor units of the currency so nothing ever rounds, and
   // zero means free, which is what every project starts as.
   await pool.query(`ALTER TABLE project ADD COLUMN IF NOT EXISTS price INTEGER NOT NULL DEFAULT 0`)

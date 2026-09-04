@@ -219,6 +219,7 @@ export function useAuth() {
         playing: { type: 'boolean', required: false, input: false },
         banned: { type: 'boolean', required: false, input: false },
         role: { type: 'string', required: false, input: false },
+        partner: { type: 'boolean', required: false, input: false },
         friendsVisibility: { type: 'string', required: false, input: true },
       },
     },

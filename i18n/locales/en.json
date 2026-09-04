@@ -3051,5 +3051,40 @@
       "structure": "Structure block",
       "mcedit": "MCEdit (legacy)"
     }
+  },
+  "verification": {
+    "title": "Verification",
+    "intro": "Partner accounts and verified organizations pay half the commission on sales. Both are decided by moderation, not granted on request.",
+    "apply": "Apply",
+    "submit": "Send application",
+    "withdraw": "Withdraw",
+    "yourApplications": "Your applications",
+    "moderatorNote": "Moderator",
+    "failed": "That did not go through.",
+    "pickOrg": "Pick an organization",
+    "bodyPlaceholder": "Tell us who you are and what you publish. Anything a moderator would need in order to say yes.",
+    "linksPlaceholder": "One per line: a name, a space, then the address.\nyoutube https://youtube.com/c/yourchannel\ngithub https://github.com/yourname",
+    "alreadyPartner": "This account already has partner standing.",
+    "needOwnedOrg": "Only an owner may put an organization forward, and this account owns none.",
+    "rates": "Standard commission is 1%, reduced to 0.5% for partners and verified organizations. See the",
+    "terms": "terms",
+    "queueTitle": "Verification queue",
+    "queueCount": "{n} waiting",
+    "queueEmpty": "Nothing waiting.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectNeedsNote": "A rejection needs a reason — it is what the applicant will read.",
+    "notePlaceholder": "Note for the applicant",
+    "kinds": {
+      "partner": "Partner account",
+      "organization": "Organization verification"
+    },
+    "statuses": {
+      "pending": "Waiting",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "verifiedOrg": "Verified organization"
   }
 }

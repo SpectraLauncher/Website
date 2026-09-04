@@ -8,6 +8,7 @@ export interface OrgRow {
   name: string
   slug: string
   logo: string | null
+  verified: boolean
   metadata: unknown
   createdAt: string | Date
 }
@@ -57,7 +58,8 @@ export function orgMeta(raw: unknown): OrgMeta {
 
 export async function orgBySlug(slug: string): Promise<OrgRow | undefined> {
   return await one<OrgRow>(
-    `SELECT id, name, slug, logo, metadata, "createdAt" FROM organization WHERE lower(slug) = $1`,
+    `SELECT id, name, slug, logo, COALESCE(verified, FALSE) AS verified, metadata, "createdAt"
+     FROM organization WHERE lower(slug) = $1`,
     [slug.toLowerCase()],
   )
 }
@@ -124,6 +126,7 @@ export function publicOrg(org: OrgRow, meta: OrgMeta) {
     slug: org.slug,
     name: org.name,
     logo: org.logo,
+    verified: org.verified,
     summary: meta.summary,
     description: meta.description,
     links: meta.links,
