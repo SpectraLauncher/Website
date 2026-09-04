@@ -39,6 +39,12 @@ export interface CatalogProjectData {
   created: number
   updated: number
   versions: CatalogVersion[]
+  owner?: {
+    kind: 'user' | 'organization'
+    slug: string | null
+    name: string | null
+    image: string | null
+  } | null
 }
 
 const props = defineProps<{
@@ -81,6 +87,23 @@ const sizeLabel = (bytes: number) =>
         <p class="mt-2 max-w-2xl text-base/relaxed text-muted">{{ project.summary }}</p>
 
         <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-dimmed">
+          <NuxtLink
+            v-if="project.owner?.slug"
+            :to="localePath(project.owner.kind === 'organization'
+              ? `/org/${project.owner.slug}`
+              : `/u/${project.owner.slug}`)"
+            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
+          >
+            <span class="grid size-5 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+              <img v-if="project.owner.image" :src="project.owner.image" alt="" class="size-full object-cover">
+              <UIcon
+                v-else
+                :name="project.owner.kind === 'organization' ? 'i-lucide-users' : 'i-lucide-user'"
+                class="size-3"
+              />
+            </span>
+            {{ project.owner.name || project.owner.slug }}
+          </NuxtLink>
           <span class="inline-flex items-center gap-1.5">
             <UIcon name="i-lucide-download" class="size-4" />
             {{ t('catalog.downloads', { n: count(project.downloads) }) }}

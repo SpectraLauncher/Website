@@ -238,6 +238,17 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     }
   }
 
+  // Ownership moves as a pair: exactly one of the two columns is ever set, which
+  // the project_one_owner constraint enforces anyway.
+  const orgId = input.orgId === undefined
+    ? current.org_id
+    : (text(input.orgId, 64) || null)
+  const ownerId = orgId ? null : (current.owner_id ?? null)
+
+  if (!orgId && !ownerId) {
+    throw createError({ statusCode: 400, statusMessage: 'a project needs an owner' })
+  }
+
   const status = typeof input.status === 'string' ? input.status : current.status
   if (!['draft', 'published', 'archived', 'removed'].includes(status)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown status' })
@@ -250,7 +261,8 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   const row = await one<ProjectRow>(
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
-       links = $11, meta = $12, published = $13, updated = $14
+       links = $11, meta = $12, published = $13, updated = $14,
+       owner_id = $15, org_id = $16
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -271,6 +283,8 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         : (input.meta && typeof input.meta === 'object' ? input.meta : {})),
       published,
       Date.now(),
+      ownerId,
+      orgId,
     ],
   )
 

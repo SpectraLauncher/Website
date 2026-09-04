@@ -42,6 +42,7 @@ interface Version {
 }
 
 interface FullProject extends ShortProject {
+  orgId: string | null
   description: string
   license: string | null
   licenseUrl: string | null
@@ -103,9 +104,17 @@ const filterType = ref('')
 
 const selected = ref<FullProject | null>(null)
 const gameVersions = ref<string[]>([])
+const organizations = ref<Array<{ id: string, slug: string, name: string }>>([])
+
+// An empty value means the project belongs to the signed-in account; the schema
+// allows exactly one of the two owners, never both and never neither.
+const ownerOptions = computed(() => [
+  { value: '', label: 'Moje konto' },
+  ...organizations.value.map(org => ({ value: org.id, label: org.name })),
+])
 
 const creating = ref(false)
-const draft = reactive({ title: '', type: 'schematic', slug: '' })
+const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: '' })
 
 const versionDraft = reactive({
   number: '',
@@ -148,6 +157,13 @@ async function loadProjects() {
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
+async function loadOrganizations() {
+  try {
+    const res = await $fetch<{ organizations: typeof organizations.value }>('/api/org/mine')
+    organizations.value = res.organizations
+  } catch { organizations.value = [] }
+}
+
 async function loadGameVersions() {
   try {
     const res = await $fetch<{ releases: string[] }>('/api/admin/catalog/game-versions')
@@ -171,7 +187,12 @@ async function create() {
   try {
     const res = await $fetch<{ project: FullProject }>('/api/admin/catalog/projects', {
       method: 'POST',
-      body: { title: draft.title, type: draft.type, slug: draft.slug || undefined },
+      body: {
+        title: draft.title,
+        type: draft.type,
+        slug: draft.slug || undefined,
+        orgId: draft.orgId || undefined,
+      },
     })
     selected.value = res.project
     creating.value = false
@@ -201,6 +222,7 @@ async function save() {
         icon: p.icon,
         categories: p.categories,
         links: p.links,
+        orgId: p.orgId ?? '',
       },
     })
     selected.value = { ...res.project, versions: p.versions }
@@ -313,6 +335,7 @@ const materials = computed(() => {
 onMounted(() => {
   loadProjects()
   loadGameVersions()
+  loadOrganizations()
 })
 
 useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
@@ -433,7 +456,13 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
               <div class="grid gap-3 sm:grid-cols-2">
                 <UInput v-model="draft.title" placeholder="Tytuł" />
                 <USelect v-model="draft.type" :items="TYPES" value-key="value" />
-                <UInput v-model="draft.slug" placeholder="slug (opcjonalnie)" class="sm:col-span-2" />
+                <UInput v-model="draft.slug" placeholder="slug (opcjonalnie)" />
+                <USelect
+                  v-if="organizations.length"
+                  v-model="draft.orgId"
+                  :items="ownerOptions"
+                  value-key="value"
+                />
               </div>
               <div class="mt-4 flex gap-2">
                 <UButton label="Utwórz" :loading="busy === 'create'" @click="create" />
@@ -478,6 +507,13 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                   :items="LICENSES"
                   value-key="value"
                   placeholder="Licencja"
+                />
+                <USelect
+                  v-if="organizations.length"
+                  v-model="selected.orgId"
+                  :items="ownerOptions"
+                  value-key="value"
+                  class="sm:col-span-2"
                 />
               </div>
 

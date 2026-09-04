@@ -145,3 +145,51 @@ export function orgProjectCard(project: ProjectRow) {
     updated: num(project.updated),
   }
 }
+
+export interface OrgSummary {
+  id: string
+  slug: string
+  name: string
+  logo: string | null
+  role: string
+}
+
+export async function organizationsOf(userId: string): Promise<OrgSummary[]> {
+  return await q<OrgSummary>(
+    `SELECT o.id, o.slug, o.name, o.logo, m.role
+     FROM member m JOIN organization o ON o.id = m."organizationId"
+     WHERE m."userId" = $1
+     ORDER BY o.name`,
+    [userId],
+  )
+}
+
+export interface ProjectOwner {
+  kind: 'user' | 'organization'
+  slug: string | null
+  name: string | null
+  image: string | null
+}
+
+// Who a project page credits. An organization-owned project credits the
+// organization, not whichever member happened to upload it.
+export async function projectOwner(
+  ownerId: string | null,
+  orgId: string | null,
+): Promise<ProjectOwner | null> {
+  if (orgId) {
+    const org = await one<{ slug: string, name: string, logo: string | null }>(
+      'SELECT slug, name, logo FROM organization WHERE id = $1', [orgId])
+    return org
+      ? { kind: 'organization', slug: org.slug, name: org.name, image: org.logo }
+      : null
+  }
+
+  if (!ownerId) return null
+
+  const user = await one<{ username: string | null, name: string | null, image: string | null }>(
+    'SELECT username, name, image FROM "user" WHERE id = $1', [ownerId])
+  return user
+    ? { kind: 'user', slug: user.username, name: user.name ?? user.username, image: user.image }
+    : null
+}
