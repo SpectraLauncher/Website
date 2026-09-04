@@ -11,7 +11,18 @@
     "badgesDesc": "Wyróżnienia dla społeczności",
     "githubDesc": "Kod launchera i strony",
     "discordDesc": "Wsparcie i rozmowy",
-    "menu": "Menu"
+    "menu": "Menu",
+    "discover": "Przeglądaj treści",
+    "mods": "Mody",
+    "modsDesc": "Fabric, Quilt, Forge i NeoForge.",
+    "resourcepacks": "Resourcepacki",
+    "resourcepacksDesc": "Tekstury, modele i dźwięk.",
+    "shaders": "Shadery",
+    "shadersDesc": "Iris, OptiFine i Canvas.",
+    "modpacks": "Modpacki",
+    "modpacksDesc": "Gotowe zestawy do instalacji.",
+    "schematics": "Schematy",
+    "schematicsDesc": "Budowle do wklejenia do świata."
   },
   "hero": {
     "opensource": "open source",
@@ -3002,6 +3013,43 @@
         "rejected": "odrzucony",
         "removed": "usunięty"
       }
+    },
+    "filters": "Filtry",
+    "clearFilters": "Wyczyść filtry",
+    "categories": "Kategorie",
+    "environment": "Środowisko",
+    "showMore": "Pokaż więcej ({n})",
+    "showLess": "Pokaż mniej",
+    "previousPage": "Poprzednia strona",
+    "nextPage": "Następna strona",
+    "discover": "Przeglądaj treści",
+    "discoverDesc": "Mody, resourcepacki, shadery, modpacki i schematy budowli.",
+    "sort": {
+      "downloads": "Najczęściej pobierane",
+      "updated": "Ostatnio aktualizowane",
+      "created": "Najnowsze"
+    },
+    "layout": {
+      "grid": "Widok siatki",
+      "rows": "Widok listy"
+    },
+    "environments": {
+      "client": "Klient",
+      "server": "Serwer"
+    },
+    "loaderNames": {
+      "fabric": "Fabric",
+      "quilt": "Quilt",
+      "forge": "Forge",
+      "neoforge": "NeoForge",
+      "iris": "Iris",
+      "optifine": "OptiFine",
+      "canvas": "Canvas",
+      "minecraft": "Minecraft",
+      "litematic": "Litematica",
+      "sponge": "Sponge",
+      "structure": "Blok struktury",
+      "mcedit": "MCEdit (stary)"
     }
   }
 }

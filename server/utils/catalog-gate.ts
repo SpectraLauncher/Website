@@ -9,7 +9,7 @@ import type { H3Event } from 'h3'
 // The comparison is explicit because Boolean('false') is true, and this flag
 // holds the gates for the entire catalog — a stray string has to leave it shut.
 export function catalogIsPublic(): boolean {
-  const value = useRuntimeConfig().catalogPublic
+  const value = useRuntimeConfig().public.catalogPublic
   return value === true || value === 'true'
 }
 

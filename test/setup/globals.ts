@@ -28,8 +28,7 @@ g.defineCachedEventHandler = vi.fn()
 
 export const runtimeConfig: Record<string, unknown> = {
   adminEmails: '',
-  catalogPublic: false,
-  public: { siteUrl: 'https://usespectra.app' },
+  public: { siteUrl: 'https://usespectra.app', catalogPublic: false },
 }
 
 g.useRuntimeConfig = () => runtimeConfig

@@ -11,7 +11,18 @@
     "badgesDesc": "Marks for the community",
     "githubDesc": "Launcher and site source",
     "discordDesc": "Support and chatter",
-    "menu": "Menu"
+    "menu": "Menu",
+    "discover": "Discover content",
+    "mods": "Mods",
+    "modsDesc": "Fabric, Quilt, Forge and NeoForge.",
+    "resourcepacks": "Resource packs",
+    "resourcepacksDesc": "Textures, models and sound.",
+    "shaders": "Shaders",
+    "shadersDesc": "Iris, OptiFine and Canvas.",
+    "modpacks": "Modpacks",
+    "modpacksDesc": "Whole setups, ready to install.",
+    "schematics": "Schematics",
+    "schematicsDesc": "Builds to paste into your world."
   },
   "hero": {
     "opensource": "open source",
@@ -3002,6 +3013,43 @@
         "rejected": "rejected",
         "removed": "removed"
       }
+    },
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "categories": "Categories",
+    "environment": "Environment",
+    "showMore": "Show {n} more",
+    "showLess": "Show less",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "discover": "Discover content",
+    "discoverDesc": "Mods, resource packs, shaders, modpacks and build schematics.",
+    "sort": {
+      "downloads": "Most downloaded",
+      "updated": "Recently updated",
+      "created": "Newest"
+    },
+    "layout": {
+      "grid": "Grid view",
+      "rows": "List view"
+    },
+    "environments": {
+      "client": "Client",
+      "server": "Server"
+    },
+    "loaderNames": {
+      "fabric": "Fabric",
+      "quilt": "Quilt",
+      "forge": "Forge",
+      "neoforge": "NeoForge",
+      "iris": "Iris",
+      "optifine": "OptiFine",
+      "canvas": "Canvas",
+      "minecraft": "Minecraft",
+      "litematic": "Litematica",
+      "sponge": "Sponge",
+      "structure": "Structure block",
+      "mcedit": "MCEdit (legacy)"
     }
   }
 }

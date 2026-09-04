@@ -7,7 +7,9 @@ const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 // PRIVATE_PATHS, which is what keeps them out of robots.txt and the sitemap.
 // They are never prerendered, which is what keeps them out of llms.txt and the
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
-const CATALOG_PATHS = ['/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org']
+const CATALOG_PATHS = [
+  '/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project'
+]
 
 const PRIVATE_PATHS = [
   '/admin',
@@ -35,12 +37,15 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     adminEmails: process.env.ADMIN_EMAILS || '',
-    // Jedna flaga na caly katalog tresci. Dopoki jest wylaczona, kazda trasa
-    // katalogu odpowiada 404 wszystkim poza adminem — patrz server/utils/catalog-gate.ts.
-    catalogPublic: process.env.CATALOG_PUBLIC === 'true',
+
     public: {
 
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app',
+      // One flag for the whole catalog, and it lives in the public config so the
+      // navigation can avoid linking at routes that would answer 404. It is not a
+      // secret: what protects the catalog is the server guard, not the absence
+      // of a link. See server/utils/catalog-gate.ts.
+      catalogPublic: CATALOG_PUBLIC,
       umamiSrc: process.env.NUXT_PUBLIC_UMAMI_SRC || '',
       umamiId: process.env.NUXT_PUBLIC_UMAMI_ID || '',
       controller: process.env.NUXT_PUBLIC_CONTROLLER || '',

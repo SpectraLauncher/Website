@@ -33,6 +33,19 @@ onMounted(() => {
     onUnmounted(() => window.removeEventListener('scroll', onScroll))
 })
 
+const catalogOpen = computed(() => useRuntimeConfig().public.catalogPublic === true)
+
+const discover: NavigationMenuItem = {
+    label: 'nav.discover',
+    children: [
+        { label: 'nav.mods', icon: 'i-lucide-puzzle', to: localePath('/mod'), description: 'nav.modsDesc' },
+        { label: 'nav.resourcepacks', icon: 'i-lucide-image', to: localePath('/resourcepack'), description: 'nav.resourcepacksDesc' },
+        { label: 'nav.shaders', icon: 'i-lucide-sun', to: localePath('/shader'), description: 'nav.shadersDesc' },
+        { label: 'nav.modpacks', icon: 'i-lucide-boxes', to: localePath('/pack'), description: 'nav.modpacksDesc' },
+        { label: 'nav.schematics', icon: 'i-lucide-blocks', to: localePath('/schematic'), description: 'nav.schematicsDesc' },
+    ]
+}
+
 const items = ref<NavigationMenuItem[]>([
     { label: 'nav.launcher', to: localePath('/launcher') },
     { label: 'nav.tools', to: localePath('/tools') },
@@ -53,7 +66,10 @@ const tr = (list: NavigationMenuItem[]): NavigationMenuItem[] => list.map(i => (
     ...(i.children && { children: tr(i.children as NavigationMenuItem[]) })
 }))
 
-const localized = computed(() => tr(items.value))
+// Hidden rather than guarded: the server already answers 404 to these routes
+// while the catalog is closed, so this only avoids linking somewhere broken.
+const localized = computed(() =>
+    tr(catalogOpen.value ? [discover, ...items.value] : items.value))
 
 const menuOpen = ref(false)
 watch(() => route.fullPath, () => { menuOpen.value = false })

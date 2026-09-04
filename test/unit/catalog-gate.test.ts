@@ -4,7 +4,7 @@ import { catalogIsIndexable, catalogIsPublic } from '../../server/utils/catalog-
 import { runtimeConfig } from '../setup/globals'
 
 afterEach(() => {
-  runtimeConfig.catalogPublic = false
+  (runtimeConfig.public as Record<string, unknown>).catalogPublic = false
 })
 
 describe('flaga katalogu', () => {
@@ -14,7 +14,7 @@ describe('flaga katalogu', () => {
   })
 
   it('otwiera sie tylko na wartosci logicznej true', () => {
-    runtimeConfig.catalogPublic = true
+    (runtimeConfig.public as Record<string, unknown>).catalogPublic = true
     expect(catalogIsPublic()).toBe(true)
     expect(catalogIsIndexable()).toBe(true)
   })
@@ -22,13 +22,13 @@ describe('flaga katalogu', () => {
   // Nuxt can hand back the NUXT_CATALOG_PUBLIC value as a string, so 'true' has
   // to open it too.
   it('przyjmuje takze string true', () => {
-    runtimeConfig.catalogPublic = 'true'
+    (runtimeConfig.public as Record<string, unknown>).catalogPublic = 'true'
     expect(catalogIsPublic()).toBe(true)
   })
 
   it('nie otwiera sie na przypadkowym stringu', () => {
     for (const value of ['false', '0', '', 'no', 1, {}]) {
-      runtimeConfig.catalogPublic = value
+      (runtimeConfig.public as Record<string, unknown>).catalogPublic = value
       expect(catalogIsPublic(), String(value)).toBe(false)
     }
   })
