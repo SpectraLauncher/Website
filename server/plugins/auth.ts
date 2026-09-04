@@ -12,8 +12,8 @@ export default defineNitroPlugin(async () => {
     if (!import.meta.dev) process.exit(1)
   }
 
-  if (!import.meta.dev && !process.env.RESEND_API_KEY) {
-    return fatal('RESEND_API_KEY is not set, so better-auth would stop requiring e-mail '
+  if (!import.meta.dev && !process.env.SMTP_HOST) {
+    return fatal('SMTP_HOST is not set, so better-auth would stop requiring e-mail '
       + 'verification and anyone could register any address. Refusing to start.')
   }
 

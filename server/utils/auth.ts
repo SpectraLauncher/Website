@@ -2,6 +2,7 @@
 import type { H3Event } from 'h3'
 import { betterAuth } from 'better-auth'
 import { bearer, captcha, oneTimeToken, twoFactor, username } from 'better-auth/plugins'
+import { createTransport } from 'nodemailer'
 
 import { usePool } from './db'
 import { uniqueUsername } from './username'
@@ -27,31 +28,44 @@ export function turnstileSiteKey(): string {
   return process.env.TURNSTILE_SECRET_KEY ? (process.env.TURNSTILE_SITE_KEY || '') : ''
 }
 
+let mailer: import('nodemailer').Transporter | null = null
+
+function transport() {
+  const host = process.env.SMTP_HOST
+  if (!host) return null
+  if (mailer) return mailer
+  const port = Number(process.env.SMTP_PORT || 465)
+  mailer = createTransport({
+    host,
+    port,
+    secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : port === 465,
+    auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASSWORD! },
+  })
+  return mailer
+}
+
 async function sendMail(to: string, subject: string, html: string) {
-  const key = process.env.RESEND_API_KEY
-  if (!key) {
-    console.info(`[mail] ${to} — ${subject}\n${html.replace(/<[^>]+>/g, ' ')}`)
+  const mail = transport()
+  if (!mail) {
+    console.info(`[mail] ${to} — ${subject}
+${html.replace(/<[^>]+>/g, ' ')}`)
     return
   }
   try {
-    await $fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { authorization: `Bearer ${key}` },
-      body: {
-        from: process.env.MAIL_FROM || 'Spectra <noreply@makoto.com.pl>',
-        to,
-        subject,
-        html,
-        text: html
-          .replace(/<head[\s\S]*?<\/head>/i, '')
-          .replace(/<div style="display:none[\s\S]*?<\/div>/i, '')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim(),
-      },
+    await mail.sendMail({
+      from: process.env.MAIL_FROM || 'Spectra <no-reply@usespectra.app>',
+      to,
+      subject,
+      html,
+      text: html
+        .replace(/<head[\s\S]*?<\/head>/i, '')
+        .replace(/<div style="display:none[\s\S]*?<\/div>/i, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim(),
     })
   } catch (e: any) {
-    console.error('[mail] Resend rejected the send:', e?.data?.message || e?.message || e)
+    console.error('[mail] SMTP rejected the send:', e?.message || e)
   }
 }
 
@@ -62,6 +76,7 @@ function mailAssetOrigin() {
 
 function mailTemplate(opts: {
   preheader: string
+  eyebrow: string
   title: string
   body: string
   ctaUrl: string
@@ -69,49 +84,78 @@ function mailTemplate(opts: {
   footnote: string
 }) {
   const site = mailAssetOrigin()
+  const sans = `-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`
+  const serif = `Georgia,'Iowan Old Style','Times New Roman',serif`
   return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <title>${opts.title}</title>
+<style>
+  @media (max-width:620px) {
+    .card { padding: 30px 24px !important; }
+    .h1 { font-size: 26px !important; }
+  }
+</style>
 </head>
-<body style="margin:0;padding:0;background:#05080f;">
+<body style="margin:0;padding:0;background:#f4f1ea;-webkit-font-smoothing:antialiased;">
+
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${opts.preheader}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#05080f;padding:32px 12px;">
+<div style="display:none;max-height:0;overflow:hidden;">&#8203;&#847;&#8203;&#847;&#8203;&#847;&#8203;&#847;&#8203;&#847;&#8203;&#847;&#8203;&#847;&#8203;&#847;</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f1ea" style="background:#f4f1ea;padding:40px 12px 48px;">
   <tr><td align="center">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
 
-      <tr><td align="center" style="padding-bottom:22px;">
-        <img src="${site}/logo.png" width="34" height="34" alt=""
-             style="vertical-align:middle;border:0;display:inline-block;">
-        <span style="display:inline-block;vertical-align:middle;padding-left:10px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:18px;font-weight:700;letter-spacing:-.01em;color:#eaf1fb;">
-          Spectra<span style="color:#7dd3fc;"> Launcher</span>
+      <tr><td align="left" style="padding:0 4px 18px;font-family:${sans};">
+        <img src="${site}/logo.png" width="26" height="26" alt=""
+             style="vertical-align:middle;border:0;border-radius:7px;display:inline-block;">
+        <span style="display:inline-block;vertical-align:middle;padding-left:9px;font-size:14px;font-weight:600;letter-spacing:.01em;color:#16181d;">
+          Spectra<span style="color:#8a8f9a;font-weight:500;"> Launcher</span>
         </span>
       </td></tr>
 
-      <tr><td style="background:#0a1120;border:1px solid rgba(125,211,252,.14);border-radius:18px;padding:38px 36px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-        <h1 style="margin:0 0 12px;font-size:23px;line-height:1.25;font-weight:700;letter-spacing:-.02em;color:#eaf1fb;">${opts.title}</h1>
-        <p style="margin:0 0 26px;font-size:15px;line-height:1.65;color:#aab9d0;">${opts.body}</p>
+      <tr><td bgcolor="#ffffff" style="background:#ffffff;border:1px solid #e5e0d6;border-radius:4px;">
 
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-          <tr><td align="center" bgcolor="#38bdf8" style="border-radius:12px;background-image:linear-gradient(135deg,#7dd3fc,#38bdf8 55%,#0ea5e9);">
-            <a href="${opts.ctaUrl}" style="display:inline-block;padding:13px 30px;font-size:15px;font-weight:700;color:#04121f;text-decoration:none;border-radius:12px;">${opts.ctaLabel}</a>
-          </td></tr>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td height="3" bgcolor="#3b82f6" style="height:3px;line-height:3px;font-size:0;background-color:#3b82f6;background-image:linear-gradient(90deg,#22c55e,#3b82f6 46%,#8b5cf6);">&nbsp;</td></tr>
         </table>
 
-        <p style="margin:26px 0 0;font-size:12px;line-height:1.6;color:#64748b;">
-          Or paste this link into your browser:<br>
-          <a href="${opts.ctaUrl}" style="color:#7dd3fc;word-break:break-all;text-decoration:none;">${opts.ctaUrl}</a>
-        </p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td align="left" class="card" style="padding:42px 46px 40px;font-family:${sans};">
 
-        <div style="height:1px;background:rgba(255,255,255,.08);margin:28px 0 18px;"></div>
-        <p style="margin:0;font-size:12px;line-height:1.6;color:#64748b;">${opts.footnote}</p>
+            <p style="margin:0 0 14px;font-family:${sans};font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#8a8f9a;">${opts.eyebrow}</p>
+
+            <h1 class="h1" style="margin:0 0 16px;font-family:${serif};font-size:31px;line-height:1.18;font-weight:400;letter-spacing:-.015em;color:#16181d;">${opts.title}</h1>
+
+            <p style="margin:0 0 30px;font-size:15px;line-height:1.68;color:#4a5260;">${opts.body}</p>
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr><td align="center" bgcolor="#16181d" style="background:#16181d;border-radius:3px;">
+                <a href="${opts.ctaUrl}" style="display:inline-block;padding:14px 30px;font-family:${sans};font-size:14px;font-weight:600;letter-spacing:.01em;color:#ffffff;text-decoration:none;">${opts.ctaLabel} &rarr;</a>
+              </td></tr>
+            </table>
+
+            <p style="margin:28px 0 0;font-size:12px;line-height:1.6;color:#8a8f9a;">
+              Button not working? Paste this into your browser:<br>
+              <a href="${opts.ctaUrl}" style="color:#2450c8;word-break:break-all;text-decoration:none;">${opts.ctaUrl}</a>
+            </p>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:30px 0 0;">
+              <tr><td height="1" bgcolor="#ece8e0" style="height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr>
+            </table>
+
+            <p style="margin:18px 0 0;font-size:12px;line-height:1.6;color:#8a8f9a;">${opts.footnote}</p>
+
+          </td></tr>
+        </table>
       </td></tr>
 
-      <tr><td align="center" style="padding:22px 8px 0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;color:#475569;">
-        <a href="${site}" style="color:#64748b;text-decoration:none;">usespectra.app</a>
-        &nbsp;·&nbsp; A free, open-source Minecraft launcher.
+      <tr><td align="left" style="padding:20px 4px 0;font-family:${sans};font-size:11px;line-height:1.7;color:#9a9689;">
+        <a href="${site}" style="color:#6f7480;text-decoration:none;font-weight:600;">usespectra.app</a>
+        &nbsp;&middot;&nbsp; A free, open-source Minecraft launcher.
       </td></tr>
 
     </table>
@@ -122,7 +166,7 @@ function mailTemplate(opts: {
 
 export function useAuth() {
   if (auth) return auth
-  const hasMail = !!process.env.RESEND_API_KEY
+  const hasMail = !!process.env.SMTP_HOST
 
   auth = betterAuth({
     database: usePool(),
@@ -135,6 +179,7 @@ export function useAuth() {
       sendResetPassword: async ({ user, url }) => {
         await sendMail(user.email, 'Reset your Spectra password', mailTemplate({
           preheader: 'Set a new password for your Spectra account.',
+          eyebrow: 'Password reset',
           title: 'Reset your password',
           body: 'Someone asked to set a new password for your Spectra account. '
             + 'The link below works once and expires in an hour.',
@@ -150,6 +195,7 @@ export function useAuth() {
       sendVerificationEmail: async ({ user, url }) => {
         await sendMail(user.email, 'Confirm your Spectra account', mailTemplate({
           preheader: 'One click and your Spectra account is ready.',
+          eyebrow: 'Account verification',
           title: 'Confirm your e-mail',
           body: `Welcome to Spectra${user.name ? `, ${user.name}` : ''}. Confirm this address to finish `
             + 'setting up your account — then you can add friends and share modpacks straight from the launcher.',

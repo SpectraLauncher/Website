@@ -49,7 +49,7 @@ environment (Docker, systemd unit, hosting panel).
 | `NUXT_PUBLIC_SITE_URL` | canonical URLs, sitemap, OG images (defaults to the production domain) |
 | `NUXT_PUBLIC_CONTROLLER`, `NUXT_PUBLIC_CONTACT_EMAIL` | the data controller and contact address printed in the legal pages |
 | `ADMIN_EMAILS` | comma-separated allowlist for `/admin`; falls back to the owner's address |
-| `RESEND_API_KEY`, `MAIL_FROM` | verification and password-reset mail |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` | verification and password-reset mail (`SMTP_PORT` defaults to 465, `SMTP_SECURE` follows from the port) |
 | `DISCORD_*`, `GOOGLE_*`, `GITHUB_*`, `MICROSOFT_*` | social sign-in |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | avatars, badge art, shared modpacks |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | captcha on sign-up |
