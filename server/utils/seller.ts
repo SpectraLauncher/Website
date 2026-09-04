@@ -115,8 +115,6 @@ export function publicSeller(seller: SellerRow | undefined) {
   }
 }
 
-// --- purchases -----------------------------------------------------------
-
 export interface PurchaseRow {
   id: string
   buyer_id: string

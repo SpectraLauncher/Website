@@ -84,8 +84,6 @@ const VERSION_COLUMNS = `id, project_id, number, name, changelog, channel,
 const FILE_COLUMNS = `id, version_id, filename, size, sha1, sha512,
   is_primary, object_key, created`
 
-// --- reads ---------------------------------------------------------------
-
 export async function projectBySlug(slug: string): Promise<ProjectRow | undefined> {
   // sql-safe: PROJECT_COLUMNS is a constant column list
   return await one<ProjectRow>(
@@ -138,8 +136,6 @@ export async function galleryOf(projectId: string | number) {
     `SELECT id, url, title, ordering, featured FROM project_gallery
      WHERE project_id = $1 ORDER BY ordering, id`, [projectId])
 }
-
-// --- writes --------------------------------------------------------------
 
 // game_versions and loaders on the project are the union over its versions. They
 // exist so a listing can filter without touching the version table, which means
@@ -270,8 +266,6 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     }
   }
 
-  // Ownership moves as a pair: exactly one of the two columns is ever set, which
-  // the project_one_owner constraint enforces anyway.
   const orgId = input.orgId === undefined
     ? current.org_id
     : (text(input.orgId, 64) || null)
@@ -298,7 +292,6 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     throw createError({ statusCode: 400, statusMessage: 'unknown status' })
   }
 
-  // published is stamped once, the first time a project actually goes public.
   const published = status === 'published' && !current.published ? Date.now() : current.published
 
   // sql-safe: PROJECT_COLUMNS is a constant column list
@@ -429,8 +422,6 @@ export async function attachFile(versionId: string | number, file: FileInput): P
   )
   return row!
 }
-
-// --- listing -------------------------------------------------------------
 
 export interface ListQuery {
   type?: string

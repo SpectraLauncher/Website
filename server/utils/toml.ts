@@ -151,8 +151,6 @@ export function parseToml(source: string): TomlTable {
   return root
 }
 
-// --- MANIFEST.MF ---------------------------------------------------------
-
 // Forge writes `version = "${file.jarVersion}"` into mods.toml and substitutes
 // the real version from the manifest only at load time, so without this file
 // there simply is no mod version.

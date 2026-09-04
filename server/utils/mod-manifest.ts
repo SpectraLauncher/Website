@@ -59,8 +59,6 @@ const asAuthors = (v: unknown): string[] => {
   return []
 }
 
-// --- fabric / quilt ------------------------------------------------------
-
 function fabricLike(json: Record<string, any>, loader: Loader): ModInfo {
   const info = empty('mod')
   const body = loader === 'quilt' ? (json.quilt_loader ?? json) : json
@@ -90,8 +88,6 @@ function fabricLike(json: Record<string, any>, loader: Loader): ModInfo {
 
   return info
 }
-
-// --- forge / neoforge ----------------------------------------------------
 
 function forgeLike(toml: TomlTable, loader: Loader, manifest: Record<string, string>): ModInfo {
   const info = empty('mod')
@@ -126,8 +122,6 @@ function forgeLike(toml: TomlTable, loader: Loader, manifest: Record<string, str
   return info
 }
 
-// --- manifest registry ---------------------------------------------------
-
 // Registry: file inside the archive -> loader. Order matters, because NeoForge
 // also leaves the old mods.toml in the jar — the first match wins. Adding a
 // loader is one line here and one branch in readArchiveInfo.
@@ -137,8 +131,6 @@ const MANIFESTS: Array<{ entry: string, loader: Loader }> = [
   { entry: 'META-INF/neoforge.mods.toml', loader: 'neoforge' },
   { entry: 'META-INF/mods.toml', loader: 'forge' },
 ]
-
-// --- pack.mcmeta ---------------------------------------------------------
 
 interface PackMeta { packFormat: number | null, description: string | null }
 
@@ -158,8 +150,6 @@ function readPackMeta(zip: Zip): PackMeta {
   }
 }
 
-// --- shaders -------------------------------------------------------------
-
 // Shaderpacks have no manifest. The engine is recognised by what the archive
 // contains: a shaders/ directory is the necessary condition, and the .properties
 // files inside separate OptiFine/Iris from Canvas.
@@ -177,8 +167,6 @@ function shaderEngines(zip: Zip): string[] {
 
   return [...engines].sort()
 }
-
-// --- entry point ---------------------------------------------------------
 
 export function readArchiveInfo(body: Uint8Array): ModInfo {
   const zip = openZip(body)

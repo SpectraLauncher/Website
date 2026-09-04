@@ -84,8 +84,6 @@ function boundedPalette(entries: BlockState[]): BlockState[] {
   return entries
 }
 
-// --- block state ---------------------------------------------------------
-
 export function parseStateString(raw: string): BlockState {
   const open = raw.indexOf('[')
   if (open === -1) return { id: raw, props: {} }
@@ -110,8 +108,6 @@ function stateFromCompound(entry: NbtCompound): BlockState {
   }
   return { id, props }
 }
-
-// --- index unpacking -----------------------------------------------------
 
 // Litematica packs palette indices across long boundaries — always, regardless
 // of MinecraftDataVersion. This is not the same thing as the chunk-section
@@ -169,8 +165,6 @@ export function readVarInts(bytes: Int8Array, count: number): Uint32Array {
 export function paletteBits(size: number): number {
   return Math.max(2, 32 - Math.clz32(Math.max(1, size - 1)))
 }
-
-// --- material list -------------------------------------------------------
 
 // Blocks that have no item and do not count towards the material list.
 const NOT_AN_ITEM = new Set([
@@ -254,8 +248,6 @@ export function materialsOf(counted: Array<{ state: BlockState, count: number }>
     .map(([item, count]) => ({ item, count }))
     .sort((a, b) => b.count - a.count || a.item.localeCompare(b.item))
 }
-
-// --- legacy: numeric pre-1.13 ids ----------------------------------------
 
 const LOG_TYPES = ['oak', 'spruce', 'birch', 'jungle']
 const LOG_AXES = ['y', 'x', 'z']
@@ -371,8 +363,6 @@ const LEGACY: Record<number, (data: number) => BlockState | null> = {
 export function legacyState(id: number, data: number): BlockState | null {
   return LEGACY[id]?.(data) ?? null
 }
-
-// --- format parsers ------------------------------------------------------
 
 interface Counted { state: BlockState, count: number }
 
@@ -596,8 +586,6 @@ export function parseSchematic(body: Uint8Array): SchematicInfo {
     case 'mcedit': return parseMcEdit(root)
   }
 }
-
-// --- dense grid ----------------------------------------------------------
 
 export interface SchematicGrid {
   format: SchematicFormat

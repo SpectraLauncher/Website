@@ -48,8 +48,6 @@ export function resetVersionCache() {
   cache = null
 }
 
-// --- range resolution ----------------------------------------------------
-
 // Only proper releases get parsed. Snapshots ("24w14a", "1.21-pre1") have no
 // ordering that survives arithmetic, so they are never produced by a range —
 // a mod that genuinely targets a snapshot gets it picked by hand.

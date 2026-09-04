@@ -159,7 +159,6 @@ export interface DescribedRequest extends ReturnType<typeof publicRequest> {
   subject: { kind: VerificationKind, slug: string | null, name: string | null, image: string | null }
 }
 
-// The queue shows who is asking, not an opaque id.
 export async function describeRequest(row: VerificationRow): Promise<DescribedRequest> {
   if (row.org_id) {
     const org = await one<{ slug: string, name: string, logo: string | null }>(
@@ -189,7 +188,6 @@ export async function describeRequest(row: VerificationRow): Promise<DescribedRe
   }
 }
 
-// The standing a sale is charged at, resolved from whoever owns the project.
 export async function sellerStanding(
   ownerId: string | null,
   orgId: string | null,

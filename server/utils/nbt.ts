@@ -221,7 +221,6 @@ export function readNbt(body: Uint8Array): NbtRoot {
   return { name, value: reader.value(TAG_COMPOUND, 0) as NbtCompound }
 }
 
-// --- typed reads ---------------------------------------------------------
 // NBT has no schema, so any read from a user file may return something other
 // than what we expect. These return undefined rather than throwing, so each
 // format parser decides for itself what is an error and what is a missing field.
