@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest'
 const GATED_DIRS = [
   'server/api/admin/catalog',
   'server/api/catalog',
+  'server/api/org',
   'server/api/v2',
 ]
 

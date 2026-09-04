@@ -2897,6 +2897,24 @@
     "modpacks": {
       "title": "Modpacki",
       "sub": "Gotowe zestawy modów do zainstalowania za jednym razem."
+    },
+    "org": {
+      "members": "Członkowie",
+      "projects": "Projekty",
+      "noProjects": "Nie ma jeszcze żadnego projektu.",
+      "memberCount": "Członków: {n}",
+      "projectCount": "Projektów: {n}",
+      "edit": "Edytuj",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "name": "Nazwa",
+      "summary": "Krótki opis",
+      "readmePlaceholder": "Dłuższy opis w markdownie — co ta organizacja robi, kto za nią stoi, jak się skontaktować.",
+      "saveFailed": "Nie udało się zapisać.",
+      "username": "Nazwa użytkownika",
+      "inviteHint": "Zaproś kogoś po nazwie użytkownika.",
+      "inviteSent": "Jeśli takie konto istnieje, zaproszenie już leci.",
+      "draft": "szkic"
     }
   }
 }

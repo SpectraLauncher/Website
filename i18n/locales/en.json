@@ -2897,6 +2897,24 @@
     "modpacks": {
       "title": "Modpacks",
       "sub": "Ready-made sets of mods you can install in one go."
+    },
+    "org": {
+      "members": "Members",
+      "projects": "Projects",
+      "noProjects": "No projects yet.",
+      "memberCount": "{n} members",
+      "projectCount": "{n} projects",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "name": "Name",
+      "summary": "One-line summary",
+      "readmePlaceholder": "A longer description in markdown — what this organization builds, who is behind it, how to get in touch.",
+      "saveFailed": "That did not go through.",
+      "username": "Username",
+      "inviteHint": "Invite someone by their username.",
+      "inviteSent": "If that account exists, the invite is on its way.",
+      "draft": "draft"
     }
   }
 }
