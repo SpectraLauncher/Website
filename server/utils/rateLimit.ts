@@ -78,7 +78,22 @@ const SENSITIVE_AUTH = [
 // GET /api/share/ABC123 — a 6-character code is guessable if you may guess fast.
 const SHARE_CODE = /^\/api\/share\/[^/]+$/
 
+// The catalog and the Modrinth-compatible surface are the endpoints a launcher
+// hits on every start, so they get their own budgets rather than sharing one.
+const CATALOG_LIMITS: Array<[RegExp, string, number]> = [
+  [/^\/api\/v2\/version_files$/, 'v2-hash-bulk', 20],
+  [/^\/api\/v2\/version_file\//, 'v2-hash', 120],
+  [/^\/api\/v2\//, 'v2', 120],
+  [/^\/api\/catalog\/download\//, 'catalog-download', 120],
+  [/^\/api\/catalog\/search$/, 'catalog-search', 60],
+  [/^\/api\/catalog\//, 'catalog', 120],
+]
+
 export function limitFor(path: string, method: string): { name: string, limit: number } | null {
+  for (const [pattern, name, limit] of CATALOG_LIMITS) {
+    if (pattern.test(path)) return { name, limit }
+  }
+
   if (path === '/api/telemetry') return { name: 'telemetry', limit: 30 }
   if (path.startsWith('/api/mc-')) return { name: 'mojang', limit: 60 }
   if (method === 'GET' && SHARE_CODE.test(path)) return { name: 'share-get', limit: 20 }

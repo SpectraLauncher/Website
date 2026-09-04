@@ -12,7 +12,12 @@ const GATED_DIRS = [
   'server/api/v2',
 ]
 
-const GATES = ['requireCatalogWrite', 'requireCatalogRead', 'requireAdmin']
+const GATES = ['requireCatalogWrite(event)', 'requireCatalogRead(event)', 'requireAdmin(event)']
+
+// A CORS preflight has no credentials to check, so it cannot call a user guard.
+// It still must not answer 204 to a route that is closed, because that confirms
+// the route exists — so the flag itself is its guard.
+const PREFLIGHT_GATE = 'catalogIsPublic()'
 
 function walk(dir: string): string[] {
   let out: string[] = []
@@ -43,7 +48,8 @@ describe('kazda trasa katalogu ma straznika', () => {
 
   it.each(files)('%s wola straznika', (file) => {
     const source = readFileSync(file, 'utf8')
-    expect(GATES.some(gate => source.includes(`${gate}(event)`))).toBe(true)
+    const gates = file.endsWith('.options.ts') ? [PREFLIGHT_GATE] : GATES
+    expect(gates.some(gate => source.includes(gate))).toBe(true)
   })
 
   // defineCachedEventHandler zapisuje odpowiedz i przy trafieniu w cache nie
