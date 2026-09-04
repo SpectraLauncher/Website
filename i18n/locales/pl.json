@@ -2914,7 +2914,16 @@
       "username": "Nazwa użytkownika",
       "inviteHint": "Zaproś kogoś po nazwie użytkownika.",
       "inviteSent": "Jeśli takie konto istnieje, zaproszenie już leci.",
-      "draft": "szkic"
+      "draft": "szkic",
+      "inviteTitle": "Zaproszenie do organizacji",
+      "inviteBody": "Przyjęcie pozwoli Ci publikować i zarządzać projektami tej organizacji.",
+      "inviteAccepted": "Jesteś w środku.",
+      "inviteSignIn": "Zaloguj się na konto, na które przyszło zaproszenie — będzie czekać.",
+      "inviteFailed": "To zaproszenie jest już nieważne.",
+      "acceptInvite": "Przyjmij",
+      "rejectInvite": "Odrzuć",
+      "openOrg": "Otwórz organizację",
+      "signIn": "Zaloguj się"
     }
   }
 }

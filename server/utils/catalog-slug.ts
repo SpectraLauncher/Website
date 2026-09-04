@@ -28,7 +28,8 @@ const INFRASTRUCTURE = [
 const RESERVED = [
   'about', 'blog', 'browse', 'create', 'dashboard', 'discover', 'docs',
   'download', 'downloads', 'edit', 'explore', 'faq', 'files', 'follow',
-  'help', 'home', 'imprint', 'index', 'legal', 'me', 'messages', 'new',
+  'help', 'home', 'imprint', 'index', 'invite', 'invites', 'legal', 'me',
+  'messages', 'new',
   'news', 'notifications', 'organization', 'organizations', 'plugin',
   'plugins', 'profile', 'project', 'projects', 'report', 'search', 'settings',
   'signin', 'signout', 'signup', 'support', 'team', 'teams', 'upload', 'user',
