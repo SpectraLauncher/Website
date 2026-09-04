@@ -21,10 +21,13 @@ export default defineEventHandler(async (event) => {
       || await hasPurchased(viewer.id, project!.id)
     : false
 
+  const following = viewer ? await isFollowing(viewer.id, project!.id) : false
+
   return {
     project: {
       ...fullProject(project!, versions, files),
       owner,
+      following,
       price,
       currency: project!.currency,
       owned,

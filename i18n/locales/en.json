@@ -3029,7 +3029,8 @@
     "sort": {
       "downloads": "Most downloaded",
       "updated": "Recently updated",
-      "created": "Newest"
+      "created": "Newest",
+      "relevance": "Best match"
     },
     "layout": {
       "grid": "Grid view",
@@ -3119,7 +3120,8 @@
       "tweaks": "Tweaks",
       "utility": "Utility",
       "vanilla-like": "Vanilla like"
-    }
+    },
+    "follows": "{n} follows"
   },
   "verification": {
     "title": "Verification",

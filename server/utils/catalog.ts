@@ -467,17 +467,26 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   if (input.licenses?.length) add('license = ANY($?)', input.licenses)
 
   const search = (input.query ?? '').trim()
-  if (search) add(`search @@ plainto_tsquery('simple', $?)`, search)
+  let searchParam = 0
+  if (search) {
+    add(`search @@ plainto_tsquery('simple', $?)`, search)
+    searchParam = params.length
+  }
 
   // sql-safe: every entry in `where` is a fragment this function wrote, carrying
   // only generated $n placeholders; the values live in `params`
   const clause = where.length ? `WHERE ${where.join(' AND ')}` : ''
 
+  // Relevance needs a query to rank against; without one it means nothing, so it
+  // falls back rather than ordering everything by a constant zero.
   const order = input.sort === 'updated'
     ? 'updated DESC'
     : input.sort === 'created'
       ? 'created DESC'
-      : 'downloads DESC, updated DESC'
+      : input.sort === 'relevance' && searchParam
+        // sql-safe: searchParam is a placeholder number this function generated
+        ? `ts_rank_cd(search, plainto_tsquery('simple', $${searchParam})) DESC, downloads DESC`
+        : 'downloads DESC, updated DESC'
 
   const limit = Math.min(Math.max(Number(input.limit) || 20, 1), 100)
   const offset = Math.max(Number(input.offset) || 0, 0)
@@ -549,4 +558,30 @@ export async function catalogFacets(type?: string): Promise<Facets> {
     environment: await spread('environment'),
     licenses,
   }
+}
+
+export async function followProject(userId: string, projectId: string) {
+  const added = await exec(
+    `INSERT INTO project_follow (user_id, project_id, created) VALUES ($1, $2, $3)
+     ON CONFLICT DO NOTHING`,
+    [userId, projectId, Date.now()],
+  )
+  if (added) await exec('UPDATE project SET follows = follows + 1 WHERE id = $1', [projectId])
+  return added > 0
+}
+
+export async function unfollowProject(userId: string, projectId: string) {
+  const removed = await exec(
+    'DELETE FROM project_follow WHERE user_id = $1 AND project_id = $2', [userId, projectId])
+  if (removed) {
+    await exec('UPDATE project SET follows = GREATEST(follows - 1, 0) WHERE id = $1', [projectId])
+  }
+  return removed > 0
+}
+
+export async function isFollowing(userId: string, projectId: string): Promise<boolean> {
+  const row = await one<{ user_id: string }>(
+    'SELECT user_id FROM project_follow WHERE user_id = $1 AND project_id = $2',
+    [userId, projectId])
+  return Boolean(row)
 }

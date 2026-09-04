@@ -42,6 +42,8 @@ export interface CatalogProjectData {
   price?: number
   currency?: string
   owned?: boolean
+  follows: number
+  following?: boolean
   owner?: {
     kind: 'user' | 'organization'
     slug: string | null
@@ -64,6 +66,29 @@ const body = computed(() => renderMarkdown(props.project.description))
 
 const buying = ref(false)
 const buyProblem = ref('')
+
+const following = ref(props.project.following === true)
+const followCount = ref(props.project.follows ?? 0)
+const followBusy = ref(false)
+
+watch(() => props.project.id, () => {
+  following.value = props.project.following === true
+  followCount.value = props.project.follows ?? 0
+})
+
+async function toggleFollow() {
+  followBusy.value = true
+  const next = !following.value
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(props.project.slug)}/follow`, {
+      method: next ? 'POST' : 'DELETE',
+    })
+    following.value = next
+    followCount.value += next ? 1 : -1
+  } catch {
+    // A failed follow leaves the button where it was rather than lying about it.
+  } finally { followBusy.value = false }
+}
 
 const priceLabel = computed(() => {
   const price = props.project.price ?? 0
@@ -140,6 +165,19 @@ const sizeLabel = (bytes: number) =>
             <UIcon name="i-lucide-calendar" class="size-4" />
             {{ when(project.updated) }}
           </span>
+          <button
+            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
+            :disabled="followBusy"
+            :aria-pressed="following"
+            @click="toggleFollow"
+          >
+            <UIcon
+              :name="following ? 'i-lucide-heart' : 'i-lucide-heart'"
+              class="size-4"
+              :class="following ? 'text-primary' : ''"
+            />
+            {{ t('catalog.follows', { n: count(followCount) }) }}
+          </button>
           <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
             <UIcon name="i-lucide-tag" class="size-4" />
             {{ priceLabel }}

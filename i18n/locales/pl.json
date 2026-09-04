@@ -3029,7 +3029,8 @@
     "sort": {
       "downloads": "Najczęściej pobierane",
       "updated": "Ostatnio aktualizowane",
-      "created": "Najnowsze"
+      "created": "Najnowsze",
+      "relevance": "Najtrafniejsze"
     },
     "layout": {
       "grid": "Widok siatki",
@@ -3119,7 +3120,8 @@
       "tweaks": "Drobne zmiany",
       "utility": "Narzędzia",
       "vanilla-like": "W duchu waniliowym"
-    }
+    },
+    "follows": "Obserwujących: {n}"
   },
   "verification": {
     "title": "Weryfikacja",

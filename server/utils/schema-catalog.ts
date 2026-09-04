@@ -134,6 +134,16 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS project_follow (
+      user_id    TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      created    BIGINT NOT NULL,
+      PRIMARY KEY (user_id, project_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_project_follow_project ON project_follow (project_id);
+  `)
+
   // Daily attribution per project. Views and downloads are what a revenue split
   // is computed from, and they cannot be reconstructed after the fact, so they
   // are collected from the day the catalog opens rather than from the day a

@@ -34,7 +34,7 @@ interface Facets {
   licenses: Array<{ value: string, count: number }>
 }
 
-const SORTS = ['downloads', 'updated', 'created'] as const
+const SORTS = ['relevance', 'downloads', 'updated', 'created'] as const
 const PER_PAGE = [20, 50, 100]
 
 const list = (value: unknown): string[] =>
