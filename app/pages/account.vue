@@ -177,12 +177,16 @@ const savePrivacy = (value: FriendsVisibility) => run('privacy', async () => {
 
 const newEmail = ref('')
 
+// The shared notice sits at the foot of the page; this alert is at the head of
+// it, so the confirmation has to land inside the alert or nobody sees it.
+const verifySent = ref(false)
+
 const resendVerification = () => run('verify', async () => {
   const res = await auth.sendVerificationEmail({
     email: user.value.email,
     callbackURL: localePath('/account')
   })
-  if (!res?.error) notice.value = t('auth.verifyResent')
+  if (!res?.error) verifySent.value = true
   return res
 })
 
@@ -402,7 +406,11 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           :description="`${t('account.unverified')} ${t('account.verifyWhy')}`"
         >
           <template #actions>
+            <p v-if="verifySent" class="inline-flex items-center gap-1.5 text-sm font-medium">
+              <UIcon name="i-lucide-check" class="size-4 shrink-0" />{{ t('auth.verifyResent') }}
+            </p>
             <UButton
+              v-else
               color="warning"
               size="sm"
               class="rounded-lg"
