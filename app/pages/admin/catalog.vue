@@ -33,6 +33,7 @@ interface Version {
   id: string
   number: string
   name: string
+  changelog: string
   channel: string
   gameVersions: string[]
   loaders: string[]
@@ -428,6 +429,36 @@ async function addVersion() {
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
+const editingVersion = ref<Version | null>(null)
+
+function startVersionEdit(version: Version) {
+  editingVersion.value = { ...version, gameVersions: [...version.gameVersions] }
+}
+
+async function saveVersion() {
+  const draft = editingVersion.value
+  if (!draft || !selected.value) return
+
+  busy.value = draft.id
+  error.value = ''
+  try {
+    await $fetch(`/api/admin/catalog/versions/${draft.id}`, {
+      method: 'PATCH',
+      body: {
+        number: draft.number,
+        name: draft.name,
+        changelog: draft.changelog,
+        channel: draft.channel,
+        gameVersions: draft.gameVersions,
+        loaders: draft.loaders,
+      },
+    })
+    editingVersion.value = null
+    announce(t('catalog.admin.saved'))
+    await open(selected.value.id)
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
 async function removeVersion(id: string) {
   if (!selected.value) return
   if (!confirm(t('catalog.admin.confirmDeleteVersion'))) return
@@ -780,11 +811,57 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                     <span class="flex-1"></span>
                     <UButton
                       variant="ghost"
+                      color="neutral"
+                      size="xs"
+                      icon="i-lucide-pencil"
+                      @click="startVersionEdit(version)"
+                    />
+                    <UButton
+                      variant="ghost"
                       color="error"
                       size="xs"
                       icon="i-lucide-trash-2"
                       @click="removeVersion(version.id)"
                     />
+                  </div>
+
+                  <div v-if="editingVersion?.id === version.id" class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <UInput v-model="editingVersion.number" size="sm" :placeholder="t('catalog.admin.versionNumber')" />
+                    <USelect v-model="editingVersion.channel" size="sm" :items="CHANNELS" value-key="value" />
+                    <UInput
+                      v-model="editingVersion.name"
+                      size="sm"
+                      class="sm:col-span-2"
+                      :placeholder="t('catalog.admin.versionName')"
+                    />
+                    <UTextarea
+                      v-model="editingVersion.changelog"
+                      :rows="3"
+                      class="sm:col-span-2"
+                      :placeholder="t('catalog.admin.changelog')"
+                    />
+                    <USelectMenu
+                      v-model="editingVersion.gameVersions"
+                      :items="gameVersions"
+                      multiple
+                      class="sm:col-span-2"
+                      :placeholder="t('catalog.admin.gameVersions')"
+                    />
+                    <div class="flex gap-2 sm:col-span-2">
+                      <UButton
+                        size="sm"
+                        :loading="busy === version.id"
+                        :label="t('catalog.admin.save')"
+                        @click="saveVersion"
+                      />
+                      <UButton
+                        size="sm"
+                        variant="ghost"
+                        color="neutral"
+                        :label="t('catalog.admin.cancel')"
+                        @click="editingVersion = null"
+                      />
+                    </div>
                   </div>
                   <div
                     v-for="file in version.files"

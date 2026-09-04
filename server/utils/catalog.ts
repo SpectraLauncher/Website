@@ -389,6 +389,48 @@ export async function createVersion(
   return row!
 }
 
+export async function updateVersion(
+  id: string,
+  input: VersionInput,
+): Promise<VersionRow> {
+  const current = await versionById(id)
+  if (!current) throw createError({ statusCode: 404, statusMessage: 'no such version' })
+
+  const number = input.number === undefined ? current.number : text(input.number, 60)
+  if (!number) throw createError({ statusCode: 400, statusMessage: 'version number is required' })
+
+  if (number !== current.number) {
+    const taken = await one<{ id: string }>(
+      'SELECT id FROM version WHERE project_id = $1 AND number = $2 AND id <> $3',
+      [current.project_id, number, id])
+    if (taken) throw createError({ statusCode: 409, statusMessage: 'version number is taken' })
+  }
+
+  // sql-safe: VERSION_COLUMNS is a constant column list
+  const row = await one<VersionRow>(
+    `UPDATE version SET number = $2, name = $3, changelog = $4, channel = $5,
+       game_versions = $6, loaders = $7, meta = $8
+     WHERE id = $1
+     RETURNING ${VERSION_COLUMNS}`,
+    [
+      id, number,
+      input.name === undefined ? current.name : text(input.name, 160),
+      input.changelog === undefined ? current.changelog : text(input.changelog, 100_000),
+      isVersionChannel(input.channel) ? input.channel : current.channel,
+      input.gameVersions === undefined
+        ? current.game_versions
+        : stringList(input.gameVersions, 200),
+      input.loaders === undefined ? current.loaders : stringList(input.loaders, 20),
+      JSON.stringify(input.meta === undefined
+        ? current.meta
+        : (input.meta && typeof input.meta === 'object' ? input.meta : {})),
+    ],
+  )
+
+  await refreshProjectFacets(current.project_id)
+  return row!
+}
+
 export async function deleteVersion(id: string | number) {
   const version = await versionById(id)
   if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
