@@ -5,8 +5,8 @@ import { describe, expect, it } from 'vitest'
 import { readArchiveInfo } from '../../server/utils/mod-manifest'
 import { parseManifest, parseToml } from '../../server/utils/toml'
 
-// Jade w trzech wydaniach to ten sam mod na trzech loaderach — modId musi wyjsc
-// identyczny, a loader i wersja rozne.
+// Jade in three releases is the same mod on three loaders — modId has to come
+// out identical while the loader and version differ.
 const read = (name: string) => readArchiveInfo(readFileSync(`test/fixtures/${name}`))
 
 const forge = read('Jade-1.20.1-Forge-11.13.3.jar')
@@ -30,8 +30,8 @@ describe('rozpoznanie rodzaju archiwum', () => {
     expect(fabric.loaders).toEqual(['fabric'])
   })
 
-  // NeoForge zostawia w jarze rowniez stary META-INF/mods.toml, wiec kolejnosc
-  // w rejestrze manifestow decyduje o tym, ktory loader wygra.
+  // NeoForge also leaves the old META-INF/mods.toml in the jar, so the order of
+  // the manifest registry decides which loader wins.
   it('neoforge nie jest brany za forge', () => {
     expect(neoforge.loaders).not.toContain('forge')
   })
@@ -70,8 +70,8 @@ describe('wersja', () => {
     expect(fabric.version).toBe('26.1.9+fabric')
   })
 
-  // Forge i NeoForge wpisuja w mods.toml doslownie "${file.jarVersion}" i
-  // podstawiaja prawdziwa wersje z MANIFEST.MF dopiero przy ladowaniu.
+  // Forge and NeoForge write "${file.jarVersion}" into mods.toml literally and
+  // substitute the real version from MANIFEST.MF only at load time.
   it('forge i neoforge sa czytane z manifestu, nie z placeholdera', () => {
     expect(forge.version).toBe('11.13.3+forge')
     expect(neoforge.version).not.toContain('${')
@@ -80,8 +80,8 @@ describe('wersja', () => {
 })
 
 describe('wersje gry', () => {
-  // Manifest podaje zakres, nie liste wydan. Rozwiniecie go wymagaloby listy
-  // wszystkich wersji Minecrafta, wiec zakres idzie dalej jako tekst.
+  // The manifest gives a range, not a list of releases. Expanding it would need
+  // a list of every Minecraft version, so the range travels on as text.
   it('fabric niesie zakres z depends.minecraft', () => {
     expect(fabric.gameVersionRange).toBe('>=26.1')
   })
@@ -153,9 +153,9 @@ describe('parseToml', () => {
 })
 
 describe('parseManifest', () => {
-  // Manifest lamie linie po 72 bajtach w dowolnym miejscu, takze w srodku slowa,
-  // a kontynuacja doklada sie bez zadnej spacji — wiodaca spacja jest znacznikiem
-  // kontynuacji, nie czescia wartosci.
+  // The manifest wraps at 72 bytes anywhere, mid-word included, and a
+  // continuation is appended with no space at all — the leading space is the
+  // continuation marker, not part of the value.
   it('skleja zawiniete linie bez wstawiania spacji', () => {
     const manifest = parseManifest(
       'Manifest-Version: 1.0\nImplementation-URL: https://example.com/bardzo/dl\n uga/sciezka\nX: 1')

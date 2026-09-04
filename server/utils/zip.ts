@@ -1,14 +1,14 @@
 
 import { inflateRawSync } from 'node:zlib'
 
-// Czytnik ZIP-a pod parsery metadanych. Celowo nie rozpakowuje archiwum — czyta
-// centralny katalog i inflatuje wylacznie te wpisy, o ktore ktos poprosi po
-// nazwie. To samo z siebie zabija wiekszosc zip bombow: nikt nigdy nie prosi o
-// wpis, ktory rozwija sie do gigabajta.
+// A ZIP reader for the metadata parsers. It deliberately never unpacks an
+// archive — it reads the central directory and inflates only the entries someone
+// asks for by name. That alone defuses most zip bombs: nobody ever asks for the
+// entry that expands to a gigabyte.
 //
-// Piszemy to recznie zamiast brac biblioteke, bo repo ma juz wlasny dekoder PNG
-// na node:zlib i to jest ta sama klasa problemu, a formatu ZIP uzywamy w
-// dokladnie jednym kierunku: odczyt kilku nazwanych plikow.
+// Written by hand rather than pulled from a library because the repo already has
+// its own PNG decoder on node:zlib and this is the same class of problem, and
+// because ZIP is used here in exactly one direction: reading a few named files.
 
 const CONTROL = new RegExp('[\u0000-\u001F\u007F]')
 
@@ -53,13 +53,13 @@ function findEocd(buf: Buffer): number {
   for (let i = buf.length - EOCD_MIN; i >= start; i--) {
     if (buf.readUInt32LE(i) === EOCD_SIG) return i
   }
-  return fail('to nie jest archiwum ZIP')
+  return fail('not a ZIP archive')
 }
 
-// Nazwa wpisu pochodzi z pliku od uzytkownika. Nie zapisujemy nic na dysk, wiec
-// traversal nam nie grozi bezposrednio, ale nazwa trafia do interfejsu i do
-// metadanych — a wpis udajacy sciezke absolutna albo wychodzacy z katalogu jest
-// sygnalem, ze archiwum nie jest tym, za co sie podaje.
+// Entry names come from the user file. Nothing is written to disk, so traversal
+// is not a direct threat, but the name reaches the interface and the metadata —
+// and an entry posing as an absolute path, or escaping its directory, is a signal
+// that the archive is not what it claims to be.
 export function unsafeEntryName(name: string): boolean {
   if (!name || name.length > 512) return true
   if (name.startsWith('/') || /^[a-zA-Z]:/.test(name)) return true
@@ -71,14 +71,14 @@ export function unsafeEntryName(name: string): boolean {
 export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS): ZipEntry[] {
   const eocd = findEocd(buf)
 
-  // ZIP64 zamiast cichego zlego parsowania: pola 16- i 32-bitowe sa wtedy
-  // wysycone, a prawdziwe wartosci leza w osobnym rekordzie.
+  // ZIP64 rejected outright rather than parsed wrongly in silence: its 16- and
+  // 32-bit fields are saturated and the real values live in a separate record.
   //
   // ponytail: brak obslugi ZIP64. Doimplementowac, kiedy pojawi sie archiwum
-  // ponad 4 GB albo z ponad 65535 wpisami — do 100 MB uploadu to nie moze sie
-  // zdarzyc uczciwie.
+  // over 4 GB or with more than 65535 entries — within a 100 MB upload that
+  // cannot happen honestly.
   if (eocd >= 20 && buf.readUInt32LE(eocd - 20) === ZIP64_EOCD_LOCATOR_SIG) {
-    fail('archiwa ZIP64 nie sa obslugiwane')
+    fail('ZIP64 archives are not supported')
   }
 
   const total = buf.readUInt16LE(eocd + 10)
@@ -86,12 +86,12 @@ export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS
   const cdOffset = buf.readUInt32LE(eocd + 16)
 
   if (total === 0xFFFF || cdOffset === 0xFFFFFFFF || cdSize === 0xFFFFFFFF) {
-    fail('archiwa ZIP64 nie sa obslugiwane')
+    fail('ZIP64 archives are not supported')
   }
   if (total > limits.maxEntries) {
-    fail(`archiwum ma ${total} wpisow, limit to ${limits.maxEntries}`)
+    fail(`archive has ${total} entries, over the ${limits.maxEntries} limit`)
   }
-  if (cdOffset + cdSize > buf.length) fail('centralny katalog wychodzi poza plik')
+  if (cdOffset + cdSize > buf.length) fail('central directory runs past the end of the file')
 
   const entries: ZipEntry[] = []
   let at = cdOffset
@@ -99,7 +99,7 @@ export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS
 
   for (let i = 0; i < total; i++) {
     if (at + 46 > buf.length || buf.readUInt32LE(at) !== CD_SIG) {
-      fail('uszkodzony centralny katalog')
+      fail('corrupt central directory')
     }
 
     const method = buf.readUInt16LE(at + 10)
@@ -114,7 +114,7 @@ export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS
 
     totalUncompressed += uncompressedSize
     if (totalUncompressed > limits.maxTotalUncompressed) {
-      fail('archiwum rozwija sie do wiecej niz '
+      fail('archive expands to more than '
         + `${Math.round(limits.maxTotalUncompressed / 1048576)} MB`)
     }
 
@@ -127,37 +127,37 @@ export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS
 
 function readEntry(buf: Buffer, entry: ZipEntry, limits: ZipLimits): Buffer {
   if (entry.uncompressedSize > limits.maxEntryUncompressed) {
-    fail(`wpis ${entry.name} rozwija sie do `
-      + `${Math.round(entry.uncompressedSize / 1048576)} MB, limit to `
-      + `${Math.round(limits.maxEntryUncompressed / 1048576)} MB`)
+    fail(`entry ${entry.name} expands to `
+      + `${Math.round(entry.uncompressedSize / 1048576)} MB, over the `
+      + `${Math.round(limits.maxEntryUncompressed / 1048576)} MB limit`)
   }
   if (entry.compressedSize > 0
     && entry.uncompressedSize / entry.compressedSize > limits.maxRatio) {
-    fail(`wpis ${entry.name} ma wspolczynnik kompresji ponad ${limits.maxRatio}:1`)
+    fail(`entry ${entry.name} has a compression ratio over ${limits.maxRatio}:1`)
   }
 
   const head = entry.localHeaderOffset
   if (head + 30 > buf.length || buf.readUInt32LE(head) !== LOCAL_SIG) {
-    fail(`uszkodzony naglowek wpisu ${entry.name}`)
+    fail(`corrupt local header for entry ${entry.name}`)
   }
 
-  // Naglowek lokalny ma wlasne dlugosci nazwy i pola extra i potrafia sie roznic
-  // od tych z centralnego katalogu — liczenie offsetu danych z centralnego jest
-  // najczestszym bledem w recznych czytnikach ZIP-a.
+  // The local header carries its own name and extra-field lengths, and they can
+  // differ from the ones in the central directory — computing the data offset
+  // from the central directory is the most common bug in hand-written ZIP readers.
   const nameLen = buf.readUInt16LE(head + 26)
   const extraLen = buf.readUInt16LE(head + 28)
   const from = head + 30 + nameLen + extraLen
   const to = from + entry.compressedSize
 
-  if (to > buf.length) fail(`dane wpisu ${entry.name} wychodza poza plik`)
+  if (to > buf.length) fail(`data for entry ${entry.name} runs past the end of the file`)
 
   const raw = buf.subarray(from, to)
 
   if (entry.method === 0) return Buffer.from(raw)
-  if (entry.method !== 8) fail(`wpis ${entry.name} uzywa metody kompresji ${entry.method}`)
+  if (entry.method !== 8) fail(`entry ${entry.name} uses compression method ${entry.method}`)
 
-  // Twardy sufit na wyjsciu zamiast wiary w zadeklarowany rozmiar: zadeklarowany
-  // rozmiar pochodzi z tego samego pliku co bomba.
+  // A hard ceiling on the output instead of trusting the declared size: the
+  // declared size comes from the same file as the bomb.
   return inflateRawSync(raw, { maxOutputLength: limits.maxEntryUncompressed })
 }
 
@@ -186,9 +186,9 @@ export function openZip(body: Uint8Array, limits: ZipLimits = ZIP_LIMITS): Zip {
     has: name => byName.has(name),
     read,
     readText,
-    // Minecraft przepuszcza w swoich plikach JSON komentarze i przecinek przed
-    // klamra, wiec JSON.parse na surowej tresci wywala sie na plikach, ktore gra
-    // wczytuje bez mrugniecia.
+    // Minecraft tolerates comments and trailing commas in its own JSON files, so
+    // JSON.parse on the raw text fails on files the game itself reads without
+    // blinking.
     readJson: <T = unknown>(name: string): T | null => {
       const text = readText(name)
       return text === null ? null : (JSON.parse(relaxJson(text)) as T)

@@ -1,14 +1,14 @@
 import { defineConfig } from 'vitest/config'
 
-// Testy leza w test/, a nie obok zrodel, bo Nitro skanuje server/utils/**.ts pod
-// auto-import, a autoimport-check.mjs chodzi po tym samym drzewie — plik *.test.ts
-// trafilby do obu.
+// Tests live in test/ rather than next to their sources because Nitro scans
+// server/utils/**.ts for auto-imports and autoimport-check.mjs walks the same
+// tree — a *.test.ts file would be picked up by both.
 //
-// Swiadomie plain vitest, bez defineVitestConfig z @nuxt/test-utils: ten drugi
-// podstawia aliasy Nuxta, przez co `useRuntimeConfig` rozwiazuje sie do wersji
-// aplikacyjnej i wywala sie poza kontekstem Nuxta. Testy komponentow dostana
-// wlasny projekt ze srodowiskiem 'nuxt', kiedy pojawi sie pierwszy komponent do
-// przetestowania — patrz etap 6.
+// Deliberately plain vitest rather than defineVitestConfig from @nuxt/test-utils:
+// that one installs Nuxt aliases, which makes `useRuntimeConfig` resolve to the
+// app-side version and throw outside a Nuxt context. Component tests get their
+// own project with the 'nuxt' environment once there is a first component worth
+// testing — see stage 6.
 export default defineConfig({
   test: {
     environment: 'node',

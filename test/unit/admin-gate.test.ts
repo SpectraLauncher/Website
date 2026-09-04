@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest'
 
 import { bootstrapAdminEmails, isAdmin, isAdminEmail, parseAdminEmails } from '../../server/utils/admin'
 
-// Dubluje czesc test/admin-gate-check.mjs celowo: to jest smoke test calego
-// harnessu vitest — import z server/utils, shim auto-importow, useRuntimeConfig.
-// Jesli ten plik przechodzi, kazdy nastepny test serwerowy tez sie uruchomi.
+// Deliberately duplicates part of test/admin-gate-check.mjs: this is the smoke
+// test for the whole vitest harness — importing from server/utils, the
+// auto-import shim, useRuntimeConfig. If this file passes, every later server
+// test will at least run.
 describe('brama admina', () => {
   it('otwiera sie na roli, nie na adresie', () => {
     expect(isAdmin({ role: 'admin' })).toBe(true)

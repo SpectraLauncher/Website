@@ -1,12 +1,12 @@
 
 import { gunzipSync, inflateSync } from 'node:zlib'
 
-// Czytnik NBT. Wszystkie formaty schematow, ktore obslugujemy, to NBT spakowany
-// gzipem — rozni je dopiero uklad tagow w srodku, nie kodowanie.
+// An NBT reader. Every schematic format supported here is gzipped NBT — what
+// separates them is the tag layout inside, not the encoding.
 //
-// Big-endian, bo taki jest format Javy. Kazdy odczyt sprawdza granice bufora:
-// plik przychodzi od uzytkownika i dlugosc zapisana w srodku jest tak samo
-// niezaufana jak reszta.
+// Big-endian, because that is the Java format. Every read checks the buffer
+// bounds: the file comes from the user, and a length written inside it is
+// exactly as untrusted as the rest of it.
 
 export const TAG_END = 0
 export const TAG_BYTE = 1
@@ -36,12 +36,12 @@ export interface NbtCompound { [key: string]: NbtValue }
 
 export class NbtError extends Error {}
 
-// Zagniezdzenie jest tania bronia: kilka kilobajtow otwierajacych sie list
-// wystarczy, zeby przewrocic stos rekurencyjnemu czytnikowi.
+// Nesting is a cheap weapon: a few kilobytes of lists that only ever open are
+// enough to blow the stack of a recursive reader.
 const MAX_DEPTH = 512
 
-// Sam limit glebokosci nie wystarcza: plik plaski, ale z milionami malutkich
-// tagow, przechodzi go bez trudu i zjada pamiec na samych obiektach.
+// A depth limit alone is not enough: a flat file with millions of tiny tags
+// walks straight through it and eats memory on the objects alone.
 const MAX_TAGS = 8 * 1024 * 1024
 
 const MAX_DECOMPRESSED = 256 * 1024 * 1024
@@ -52,12 +52,12 @@ function fail(message: string): never {
 
 export function decompressNbt(body: Uint8Array): Buffer {
   const buf = Buffer.isBuffer(body) ? body : Buffer.from(body)
-  if (buf.length < 3) fail('plik jest za krotki, zeby byc NBT')
+  if (buf.length < 3) fail('file is too short to be NBT')
 
   if (buf[0] === 0x1F && buf[1] === 0x8B) {
     return gunzipSync(buf, { maxOutputLength: MAX_DECOMPRESSED })
   }
-  // Naglowek zlib: pierwszy bajt 0x78, a (CMF*256 + FLG) dzieli sie przez 31.
+  // zlib header: first byte 0x78, and (CMF*256 + FLG) divisible by 31.
   if (buf[0] === 0x78 && ((buf[0]! << 8) + buf[1]!) % 31 === 0) {
     return inflateSync(buf, { maxOutputLength: MAX_DECOMPRESSED })
   }
@@ -70,11 +70,11 @@ class Reader {
   constructor(private buf: Buffer, private at = 0) {}
 
   private tag() {
-    if (++this.tags > MAX_TAGS) fail('NBT ma wiecej tagow, niz wynosi limit')
+    if (++this.tags > MAX_TAGS) fail('NBT has more tags than the limit allows')
   }
 
   private need(bytes: number) {
-    if (this.at + bytes > this.buf.length) fail('NBT urywa sie w polowie wartosci')
+    if (this.at + bytes > this.buf.length) fail('NBT ends in the middle of a value')
   }
 
   u8() {
@@ -132,20 +132,20 @@ class Reader {
     return v
   }
 
-  // Dlugosc tablicy jest zapisana w pliku, wiec przed alokacja sprawdzamy, czy
-  // tyle bajtow w ogole zostalo — inaczej zadeklarowane 2 mld elementow probuje
-  // zaalokowac pamiec, ktorej nie ma.
+  // The array length is written in the file, so before allocating we check that
+  // this many bytes are even left — otherwise a declared two billion elements
+  // tries to allocate memory that is not there.
   count(itemBytes: number) {
     const n = this.i32()
-    if (n < 0) fail('NBT deklaruje tablice o ujemnej dlugosci')
+    if (n < 0) fail('NBT declares an array of negative length')
     if (this.at + n * itemBytes > this.buf.length) {
-      fail('NBT deklaruje tablice dluzsza niz sam plik')
+      fail('NBT declares an array longer than the file itself')
     }
     return n
   }
 
   value(type: number, depth: number): NbtValue {
-    if (depth > MAX_DEPTH) fail('NBT jest zagniezdzony glebiej niz limit')
+    if (depth > MAX_DEPTH) fail('NBT is nested deeper than the limit')
     this.tag()
 
     switch (type) {
@@ -185,8 +185,8 @@ class Reader {
         const itemType = this.u8()
         const n = this.count(1)
         const out: NbtValue[] = []
-        // TAG_End jako typ elementu znaczy "lista pusta". Niektore zapisywacze
-        // wpisuja przy tym niezerowa dlugosc i wtedy nie ma czego czytac.
+        // TAG_End as the element type means "empty list". Some writers pair it
+        // with a non-zero length anyway, and then there is nothing to read.
         if (itemType === TAG_END) return out
         for (let i = 0; i < n; i++) out.push(this.value(itemType, depth + 1))
         return out
@@ -203,7 +203,7 @@ class Reader {
       }
 
       default:
-        return fail(`nieznany tag NBT: ${type}`)
+        return fail(`unknown NBT tag: ${type}`)
     }
   }
 }
@@ -215,16 +215,16 @@ export function readNbt(body: Uint8Array): NbtRoot {
   const reader = new Reader(buf)
 
   const tag = reader.u8()
-  if (tag !== TAG_COMPOUND) fail('NBT nie zaczyna sie od zlozonego tagu')
+  if (tag !== TAG_COMPOUND) fail('NBT does not start with a compound tag')
 
   const name = reader.str()
   return { name, value: reader.value(TAG_COMPOUND, 0) as NbtCompound }
 }
 
-// --- pomocnicze odczyty --------------------------------------------------
-// NBT nie ma schematu, wiec kazdy odczyt z pliku uzytkownika moze zwrocic co
-// innego, niz sie spodziewamy. Te funkcje zwracaja undefined zamiast rzucac,
-// zeby parser formatu sam decydowal, co jest bledem, a co brakiem pola.
+// --- typed reads ---------------------------------------------------------
+// NBT has no schema, so any read from a user file may return something other
+// than what we expect. These return undefined rather than throwing, so each
+// format parser decides for itself what is an error and what is a missing field.
 
 export function asCompound(v: NbtValue | undefined): NbtCompound | undefined {
   return v && typeof v === 'object' && !Array.isArray(v) && !ArrayBuffer.isView(v)

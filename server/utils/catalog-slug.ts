@@ -2,14 +2,14 @@
 export const SLUG_MIN = 3
 export const SLUG_MAX = 64
 
-// Slug projektu i organizacji siedzi w tej samej przestrzeni co trasy najwyzszego
-// poziomu, wiec `/schematic/tools` jest bezpieczne, ale `/org/tools` juz nie —
-// a jutro moze przybyc prefiks, ktory dzis nie istnieje. Lista jest wspolna dla
-// obu i celowo szersza niz zbior dzisiejszych tras.
+// Project and organization slugs share a namespace with the top-level routes,
+// so `/schematic/tools` is safe but `/org/tools` is not — and tomorrow may bring
+// a prefix that does not exist today. One list covers both, deliberately wider
+// than the set of routes that exist right now.
 //
-// Dodajac strone najwyzszego poziomu w app/pages, dopisz ja tutaj. Pilnuje tego
-// test test/unit/catalog-slug.test.ts — czyta app/pages i nie przepusci nowej
-// strony, ktorej tu nie ma.
+// When adding a top-level page under app/pages, add it here too. The test in
+// test/unit/catalog-slug.test.ts reads app/pages and will not let a new page
+// through if it is missing from this list.
 const ROUTES = [
   'account', 'admin', 'badges', 'cookies', 'launcher', 'login', 'privacy',
   'reset-password', 's', 'secret', 'terms', 'tools', 'u',
@@ -23,8 +23,8 @@ const INFRASTRUCTURE = [
   'favicon.ico', 'manifest.json', 'sw.js', 'static', 'assets', 'cdn', 'content',
 ]
 
-// Slowa, ktore predzej czy pozniej beda trasa albo akcja. Taniej zablokowac je
-// teraz, niz odbierac komus slug pozniej.
+// Words that will sooner or later become a route or an action. Cheaper to block
+// them now than to take a slug away from someone later.
 const RESERVED = [
   'about', 'blog', 'browse', 'create', 'dashboard', 'discover', 'docs',
   'download', 'downloads', 'edit', 'explore', 'faq', 'files', 'follow',
@@ -52,8 +52,8 @@ export function normalizeSlug(raw: string): string {
 
 export type SlugProblem = 'too-short' | 'too-long' | 'reserved' | 'numeric'
 
-// Czysto numeryczny slug zderzylby sie z wyszukiwaniem po id, ktore API v2
-// dopuszcza obok sluga — `/v2/project/12` musi znaczyc jedno.
+// A purely numeric slug would collide with id lookup, which the v2 API accepts
+// alongside slugs — `/v2/project/12` has to mean exactly one thing.
 export function slugProblem(slug: string): SlugProblem | null {
   if (slug.length < SLUG_MIN) return 'too-short'
   if (slug.length > SLUG_MAX) return 'too-long'

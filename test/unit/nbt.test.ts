@@ -47,7 +47,7 @@ describe('odczyt prawdziwych plikow', () => {
     const { value } = readNbt(load('swamp_house.litematic'))
     const states = asLongArray(asCompound(asCompound(value.Regions)?.Main)?.BlockStates)!
     expect(typeof states[0]).toBe('bigint')
-    // Number nie utrzymalby tej wartosci — dlatego tablica jest BigInt64Array.
+    // Number could not hold this value — hence BigInt64Array.
     expect(states[0]).toBe(1369094286760478720n)
   })
 
@@ -59,13 +59,13 @@ describe('odczyt prawdziwych plikow', () => {
 
 describe('wejscie od uzytkownika', () => {
   it('odrzuca korzen, ktory nie jest zlozonym tagiem', () => {
-    expect(() => readNbt(gzipSync(Buffer.from([8, 0, 0])))).toThrow(/zlozonego tagu/)
+    expect(() => readNbt(gzipSync(Buffer.from([8, 0, 0])))).toThrow(/compound tag/)
   })
 
   it('odrzuca nieznany numer taga', () => {
-    // korzen COMPOUND, nazwa pusta, potem tag 99, ktorego nie ma w specyfikacji
+    // COMPOUND root, empty name, then tag 99, which the spec does not define
     expect(() => readNbt(gzipSync(Buffer.from([10, 0, 0, 99, 0, 1, 0x61]))))
-      .toThrow(/nieznany tag NBT/)
+      .toThrow(/unknown NBT tag/)
   })
 
   it('odrzuca plik urwany w polowie wartosci', () => {
@@ -73,26 +73,26 @@ describe('wejscie od uzytkownika', () => {
     expect(() => readNbt(whole.subarray(0, 200))).toThrow()
   })
 
-  // Dlugosc tablicy jest zapisana w pliku, wiec bez sprawdzenia granicy
-  // zadeklarowane dwa miliardy elementow probowalyby zaalokowac pamiec.
+  // The array length is written in the file, so without a bounds check a declared
+  // two billion elements would try to allocate memory.
   it('nie wierzy zadeklarowanej dlugosci tablicy', () => {
     const bomb = Buffer.from([
       10, 0, 0, // COMPOUND ""
       7, 0, 1, 0x61, // BYTE_ARRAY "a"
       0x7F, 0xFF, 0xFF, 0xFF, // dlugosc 2147483647
     ])
-    expect(() => readNbt(gzipSync(bomb))).toThrow(/dluzsza niz sam plik/)
+    expect(() => readNbt(gzipSync(bomb))).toThrow(/longer than the file/)
   })
 
   it('odrzuca ujemna dlugosc tablicy', () => {
     const bad = Buffer.from([10, 0, 0, 11, 0, 1, 0x61, 0xFF, 0xFF, 0xFF, 0xFF])
-    expect(() => readNbt(gzipSync(bad))).toThrow(/ujemnej dlugosci/)
+    expect(() => readNbt(gzipSync(bad))).toThrow(/negative length/)
   })
 
   it('odrzuca zagniezdzenie glebsze niz limit', () => {
-    // 600 otwierajacych sie list zlozonych tagow, bez ani jednego domkniecia
+    // 600 lists of compound tags that only ever open, never one close
     const deep = [10, 0, 0]
     for (let i = 0; i < 600; i++) deep.push(9, 0, 1, 0x61, 10, 0, 0, 0, 1)
-    expect(() => readNbt(gzipSync(Buffer.from(deep)))).toThrow(/glebiej niz limit/)
+    expect(() => readNbt(gzipSync(Buffer.from(deep)))).toThrow(/nested deeper/)
   })
 })

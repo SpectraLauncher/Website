@@ -1,12 +1,13 @@
 
-// Podzbior TOML-a, ktorego uzywaja mods.toml i neoforge.mods.toml: pary
-// klucz-wartosc, tablice tabel [[mods]] i [[dependencies.modid]], stringi w
-// cudzyslowie i apostrofie, w tym wielolinijkowe.
+// The subset of TOML that mods.toml and neoforge.mods.toml actually use:
+// key-value pairs, arrays of tables ([[mods]], [[dependencies.modid]]) and
+// quoted strings, including multi-line ones.
 //
-// Wlasny zamiast biblioteki, bo to jedyne miejsce w projekcie, gdzie TOML w
-// ogole wystepuje, i uzywamy z niego moze pieciu procent. Czego tu nie ma —
-// daty, tablice inline zagniezdzone, tabele inline — nie pojawia sie w plikach
-// modow; jesli sie pojawi, parser zwroci to jako string zamiast zgadywac.
+// Written by hand rather than pulled from a library because this is the only
+// place in the project where TOML appears at all, and we use maybe five percent
+// of it. What is missing here — dates, nested inline arrays, inline tables —
+// does not occur in mod files; if it ever does, the parser returns it as a
+// string rather than guessing.
 
 export type TomlValue = string | number | boolean | TomlValue[] | TomlTable
 export interface TomlTable { [key: string]: TomlValue }
@@ -45,7 +46,7 @@ function scalar(raw: string): TomlValue {
   return unquote(value)
 }
 
-// Przecinki wewnatrz stringow nie rozdzielaja elementow tablicy.
+// Commas inside strings do not separate array elements.
 function splitTopLevel(input: string): string[] {
   const out: string[] = []
   let depth = 0
@@ -133,8 +134,8 @@ export function parseToml(source: string): TomlTable {
     const key = unquote(line.slice(0, eq).trim())
     let raw = line.slice(eq + 1).trim()
 
-    // Stringi wielolinijkowe i tablice rozbite na kilka linii — zbieramy do
-    // momentu, w ktorym wartosc sie domyka.
+    // Multi-line strings and arrays split across lines — keep collecting until
+    // the value closes.
     const opener = raw.startsWith('"""') ? '"""' : raw.startsWith("'''") ? "'''" : null
     if (opener) {
       while (!(raw.length > opener.length * 2 - 1 && raw.endsWith(opener)) && i + 1 < lines.length) {
@@ -152,12 +153,12 @@ export function parseToml(source: string): TomlTable {
 
 // --- MANIFEST.MF ---------------------------------------------------------
 
-// Forge wpisuje w mods.toml `version = "${file.jarVersion}"` i podstawia
-// prawdziwa wersje z manifestu dopiero przy ladowaniu, wiec bez tego pliku
-// wersji modu po prostu nie ma.
+// Forge writes `version = "${file.jarVersion}"` into mods.toml and substitutes
+// the real version from the manifest only at load time, so without this file
+// there simply is no mod version.
 //
-// Manifest lamie linie po 72 bajtach, a kontynuacja zaczyna sie od spacji —
-// naiwne dzielenie po dwukropku gubi konce dluzszych wartosci.
+// The manifest wraps lines at 72 bytes and a continuation starts with a space —
+// naive splitting on the colon loses the tail of longer values.
 export function parseManifest(source: string): Record<string, string> {
   const out: Record<string, string> = {}
   let lastKey: string | null = null

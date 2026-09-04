@@ -1,15 +1,15 @@
 import { vi } from 'vitest'
 
-// server/utils/** liczy na auto-importy Nitro. W tescie jednostkowym Nitro nie
-// startuje, wiec te kilka globali trzeba podstawic recznie — inaczej kazdy import
-// z server/utils wywala sie na `createError is not defined`.
+// server/utils/** relies on Nitro auto-imports. Nitro does not boot in a unit
+// test, so these few globals have to be supplied by hand — otherwise every import
+// from server/utils dies on `createError is not defined`.
 //
-// Nowy global potrzebny w tescie dopisz tutaj, a nie w pojedynczym pliku testowym.
+// A new global needed by a test belongs here, not in one test file.
 
-// Wlasny zamiast prawdziwego z h3: h3 jest zaleznoscia przechodnia Nitro, wiec
-// pnpm nie pozwala go zaimportowac z roota, a dodawanie go do package.json tylko
-// pod testy to zaleznosc na nic. Testy patrza wylacznie na statusCode i
-// statusMessage, a te sa tu takie same.
+// Home-grown instead of the real one from h3: h3 is a transitive dependency of
+// Nitro, so pnpm will not let it be imported from the root, and adding it to
+// package.json just for tests would be a dependency for nothing. The tests only
+// look at statusCode and statusMessage, and those behave the same here.
 class TestHttpError extends Error {
   statusCode: number
   statusMessage: string

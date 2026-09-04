@@ -51,8 +51,8 @@ describe('slugProblem', () => {
     }
   })
 
-  // /u i /s odpadaja juz na dlugosci, ale sa na blackliscie na wypadek, gdyby
-  // SLUG_MIN kiedys zjechal.
+  // /u and /s already fail on length, but they are on the blacklist in case
+  // SLUG_MIN ever drops.
   it('odrzuca jednoliterowe trasy', () => {
     expect(isUsableSlug('u')).toBe(false)
     expect(isUsableSlug('s')).toBe(false)
@@ -60,9 +60,9 @@ describe('slugProblem', () => {
 })
 
 describe('blacklista nadaza za trasami', () => {
-  // Prawdziwy tryb awarii nie brzmi "ktos wpisal zly slug", tylko "doszla strona
-  // najwyzszego poziomu, a nikt nie dopisal jej do blacklisty". Ten test czyta
-  // app/pages i nie przepusci takiej strony.
+  // The real failure mode is not "someone typed a bad slug" but "a top-level page
+  // was added and nobody put it on the blacklist". This test reads app/pages and
+  // will not let such a page through.
   it('kazda strona najwyzszego poziomu jest zarezerwowana', () => {
     const segments = readdirSync('app/pages', { withFileTypes: true })
       .map(e => (e.isDirectory() ? e.name : e.name.replace(/\.vue$/, '')))

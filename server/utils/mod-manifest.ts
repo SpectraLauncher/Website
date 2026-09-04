@@ -16,10 +16,11 @@ export interface ModInfo {
   license: string | null
   links: Record<string, string>
   environment: 'client' | 'server' | 'both' | null
-  // Manifesty podaja zakres ("~1.20.1", ">=26.1"), nie liste wersji. Rozwiniecie
-  // zakresu w konkretne wersje wymaga listy wszystkich wydan Minecrafta, ktorej
-  // nie mamy — wiec zakres idzie do interfejsu jako podpowiedz, a wersje wybiera
-  // czlowiek. Zgadywanie tutaj byloby gorsze niz puste pole.
+  // Manifests give a range ("~1.20.1", ">=26.1"), not a list of versions.
+  // Expanding a range into concrete versions needs a list of every Minecraft
+  // release, which we do not have — so the range goes to the interface as a hint
+  // and a human picks the versions. Guessing here would be worse than an empty
+  // field.
   gameVersionRange: string | null
   packFormat: number | null
   shaderEngines: string[]
@@ -109,8 +110,8 @@ function forgeLike(toml: TomlTable, loader: Loader, manifest: Record<string, str
   const issues = str(toml.issueTrackerURL)
   if (issues) info.links.issues = issues
 
-  // `${file.jarVersion}` to placeholder, ktory Forge podstawia z manifestu
-  // dopiero przy ladowaniu — bez tego wersja wygladalaby doslownie tak.
+  // `${file.jarVersion}` is a placeholder Forge substitutes from the manifest
+  // only at load time — without this the version would read literally like that.
   const declared = str(mod.version)
   info.version = !declared || declared.includes('${')
     ? str(manifest['Implementation-Version'])
@@ -125,11 +126,11 @@ function forgeLike(toml: TomlTable, loader: Loader, manifest: Record<string, str
   return info
 }
 
-// --- rejestr manifestow --------------------------------------------------
+// --- manifest registry ---------------------------------------------------
 
-// Rejestr: plik w archiwum -> loader. Kolejnosc ma znaczenie, bo NeoForge
-// zostawia w jarze rowniez stary mods.toml — pierwszy pasujacy wygrywa.
-// Dodanie loadera to jedna linia tutaj i jedna galaz w readModInfo.
+// Registry: file inside the archive -> loader. Order matters, because NeoForge
+// also leaves the old mods.toml in the jar — the first match wins. Adding a
+// loader is one line here and one branch in readArchiveInfo.
 const MANIFESTS: Array<{ entry: string, loader: Loader }> = [
   { entry: 'fabric.mod.json', loader: 'fabric' },
   { entry: 'quilt.mod.json', loader: 'quilt' },
@@ -146,7 +147,7 @@ function readPackMeta(zip: Zip): PackMeta {
   const pack = meta?.pack
   if (!pack) return { packFormat: null, description: null }
 
-  // Opis bywa surowym komponentem tekstowym zamiast stringiem.
+  // The description is sometimes a raw text component rather than a string.
   const description = typeof pack.description === 'string'
     ? pack.description
     : str((pack.description as { text?: string } | undefined)?.text)
@@ -157,11 +158,11 @@ function readPackMeta(zip: Zip): PackMeta {
   }
 }
 
-// --- shadery -------------------------------------------------------------
+// --- shaders -------------------------------------------------------------
 
-// Shaderpacki nie maja manifestu. Silnik poznaje sie po tym, na co archiwum
-// reaguje: katalog shaders/ to warunek konieczny, a pliki .properties wewnatrz
-// odrozniaja OptiFine/Iris od Canvasa.
+// Shaderpacks have no manifest. The engine is recognised by what the archive
+// contains: a shaders/ directory is the necessary condition, and the .properties
+// files inside separate OptiFine/Iris from Canvas.
 function shaderEngines(zip: Zip): string[] {
   const names = zip.entries.map(e => e.name)
   const inShaders = names.filter(n => n.startsWith('shaders/'))
@@ -177,7 +178,7 @@ function shaderEngines(zip: Zip): string[] {
   return [...engines].sort()
 }
 
-// --- wejscie -------------------------------------------------------------
+// --- entry point ---------------------------------------------------------
 
 export function readArchiveInfo(body: Uint8Array): ModInfo {
   const zip = openZip(body)

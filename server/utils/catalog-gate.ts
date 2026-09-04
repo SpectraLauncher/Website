@@ -1,33 +1,34 @@
 
 import type { H3Event } from 'h3'
 
-// Jedna flaga na caly katalog. Dopoki jest wylaczona, kazda trasa katalogu —
-// strona, API publiczne i API zgodne z Modrinthem — istnieje wylacznie dla
-// admina i odpowiada 404 wszystkim pozostalym. Otwarcie na swiat to zmiana
-// CATALOG_PUBLIC na 'true', a nie polowanie na warunki po plikach.
-// Porownanie jest jawne, bo Boolean('false') to true, a ta flaga trzyma bramy
-// calego katalogu — przypadkowy string musi ja zostawiac zamknieta.
+// One flag for the whole catalog. While it is off, every catalog route — pages,
+// the public API and the Modrinth-compatible API — exists for the admin only and
+// answers 404 to everyone else. Opening it to the world is a change to
+// CATALOG_PUBLIC, not a hunt for conditions scattered across files.
+//
+// The comparison is explicit because Boolean('false') is true, and this flag
+// holds the gates for the entire catalog — a stray string has to leave it shut.
 export function catalogIsPublic(): boolean {
   const value = useRuntimeConfig().catalogPublic
   return value === true || value === 'true'
 }
 
-// Odczyt katalogu. Zwraca zalogowanego uzytkownika albo null, gdy katalog jest
-// juz publiczny — wtedy anonim tez ma prawo czytac.
+// Catalog read access. Returns the signed-in user, or null once the catalog is
+// public — at that point anonymous readers are allowed too.
 export async function requireCatalogRead(event: H3Event) {
   if (catalogIsPublic()) return await optionalUser(event)
   return await requireAdmin(event)
 }
 
-// Zapis do katalogu. Zostaje adminowy nawet po otwarciu odczytu — otwarty upload
-// wchodzi razem z moderacja, osobna decyzja i osobny etap.
+// Catalog write access. Stays admin-only even after reads open up — open upload
+// ships together with moderation, as a separate decision and a separate stage.
 export async function requireCatalogWrite(event: H3Event) {
   return await requireAdmin(event)
 }
 
-// Czy tresc katalogu moze wyciec do sitemapy, llms.txt, feedow i publicznych
-// listingow. Osobna nazwa od catalogIsPublic, bo to jest inne pytanie zadawane
-// w innym miejscu i chce, zeby grep po nim cos znajdowal.
+// Whether catalog content may reach the sitemap, llms.txt, feeds and public
+// listings. Named separately from catalogIsPublic because it is a different
+// question asked in a different place, and a grep for it should find something.
 export function catalogIsIndexable(): boolean {
   return catalogIsPublic()
 }

@@ -1,28 +1,28 @@
 
 import { usePool } from './db'
 
-// Kregoslup katalogu tresci: Project -> Version -> File, jeden dla wszystkich
-// pieciu typow. Roznice miedzy typami siedza w kolumnach `meta` (JSONB), nigdy
-// w osobnych tabelach.
+// The backbone of the content catalog: Project -> Version -> File, one set of
+// tables for all five types. Differences between types live in the `meta` JSONB
+// columns, never in separate tables.
 //
-// Ten sam wzorzec co ensureSchema(): CREATE TABLE IF NOT EXISTS na start, a
-// kazda pozniejsza kolumna wlasnym ALTER ... ADD COLUMN IF NOT EXISTS, bo na
-// bazie, ktora tabele juz ma, IF NOT EXISTS pomija cale polecenie.
+// Same pattern as ensureSchema(): CREATE TABLE IF NOT EXISTS to begin with, and
+// every later column in its own ALTER ... ADD COLUMN IF NOT EXISTS, because on a
+// database that already has the table, IF NOT EXISTS skips the whole statement.
 //
-// ponytail: brak wersjonowania migracji. Przy pierwszej zmianie destrukcyjnej
-// (drop kolumny, przebudowa indeksu) dolozyc tabele schema_migration z numerem
-// i uruchamiac kroki po kolei.
+// ponytail: no migration versioning. At the first destructive change (dropping a
+// column, rebuilding an index) add a schema_migration table with a number and
+// run the steps in order.
 export async function ensureCatalogSchema() {
   const pool = usePool()
 
   await pool.query(`
-    -- Projekt. game_versions i loaders sa tu zdenormalizowane jako suma po
-    -- wersjach — listing pyta "mody na 1.20.1 z Fabrikiem", nie "wersje na
-    -- 1.20.1", a bez tych kolumn kazdy listing to EXISTS po tabeli version z
-    -- deduplikacja i sortowanie po downloads przestaje byc tanie. Przeliczane
-    -- w refreshProjectFacets() po kazdej zmianie wersji.
+    -- Project. game_versions and loaders are denormalised here as the union over
+    -- versions — a listing asks for "mods for 1.20.1 on Fabric", not "versions
+    -- for 1.20.1", and without these columns every listing becomes an EXISTS over
+    -- the version table with deduplication, and sorting by downloads stops being
+    -- cheap. Recomputed in refreshProjectFacets() after every version change.
     --
-    -- Wlascicielem jest konto ALBO organizacja, dokladnie jedno z dwojga.
+    -- The owner is an account OR an organization, exactly one of the two.
     CREATE TABLE IF NOT EXISTS project (
       id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       slug          TEXT NOT NULL UNIQUE,
@@ -73,11 +73,11 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_version_project ON version (project_id, created DESC);
     CREATE INDEX IF NOT EXISTS idx_version_gv      ON version USING GIN (game_versions);
 
-    -- Plik jest identyfikowany hashem, nie nazwa. object_key niesie sha512, wiec
-    -- ten sam JAR w dziesieciu modpackach lezy w R2 raz. sha1 istnieje wylacznie
-    -- jako klucz wyszukiwania: caly ekosystem Minecrafta identyfikuje pliki po
-    -- sha1 i launcher musi to umiec, ale sha1 jest zlamany kolizyjnie i nie moze
-    -- decydowac o tym, gdzie plik lezy.
+    -- A file is identified by hash, not by name. object_key carries sha512, so
+    -- the same JAR across ten modpacks is stored in R2 once. sha1 exists purely
+    -- as a lookup key: the whole Minecraft ecosystem identifies files by sha1 and
+    -- the launcher has to speak it, but sha1 is collision-broken and does not get
+    -- to decide where a file lives.
     CREATE TABLE IF NOT EXISTS version_file (
       id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       version_id BIGINT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
@@ -94,8 +94,8 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_version_file_sha1    ON version_file (sha1);
     CREATE INDEX IF NOT EXISTS idx_version_file_sha512  ON version_file (sha512);
 
-    -- Zaleznosc wskazuje na projekt u nas, konkretna wersje u nas, albo na obcy
-    -- katalog (external = { source: 'modrinth', id: '...' }) — dokladnie jedno.
+    -- A dependency points at a project here, a specific version here, or at a
+    -- foreign catalog (external = { source: 'modrinth', id: '...' }) — exactly one.
     CREATE TABLE IF NOT EXISTS version_dependency (
       id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       version_id  BIGINT NOT NULL REFERENCES version(id) ON DELETE CASCADE,
@@ -119,9 +119,10 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_gallery_project ON project_gallery (project_id, ordering);
   `)
 
-  // Klucz obcy na organizacje nakladany osobno, bo tabele tworzy plugin
-  // better-auth i na bazie sprzed jego wlaczenia jeszcze jej nie ma. Bez tego
-  // caly ensureCatalogSchema wywala sie na starcie i serwer nie wstaje.
+  // The organization foreign key is applied separately, because that table is
+  // created by the better-auth plugin and does not exist yet on a database from
+  // before it was enabled. Without this, ensureCatalogSchema throws at boot and
+  // the server never comes up.
   const orgTable = await pool.query(`SELECT to_regclass('public.organization') AS t`)
   if (orgTable.rows[0]?.t) {
     await pool.query(`
@@ -131,9 +132,9 @@ export async function ensureCatalogSchema() {
     `)
   }
 
-  // Kolumna generowana, zeby nie bylo czego zapomniec zaktualizowac. 'simple',
-  // nie 'english': nazwy modow to nazwy wlasne ("Sodium", "Iris"), stemming psuje
-  // je bardziej, niz pomaga. Literowki dobija pg_trgm nizej.
+  // A generated column, so there is nothing to forget to update. 'simple' rather
+  // than 'english': mod names are proper nouns ("Sodium", "Iris") and stemming
+  // hurts them more than it helps. Typos are handled by pg_trgm below.
   await pool.query(`
     ALTER TABLE project ADD COLUMN IF NOT EXISTS search tsvector
       GENERATED ALWAYS AS (
@@ -143,15 +144,14 @@ export async function ensureCatalogSchema() {
   `)
   await pool.query('CREATE INDEX IF NOT EXISTS idx_project_search ON project USING GIN (search)')
 
-  // pg_trgm wymaga uprawnien, ktorych rola aplikacyjna moze nie miec. Wyszukiwanie
-  // dziala bez niego, tylko bez tolerancji literowek — to nie jest powod, zeby
-  // serwer nie wstal.
+  // pg_trgm needs privileges the application role may not have. Search works
+  // without it, just without typo tolerance — not a reason to refuse to boot.
   try {
     await pool.query('CREATE EXTENSION IF NOT EXISTS pg_trgm')
     await pool.query(
       'CREATE INDEX IF NOT EXISTS idx_project_title_trgm ON project USING GIN (title gin_trgm_ops)')
   } catch (e) {
-    console.warn('[db] pg_trgm niedostepny — wyszukiwarka katalogu bez tolerancji literowek:',
+    console.warn('[db] pg_trgm unavailable - catalog search without typo tolerance:',
       (e as Error).message)
   }
 }

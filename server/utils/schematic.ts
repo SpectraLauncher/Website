@@ -84,7 +84,7 @@ function boundedPalette(entries: BlockState[]): BlockState[] {
   return entries
 }
 
-// --- stan bloku ----------------------------------------------------------
+// --- block state ---------------------------------------------------------
 
 export function parseStateString(raw: string): BlockState {
   const open = raw.indexOf('[')
@@ -111,17 +111,17 @@ function stateFromCompound(entry: NbtCompound): BlockState {
   return { id, props }
 }
 
-// --- rozpakowywanie indeksow --------------------------------------------
+// --- index unpacking -----------------------------------------------------
 
-// Litematica pakuje indeksy palety przez granice longow — zawsze, niezaleznie od
-// MinecraftDataVersion. To nie jest to samo, co pakowanie sekcji chunka w samej
-// grze, ktore przestalo przechodzic przez granice w 1.16; kto pomyli te dwie
-// rzeczy, dostaje schemat wygladajacy jak szum.
+// Litematica packs palette indices across long boundaries — always, regardless
+// of MinecraftDataVersion. This is not the same thing as the chunk-section
+// packing inside the game itself, which stopped spanning boundaries in 1.16;
+// confusing the two gives you a schematic that looks like noise.
 //
-// ponytail: arytmetyka na BigInt, wiec ~2 mln blokow to sekundy. Przepisac na
-// pary 32-bitowe, jesli ktos wrzuci schemat wielkosci miasta.
+// ponytail: BigInt arithmetic, so ~2M blocks takes seconds. Rewrite on 32-bit
+// pairs if anyone uploads a city-sized schematic.
 export function unpackSpanning(longs: BigInt64Array, bits: number, count: number): Uint32Array {
-  if (bits < 1 || bits > 32) fail(`nieobslugiwana szerokosc wpisu: ${bits}`)
+  if (bits < 1 || bits > 32) fail(`unsupported entry width: ${bits}`)
 
   const out = new Uint32Array(count)
   const mask = (1n << BigInt(bits)) - 1n
@@ -132,11 +132,11 @@ export function unpackSpanning(longs: BigInt64Array, bits: number, count: number
     const word = Number(start >> 6n)
     const offset = start & 63n
 
-    if (word >= longs.length) fail('tablica stanow jest krotsza, niz wynika z rozmiaru')
+    if (word >= longs.length) fail('state array is shorter than the declared size requires')
 
     let value = (BigInt.asUintN(64, longs[word]!) >> offset) & mask
     if (offset + width > 64n) {
-      if (word + 1 >= longs.length) fail('tablica stanow urywa sie na ostatnim wpisie')
+      if (word + 1 >= longs.length) fail('state array ends part-way through the last entry')
       value |= (BigInt.asUintN(64, longs[word + 1]!) << (64n - offset)) & mask
     }
     out[i] = Number(value)
@@ -153,12 +153,12 @@ export function readVarInts(bytes: Int8Array, count: number): Uint32Array {
     let value = 0
     let shift = 0
     for (;;) {
-      if (at >= bytes.length) fail('tablica blokow urywa sie w polowie liczby')
+      if (at >= bytes.length) fail('block array ends part-way through a number')
       const byte = bytes[at++]! & 0xFF
       value |= (byte & 0x7F) << shift
       if ((byte & 0x80) === 0) break
       shift += 7
-      if (shift > 35) fail('uszkodzona liczba zmiennej dlugosci')
+      if (shift > 35) fail('corrupt variable-length number')
     }
     out[i] = value >>> 0
   }
@@ -170,9 +170,9 @@ export function paletteBits(size: number): number {
   return Math.max(2, 32 - Math.clz32(Math.max(1, size - 1)))
 }
 
-// --- lista materialow ----------------------------------------------------
+// --- material list -------------------------------------------------------
 
-// Bloki, ktore nie maja itemu i nie licza sie do listy materialow.
+// Blocks that have no item and do not count towards the material list.
 const NOT_AN_ITEM = new Set([
   'minecraft:air', 'minecraft:cave_air', 'minecraft:void_air',
   'minecraft:water', 'minecraft:lava', 'minecraft:fire', 'minecraft:soul_fire',
@@ -180,8 +180,8 @@ const NOT_AN_ITEM = new Set([
   'minecraft:nether_portal', 'minecraft:end_portal', 'minecraft:end_gateway',
 ])
 
-// Rejestr: blok -> itemy, ktore trzeba miec w rece. Domyslnie item nazywa sie tak
-// samo jak blok, wiec tu leza wylacznie wyjatki. Dodanie kolejnego to jedna linia.
+// Registry: block -> the items you actually need in hand. By default an item is
+// named after its block, so only the exceptions live here. Adding one is a line.
 const BLOCK_ITEMS: Record<string, string[]> = {
   'minecraft:cave_vines': ['minecraft:glow_berries'],
   'minecraft:cave_vines_plant': ['minecraft:glow_berries'],
@@ -208,19 +208,19 @@ const BLOCK_ITEMS: Record<string, string[]> = {
   'minecraft:dirt_path': ['minecraft:dirt'],
 }
 
-// Doniczka to dwa itemy: sama doniczka i to, co w niej stoi. Nazwa bloku niesie
-// obie informacje, wiec regula wystarczy zamiast wpisu na kazdy kwiatek.
+// A potted plant is two items: the pot and whatever stands in it. The block name
+// carries both, so one rule covers it instead of an entry per flower.
 function pottedItems(id: string): string[] | null {
   const plant = id.replace(/^minecraft:potted_/, '')
   if (plant === id) return null
   return ['minecraft:flower_pot', `minecraft:${plant.replace(/_bush$/, '')}`]
 }
 
-// Druga polowa bloku dwuczesciowego nie kosztuje osobnego itemu.
+// The second half of a two-part block does not cost a separate item.
 //
-// `half` ma tu dwa rozlaczne zestawy wartosci: drzwi i wysokie rosliny uzywaja
-// lower/upper, a schody i klapy top/bottom — dlatego sprawdzenie na 'upper' nie
-// wycina przypadkiem gornych schodow.
+// `half` has two disjoint value sets here: doors and tall plants use lower/upper,
+// while stairs and trapdoors use top/bottom — which is why testing for 'upper'
+// does not accidentally drop top-half stairs.
 function isSecondHalf(state: BlockState): boolean {
   return state.props.half === 'upper' || state.props.part === 'head'
 }
@@ -235,7 +235,7 @@ export function itemsFor(state: BlockState): string[] {
   const mapped = BLOCK_ITEMS[state.id]
   const items = mapped ?? [state.id]
 
-  // Plyta podwojna to dwie plyty w rece, nie jedna.
+  // A double slab is two slabs in hand, not one.
   if (state.props.type === 'double') return [...items, ...items]
 
   return items
@@ -255,19 +255,19 @@ export function materialsOf(counted: Array<{ state: BlockState, count: number }>
     .sort((a, b) => b.count - a.count || a.item.localeCompare(b.item))
 }
 
-// --- legacy: numeryczne ID sprzed 1.13 -----------------------------------
+// --- legacy: numeric pre-1.13 ids ----------------------------------------
 
 const LOG_TYPES = ['oak', 'spruce', 'birch', 'jungle']
 const LOG_AXES = ['y', 'x', 'z']
 const DYES = ['white', 'orange', 'magenta', 'light_blue', 'yellow', 'lime', 'pink', 'gray',
   'light_gray', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
 
-// Rejestr: numeryczne ID sprzed 1.13 -> nowoczesny blok. Klucz to `id` albo
-// `id:data`, a funkcja obsluguje rodziny, w ktorych data koduje wariant.
+// Registry: numeric pre-1.13 id -> modern block. The key is the id, and the
+// function handles families where the data value encodes a variant.
 //
-// Lista jest celowo niepelna — pokrywa to, co WorldEdit faktycznie zapisuje w
-// budynkach, i rosnie o kolejny wpis wtedy, kiedy jakis plik go potrzebuje.
-// Czego tu nie ma, wychodzi w SchematicInfo.unknown zamiast zniknac po cichu.
+// The list is deliberately incomplete — it covers what WorldEdit actually writes
+// for buildings, and grows by one entry whenever a file needs it. Anything not
+// here surfaces in SchematicInfo.unknown instead of vanishing silently.
 const LEGACY: Record<number, (data: number) => BlockState | null> = {
   0: () => ({ id: 'minecraft:air', props: {} }),
   1: d => ({ id: ['minecraft:stone', 'minecraft:granite', 'minecraft:polished_granite',
@@ -372,7 +372,7 @@ export function legacyState(id: number, data: number): BlockState | null {
   return LEGACY[id]?.(data) ?? null
 }
 
-// --- parsery formatow ----------------------------------------------------
+// --- format parsers ------------------------------------------------------
 
 interface Counted { state: BlockState, count: number }
 
@@ -414,12 +414,13 @@ function tally(indices: Uint32Array, palette: BlockState[]): Counted[] {
   return palette.map((state, i) => ({ state, count: counts[i]! }))
 }
 
-// Litematica. Regionow moze byc kilka; kazdy ma wlasna palete i wlasna tablice
-// stanow, wiec materialy sumujemy po wszystkich, a rozmiar bierzemy z metadanych.
+// Litematica. There may be several regions, each with its own palette and its
+// own state array, so materials are summed across all of them while the size
+// comes from the metadata.
 export function parseLitematic(root: NbtCompound): SchematicInfo {
   const meta = asCompound(root.Metadata)
   const regions = asCompound(root.Regions)
-  if (!regions) fail('brak sekcji Regions')
+  if (!regions) fail('no Regions section')
 
   const counted: Counted[] = []
 
@@ -463,15 +464,15 @@ export function parseLitematic(root: NbtCompound): SchematicInfo {
   })
 }
 
-// Sponge Schematic. W wersji 3 paleta i dane siedza w podsekcji Blocks, w
-// wersji 2 lezaly plasko obok siebie pod innymi nazwami.
+// Sponge Schematic. In version 3 the palette and the data sit inside a Blocks
+// subsection; in version 2 they lay flat next to each other under other names.
 export function parseSponge(root: NbtCompound): SchematicInfo {
   const body = asCompound(root.Schematic) ?? root
   const blocks = asCompound(body.Blocks)
 
   const paletteRaw = asCompound(blocks?.Palette ?? body.Palette)
   const data = asByteArray(blocks?.Data ?? body.BlockData)
-  if (!paletteRaw || !data) fail('brak palety albo danych blokow')
+  if (!paletteRaw || !data) fail('no palette or no block data')
 
   const size = {
     x: asNumber(body.Width) ?? 0,
@@ -480,8 +481,8 @@ export function parseSponge(root: NbtCompound): SchematicInfo {
   }
   const volume = boundedVolume(size)
 
-  // Paleta jest mapa nazwa -> indeks, a nie lista, wiec kolejnosc kluczy nic nie
-  // znaczy i trzeba ja przelozyc na tablice po wartosci indeksu.
+  // The palette is a name -> index map rather than a list, so key order means
+  // nothing and it has to be laid out into an array by index value.
   const palette: BlockState[] = []
   for (const [name, index] of Object.entries(paletteRaw)) {
     const at = asNumber(index)
@@ -499,13 +500,13 @@ export function parseSponge(root: NbtCompound): SchematicInfo {
   })
 }
 
-// Blok struktury. Lista blokow jest rzadka — zawiera wylacznie postawione bloki,
-// wiec objetosc bierze sie z pola size, a nie z dlugosci listy.
+// Structure block. The block list is sparse — it holds only placed blocks — so
+// the volume comes from the size field and not from the list length.
 export function parseStructure(root: NbtCompound): SchematicInfo {
   const sizeList = asList(root.size)
   const paletteRaw = asList(root.palette)
   const blocks = asList(root.blocks)
-  if (!sizeList || !paletteRaw || !blocks) fail('brak size, palette albo blocks')
+  if (!sizeList || !paletteRaw || !blocks) fail('no size, palette or blocks')
 
   const size = {
     x: asNumber(sizeList[0]) ?? 0,
@@ -528,12 +529,12 @@ export function parseStructure(root: NbtCompound): SchematicInfo {
   })
 }
 
-// MCEdit sprzed 1.13: dwie tablice bajtow, numeryczne ID i cztery bity wariantu.
-// AddBlocks niesie starszy nibble dla ID powyzej 255.
+// Pre-1.13 MCEdit: two byte arrays, numeric ids and four bits of variant.
+// AddBlocks carries the high nibble for ids above 255.
 export function parseMcEdit(root: NbtCompound): SchematicInfo {
   const blocks = asByteArray(root.Blocks)
   const data = asByteArray(root.Data)
-  if (!blocks) fail('brak tablicy Blocks')
+  if (!blocks) fail('no Blocks array')
 
   const add = asByteArray(root.AddBlocks) ?? asByteArray(root.Add)
   const size = {
@@ -548,7 +549,7 @@ export function parseMcEdit(root: NbtCompound): SchematicInfo {
   for (let i = 0; i < blocks.length; i++) {
     let id = blocks[i]! & 0xFF
     if (add) {
-      // Jeden bajt AddBlocks trzyma starsze nibble dwoch kolejnych blokow.
+      // One AddBlocks byte holds the high nibble of two consecutive blocks.
       const nibble = (i & 1) === 0
         ? (add[i >> 1]! & 0xF0) >> 4
         : add[i >> 1]! & 0x0F
@@ -575,14 +576,14 @@ export function parseMcEdit(root: NbtCompound): SchematicInfo {
   })
 }
 
-// Format rozpoznajemy po ksztalcie NBT, nie po rozszerzeniu — rozszerzenie to
-// deklaracja uzytkownika, a uklad tagow to fakt.
+// The format is recognised by the NBT layout, not by the extension — the
+// extension is the user's claim, the tag layout is a fact.
 export function detectFormat(root: NbtCompound): SchematicFormat {
   if (root.Regions && root.Metadata) return 'litematic'
   if (root.Schematic || (root.Palette && root.BlockData)) return 'sponge'
   if (root.blocks && root.palette && root.size) return 'structure'
   if (root.Blocks && root.Width) return 'mcedit'
-  return fail('nieznany format schematu')
+  return fail('unknown schematic format')
 }
 
 export function parseSchematic(body: Uint8Array): SchematicInfo {

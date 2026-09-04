@@ -17,9 +17,9 @@ import {
   unpackSpanning,
 } from '../../server/utils/schematic'
 
-// swamp_house to jeden i ten sam budynek wyeksportowany do czterech formatow.
-// Trzy nowoczesne musza dac identyczna liste materialow — to najmocniejszy test,
-// jaki da sie tu napisac: trzy niezalezne enkodery kontra nasz dekoder.
+// swamp_house is one and the same building exported to four formats. The three
+// modern ones have to produce an identical material list — the strongest test
+// available here: three independent encoders against our one decoder.
 const load = (name: string) => readFileSync(`test/fixtures/${name}`)
 const parse = (name: string) => parseSchematic(load(name))
 
@@ -55,8 +55,8 @@ describe('rozmiar i liczba blokow', () => {
     }
   })
 
-  // Litematica sama zapisuje TotalBlocks. Zgodnosc z nasza liczba znaczy, ze
-  // rozpakowanie tablicy stanow trafilo w kazdy wpis — plik weryfikuje dekoder.
+  // Litematica writes TotalBlocks itself. Agreement with our count means the
+  // state array was unpacked entry for entry — the file verifies the decoder.
   it('licznik zgadza sie z TotalBlocks zapisanym przez Litematice', () => {
     const root = readNbt(load('swamp_house.litematic')).value
     const declared = asNumber(asCompound(root.Metadata)?.TotalBlocks)
@@ -69,9 +69,9 @@ describe('rozmiar i liczba blokow', () => {
     expect(structure.blockCount).toBe(993)
   })
 
-  // Eksport do formatu sprzed 1.13 jest stratny: WorldEdit gubi wszystko, co
-  // powstalo pozniej (moss_block, azalea, cave_vines, hanging_roots...). Mniejsza
-  // liczba to wlasciwosc pliku, nie blad parsera.
+  // Exporting to the pre-1.13 format is lossy: WorldEdit drops everything added
+  // later (moss_block, azalea, cave_vines, hanging_roots...). The lower count is
+  // a property of the file, not a parser bug.
   it('legacy ma mniej blokow, bo format nie zna nowszych', () => {
     expect(mcedit.blockCount).toBe(664)
     expect(mcedit.blockCount).toBeLessThan(litematic.blockCount)
@@ -92,18 +92,18 @@ describe('lista materialow', () => {
     }
   })
 
-  // Dwadziescia pozycji wspolnych dla obu epok formatu zgadza sie co do sztuki.
-  // Rozjezdzaja sie dokladnie trzy i wszystkie z winy pliku legacy, nie parsera:
+  // Twenty entries shared by both eras of the format agree to the block. Exactly
+  // three diverge, and all three are the legacy file's fault, not the parser's:
   //
-  //   spruce_door — WorldEdit zapisal wszystkie cztery bloki drzwi jako dolna
-  //     polowe (data bez bitu 8), wiec z pliku wynikaja 4 drzwi zamiast 2.
-  //   spruce_slab — zapisal je pod ID 125 (plyta podwojna) zamiast 126, wiec
-  //     16 blokow to wedlug pliku 32 plyty.
-  //   flower_pot — przed 1.13 zawartosc doniczki siedziala w TileEntity, a nie w
-  //     nazwie bloku, wiec z pliku widac sama doniczke bez rosliny.
+  //   spruce_door — WorldEdit wrote all four door blocks as the lower half (data
+  //     without bit 8), so the file implies 4 doors instead of 2.
+  //   spruce_slab — written under id 125 (double slab) instead of 126, so 16
+  //     blocks are 32 slabs according to the file.
+  //   flower_pot — before 1.13 the pot's contents lived in a TileEntity rather
+  //     than in the block name, so the file shows a bare pot with no plant.
   //
-  // Nie zgadujemy tu poprawnej wartosci. Jesli ten test zacznie padac, znaczy to,
-  // ze ktos zmienil parser pod te liczby — a nie ze plik nagle sie naprawil.
+  // We do not guess the correct value here. If this test starts failing, someone
+  // changed the parser to fit these numbers — the file did not suddenly heal.
   it('zgadza sie z legacy wszedzie tam, gdzie legacy nie stracil informacji', () => {
     const modern = materialMap(litematic)
     const legacy = materialMap(mcedit)
@@ -140,8 +140,8 @@ describe('pulapki blokow wieloczesciowych', () => {
     const raw = litematic.palette.filter(id => id === 'minecraft:spruce_door')
     expect(raw).toHaveLength(1)
     expect(doors?.count).toBeGreaterThan(0)
-    // Kazde drzwi zajmuja dwa bloki, wiec bez odciecia gornej polowy liczba
-    // bylaby parzysta i dwa razy wieksza.
+    // Each door occupies two blocks, so without cutting the upper half the count
+    // would be even and twice as large.
     expect(itemsFor({ id: 'minecraft:spruce_door', props: { half: 'upper' } })).toEqual([])
     expect(itemsFor({ id: 'minecraft:spruce_door', props: { half: 'lower' } }))
       .toEqual(['minecraft:spruce_door'])
@@ -199,8 +199,8 @@ describe('rozpakowywanie tablicy stanow', () => {
     expect(paletteBits(257)).toBe(9)
   })
 
-  // Wektor policzony recznie ze specyfikacji: przy 7 bitach wpis numer 9 zaczyna
-  // sie na bicie 63, wiec jeden bit siedzi w pierwszym longu, a szesc w drugim.
+  // A vector worked out by hand from the spec: at 7 bits, entry 9 starts on bit
+  // 63, so one bit sits in the first long and six in the second.
   // 1 | (0b101010 << 1) = 85.
   it('czyta wpis przechodzacy przez granice longa', () => {
     const longs = new BigInt64Array([BigInt.asIntN(64, 1n << 63n), 0b101010n])
@@ -208,10 +208,10 @@ describe('rozpakowywanie tablicy stanow', () => {
   })
 
   it('odrzuca tablice krotsza, niz wynika z objetosci', () => {
-    // 8 bitow dzieli 64 bez reszty, wiec wpis 8 zaczyna sie juz w drugim longu.
-    expect(() => unpackSpanning(new BigInt64Array(1), 8, 100)).toThrow(/krotsza/)
-    // 7 bitow: wpis 9 zaczyna sie w pierwszym longu i konczy w nieistniejacym drugim.
-    expect(() => unpackSpanning(new BigInt64Array(1), 7, 10)).toThrow(/urywa sie/)
+    // 8 bits divides 64 evenly, so entry 8 already starts in the second long.
+    expect(() => unpackSpanning(new BigInt64Array(1), 8, 100)).toThrow(/shorter than the declared size/)
+    // 7 bits: entry 9 starts in the first long and ends in a second that is absent.
+    expect(() => unpackSpanning(new BigInt64Array(1), 7, 10)).toThrow(/part-way through the last entry/)
   })
 })
 
@@ -283,8 +283,8 @@ describe('limity twardosci', () => {
       .toThrow(/axis x/)
   })
 
-  // Kazda os miesci sie w limicie, a iloczyn to 68 miliardow blokow. Bez tego
-  // sprawdzenia unpackSpanning probuje zaalokowac na to tablice.
+  // Every axis is within the limit while the product is 68 billion blocks.
+  // Without this check unpackSpanning tries to allocate an array for it.
   it('odrzuca objetosc, ktorej zadna pojedyncza os nie zdradza', () => {
     expect(() => boundedVolume({ x: 4096, y: 4096, z: 4096 })).toThrow(/over the/)
   })

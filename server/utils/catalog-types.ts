@@ -2,8 +2,8 @@
 export const PROJECT_TYPES = ['mod', 'modpack', 'shader', 'resourcepack', 'schematic'] as const
 export type ProjectType = typeof PROJECT_TYPES[number]
 
-// Rejestr: prefiks URL na typ projektu. Dodanie szostego typu to wpis tutaj,
-// wpis w PROJECT_TYPES i strona w app/pages/<prefiks>/[slug].vue.
+// Registry: URL prefix per project type. Adding a sixth type means an entry
+// here, an entry in PROJECT_TYPES and a page in app/pages/<prefix>/[slug].vue.
 export const TYPE_PREFIX: Record<ProjectType, string> = {
   mod: 'mod',
   modpack: 'pack',
@@ -21,9 +21,9 @@ export type ProjectStatus = typeof PROJECT_STATUSES[number]
 export const DEPENDENCY_KINDS = ['required', 'optional', 'incompatible', 'embedded'] as const
 export type DependencyKind = typeof DEPENDENCY_KINDS[number]
 
-// Rejestr: licencje do wyboru w formularzu. Identyfikatory SPDX poza 'ARR',
-// ktore SPDX nie ma, a ktore w modowaniu Minecrafta jest najczestszym wyborem.
-// Cokolwiek spoza listy idzie jako 'other' razem z project.license_url.
+// Registry: licences offered in the form. SPDX identifiers except for 'ARR',
+// which SPDX has no code for and which is the most common choice in Minecraft
+// modding. Anything outside the list goes in as 'other' with project.license_url.
 export const LICENSES = [
   'MIT',
   'Apache-2.0',

@@ -11,9 +11,9 @@ import {
   unsafeEntryName,
 } from '../../server/utils/zip'
 
-// Fixtury zrobione modulem zipfile z Pythona, czyli implementacja niezalezna od
-// tej, ktora testujemy — inaczej test sprawdzalby tylko, czy nasz czytnik zgadza
-// sie z naszym zapisywaczem.
+// Fixtures built with Python's zipfile module, an implementation independent of
+// the one under test — otherwise the test would only check that our reader
+// agrees with our writer.
 const fixture = (name: string) => readFileSync(`test/fixtures/${name}`)
 
 describe('odczyt archiwum', () => {
@@ -58,26 +58,26 @@ describe('ochrona przed bomba', () => {
   it('odrzuca wpis o skrajnym wspolczynniku kompresji', () => {
     const zip = openZip(fixture('zip-bomb.zip'))
     expect(() => zip.read('zeros.bin')).toThrow(ZipError)
-    expect(() => zip.read('zeros.bin')).toThrow(/wspolczynnik kompresji/)
+    expect(() => zip.read('zeros.bin')).toThrow(/compression ratio/)
   })
 
   it('odrzuca wpis wiekszy niz limit po rozpakowaniu', () => {
     const zip = openZip(fixture('zip-bomb.zip'), { ...ZIP_LIMITS, maxEntryUncompressed: 1024 })
-    expect(() => zip.read('zeros.bin')).toThrow(/rozwija sie do/)
+    expect(() => zip.read('zeros.bin')).toThrow(/expands to/)
   })
 
   it('odrzuca archiwum o zbyt duzej sumie rozmiarow', () => {
     expect(() => openZip(fixture('zip-bomb.zip'), { ...ZIP_LIMITS, maxTotalUncompressed: 1024 }))
-      .toThrow(/rozwija sie do wiecej niz/)
+      .toThrow(/expands to more than/)
   })
 
   it('odrzuca archiwum o zbyt duzej liczbie wpisow', () => {
     expect(() => openZip(fixture('sample-fabric-mod.jar'), { ...ZIP_LIMITS, maxEntries: 2 }))
-      .toThrow(/wpisow, limit to 2/)
+      .toThrow(/entries, over the 2 limit/)
   })
 
-  // Limit liczony jest z centralnego katalogu, zanim cokolwiek zostanie
-  // zinflatowane — sam odczyt katalogu nie moze wywolac rozpakowywania.
+  // The limit is computed from the central directory before anything is inflated
+  // — reading the directory must not itself trigger decompression.
   it('otwarcie bomby samo w sobie nic nie rozpakowuje', () => {
     expect(() => openZip(fixture('zip-bomb.zip'))).not.toThrow()
   })
@@ -86,7 +86,7 @@ describe('ochrona przed bomba', () => {
 describe('uszkodzone wejscie', () => {
   it('odrzuca cos, co nie jest ZIP-em', () => {
     expect(() => openZip(Buffer.from('to nie jest archiwum, tylko zwykly tekst')))
-      .toThrow(/to nie jest archiwum ZIP/)
+      .toThrow(/not a ZIP archive/)
   })
 
   it('odrzuca pusty bufor', () => {
@@ -102,7 +102,7 @@ describe('uszkodzone wejscie', () => {
     const buf = Buffer.from(fixture('sample-fabric-mod.jar'))
     const eocd = buf.length - 22
     buf.writeUInt32LE(0x7FFFFFF0, eocd + 16)
-    expect(() => readCentralDirectory(buf)).toThrow(/wychodzi poza plik/)
+    expect(() => readCentralDirectory(buf)).toThrow(/past the end of the file/)
   })
 })
 
