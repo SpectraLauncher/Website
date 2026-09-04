@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   if (!/^\d+$/.test(fileId)) throw createError({ statusCode: 404, statusMessage: 'no such file' })
 
   const found = await downloadTarget(fileId)
-  if (!found || !visibleProject(found.project, viewer)) {
+  if (!found || !await visibleProject(found.project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such file' })
   }
 

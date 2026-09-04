@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 
 const slug = computed(() => String(route.params.slug ?? ''))
 
-const { data, error } = await useFetch<{ project: CatalogProjectData }>(
+const { data, error } = await useFetch<{ project: CatalogProjectData, listed: boolean }>(
   () => `/api/catalog/project/${encodeURIComponent(slug.value)}`)
 
 const project = computed(() => data.value?.project ?? null)
@@ -40,7 +40,7 @@ useSeoMeta({
   description: () => project.value?.summary || markdownExcerpt(project.value?.description ?? ''),
   ogTitle: () => project.value?.title ?? '',
   ogDescription: () => project.value?.summary ?? '',
-  robots: () => (project.value ? 'index, follow' : 'noindex'),
+  robots: () => (project.value && data.value?.listed !== false ? 'index, follow' : 'noindex'),
 })
 </script>
 

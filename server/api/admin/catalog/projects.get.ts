@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const list = await listProjects({
     type: typeof query.type === 'string' ? query.type : undefined,
-    status: typeof query.status === 'string' ? query.status : undefined,
+    statuses: typeof query.status === 'string' ? [query.status] : PROJECT_STATUSES,
     query: typeof query.q === 'string' ? query.q : undefined,
     sort: query.sort === 'updated' || query.sort === 'created' ? query.sort : 'updated',
     offset: Number(query.offset) || 0,

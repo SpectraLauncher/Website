@@ -12,7 +12,8 @@ export default defineSitemapEventHandler(async () => {
   if (!catalogIsIndexable()) return entries
 
   const projects = await q<{ slug: string, type: ProjectType, updated: string }>(
-    `SELECT slug, type, updated FROM project WHERE status = 'published' ORDER BY updated DESC`)
+    `SELECT slug, type, updated FROM project WHERE status = ANY($1) ORDER BY updated DESC`,
+    [LISTED_STATUSES])
     .catch(() => [] as Array<{ slug: string, type: ProjectType, updated: string }>)
 
   return entries.concat(projects.map(project => ({

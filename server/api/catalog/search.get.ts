@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const list = await listProjects({
     type: typeof query.type === 'string' ? query.type : undefined,
-    status: isAdmin(viewer) && query.status === 'any' ? undefined : 'published',
+    statuses: isAdmin(viewer) && query.status === 'any' ? PROJECT_STATUSES : undefined,
     query: typeof query.q === 'string' ? query.q : undefined,
     gameVersions: listParam(query.gameVersions),
     loaders: listParam(query.loaders),

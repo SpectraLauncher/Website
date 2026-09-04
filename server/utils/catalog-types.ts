@@ -15,8 +15,37 @@ export const TYPE_PREFIX: Record<ProjectType, string> = {
 export const VERSION_CHANNELS = ['release', 'beta', 'alpha'] as const
 export type VersionChannel = typeof VERSION_CHANNELS[number]
 
-export const PROJECT_STATUSES = ['draft', 'published', 'archived', 'removed'] as const
+export const PROJECT_STATUSES = [
+  'draft',
+  'published',
+  'unlisted',
+  'archived',
+  'rejected',
+  'removed',
+] as const
 export type ProjectStatus = typeof PROJECT_STATUSES[number]
+
+// Two different questions, and conflating them is how an unlisted project ends
+// up in a sitemap.
+//
+// LISTED  — may appear in search, listings, facets, the sitemap and feeds.
+// LINKABLE — may be opened by anyone holding the address.
+//
+// Everything outside LINKABLE is 404 to anyone who does not own it.
+export const LISTED_STATUSES: readonly ProjectStatus[] = ['published', 'archived']
+export const LINKABLE_STATUSES: readonly ProjectStatus[] = ['published', 'archived', 'unlisted']
+
+export function isProjectStatus(value: unknown): value is ProjectStatus {
+  return PROJECT_STATUSES.includes(value as ProjectStatus)
+}
+
+export function isListed(status: string): boolean {
+  return LISTED_STATUSES.includes(status as ProjectStatus)
+}
+
+export function isLinkable(status: string): boolean {
+  return LINKABLE_STATUSES.includes(status as ProjectStatus)
+}
 
 export const DEPENDENCY_KINDS = ['required', 'optional', 'incompatible', 'embedded'] as const
 export type DependencyKind = typeof DEPENDENCY_KINDS[number]

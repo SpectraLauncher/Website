@@ -132,6 +132,13 @@ export async function ensureCatalogSchema() {
     `)
   }
 
+  // Environment is a real column rather than a JSONB field because it is a
+  // browse filter, and a browse filter that cannot use an index is a browse
+  // filter that gets slower every month.
+  await pool.query(`ALTER TABLE project ADD COLUMN IF NOT EXISTS environment TEXT[] NOT NULL DEFAULT '{}'`)
+  await pool.query(
+    'CREATE INDEX IF NOT EXISTS idx_project_environment ON project USING GIN (environment)')
+
   // A generated column, so there is nothing to forget to update. 'simple' rather
   // than 'english': mod names are proper nouns ("Sodium", "Iris") and stemming
   // hurts them more than it helps. Typos are handled by pg_trgm below.

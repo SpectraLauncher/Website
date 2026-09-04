@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
 
   const project = await projectByIdOrSlug(version.project_id)
-  if (!visibleProject(project, viewer)) {
+  if (!await visibleProject(project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such version' })
   }
 

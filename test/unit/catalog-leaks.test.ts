@@ -2,7 +2,15 @@ import { readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-import { PROJECT_TYPES, TYPE_PREFIX } from '../../server/utils/catalog-types'
+import {
+  LINKABLE_STATUSES,
+  LISTED_STATUSES,
+  PROJECT_STATUSES,
+  PROJECT_TYPES,
+  TYPE_PREFIX,
+  isLinkable,
+  isListed,
+} from '../../server/utils/catalog-types'
 
 const nuxtConfig = readFileSync('nuxt.config.ts', 'utf8')
 const sitemap = readFileSync('server/api/__sitemap__/urls.ts', 'utf8')
@@ -53,7 +61,48 @@ describe('katalog nie wycieka, dopoki flaga jest wylaczona', () => {
     expect(sitemap.indexOf('catalogIsIndexable()')).toBeLessThan(sitemap.indexOf('FROM project'))
   })
 
-  it('sitemap bierze wylacznie projekty opublikowane', () => {
-    expect(sitemap).toContain(`status = 'published'`)
+  it('sitemap bierze statusy z listy widocznych, a nie dowolne', () => {
+    expect(sitemap).toContain('LISTED_STATUSES')
+  })
+})
+
+// To sa dwa rozne pytania i pomylenie ich jest dokladnie tym, jak projekt
+// oznaczony jako dostepny tylko z linku trafia do sitemapy.
+describe('statusy: widoczny z linku to nie to samo co widoczny na liscie', () => {
+  it('unlisted otwiera sie z linku, ale nigdzie sie nie pokazuje', () => {
+    expect(isLinkable('unlisted')).toBe(true)
+    expect(isListed('unlisted')).toBe(false)
+  })
+
+  it('szkic, odrzucony i usuniety nie otwieraja sie wcale', () => {
+    for (const status of ['draft', 'rejected', 'removed']) {
+      expect(isLinkable(status), status).toBe(false)
+      expect(isListed(status), status).toBe(false)
+    }
+  })
+
+  it('opublikowany i zarchiwizowany sa i widoczne, i listowane', () => {
+    for (const status of ['published', 'archived']) {
+      expect(isLinkable(status), status).toBe(true)
+      expect(isListed(status), status).toBe(true)
+    }
+  })
+
+  it('kazdy status listowany jest tez otwieralny z linku', () => {
+    for (const status of LISTED_STATUSES) expect(LINKABLE_STATUSES).toContain(status)
+  })
+
+  it('nieznany status nie przechodzi przez zadna z bram', () => {
+    for (const status of ['', 'approved', 'public', 'anything']) {
+      expect(isLinkable(status), status).toBe(false)
+      expect(isListed(status), status).toBe(false)
+    }
+  })
+
+  it('kazdy zadeklarowany status jest rozstrzygniety w obie strony', () => {
+    for (const status of PROJECT_STATUSES) {
+      expect(typeof isListed(status), status).toBe('boolean')
+      expect(typeof isLinkable(status), status).toBe('boolean')
+    }
   })
 })

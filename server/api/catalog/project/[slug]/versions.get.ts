@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const viewer = await requireCatalogRead(event)
 
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'slug') ?? ''))
-  if (!visibleProject(project, viewer)) {
+  if (!await visibleProject(project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 

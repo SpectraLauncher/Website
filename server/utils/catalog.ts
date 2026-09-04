@@ -1,6 +1,13 @@
 
 import { exec, one, q } from './db'
-import { isLicense, isProjectType, isVersionChannel, type ProjectType } from './catalog-types'
+import {
+  LISTED_STATUSES,
+  isLicense,
+  isProjectStatus,
+  isProjectType,
+  isVersionChannel,
+  type ProjectType,
+} from './catalog-types'
 import { normalizeSlug, slugProblem } from './catalog-slug'
 
 export interface ProjectRow {
@@ -19,6 +26,7 @@ export interface ProjectRow {
   categories: string[]
   game_versions: string[]
   loaders: string[]
+  environment: string[]
   links: Record<string, string>
   meta: Record<string, unknown>
   downloads: string | number
@@ -62,8 +70,8 @@ export function num(value: string | number | null | undefined): number {
 }
 
 const PROJECT_COLUMNS = `id::text, slug, type, owner_id, org_id, title, summary, description,
-  status, license, license_url, icon, categories, game_versions, loaders, links, meta,
-  downloads, follows, created, updated, published`
+  status, license, license_url, icon, categories, game_versions, loaders, environment,
+  links, meta, downloads, follows, created, updated, published`
 
 const VERSION_COLUMNS = `id::text, project_id::text, number, name, changelog, channel,
   game_versions, loaders, meta, downloads, created`
@@ -250,7 +258,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   }
 
   const status = typeof input.status === 'string' ? input.status : current.status
-  if (!['draft', 'published', 'archived', 'removed'].includes(status)) {
+  if (!isProjectStatus(status)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown status' })
   }
 
@@ -380,11 +388,13 @@ export async function attachFile(versionId: string | number, file: FileInput): P
 
 export interface ListQuery {
   type?: string
-  status?: string
+  statuses?: readonly string[]
   query?: string
   gameVersions?: string[]
   loaders?: string[]
   categories?: string[]
+  environment?: string[]
+  licenses?: string[]
   sort?: 'downloads' | 'updated' | 'created' | 'relevance'
   offset?: number
   limit?: number
@@ -410,10 +420,14 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   }
 
   if (input.type) add('type = $?', input.type)
-  if (input.status) add('status = $?', input.status)
+  // Absent means the listed set, never "everything" — a listing that forgets to
+  // pass a status must not start showing drafts.
+  add('status = ANY($?)', input.statuses ?? LISTED_STATUSES)
   if (input.gameVersions?.length) add('game_versions && $?', input.gameVersions)
   if (input.loaders?.length) add('loaders && $?', input.loaders)
   if (input.categories?.length) add('categories @> $?', input.categories)
+  if (input.environment?.length) add('environment && $?', input.environment)
+  if (input.licenses?.length) add('license = ANY($?)', input.licenses)
 
   const search = (input.query ?? '').trim()
   if (search) add(`search @@ plainto_tsquery('simple', $?)`, search)
@@ -444,4 +458,58 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   )
 
   return { hits, total: counted?.n ?? 0, offset, limit }
+}
+
+export interface FacetGroup {
+  value: string
+  count: number
+}
+
+export interface Facets {
+  gameVersions: FacetGroup[]
+  loaders: FacetGroup[]
+  categories: FacetGroup[]
+  environment: FacetGroup[]
+  licenses: FacetGroup[]
+}
+
+// Counts for the browse sidebar. Only values something published actually
+// carries: a filter that returns nothing the moment it is clicked is worse than
+// no filter, and the whole point of showing counts is to promise otherwise.
+//
+// ponytail: computed per request off the live table. Materialise into a facet
+// table on a timer once this stops being instant, which for Postgres is a long
+// way past where this catalog will ever get.
+export async function catalogFacets(type?: string): Promise<Facets> {
+  const params: unknown[] = [LISTED_STATUSES]
+  const scope = type ? 'AND type = $2' : ''
+  if (type) params.push(type)
+
+  const spread = async (column: string) => {
+    // sql-safe: `column` and `scope` are constants chosen here, never request text
+    return await q<FacetGroup>(
+      `SELECT value, count(*)::int AS count
+       FROM project p, LATERAL unnest(p.${column}) AS value
+       WHERE p.status = ANY($1) ${scope}
+       GROUP BY value ORDER BY count DESC, value`,
+      params,
+    )
+  }
+
+  // sql-safe: `scope` is a constant fragment chosen above, never request text
+  const licenses = await q<FacetGroup>(
+    `SELECT license AS value, count(*)::int AS count
+     FROM project p
+     WHERE p.status = ANY($1) AND license IS NOT NULL ${scope}
+     GROUP BY license ORDER BY count DESC, license`,
+    params,
+  )
+
+  return {
+    gameVersions: await spread('game_versions'),
+    loaders: await spread('loaders'),
+    categories: await spread('categories'),
+    environment: await spread('environment'),
+    licenses,
+  }
 }

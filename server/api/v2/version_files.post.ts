@@ -17,7 +17,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const matches = await versionsByHash([...new Set(hashes)], algorithm)
-  const visible = matches.filter(m => visibleProject(m.project, viewer))
+
+  // Resolved before filtering on purpose: Array.filter with an async predicate
+  // keeps every element, because a pending Promise is truthy.
+  const allowed = await Promise.all(matches.map(m => visibleProject(m.project, viewer)))
+  const visible = matches.filter((_, i) => allowed[i])
   const files = await filesForVersions(visible.map(m => m.version.id))
   const byVersion = groupFiles(files)
 

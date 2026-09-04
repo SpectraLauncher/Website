@@ -75,11 +75,28 @@ const TYPES = [
 ]
 
 const STATUSES = [
-  { value: 'draft', label: 'Szkic' },
-  { value: 'published', label: 'Opublikowany' },
-  { value: 'archived', label: 'Zarchiwizowany' },
+  { value: 'draft', label: 'Szkic — tylko dla właściciela' },
+  { value: 'published', label: 'Opublikowany — widoczny i na listach' },
+  { value: 'unlisted', label: 'Tylko z linku — nie trafia na listy' },
+  { value: 'archived', label: 'Zarchiwizowany — widoczny, bez rozwoju' },
+  { value: 'rejected', label: 'Odrzucony przez moderację' },
   { value: 'removed', label: 'Usunięty' },
 ]
+
+const STATUS_LABELS: Record<string, string> = {
+  draft: 'szkic',
+  published: 'live',
+  unlisted: 'z linku',
+  archived: 'archiwum',
+  rejected: 'odrzucony',
+  removed: 'usunięty',
+}
+
+const STATUS_COLORS: Record<string, 'success' | 'warning' | 'error' | 'neutral'> = {
+  published: 'success',
+  unlisted: 'warning',
+  rejected: 'error',
+}
 
 const CHANNELS = [
   { value: 'release', label: 'Release' },
@@ -437,8 +454,8 @@ useSeoMeta({ title: 'Katalog — panel', robots: 'noindex' })
                     <UBadge
                       variant="subtle"
                       size="sm"
-                      :color="project.status === 'published' ? 'success' : 'neutral'"
-                      :label="project.status === 'published' ? 'live' : 'szkic'"
+                      :color="STATUS_COLORS[project.status] ?? 'neutral'"
+                      :label="STATUS_LABELS[project.status] ?? project.status"
                     />
                   </span>
                   <span class="truncate text-xs text-dimmed">{{ project.path }}</span>

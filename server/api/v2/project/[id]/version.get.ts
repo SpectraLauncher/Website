@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   allowAnyOrigin(event)
 
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'id') ?? ''))
-  if (!visibleProject(project, viewer)) {
+  if (!await visibleProject(project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 

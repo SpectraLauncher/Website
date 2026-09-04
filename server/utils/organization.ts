@@ -1,6 +1,6 @@
 
 import { type ProjectRow, num } from './catalog'
-import { projectPath } from './catalog-types'
+import { LISTED_STATUSES, projectPath } from './catalog-types'
 import { one, q } from './db'
 
 export interface OrgRow {
@@ -89,7 +89,7 @@ export async function orgMembers(orgId: string): Promise<OrgMember[]> {
 }
 
 export async function orgProjects(orgId: string, includeDrafts: boolean): Promise<ProjectRow[]> {
-  const filter = includeDrafts ? '' : `AND status = 'published'`
+  const filter = includeDrafts ? '' : 'AND status = ANY($2)'
 
   // sql-safe: `filter` is one of two constant fragments chosen above, never request text
   return await q<ProjectRow>(
@@ -98,7 +98,7 @@ export async function orgProjects(orgId: string, includeDrafts: boolean): Promis
             downloads, follows, created, updated, published
      FROM project WHERE org_id = $1 ${filter}
      ORDER BY downloads DESC, updated DESC`,
-    [orgId],
+    includeDrafts ? [orgId] : [orgId, LISTED_STATUSES],
   )
 }
 

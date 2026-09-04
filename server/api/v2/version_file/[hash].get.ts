@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const [match] = await versionsByHash([hash], algorithm)
-  if (!match || !visibleProject(match.project, viewer)) {
+  if (!match || !await visibleProject(match.project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no version matches that hash' })
   }
 

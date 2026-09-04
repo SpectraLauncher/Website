@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   const out = []
   for (const id of [...new Set(ids)]) {
     const project = await projectByIdOrSlug(id)
-    if (!visibleProject(project, viewer)) continue
+    if (!await visibleProject(project, viewer)) continue
     const versions = await versionsOf(project!.id)
     out.push(v2Project(project!, versions.map(v => v.id)))
   }

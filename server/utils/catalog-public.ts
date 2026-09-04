@@ -15,15 +15,20 @@ export function listParam(value: unknown): string[] | undefined {
   return out.length ? out : undefined
 }
 
-// A draft is invisible to everyone but an admin, and invisible means 404 rather
-// than 403 — the same rule the rest of the panel follows.
-export function visibleProject(
+// An unlisted project opens for anyone holding the address. A draft, a rejected
+// project or a removed one opens only for whoever owns it, and for an admin —
+// and "does not open" means 404, never 403, like the rest of the panel.
+export async function visibleProject(
   project: ProjectRow | undefined,
-  viewer: { role?: string | null } | null,
-): boolean {
+  viewer: { id?: string, role?: string | null } | null,
+): Promise<boolean> {
   if (!project) return false
-  if (project.status === 'published') return true
-  return isAdmin(viewer)
+  if (isLinkable(project.status)) return true
+  if (!viewer) return false
+  if (isAdmin(viewer)) return true
+  if (project.owner_id && project.owner_id === viewer.id) return true
+  if (project.org_id && viewer.id) return Boolean(await isOrgMember(project.org_id, viewer.id))
+  return false
 }
 
 export function groupFiles(files: FileRow[]): Map<string, FileRow[]> {

@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const viewer = await requireCatalogRead(event)
 
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'slug') ?? ''))
-  if (!visibleProject(project, viewer)) {
+  if (!await visibleProject(project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 
@@ -13,5 +13,9 @@ export default defineEventHandler(async (event) => {
   const gallery = await galleryOf(project!.id)
   const owner = await projectOwner(project!.owner_id, project!.org_id)
 
-  return { project: { ...fullProject(project!, versions, files), owner }, gallery }
+  return {
+    project: { ...fullProject(project!, versions, files), owner },
+    gallery,
+    listed: isListed(project!.status),
+  }
 })
