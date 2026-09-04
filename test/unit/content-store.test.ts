@@ -77,14 +77,15 @@ describe('safeFilename', () => {
 describe('contentType', () => {
   it('mapuje znane rozszerzenia', () => {
     expect(contentType('sodium.jar')).toBe('application/java-archive')
-    expect(contentType('pack.mrpack')).toBe('application/zip')
+    expect(contentType('pack.mrpack')).toBe('application/x-modrinth-modpack+zip')
     expect(contentType('zamek.litematic')).toBe('application/octet-stream')
   })
 
-  it('nieznane rozszerzenie nie staje sie typem wykonywalnym w przegladarce', () => {
-    expect(contentType('x.html')).toBe('application/octet-stream')
-    expect(contentType('x.svg')).toBe('application/octet-stream')
-    expect(contentType('bezrozszerzenia')).toBe('application/octet-stream')
+  it('nieznane rozszerzenie jest odrzucane, a nie zapisywane jako octet-stream', () => {
+    expect(contentType('x.html')).toBeNull()
+    expect(contentType('x.svg')).toBeNull()
+    expect(contentType('x.exe')).toBeNull()
+    expect(contentType('bezrozszerzenia')).toBeNull()
   })
 })
 

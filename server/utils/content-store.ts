@@ -19,19 +19,24 @@ export interface StoredContent {
   key: string
 }
 
-// Registry: extension -> content-type sent to R2. Adding a format is one line.
-// An unknown extension goes out as octet-stream and never as a type sniffed from
-// the bytes — a user file does not get to decide how a browser treats it.
+// Registry: extension -> content-type sent to R2. An allowlist, and an unknown
+// extension is refused rather than stored as octet-stream: the fallback quietly
+// accepts anything, which is the wrong default for a store that will one day take
+// uploads from strangers. Adding a format is one line, and a deliberate one.
+//
+// Shape borrowed from Modrinth's project_file_type (labrinth, AGPL-3.0), plus the
+// schematic formats they have no reason to carry.
 const CONTENT_TYPES: Record<string, string> = {
   jar: 'application/java-archive',
   zip: 'application/zip',
-  mrpack: 'application/zip',
+  litemod: 'application/zip',
+  mrpack: 'application/x-modrinth-modpack+zip',
   litematic: 'application/octet-stream',
   schem: 'application/octet-stream',
   schematic: 'application/octet-stream',
   nbt: 'application/octet-stream',
-  json: 'application/json',
-  txt: 'text/plain; charset=utf-8',
+  asc: 'application/pgp-signature',
+  sig: 'application/pgp-signature',
 }
 
 const MAX_FILENAME = 200
@@ -53,9 +58,9 @@ export function safeFilename(raw: string): string {
   return base || 'file'
 }
 
-export function contentType(filename: string): string {
+export function contentType(filename: string): string | null {
   const ext = filename.split('.').pop()?.toLowerCase() ?? ''
-  return CONTENT_TYPES[ext] ?? 'application/octet-stream'
+  return CONTENT_TYPES[ext] ?? null
 }
 
 // The key carries sha512, not sha1. sha1 has been collision-broken since 2017,
@@ -93,14 +98,33 @@ export async function storeContent(body: Uint8Array, filename: string): Promise<
     })
   }
 
+  const stored = hashContent(body, filename)
+
+  const type = contentType(stored.filename)
+  if (!type) {
+    throw createError({
+      statusCode: 415,
+      statusMessage: `${stored.filename.split('.').pop()} files are not accepted`,
+    })
+  }
+
   const r2 = useR2()
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'content storage is not configured' })
 
-  const stored = hashContent(body, filename)
-
   if (await r2Size(r2, stored.key) === null) {
-    await r2Put(r2, stored.key, body, contentType(stored.filename))
+    await r2Put(r2, stored.key, body, type)
   }
 
   return stored
+}
+
+export async function contentExists(key: string, size: number): Promise<boolean> {
+  const r2 = useR2()
+  if (!r2) return false
+  return await r2Size(r2, key) === size
+}
+
+export function publicContentUrl(key: string): string | null {
+  const r2 = useR2()
+  return r2 ? contentUrl(r2, key) : null
 }
