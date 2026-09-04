@@ -3014,7 +3014,10 @@
         "removed": "usunięty"
       },
       "price": "Cena w groszach (0 = darmowy)",
-      "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym."
+      "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym.",
+      "imageTitle": "Podpis",
+      "featured": "Wyróżniony",
+      "addImage": "Dodaj obraz"
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",
@@ -3121,7 +3124,8 @@
       "utility": "Narzędzia",
       "vanilla-like": "W duchu waniliowym"
     },
-    "follows": "Obserwujących: {n}"
+    "follows": "Obserwujących: {n}",
+    "gallery": "Galeria"
   },
   "verification": {
     "title": "Weryfikacja",

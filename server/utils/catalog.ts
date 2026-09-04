@@ -585,3 +585,46 @@ export async function isFollowing(userId: string, projectId: string): Promise<bo
     [userId, projectId])
   return Boolean(row)
 }
+
+export interface GalleryImage {
+  id: string
+  url: string
+  title: string
+  ordering: number
+  featured: boolean
+}
+
+export async function addGalleryImage(
+  id: string,
+  projectId: string,
+  url: string,
+  ordering: number,
+): Promise<GalleryImage> {
+  const row = await one<GalleryImage>(
+    `INSERT INTO project_gallery (id, project_id, url, ordering, created)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, url, title, ordering, featured`,
+    [id, projectId, url, ordering, Date.now()],
+  )
+  return row!
+}
+
+export async function updateGalleryImage(id: string, patch: {
+  title?: string
+  ordering?: number
+  featured?: boolean
+}): Promise<GalleryImage | undefined> {
+  return await one<GalleryImage>(
+    `UPDATE project_gallery
+     SET title = COALESCE($2, title),
+         ordering = COALESCE($3, ordering),
+         featured = COALESCE($4, featured)
+     WHERE id = $1
+     RETURNING id, url, title, ordering, featured`,
+    [id, patch.title ?? null, patch.ordering ?? null, patch.featured ?? null],
+  )
+}
+
+export async function removeGalleryImage(id: string) {
+  await exec('DELETE FROM project_gallery WHERE id = $1', [id])
+}

@@ -9,7 +9,11 @@ const localePath = useLocalePath()
 
 const slug = computed(() => String(route.params.slug ?? ''))
 
-const { data, error } = await useFetch<{ project: CatalogProjectData, listed: boolean }>(
+const { data, error } = await useFetch<{
+  project: CatalogProjectData
+  listed: boolean
+  gallery: Array<{ id: string, url: string, title: string, featured: boolean }>
+}>(
   () => `/api/catalog/project/${encodeURIComponent(slug.value)}`)
 
 const project = computed(() => data.value?.project ?? null)
@@ -55,6 +59,7 @@ useSeoMeta({
         v-if="project"
         :project="project"
         icon="i-lucide-blocks"
+        :gallery="data?.gallery ?? []"
         :back-to="'/schematic'"
         :back-label="t('catalog.schematics.title')"
       >

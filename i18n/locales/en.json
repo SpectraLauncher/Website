@@ -3014,7 +3014,10 @@
         "removed": "removed"
       },
       "price": "Price in cents (0 = free)",
-      "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free."
+      "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free.",
+      "imageTitle": "Caption",
+      "featured": "Featured",
+      "addImage": "Add an image"
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",
@@ -3121,7 +3124,8 @@
       "utility": "Utility",
       "vanilla-like": "Vanilla like"
     },
-    "follows": "{n} follows"
+    "follows": "{n} follows",
+    "gallery": "Gallery"
   },
   "verification": {
     "title": "Verification",

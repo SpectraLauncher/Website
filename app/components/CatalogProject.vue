@@ -57,7 +57,10 @@ const props = defineProps<{
   backTo: string
   backLabel: string
   icon: string
+  gallery?: Array<{ id: string, url: string, title: string, featured: boolean }>
 }>()
+
+const shown = ref(0)
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -221,6 +224,33 @@ const sizeLabel = (bytes: number) =>
     <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
       <div class="min-w-0 space-y-6">
         <slot name="lead" />
+
+        <figure
+          v-if="gallery?.length"
+          class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm"
+        >
+          <img
+            :src="gallery[shown]!.url"
+            :alt="gallery[shown]!.title"
+            class="max-h-[520px] w-full object-contain"
+          >
+          <figcaption
+            v-if="gallery[shown]!.title"
+            class="border-t border-white/10 px-5 py-3 text-sm text-muted"
+          >{{ gallery[shown]!.title }}</figcaption>
+
+          <div v-if="gallery.length > 1" class="flex gap-2 overflow-x-auto border-t border-white/10 p-3">
+            <button
+              v-for="(image, index) in gallery"
+              :key="image.id"
+              class="shrink-0 overflow-hidden rounded-lg border transition-colors"
+              :class="index === shown ? 'border-primary' : 'border-white/10 hover:border-white/30'"
+              @click="shown = index"
+            >
+              <img :src="image.url" alt="" class="h-14 w-20 object-cover">
+            </button>
+          </div>
+        </figure>
 
         <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
         <article

@@ -160,6 +160,16 @@ const versionDraft = reactive({
   loaders: [] as string[],
 })
 
+interface GalleryImage {
+  id: string
+  url: string
+  title: string
+  ordering: number
+  featured: boolean
+}
+
+const gallery = ref<GalleryImage[]>([])
+
 const pendingFile = ref<{
   filename: string
   size: number
@@ -216,8 +226,10 @@ async function open(id: string) {
   busy.value = 'open'
   error.value = ''
   try {
-    const res = await $fetch<{ project: FullProject }>(`/api/admin/catalog/projects/${id}`)
+    const res = await $fetch<{ project: FullProject, gallery: GalleryImage[] }>(
+      `/api/admin/catalog/projects/${id}`)
     selected.value = res.project
+    gallery.value = res.gallery ?? []
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
@@ -287,6 +299,59 @@ async function remove() {
     selected.value = null
     announce(t('catalog.admin.deleted'))
     await loadProjects()
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+async function uploadIcon(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file || !selected.value) return
+
+  busy.value = 'icon'
+  error.value = ''
+  try {
+    const res = await $fetch<{ icon: string }>(
+      `/api/admin/catalog/projects/${selected.value.id}/icon`, {
+        method: 'POST',
+        body: await file.arrayBuffer(),
+        headers: { 'content-type': file.type },
+      })
+    selected.value.icon = res.icon
+    await loadProjects()
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+async function uploadGallery(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file || !selected.value) return
+
+  busy.value = 'gallery'
+  error.value = ''
+  try {
+    const res = await $fetch<{ image: GalleryImage }>(
+      `/api/admin/catalog/projects/${selected.value.id}/gallery`, {
+        method: 'POST',
+        body: await file.arrayBuffer(),
+        headers: { 'content-type': file.type },
+      })
+    gallery.value.push(res.image)
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+async function removeImage(id: string) {
+  busy.value = id
+  try {
+    await $fetch(`/api/admin/catalog/gallery/${id}`, { method: 'DELETE' })
+    gallery.value = gallery.value.filter(image => image.id !== id)
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+async function saveImage(image: GalleryImage) {
+  busy.value = image.id
+  try {
+    await $fetch(`/api/admin/catalog/gallery/${image.id}`, {
+      method: 'PATCH',
+      body: { title: image.title, featured: image.featured },
+    })
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
@@ -551,6 +616,16 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
             >
               <div class="mb-4 flex flex-wrap items-center gap-3">
+                <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                  <img v-if="selected.icon" :src="selected.icon" alt="" class="size-full object-cover">
+                  <UIcon v-else name="i-lucide-image-plus" class="size-5 text-dimmed" />
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    class="hidden"
+                    @change="uploadIcon"
+                  >
+                </label>
                 <h2 class="min-w-0 flex-1 truncate text-lg font-semibold">{{ selected.title }}</h2>
                 <UBadge variant="subtle" :label="selected.type" />
                 <UButton
@@ -630,6 +705,57 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <p class="mt-3 text-xs text-dimmed">
                 {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
               </p>
+            </div>
+
+            <div
+              v-if="selected"
+              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+            >
+              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.gallery') }}</h2>
+
+              <ul v-if="gallery.length" class="mb-4 space-y-2">
+                <li
+                  v-for="image in gallery"
+                  :key="image.id"
+                  class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
+                >
+                  <img :src="image.url" alt="" class="h-14 w-24 shrink-0 rounded-lg object-cover">
+                  <UInput
+                    v-model="image.title"
+                    size="sm"
+                    class="min-w-40 flex-1"
+                    :placeholder="t('catalog.admin.imageTitle')"
+                    @blur="saveImage(image)"
+                  />
+                  <UButton
+                    size="xs"
+                    :variant="image.featured ? 'solid' : 'ghost'"
+                    color="neutral"
+                    icon="i-lucide-star"
+                    :aria-label="t('catalog.admin.featured')"
+                    @click="image.featured = !image.featured; saveImage(image)"
+                  />
+                  <UButton
+                    size="xs"
+                    variant="ghost"
+                    color="error"
+                    icon="i-lucide-trash-2"
+                    :loading="busy === image.id"
+                    @click="removeImage(image.id)"
+                  />
+                </li>
+              </ul>
+
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-white/15 p-4">
+                <UIcon name="i-lucide-image-plus" class="size-5 text-primary" />
+                <span class="text-sm">{{ t('catalog.admin.addImage') }}</span>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  class="hidden"
+                  @change="uploadGallery"
+                >
+              </label>
             </div>
 
             <div
