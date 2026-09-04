@@ -3,7 +3,9 @@ import { normalizeSlug } from './catalog-slug'
 import type { ProjectType } from './catalog-types'
 import { expandRange, minecraftVersions, releaseIds } from './game-versions'
 import { type ModInfo, readArchiveInfo } from './mod-manifest'
-import { type SchematicInfo, parseSchematic } from './schematic'
+import { type SchematicInfo, parseSchematic, schematicGrid } from './schematic'
+import { previewDocument, previewKey, voxelize } from './schematic-voxels'
+import { storeDerived } from './content-store'
 
 export interface UploadAnalysis {
   detected: ProjectType | null
@@ -119,7 +121,11 @@ function fromSchematic(info: SchematicInfo): UploadAnalysis {
 
 // Content decides what a file is, never the extension. A .zip holding a
 // fabric.mod.json is a mod; a .nbt is only a schematic if it parses as one.
-export async function analyzeUpload(body: Uint8Array, filename: string): Promise<UploadAnalysis> {
+export async function analyzeUpload(
+  body: Uint8Array,
+  filename: string,
+  sha512?: string,
+): Promise<UploadAnalysis> {
   const releases = releaseIds(await minecraftVersions().catch(() => []))
 
   try {
@@ -129,10 +135,31 @@ export async function analyzeUpload(body: Uint8Array, filename: string): Promise
   }
 
   try {
-    return fromSchematic(parseSchematic(body))
+    const out = fromSchematic(parseSchematic(body))
+    if (sha512) await attachPreview(out, body, sha512)
+    return out
   } catch (e) {
     const out = blank()
     out.warnings.push(`could not read ${filename}: ${(e as Error).message}`)
     return out
+  }
+}
+
+// The preview is built once, at upload, and parked in storage next to the file
+// it came from. Viewing a schematic then costs a CDN hit and no parsing at all.
+// The key is the source hash, so re-uploading the same build reuses it.
+async function attachPreview(out: UploadAnalysis, body: Uint8Array, sha512: string) {
+  try {
+    const payload = voxelize(schematicGrid(body))
+    const url = await storeDerived(
+      previewKey(sha512), JSON.stringify(previewDocument(payload)), 'application/json')
+
+    if (url) out.meta.preview = url
+    out.meta.previewShown = payload.shown
+    if (payload.truncated) {
+      out.warnings.push('the build is large enough that the 3D preview shows only part of it')
+    }
+  } catch (e) {
+    out.warnings.push(`no 3D preview: ${(e as Error).message}`)
   }
 }

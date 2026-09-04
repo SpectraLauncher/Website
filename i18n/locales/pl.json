@@ -2871,7 +2871,11 @@
       "size": "Wymiary",
       "blocks": "Bloków",
       "format": "Format",
-      "materials": "Materiały"
+      "materials": "Materiały",
+      "loadingPreview": "Wczytuję podgląd…",
+      "noPreview": "Ten plik nie ma podglądu 3D.",
+      "partial": "podgląd pokazuje część budowli",
+      "preview": "Podgląd"
     }
   }
 }

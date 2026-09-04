@@ -596,3 +596,159 @@ export function parseSchematic(body: Uint8Array): SchematicInfo {
     case 'mcedit': return parseMcEdit(root)
   }
 }
+
+// --- dense grid ----------------------------------------------------------
+
+export interface SchematicGrid {
+  format: SchematicFormat
+  size: { x: number, y: number, z: number }
+  indices: Uint32Array
+  palette: BlockState[]
+}
+
+const AIR_STATE: BlockState = { id: 'minecraft:air', props: {} }
+
+function gridFromLitematic(root: NbtCompound): SchematicGrid {
+  const regions = asCompound(root.Regions)
+  if (!regions) fail('no Regions section')
+
+  // ponytail: only the first region is rendered. Litematica writes one for the
+  // overwhelming majority of builds; merging several needs their Position
+  // offsets resolved into a shared bounding box first.
+  const body = asCompound(Object.values(regions)[0])
+  const size = asCompound(body?.Size)
+  const paletteRaw = asList(body?.BlockStatePalette)
+  const states = asLongArray(body?.BlockStates)
+  if (!body || !size || !paletteRaw || !states) fail('region is missing its palette or states')
+
+  const dims = boundedVolume({
+    x: asNumber(size.x) ?? 0,
+    y: asNumber(size.y) ?? 0,
+    z: asNumber(size.z) ?? 0,
+  })
+
+  const palette = boundedPalette(paletteRaw.map(e => stateFromCompound(asCompound(e) ?? {})))
+  const indices = unpackSpanning(states, paletteBits(palette.length), dims)
+
+  return {
+    format: 'litematic',
+    size: {
+      x: Math.abs(asNumber(size.x) ?? 0),
+      y: Math.abs(asNumber(size.y) ?? 0),
+      z: Math.abs(asNumber(size.z) ?? 0),
+    },
+    indices,
+    palette,
+  }
+}
+
+function gridFromSponge(root: NbtCompound): SchematicGrid {
+  const body = asCompound(root.Schematic) ?? root
+  const blocks = asCompound(body.Blocks)
+
+  const paletteRaw = asCompound(blocks?.Palette ?? body.Palette)
+  const data = asByteArray(blocks?.Data ?? body.BlockData)
+  if (!paletteRaw || !data) fail('no palette or no block data')
+
+  const size = {
+    x: Math.abs(asNumber(body.Width) ?? 0),
+    y: Math.abs(asNumber(body.Height) ?? 0),
+    z: Math.abs(asNumber(body.Length) ?? 0),
+  }
+  const volume = boundedVolume(size)
+
+  const palette: BlockState[] = []
+  for (const [name, index] of Object.entries(paletteRaw)) {
+    const at = asNumber(index)
+    if (at !== undefined) palette[at] = parseStateString(name)
+  }
+  for (let i = 0; i < palette.length; i++) palette[i] ??= AIR_STATE
+  boundedPalette(palette)
+
+  return { format: 'sponge', size, indices: readVarInts(data, volume), palette }
+}
+
+function gridFromStructure(root: NbtCompound): SchematicGrid {
+  const sizeList = asList(root.size)
+  const paletteRaw = asList(root.palette)
+  const blocks = asList(root.blocks)
+  if (!sizeList || !paletteRaw || !blocks) fail('no size, palette or blocks')
+
+  const size = {
+    x: Math.abs(asNumber(sizeList[0]) ?? 0),
+    y: Math.abs(asNumber(sizeList[1]) ?? 0),
+    z: Math.abs(asNumber(sizeList[2]) ?? 0),
+  }
+  const volume = boundedVolume(size)
+
+  // The list is sparse, so index 0 has to mean air and the real palette shifts
+  // up by one — otherwise every empty cell would render as palette entry zero.
+  const palette = [AIR_STATE,
+    ...boundedPalette(paletteRaw.map(e => stateFromCompound(asCompound(e) ?? {})))]
+  const indices = new Uint32Array(volume)
+
+  for (const entry of blocks) {
+    const block = asCompound(entry)
+    const pos = asList(block?.pos)
+    const state = asNumber(block?.state)
+    if (!pos || state === undefined) continue
+
+    const x = asNumber(pos[0]) ?? 0
+    const y = asNumber(pos[1]) ?? 0
+    const z = asNumber(pos[2]) ?? 0
+    if (x < 0 || y < 0 || z < 0 || x >= size.x || y >= size.y || z >= size.z) continue
+
+    indices[(y * size.z + z) * size.x + x] = state + 1
+  }
+
+  return { format: 'structure', size, indices, palette }
+}
+
+function gridFromMcEdit(root: NbtCompound): SchematicGrid {
+  const blocks = asByteArray(root.Blocks)
+  const data = asByteArray(root.Data)
+  if (!blocks) fail('no Blocks array')
+
+  const size = {
+    x: Math.abs(asNumber(root.Width) ?? 0),
+    y: Math.abs(asNumber(root.Height) ?? 0),
+    z: Math.abs(asNumber(root.Length) ?? 0),
+  }
+  const volume = boundedVolume(size)
+
+  const palette: BlockState[] = [AIR_STATE]
+  const seen = new Map<string, number>()
+  const indices = new Uint32Array(volume)
+
+  for (let i = 0; i < Math.min(volume, blocks.length); i++) {
+    const id = blocks[i]! & 0xFF
+    const variant = data ? data[i]! & 0x0F : 0
+    const state = legacyState(id, variant)
+    if (!state || state.id === 'minecraft:air') continue
+
+    const key = `${state.id}|${JSON.stringify(state.props)}`
+    let at = seen.get(key)
+    if (at === undefined) {
+      at = palette.length
+      palette.push(state)
+      seen.set(key, at)
+    }
+    indices[i] = at
+  }
+
+  return { format: 'mcedit', size, indices, palette }
+}
+
+// The dense grid the 3D preview needs. Kept apart from parseSchematic because
+// counting materials never needs positions, and a million of them is the one
+// thing worth not holding on to when all anyone wanted was a block tally.
+export function schematicGrid(body: Uint8Array): SchematicGrid {
+  const { value: root } = readNbt(body)
+
+  switch (detectFormat(root)) {
+    case 'litematic': return gridFromLitematic(root)
+    case 'sponge': return gridFromSponge(root)
+    case 'structure': return gridFromStructure(root)
+    case 'mcedit': return gridFromMcEdit(root)
+  }
+}

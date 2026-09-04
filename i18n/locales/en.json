@@ -2871,7 +2871,11 @@
       "size": "Size",
       "blocks": "Blocks",
       "format": "Format",
-      "materials": "Materials"
+      "materials": "Materials",
+      "loadingPreview": "Loading the preview…",
+      "noPreview": "No 3D preview for this file.",
+      "partial": "preview shows part of the build",
+      "preview": "Preview"
     }
   }
 }

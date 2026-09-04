@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   if (!body?.length) throw createError({ statusCode: 400, statusMessage: 'empty body' })
 
   const stored = await storeContent(body, filename)
-  const analysis = await analyzeUpload(body, stored.filename)
+  const analysis = await analyzeUpload(body, stored.filename, stored.sha512)
 
   return { file: { ...stored, url: publicContentUrl(stored.key) }, analysis }
 })

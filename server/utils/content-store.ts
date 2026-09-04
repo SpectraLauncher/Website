@@ -128,3 +128,18 @@ export function publicContentUrl(key: string): string | null {
   const r2 = useR2()
   return r2 ? contentUrl(r2, key) : null
 }
+
+// Derived artefacts we generate ourselves — the schematic preview, for one — do
+// not go through the upload allowlist. That list exists to refuse files someone
+// hands us; this content is produced here and its type is not in question.
+export async function storeDerived(
+  key: string,
+  body: Uint8Array | string,
+  type: string,
+): Promise<string | null> {
+  const r2 = useR2()
+  if (!r2) return null
+
+  await r2Put(r2, key, typeof body === 'string' ? Buffer.from(body) : body, type)
+  return contentUrl(r2, key)
+}

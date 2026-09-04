@@ -67,6 +67,10 @@ const size = computed(() => {
 })
 
 const body = computed(() => renderMarkdown(project.value?.description ?? ''))
+const previewUrl = computed(() => {
+  const url = meta.value.preview
+  return typeof url === 'string' && url ? url : null
+})
 
 const when = (ms: number) =>
   new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(new Date(ms))
@@ -129,6 +133,8 @@ useSeoMeta({
 
         <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
           <div class="min-w-0 space-y-6">
+            <SchematicViewer v-if="previewUrl" :src="previewUrl" />
+
             <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
             <article
               v-if="project.description"
