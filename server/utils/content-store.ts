@@ -143,3 +143,19 @@ export async function storeDerived(
   await r2Put(r2, key, typeof body === 'string' ? Buffer.from(body) : body, type)
   return contentUrl(r2, key)
 }
+
+// Reads a stored object back. Used by a re-scan, which has no request to take
+// the bytes from; the first scan of an upload works on the buffer it already
+// has and never comes through here.
+export async function readContent(key: string): Promise<Uint8Array | null> {
+  const r2 = useR2()
+  if (!r2) return null
+
+  const res = await r2.client.fetch(r2ObjectUrl(r2, key), { method: 'GET' })
+  if (!res.ok) return null
+
+  const length = Number(res.headers.get('content-length'))
+  if (Number.isFinite(length) && length > MAX_CONTENT_BYTES) return null
+
+  return new Uint8Array(await res.arrayBuffer())
+}

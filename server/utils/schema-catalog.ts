@@ -368,6 +368,19 @@ export async function ensureCatalogSchema() {
       WHERE status = 'open' AND reporter_id IS NOT NULL
   `)
 
+  // The scanner raises a hand, a person decides. NULL means nobody has looked
+  // yet, which is different from having looked and found nothing.
+  await pool.query(`
+    ALTER TABLE version_file ADD COLUMN IF NOT EXISTS scan_verdict TEXT;
+    ALTER TABLE version_file ADD COLUMN IF NOT EXISTS scan_findings JSONB;
+    ALTER TABLE version_file ADD COLUMN IF NOT EXISTS scanned_at BIGINT;
+  `)
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_version_file_flagged
+      ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
+  `)
+
   // Per-member rights inside an organization. NULL means "whatever the role is
   // worth by default", so existing rows keep working without a backfill.
   await pool.query(`

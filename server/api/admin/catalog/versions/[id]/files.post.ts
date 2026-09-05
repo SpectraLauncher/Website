@@ -49,6 +49,10 @@ export default defineEventHandler(async (event) => {
     primary: body.primary !== false,
   })
 
+  // The bytes are already in storage, so the scan reads them back off the
+  // request path rather than making the upload wait on it.
+  queueScan(file.id)
+
   setResponseStatus(event, 201)
   return { file: publicFile(file) }
 })
