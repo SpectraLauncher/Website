@@ -296,6 +296,7 @@ const sizeLabel = (bytes: number) =>
               </template>
             </UDropdownMenu>
           </UFieldGroup>
+          <ReportButton item-type="project" :item-id="project.id" :label="t('reports.report')" />
           <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
             <UIcon name="i-lucide-tag" class="size-4" />
             {{ priceLabel }}

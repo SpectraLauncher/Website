@@ -37,6 +37,8 @@ export const NOTIFICATION_ICONS: Record<string, string> = {
   project_message: 'i-lucide-gavel',
   project_comment: 'i-lucide-message-square',
   comment_reply: 'i-lucide-reply',
+  report_received: 'i-lucide-flag',
+  report_closed: 'i-lucide-flag-off',
 }
 
 export function notificationIcon(kind: string): string {

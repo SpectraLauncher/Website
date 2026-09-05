@@ -2519,13 +2519,15 @@
       "social": "Friends",
       "packs": "Modpacks",
       "projects": "Your projects",
-      "comments": "Comments"
+      "comments": "Comments",
+      "moderation": "Moderation"
     },
     "groupHints": {
       "social": "Friend requests and accepted invites.",
       "packs": "Modpacks shared with you and updates to ones you use.",
       "projects": "Moderation decisions and messages about projects you own.",
-      "comments": "Comments on your projects and replies to yours."
+      "comments": "Comments on your projects and replies to yours.",
+      "moderation": "Reports you filed, and — for moderators — reports waiting in the queue."
     }
   },
   "friends": {
@@ -3372,7 +3374,9 @@
     "project_comment": "{actor} commented on {project}",
     "comment_reply": "{actor} replied to your comment",
     "mailBody": "Open Spectra to see the details.",
-    "mailCta": "Open Spectra"
+    "mailCta": "Open Spectra",
+    "report_received": "A new report needs review",
+    "report_closed": "Your report has been reviewed"
   },
   "collections": {
     "create": "New collection",
@@ -3413,5 +3417,28 @@
     "payoutsHint": "Payouts run through Stripe. Selling needs a connected account that has finished onboarding.",
     "partner": "Partner rate",
     "manage": "Manage payout accounts"
+  },
+  "reports": {
+    "title": "Report",
+    "report": "Report",
+    "intro": "Tell us what is wrong here. A moderator reads every report.",
+    "reason": "Reason",
+    "details": "What is wrong?",
+    "detailsHint": "Be specific — which file, which line, which claim.",
+    "send": "Send report",
+    "thanks": "Thank you. A moderator will look at this.",
+    "reasons": {
+      "spam": "Spam or advertising",
+      "copyright": "Copyright infringement",
+      "inappropriate": "Inappropriate content",
+      "malicious": "Malicious file",
+      "name_squatting": "Name squatting",
+      "other": "Something else"
+    },
+    "queue": "Reports",
+    "note": "Note for the reporter (optional)",
+    "resolve": "Acted on it",
+    "dismiss": "No action needed",
+    "gone": "Item no longer exists"
   }
 }

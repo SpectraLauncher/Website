@@ -336,6 +336,38 @@ export async function ensureCatalogSchema() {
       REFERENCES project(id) ON DELETE CASCADE
   `)
 
+  await pool.query(`
+    -- Abuse reports. item_id is deliberately not a foreign key: one queue holds
+    -- complaints about projects, versions, users, comments and organizations,
+    -- and a moderator needs the row to survive the thing it accuses being
+    -- deleted, so there is something left to explain the decision.
+    CREATE TABLE IF NOT EXISTS report (
+      id          TEXT PRIMARY KEY,
+      reason      TEXT NOT NULL,
+      item_type   TEXT NOT NULL,
+      item_id     TEXT NOT NULL,
+      reporter_id TEXT REFERENCES "user"(id) ON DELETE SET NULL,
+      body        TEXT NOT NULL DEFAULT '',
+      status      TEXT NOT NULL DEFAULT 'open',
+      note        TEXT NOT NULL DEFAULT '',
+      reviewed_by TEXT REFERENCES "user"(id) ON DELETE SET NULL,
+      reviewed_at BIGINT,
+      created     BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_report_queue ON report (status, created);
+    CREATE INDEX IF NOT EXISTS idx_report_item ON report (item_type, item_id);
+    CREATE INDEX IF NOT EXISTS idx_report_reporter ON report (reporter_id, created DESC);
+  `)
+
+  // One open report per person per thing. Without this the queue is trivially
+  // flooded by resubmitting the same complaint, and a moderator cannot tell
+  // whether ten rows are ten people or one person ten times.
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_report_open
+      ON report (reporter_id, item_type, item_id)
+      WHERE status = 'open' AND reporter_id IS NOT NULL
+  `)
+
   // Per-member rights inside an organization. NULL means "whatever the role is
   // worth by default", so existing rows keep working without a backfill.
   await pool.query(`

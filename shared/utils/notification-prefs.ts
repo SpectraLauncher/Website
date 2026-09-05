@@ -12,6 +12,7 @@ export const NOTIFICATION_GROUPS = {
   packs: ['instance_invite', 'instance_update'],
   projects: ['project_approved', 'project_rejected', 'project_removed', 'project_message'],
   comments: ['project_comment', 'comment_reply'],
+  moderation: ['report_received', 'report_closed'],
 } as const
 
 export type NotificationGroup = keyof typeof NOTIFICATION_GROUPS
@@ -34,6 +35,7 @@ export const DEFAULT_PREFS: Record<NotificationGroup, NotificationChannel[]> = {
   packs: ['site'],
   projects: ['site', 'email'],
   comments: ['site'],
+  moderation: ['site', 'email'],
 }
 
 export type NotificationPrefs = Record<string, NotificationChannel[]>

@@ -263,6 +263,43 @@ function withAllLinks(project: FullProject): FullProject {
 
 const decisionNote = ref('')
 
+interface ReportEntry {
+  id: string
+  reason: string
+  itemType: string
+  body: string
+  status: string
+  created: number
+  target: { label: string, path: string } | null
+  reporter: { username: string | null, name: string | null } | null
+}
+
+const reports = ref<ReportEntry[]>([])
+const openReports = ref(0)
+const reportNote = ref<Record<string, string>>({})
+
+async function loadReports() {
+  busy.value = 'reports'
+  try {
+    const res = await $fetch<{ reports: ReportEntry[], open: number }>(
+      '/api/admin/catalog/reports')
+    reports.value = res.reports
+    openReports.value = res.open
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+async function decideReport(report: ReportEntry, status: 'resolved' | 'dismissed') {
+  busy.value = report.id
+  try {
+    await $fetch(`/api/admin/catalog/reports/${report.id}`, {
+      method: 'PATCH',
+      body: { status, note: reportNote.value[report.id] ?? '' },
+    })
+    delete reportNote.value[report.id]
+    await loadReports()
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
 async function moderate(decision: 'approve' | 'reject' | 'remove') {
   if (!selected.value) return
   busy.value = decision
@@ -548,6 +585,7 @@ const materials = computed(() => {
 onMounted(() => {
   loadProjects()
   loadQueue()
+  loadReports()
   loadGameVersions()
   loadOrganizations()
   loadVocabulary()
@@ -610,6 +648,80 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           icon="i-lucide-check"
           :description="notice"
         />
+
+        <div
+          v-if="reports.length"
+          class="mb-4 rounded-3xl border border-error/40 bg-error/5 p-6 backdrop-blur-sm"
+        >
+          <div class="mb-4 flex flex-wrap items-center gap-3">
+            <UIcon name="i-lucide-flag" class="size-5 text-error" />
+            <h2 class="text-lg font-semibold">{{ t('reports.queue') }}</h2>
+            <UBadge size="sm" color="error" variant="subtle" :label="String(openReports)" />
+            <span class="flex-1"></span>
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              icon="i-lucide-refresh-cw"
+              :loading="busy === 'reports'"
+              :aria-label="t('catalog.admin.refresh')"
+              @click="loadReports"
+            />
+          </div>
+
+          <ul class="space-y-3">
+            <li
+              v-for="report in reports"
+              :key="report.id"
+              class="rounded-2xl border border-white/10 bg-white/5 p-4"
+            >
+              <div class="mb-2 flex flex-wrap items-center gap-2 text-sm">
+                <UBadge size="sm" variant="subtle" :label="t(`reports.reasons.${report.reason}`)" />
+                <UBadge size="sm" variant="subtle" color="neutral" :label="report.itemType" />
+                <NuxtLink
+                  v-if="report.target"
+                  :to="localePath(report.target.path)"
+                  class="truncate font-medium text-primary hover:underline"
+                >
+                  {{ report.target.label }}
+                </NuxtLink>
+                <span v-else class="text-dimmed">{{ t('reports.gone') }}</span>
+                <span class="flex-1"></span>
+                <span class="text-xs text-dimmed">
+                  {{ report.reporter?.username || t('notifications.someone') }}
+                </span>
+              </div>
+
+              <p class="mb-3 whitespace-pre-wrap text-sm text-muted">{{ report.body }}</p>
+
+              <UInput
+                v-model="reportNote[report.id]"
+                size="sm"
+                class="w-full"
+                :placeholder="t('reports.note')"
+              />
+
+              <div class="mt-2 flex flex-wrap justify-end gap-2">
+                <UButton
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  :loading="busy === report.id"
+                  :label="t('reports.dismiss')"
+                  @click="decideReport(report, 'dismissed')"
+                />
+                <UButton
+                  size="xs"
+                  color="error"
+                  variant="soft"
+                  :loading="busy === report.id"
+                  :label="t('reports.resolve')"
+                  @click="decideReport(report, 'resolved')"
+                />
+              </div>
+            </li>
+          </ul>
+        </div>
 
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="mb-4 flex flex-wrap items-center gap-3">

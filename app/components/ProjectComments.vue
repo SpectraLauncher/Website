@@ -152,6 +152,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
             <span class="text-xs text-dimmed">{{ when(comment.created) }}</span>
             <UBadge v-if="comment.hidden" size="sm" color="error" variant="subtle" :label="t('catalog.hidden')" />
             <span class="flex-1"></span>
+            <ReportButton v-if="comment.author.id !== me?.id" item-type="comment" :item-id="comment.id" />
             <UButton
               v-if="canRemove(comment)"
               size="xs"
