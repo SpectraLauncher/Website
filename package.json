@@ -44,7 +44,8 @@
     "check:cfproxy": "node --experimental-strip-types test/curseforge-proxy-check.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:ui": "node test/ui-props-check.mjs"
+    "check:ui": "node test/ui-props-check.mjs",
+    "check:responsive": "node test/responsive-check.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.2",
