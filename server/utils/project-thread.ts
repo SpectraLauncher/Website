@@ -2,7 +2,7 @@
 import { exec, one, q } from './db'
 import { newId } from './ids'
 
-export const MAX_BODY = 4000
+export const MAX_BODY = 65_536
 
 export interface MessageRow {
   id: string

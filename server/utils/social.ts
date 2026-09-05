@@ -155,9 +155,7 @@ export async function notify(n: {
   // Mail is a copy of the bell, never a second decision: if the row was not
   // written — a duplicate in the same millisecond — nothing is sent either. A
   // mail server being down must not fail the action that caused the notice.
-  if (written) {
-    await deliverMail(n).catch(e => console.error('[notify] mail', e))
-  }
+  if (written) enqueue('mail', () => deliverMail(n))
 
   return written
 }
