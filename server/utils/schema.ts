@@ -238,6 +238,11 @@ export async function ensureSchema() {
     CREATE UNIQUE INDEX IF NOT EXISTS uniq_notification_moment
       ON notification(user_id, kind, created)
   `)
+
+  await pool.query(`
+    ALTER TABLE "user" ADD COLUMN IF NOT EXISTS bio TEXT;
+    ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
+  `)
 }
 
 // Admin is a column, not an e-mail address. `ADMIN_EMAILS` only seeds the very

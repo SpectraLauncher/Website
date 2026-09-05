@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import qrcode from 'qrcode-generator'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const auth = useAuthClient()
 const session = useAuthSession()
@@ -40,6 +40,7 @@ const TABS = [
   { id: 'security', icon: 'i-lucide-shield-check', label: 'account.security' },
   { id: 'privacy', icon: 'i-lucide-eye-off', label: 'account.privacy' },
   { id: 'connected', icon: 'i-lucide-link', label: 'account.connected' },
+  { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
   { id: 'friends', icon: 'i-lucide-users', label: 'friends.title' }
 ] as const
 
@@ -48,14 +49,19 @@ const requested = String(route.query.tab ?? '')
 const tab = ref<(typeof TABS)[number]['id']>(
   TABS.some(t => t.id === requested) ? requested as (typeof TABS)[number]['id'] : 'profile')
 
-const profile = reactive({ name: '', username: '', image: '' })
+const profile = reactive({ name: '', username: '', image: '', bio: '' })
+const links = reactive<Record<string, string>>({})
 
 watch(user, (u) => {
   if (!u) return
   profile.name = u.name ?? ''
   profile.username = u.username ?? ''
   profile.image = u.image ?? ''
+  profile.bio = u.bio ?? ''
+  for (const kind of LINK_KINDS) links[kind] = (u.links ?? {})[kind] ?? ''
 }, { immediate: true })
+
+const BIO_LIMIT = 500
 
 const avatar = computed(() => initialsAvatar(profile.username || profile.name))
 
@@ -157,10 +163,60 @@ const saveProfile = () => run('profile', async () => {
     image: profile.image || null,
     username: profile.username
   } as any)
+  if (res?.error) return res
 
-  if (!res?.error) notice.value = t('account.saved')
+  await $fetch('/api/me/profile', {
+    method: 'PATCH',
+    body: { bio: profile.bio, links: Object.fromEntries(Object.entries(links).filter(([, v]) => v.trim())) },
+  })
+
+  notice.value = t('account.saved')
   return res
 })
+
+const sessions = ref<Array<{ token: string, createdAt: string, updatedAt: string, ipAddress?: string | null, userAgent?: string | null }>>([])
+const sessionsLoaded = ref(false)
+
+async function loadSessions() {
+  const res = await auth.listSessions()
+  sessions.value = (res.data ?? []) as any
+  sessionsLoaded.value = true
+}
+
+watch(tab, (value) => {
+  if (value === 'sessions' && !sessionsLoaded.value) loadSessions()
+}, { immediate: true })
+
+const currentToken = computed(() => (session.value.data?.session as any)?.token ?? '')
+
+const revokeSession = (token: string) => run('session:' + token, async () => {
+  await auth.revokeSession({ token })
+  await loadSessions()
+  notice.value = t('account.sessionRevoked')
+})
+
+const revokeOthers = () => run('sessions', async () => {
+  await auth.revokeOtherSessions()
+  await loadSessions()
+  notice.value = t('account.sessionRevoked')
+})
+
+// The string a browser sends is long and mostly noise; the pieces a person uses
+// to recognise their own device are the platform and the engine.
+function deviceLabel(agent?: string | null) {
+  if (!agent) return t('account.unknownDevice')
+  const os = /Windows/i.test(agent) ? 'Windows'
+    : /Android/i.test(agent) ? 'Android'
+      : /iPhone|iPad|iOS/i.test(agent) ? 'iOS'
+        : /Mac OS X|Macintosh/i.test(agent) ? 'macOS'
+          : /Linux/i.test(agent) ? 'Linux' : null
+  const browser = /Edg//i.test(agent) ? 'Edge'
+    : /OPR/|Opera/i.test(agent) ? 'Opera'
+      : /Firefox/i.test(agent) ? 'Firefox'
+        : /Chrome/i.test(agent) ? 'Chrome'
+          : /Safari/i.test(agent) ? 'Safari' : null
+  return [browser, os].filter(Boolean).join(' · ') || t('account.unknownDevice')
+}
 
 const FRIENDS_VISIBILITY = ['mutual', 'public'] as const
 type FriendsVisibility = (typeof FRIENDS_VISIBILITY)[number]
@@ -467,6 +523,32 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   <p v-if="usernameState === 'available'" class="mt-1.5 text-xs text-primary">{{ usernameMessage }}</p>
                 </UFormField>
 
+                <UFormField :label="t('account.bio')" :hint="`${profile.bio.length}/${BIO_LIMIT}`">
+                  <UTextarea
+                    v-model="profile.bio"
+                    :maxlength="BIO_LIMIT"
+                    :rows="4"
+                    :placeholder="t('account.bioHint')"
+                    class="w-full"
+                  />
+                </UFormField>
+
+                <div>
+                  <h3 class="mb-1 text-sm font-semibold">{{ t('account.links') }}</h3>
+                  <p class="mb-3 text-xs text-muted">{{ t('account.linksHint') }}</p>
+                  <div class="space-y-2">
+                    <UFormField v-for="kind in LINK_KINDS" :key="kind" :label="t(`links.${kind}`)">
+                      <UInput
+                        v-model="links[kind]"
+                        :icon="LINK_ICONS[kind]"
+                        type="url"
+                        placeholder="https://"
+                        class="w-full"
+                      />
+                    </UFormField>
+                  </div>
+                </div>
+
                 <div class="flex flex-wrap gap-2 pt-1">
                   <UButton
                     color="neutral"
@@ -615,6 +697,60 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     </span>
                   </button>
                 </div>
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'sessions'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.sessions') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('account.sessionsHint') }}</p>
+
+              <div class="space-y-3">
+                <div
+                  v-for="item in sessions"
+                  :key="item.token"
+                  class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+                >
+                  <UIcon name="i-lucide-monitor-smartphone" class="size-5 shrink-0 text-muted" />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium">
+                      {{ deviceLabel(item.userAgent) }}
+                      <UBadge
+                        v-if="item.token === currentToken"
+                        size="sm"
+                        variant="subtle"
+                        class="ml-1.5 align-middle"
+                        :label="t('account.thisDevice')"
+                      />
+                    </p>
+                    <p class="truncate text-xs text-muted">
+                      {{ item.ipAddress || '—' }} · {{ new Date(item.updatedAt).toLocaleString(locale) }}
+                    </p>
+                  </div>
+                  <UButton
+                    v-if="item.token !== currentToken"
+                    size="xs"
+                    variant="ghost"
+                    color="error"
+                    :loading="busy === 'session:' + item.token"
+                    :label="t('account.revoke')"
+                    @click="revokeSession(item.token)"
+                  />
+                </div>
+
+                <p v-if="sessionsLoaded && !sessions.length" class="text-sm text-dimmed">
+                  {{ t('account.noSessions') }}
+                </p>
+
+                <UButton
+                  v-if="sessions.length > 1"
+                  variant="soft"
+                  color="error"
+                  class="rounded-xl"
+                  icon="i-lucide-log-out"
+                  :loading="busy === 'sessions'"
+                  :label="t('account.revokeOthers')"
+                  @click="revokeOthers"
+                />
               </div>
             </template>
 

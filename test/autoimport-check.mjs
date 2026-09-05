@@ -8,7 +8,7 @@ const pkg = fs.readdirSync(store).find(name => name.startsWith('unimport@'))
 if (!pkg) throw new Error('nie znalazlem unimport w node_modules/.pnpm')
 const { scanExports } = await import(pathToFileURL(path.join(store, pkg, 'node_modules/unimport/dist/index.mjs')))
 
-const ROOTS = ['app/utils', 'app/composables', 'server/utils']
+const ROOTS = ['app/utils', 'app/composables', 'server/utils', 'shared/utils']
 const DECLARED = /^export\s+(?:async\s+)?(?:function|const|let|class)\s+([A-Za-z0-9_$]+)/gm
 
 function* walk(dir) {

@@ -2,7 +2,12 @@
 import { exec, one, q } from './db'
 
 export type FriendStatus = 'pending' | 'accepted' | 'blocked'
-export type NotificationKind = 'friend_request' | 'friend_accepted' | 'instance_invite' | 'instance_update'
+// Adding a kind: one entry here, one `notifications.<kind>` string per locale,
+// and an icon in NOTIFICATION_ICONS on the client.
+export type NotificationKind =
+  | 'friend_request' | 'friend_accepted' | 'instance_invite' | 'instance_update'
+  | 'project_approved' | 'project_rejected' | 'project_removed' | 'project_message'
+  | 'project_comment' | 'comment_reply'
 
 export type Status = 'online' | 'in_game' | 'dnd' | 'offline'
 
@@ -139,18 +144,32 @@ export function notify(n: {
   kind: NotificationKind
   actorId?: string | null
   shareCode?: string | null
+  projectId?: string | null
   data?: unknown
 }) {
   return exec(
-    `INSERT INTO notification (user_id, kind, actor_id, share_code, data, created)
-     VALUES ($1, $2, $3, $4, $5, $6)`,
+    `INSERT INTO notification (user_id, kind, actor_id, share_code, project_id, data, created)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     ON CONFLICT DO NOTHING`,
     [
       n.userId,
       n.kind,
       n.actorId ?? null,
       n.shareCode ?? null,
+      n.projectId ?? null,
       n.data === undefined ? null : JSON.stringify(n.data),
       Date.now(),
     ],
   )
+}
+
+// Nobody wants a notification about their own action.
+export function notifyOthers(userIds: Array<string | null | undefined>, n: {
+  kind: NotificationKind
+  actorId: string
+  projectId?: string | null
+  data?: unknown
+}) {
+  const targets = [...new Set(userIds.filter((id): id is string => !!id && id !== n.actorId))]
+  return Promise.all(targets.map(userId => notify({ ...n, userId })))
 }

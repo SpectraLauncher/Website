@@ -8,10 +8,12 @@ export default defineEventHandler(async (event) => {
     [Date.now(), query.playing === '1', me.id])
 
   const rows = await q<any>(
-    `SELECT n.id, n.kind, n.share_code, n.data, n.read, n.created,
-            u.id AS actor_id, u.name AS actor_name, u.username AS actor_username, u.image AS actor_image
+    `SELECT n.id, n.kind, n.share_code, n.project_id, n.data, n.read, n.created,
+            u.id AS actor_id, u.name AS actor_name, u.username AS actor_username, u.image AS actor_image,
+            p.slug AS project_slug, p.type AS project_type, p.title AS project_title, p.icon AS project_icon
      FROM notification n
      LEFT JOIN "user" u ON u.id = n.actor_id
+     LEFT JOIN project p ON p.id = n.project_id
      WHERE n.user_id = $1 AND n.id > $2
      ORDER BY n.id DESC LIMIT 50`,
     [me.id, since],
@@ -33,6 +35,14 @@ export default defineEventHandler(async (event) => {
       created: Number(r.created),
       actor: r.actor_id
         ? { id: r.actor_id, name: r.actor_name, username: r.actor_username, image: r.actor_image }
+        : null,
+      project: r.project_id
+        ? {
+            id: r.project_id,
+            title: r.project_title,
+            icon: r.project_icon,
+            path: projectPath(r.project_type, r.project_slug),
+          }
         : null,
     })),
   }

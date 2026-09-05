@@ -187,15 +187,6 @@ function stringList(value: unknown, max: number): string[] {
     .map(v => v.trim()).filter(Boolean))].slice(0, max)
 }
 
-function stringMap(value: unknown): Record<string, string> {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
-  const out: Record<string, string> = {}
-  for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
-    if (typeof item === 'string' && item.trim()) out[key.slice(0, 40)] = item.trim().slice(0, 500)
-  }
-  return out
-}
-
 export async function createProject(input: ProjectInput, ownerId: string): Promise<ProjectRow> {
   if (!isProjectType(input.type)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown project type' })
@@ -238,7 +229,7 @@ export async function createProject(input: ProjectInput, ownerId: string): Promi
       isLicense(input.license) ? input.license : null,
       text(input.licenseUrl, 500) || null,
       stringList(input.categories, 20),
-      JSON.stringify(stringMap(input.links)),
+      JSON.stringify(cleanLinks(input.links)),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
       now,
       ownerId,
@@ -319,7 +310,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         ? current.categories
         : stringList(input.categories, 20)
           .filter(c => categoriesFor(current.type).includes(c)),
-      JSON.stringify(input.links === undefined ? current.links : stringMap(input.links)),
+      JSON.stringify(input.links === undefined ? current.links : cleanLinks(input.links)),
       JSON.stringify(input.meta === undefined
         ? current.meta
         : (input.meta && typeof input.meta === 'object' ? input.meta : {})),

@@ -2485,7 +2485,19 @@
     "lastDays": "Ostatnie {n} dni",
     "grossAndFee": "{gross} brutto, {fee} prowizji",
     "notConnected": "Wypłaty nie są skonfigurowane",
-    "notConnectedBody": "Sprzedaż wymaga podpiętego konta, zanim pieniądze mogą do Ciebie trafić."
+    "notConnectedBody": "Sprzedaż wymaga podpiętego konta, zanim pieniądze mogą do Ciebie trafić.",
+    "bio": "O mnie",
+    "bioHint": "Kilka słów o tobie. Widoczne na publicznym profilu.",
+    "links": "Linki",
+    "linksHint": "Widoczne na publicznym profilu. Puste pole usuwa link.",
+    "sessions": "Sesje",
+    "sessionsHint": "Urządzenia zalogowane na twoje konto.",
+    "thisDevice": "To urządzenie",
+    "revoke": "Wyloguj",
+    "revokeOthers": "Wyloguj wszędzie indziej",
+    "sessionRevoked": "Sesja zakończona.",
+    "noSessions": "Brak innych sesji.",
+    "unknownDevice": "Nieznane urządzenie"
   },
   "friends": {
     "title": "Znajomi",
@@ -2868,24 +2880,24 @@
     "ok": "Rozumiem"
   },
   "error": {
-    "home": "Strona główna",
-    "back": "Wróć",
-    "404": {
-      "title": "Nie ma takiej strony",
-      "body": "Adres nie pasuje do niczego, co tu stoi. Mogła zmienić nazwę, zniknąć albo nigdy jej nie było."
+    "401": {
+      "title": "Najpierw zaloguj się",
+      "body": "Ta strona jest tylko dla zalogowanych. Zaloguj się i spróbuj jeszcze raz."
     },
     "403": {
       "title": "Brak dostępu",
       "body": "To konto nie ma uprawnień do tej strony. Jeśli to pomyłka, zaloguj się na właściwe konto."
     },
-    "401": {
-      "title": "Najpierw zaloguj się",
-      "body": "Ta strona jest tylko dla zalogowanych. Zaloguj się i spróbuj jeszcze raz."
+    "404": {
+      "title": "Nie ma takiej strony",
+      "body": "Adres nie pasuje do niczego, co tu stoi. Mogła zmienić nazwę, zniknąć albo nigdy jej nie było."
     },
     "500": {
       "title": "Coś się posypało",
       "body": "Błąd jest po naszej stronie, nie po twojej. Spróbuj za chwilę — jeśli wróci, daj znać."
     },
+    "home": "Strona główna",
+    "back": "Wróć",
     "default": {
       "title": "Coś poszło nie tak",
       "body": "Nie udało się otworzyć tej strony. Spróbuj jeszcze raz albo wróć na stronę główną."
@@ -3238,5 +3250,19 @@
     "intro": "Wszystko, co kupiłeś. Zakup zostaje Twój, nawet jeśli projekt później zmieni cenę albo zniknie z list.",
     "empty": "Nic jeszcze nie kupiono.",
     "gone": "Ten projekt nie jest już dostępny"
+  },
+  "links": {
+    "website": "Strona",
+    "source": "Kod źródłowy",
+    "issues": "Zgłoszenia błędów",
+    "wiki": "Wiki",
+    "discord": "Discord",
+    "donate": "Wesprzyj",
+    "youtube": "YouTube",
+    "twitch": "Twitch",
+    "github": "GitHub",
+    "x": "X",
+    "mastodon": "Mastodon",
+    "bluesky": "Bluesky"
   }
 }

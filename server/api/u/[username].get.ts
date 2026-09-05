@@ -9,12 +9,14 @@ export default defineEventHandler(async (event) => {
     image: string | null
     mcUsername: string | null
     mcUuid: string | null
+    bio: string | null
+    links: Record<string, string> | null
     friendsVisibility: string | null
     presence: string | null
     lastSeen: string | number | null
     createdAt: string
   }>(
-    `SELECT id, name, username, image, "mcUsername", "mcUuid", "friendsVisibility",
+    `SELECT id, name, username, image, "mcUsername", "mcUuid", bio, links, "friendsVisibility",
             presence, "lastSeen", "createdAt"
      FROM "user" WHERE lower(username) = $1`,
     [username],

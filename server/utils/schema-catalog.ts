@@ -267,6 +267,43 @@ export async function ensureCatalogSchema() {
       ON verification_request (org_id) WHERE status = 'pending' AND org_id IS NOT NULL
   `)
 
+  await pool.query(`
+    -- The moderation record for a project, and the appeal against it. Both sides
+    -- write into the same thread: a moderator explains a rejection, the author
+    -- answers once the project is fixed. status carries the decision a staff
+    -- message enacted, so the thread doubles as the audit trail.
+    CREATE TABLE IF NOT EXISTS project_message (
+      id         TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      author_id  TEXT REFERENCES "user"(id) ON DELETE SET NULL,
+      staff      BOOLEAN NOT NULL DEFAULT FALSE,
+      body       TEXT NOT NULL,
+      status     TEXT,
+      created    BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_project_message ON project_message (project_id, created);
+
+    -- Public comments. parent_id gives one level of replies; deeper nesting is
+    -- flattened against the same parent by the write path.
+    CREATE TABLE IF NOT EXISTS project_comment (
+      id         TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      author_id  TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      parent_id  TEXT REFERENCES project_comment(id) ON DELETE CASCADE,
+      body       TEXT NOT NULL,
+      hidden     BOOLEAN NOT NULL DEFAULT FALSE,
+      created    BIGINT NOT NULL,
+      updated    BIGINT
+    );
+    CREATE INDEX IF NOT EXISTS idx_project_comment ON project_comment (project_id, created DESC);
+    CREATE INDEX IF NOT EXISTS idx_project_comment_parent ON project_comment (parent_id);
+  `)
+
+  await pool.query(`
+    ALTER TABLE notification ADD COLUMN IF NOT EXISTS project_id TEXT
+      REFERENCES project(id) ON DELETE CASCADE
+  `)
+
   // Both flags are columns rather than fields inside metadata, and deliberately:
   // the organization edit endpoint rewrites metadata wholesale, so a flag living
   // there would be wiped by an owner editing their own description — or worse,

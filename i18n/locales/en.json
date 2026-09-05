@@ -2485,7 +2485,19 @@
     "lastDays": "Last {n} days",
     "grossAndFee": "{gross} gross, {fee} commission",
     "notConnected": "Payouts are not set up",
-    "notConnectedBody": "A sale needs a connected account before the money can reach you."
+    "notConnectedBody": "A sale needs a connected account before the money can reach you.",
+    "bio": "Bio",
+    "bioHint": "A few words about you. Shown on your public profile.",
+    "links": "Links",
+    "linksHint": "Shown on your public profile. Leave a field empty to remove the link.",
+    "sessions": "Sessions",
+    "sessionsHint": "Devices signed in to your account.",
+    "thisDevice": "This device",
+    "revoke": "Sign out",
+    "revokeOthers": "Sign out everywhere else",
+    "sessionRevoked": "Session ended.",
+    "noSessions": "No other sessions.",
+    "unknownDevice": "Unknown device"
   },
   "friends": {
     "title": "Friends",
@@ -2868,24 +2880,24 @@
     "ok": "Got it"
   },
   "error": {
-    "home": "Home",
-    "back": "Go back",
-    "404": {
-      "title": "No such page",
-      "body": "That address matches nothing here. It may have been renamed, removed, or never existed."
+    "401": {
+      "title": "Sign in first",
+      "body": "This page is for signed-in accounts only. Sign in and try again."
     },
     "403": {
       "title": "No access",
       "body": "This account is not allowed here. If that is a mistake, sign in with the right one."
     },
-    "401": {
-      "title": "Sign in first",
-      "body": "This page is for signed-in accounts only. Sign in and try again."
+    "404": {
+      "title": "No such page",
+      "body": "That address matches nothing here. It may have been renamed, removed, or never existed."
     },
     "500": {
       "title": "Something broke",
       "body": "The fault is on our side, not yours. Try again in a moment — if it keeps happening, tell us."
     },
+    "home": "Home",
+    "back": "Go back",
     "default": {
       "title": "Something went wrong",
       "body": "This page could not be opened. Try again, or head back to the home page."
@@ -3238,5 +3250,19 @@
     "intro": "Everything you have bought. A purchase stays yours even if the project later changes price or leaves the listings.",
     "empty": "Nothing bought yet.",
     "gone": "This project is no longer available"
+  },
+  "links": {
+    "website": "Website",
+    "source": "Source code",
+    "issues": "Issue tracker",
+    "wiki": "Wiki",
+    "discord": "Discord",
+    "donate": "Donate",
+    "youtube": "YouTube",
+    "twitch": "Twitch",
+    "github": "GitHub",
+    "x": "X",
+    "mastodon": "Mastodon",
+    "bluesky": "Bluesky"
   }
 }
