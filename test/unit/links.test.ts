@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { cleanLinks, LINK_ICONS, LINK_KINDS, safeUrl } from '../../shared/utils/links'
+import { cleanLinks, LINK_ICONS, LINK_KINDS, safeAssetUrl, safeUrl } from '../../shared/utils/links'
 
 describe('safeUrl', () => {
   it('przepuszcza http i https', () => {
@@ -52,4 +52,26 @@ describe('cleanLinks', () => {
 
 it('kazdy rodzaj linku ma ikone', () => {
   for (const kind of LINK_KINDS) expect(LINK_ICONS[kind], kind).toBeTruthy()
+})
+
+describe('safeAssetUrl', () => {
+  it('przepuszcza sciezke wzgledna z wlasnego origin', () => {
+    expect(safeAssetUrl('/catalog/icons/abc.webp?v=1')).toBe('/catalog/icons/abc.webp?v=1')
+  })
+
+  it('przepuszcza pelny adres', () => {
+    expect(safeAssetUrl('https://cdn.example.com/a.webp')).toBe('https://cdn.example.com/a.webp')
+  })
+
+  // Adres bez schematu bierze schemat strony i wskazuje na host, ktorego nikt
+  // nie sprawdzil — to nie jest sciezka wzgledna.
+  it('odrzuca adres protokolo-wzgledny', () => {
+    expect(safeAssetUrl('//evil.example.com/a.webp')).toBeNull()
+  })
+
+  it('odrzuca to, co moze niesc kod', () => {
+    for (const bad of ['javascript:alert(1)', 'data:text/html,<script>', 'vbscript:x']) {
+      expect(safeAssetUrl(bad), bad).toBeNull()
+    }
+  })
 })

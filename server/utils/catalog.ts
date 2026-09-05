@@ -311,7 +311,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         ? current.license
         : (isLicense(input.license) ? input.license : null),
       input.licenseUrl === undefined ? current.license_url : (text(input.licenseUrl, 500) || null),
-      input.icon === undefined ? current.icon : (text(input.icon, 500) || null),
+      input.icon === undefined ? current.icon : safeAssetUrl(input.icon),
       input.categories === undefined
         ? current.categories
         : stringList(input.categories, 20)

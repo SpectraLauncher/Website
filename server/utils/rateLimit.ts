@@ -94,6 +94,14 @@ export function limitFor(path: string, method: string): { name: string, limit: n
     if (pattern.test(path)) return { name, limit }
   }
 
+  // Account and organization routes are all authenticated, but an unlimited
+  // authenticated endpoint is still an unlimited endpoint.
+  if (path.startsWith('/api/org/')) return { name: 'org', limit: 60 }
+  if (path.startsWith('/api/me/')) return { name: 'me', limit: 60 }
+  if (path === '/api/notifications' || path.startsWith('/api/notifications/')) {
+    return { name: 'notifications', limit: 120 }
+  }
+
   if (path === '/api/telemetry') return { name: 'telemetry', limit: 30 }
   if (path.startsWith('/api/mc-')) return { name: 'mojang', limit: 60 }
   if (method === 'GET' && SHARE_CODE.test(path)) return { name: 'share-get', limit: 20 }

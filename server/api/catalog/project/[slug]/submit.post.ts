@@ -8,6 +8,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 
+  rateLimit(event, { key: `submit:${user.id}`, limit: 5, windowMs: 60_000 })
+
   if (!isSubmittable(project.status)) {
     throw createError({ statusCode: 409, statusMessage: 'this project cannot be submitted' })
   }

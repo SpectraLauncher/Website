@@ -3,6 +3,8 @@ const MAX_BIO = 500
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
+  rateLimit(event, { key: `profile:${me.id}`, limit: 20, windowMs: 60_000 })
+
   const body = await readBody<{ bio?: unknown, links?: unknown }>(event) ?? {}
 
   const bio = body.bio === undefined

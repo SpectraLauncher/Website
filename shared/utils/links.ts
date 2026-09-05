@@ -78,3 +78,21 @@ export function cleanLinks(value: unknown): Partial<Record<LinkKind, string>> {
   }
   return out
 }
+
+// Icons and images we store ourselves. Unlike an outbound link these may be a
+// same-origin path, because R2_PUBLIC_URL is configuration and a deployment is
+// free to serve assets from the site's own origin. Everything that could carry
+// script is still refused.
+export function safeAssetUrl(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+
+  const raw = value.trim()
+  if (!raw || raw.length > MAX_URL) return null
+
+  // A protocol-relative URL borrows whatever scheme the page has and points at
+  // a host we never checked, so it is not a path.
+  if (raw.startsWith('//')) return null
+  if (raw.startsWith('/')) return raw
+
+  return safeUrl(raw)
+}

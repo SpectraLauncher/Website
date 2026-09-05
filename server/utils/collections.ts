@@ -112,7 +112,7 @@ export async function updateCollection(id: string, input: {
       title,
       input.summary === undefined ? current.summary : String(input.summary).trim().slice(0, MAX_SUMMARY),
       isCollectionVisibility(input.visibility) ? input.visibility : current.visibility,
-      input.icon === undefined ? current.icon : (input.icon ? String(input.icon).slice(0, 500) : null),
+      input.icon === undefined ? current.icon : safeAssetUrl(input.icon),
       Date.now(),
     ],
   )

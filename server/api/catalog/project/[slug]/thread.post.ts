@@ -8,6 +8,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 
+  // An appeal notifies every moderator, so it is budgeted per account rather
+  // than left to the per-IP ceiling alone.
+  rateLimit(event, { key: `thread:${user.id}`, limit: 5, windowMs: 60_000 })
+
   const staff = isAdmin(user)
   const { body } = await readBody<{ body?: unknown }>(event) ?? {}
 

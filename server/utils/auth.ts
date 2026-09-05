@@ -65,7 +65,9 @@ function transport() {
   return mailer
 }
 
-export async function sendMail(to: string, subject: string, html: string) {
+export async function sendMail(to: string, rawSubject: string, html: string) {
+  // A line break in a subject line is the start of a second header.
+  const subject = rawSubject.replace(/\s+/g, ' ').trim().slice(0, 200)
   const mail = transport()
   if (!mail) {
     console.info(`[mail] ${to} — ${subject}
@@ -95,7 +97,18 @@ export function mailAssetOrigin() {
   return configured && !configured.includes('localhost') ? configured : 'https://usespectra.app'
 }
 
-export function mailTemplate(opts: {
+// Every caller passes plain sentences, and several of them carry a name typed
+// by a person — an account's display name, an organization's name. Escaping
+// here rather than at each call site means a new mail cannot forget to do it.
+function esc(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+export function mailTemplate(raw: {
   preheader: string
   eyebrow: string
   title: string
@@ -104,6 +117,17 @@ export function mailTemplate(opts: {
   ctaLabel: string
   footnote: string
 }) {
+  // The address is the one field that must stay a URL; the rest is text.
+  const opts = {
+    preheader: esc(raw.preheader),
+    eyebrow: esc(raw.eyebrow),
+    title: esc(raw.title),
+    body: esc(raw.body),
+    ctaUrl: encodeURI(raw.ctaUrl).replace(/"/g, '%22'),
+    ctaLabel: esc(raw.ctaLabel),
+    footnote: esc(raw.footnote),
+  }
+
   const site = mailAssetOrigin()
   const sans = `-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif`
   const serif = `Georgia,'Iowan Old Style','Times New Roman',serif`

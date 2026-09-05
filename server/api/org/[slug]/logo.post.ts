@@ -9,9 +9,10 @@ export default defineEventHandler(async (event) => {
   const org = await orgBySlug(String(getRouterParam(event, 'slug') ?? ''))
   if (!org) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
 
-  const role = await isOrgMember(org.id, user.id)
-  if (role !== 'owner' && role !== 'admin' && !isAdmin(user)) {
-    throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+  const actor = await orgStanding(org.id, user)
+  if (!actor) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+  if (!has(actor.mask, 'edit_details')) {
+    throw createError({ statusCode: 403, statusMessage: 'you cannot edit this organization' })
   }
 
   const r2 = useR2()
