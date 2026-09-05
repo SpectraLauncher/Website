@@ -65,7 +65,7 @@ function transport() {
   return mailer
 }
 
-async function sendMail(to: string, subject: string, html: string) {
+export async function sendMail(to: string, subject: string, html: string) {
   const mail = transport()
   if (!mail) {
     console.info(`[mail] ${to} — ${subject}
@@ -90,12 +90,12 @@ ${html.replace(/<[^>]+>/g, ' ')}`)
   }
 }
 
-function mailAssetOrigin() {
+export function mailAssetOrigin() {
   const configured = (process.env.NUXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
   return configured && !configured.includes('localhost') ? configured : 'https://usespectra.app'
 }
 
-function mailTemplate(opts: {
+export function mailTemplate(opts: {
   preheader: string
   eyebrow: string
   title: string

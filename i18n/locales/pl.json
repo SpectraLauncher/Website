@@ -2506,7 +2506,27 @@
     "passkeyUnnamed": "Klucz bez nazwy",
     "passkeyRemove": "Usuń klucz",
     "passkeyAdded": "Klucz dodany.",
-    "passkeyRemoved": "Klucz usunięty."
+    "passkeyRemoved": "Klucz usunięty.",
+    "language": "Język",
+    "languageHint": "Używany na stronie i w wysyłanych do ciebie mailach.",
+    "notificationsHint": "Wybierz, jak ma do ciebie docierać każdy rodzaj powiadomień.",
+    "mailUnavailable": "Wysyłka maili nie jest skonfigurowana na tym serwerze, więc docierają tylko powiadomienia w aplikacji.",
+    "channels": {
+      "site": "W aplikacji",
+      "email": "E-mail"
+    },
+    "groups": {
+      "social": "Znajomi",
+      "packs": "Modpacki",
+      "projects": "Twoje projekty",
+      "comments": "Komentarze"
+    },
+    "groupHints": {
+      "social": "Zaproszenia do znajomych i ich akceptacje.",
+      "packs": "Udostępnione ci modpacki i aktualizacje tych, których używasz.",
+      "projects": "Decyzje moderacji i wiadomości o twoich projektach.",
+      "comments": "Komentarze pod twoimi projektami i odpowiedzi na twoje."
+    }
   },
   "friends": {
     "title": "Znajomi",
@@ -3350,7 +3370,9 @@
     "project_removed": "{project} został usunięty przez moderację",
     "project_message": "Nowa wiadomość moderacji o {project}",
     "project_comment": "{actor} skomentował {project}",
-    "comment_reply": "{actor} odpowiedział na twój komentarz"
+    "comment_reply": "{actor} odpowiedział na twój komentarz",
+    "mailBody": "Otwórz Spectra, aby zobaczyć szczegóły.",
+    "mailCta": "Otwórz Spectra"
   },
   "collections": {
     "create": "Nowa kolekcja",

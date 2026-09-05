@@ -40,7 +40,9 @@ const TABS = [
   { id: 'security', icon: 'i-lucide-shield-check', label: 'account.security' },
   { id: 'privacy', icon: 'i-lucide-eye-off', label: 'account.privacy' },
   { id: 'connected', icon: 'i-lucide-link', label: 'account.connected' },
+  { id: 'notifications', icon: 'i-lucide-bell', label: 'nav.account.notifications' },
   { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
+  { id: 'language', icon: 'i-lucide-languages', label: 'account.language' },
   { id: 'friends', icon: 'i-lucide-users', label: 'friends.title' }
 ] as const
 
@@ -198,6 +200,45 @@ const removePasskey = (id: string) => run('passkey:' + id, async () => {
   notice.value = t('account.passkeyRemoved')
 })
 
+const prefs = ref<Record<string, string[]>>({})
+const mailConfigured = ref(true)
+const prefsLoaded = ref(false)
+
+async function loadPrefs() {
+  const res = await $fetch<{ prefs: Record<string, string[]>, locale: string | null, mail: boolean }>(
+    '/api/me/notifications')
+  prefs.value = res.prefs
+  mailConfigured.value = res.mail
+  if (res.locale) chosenLocale.value = res.locale
+  prefsLoaded.value = true
+}
+
+const savePrefs = () => run('prefs', async () => {
+  await $fetch('/api/me/notifications', { method: 'PATCH', body: { prefs: prefs.value } })
+  notice.value = t('account.saved')
+})
+
+// The bell cannot be turned off, so it is shown as a fixed row rather than a
+// control that looks adjustable and then refuses.
+const channelChoices = computed(() =>
+  NOTIFICATION_CHANNELS.map(channel => ({
+    value: channel,
+    label: t(`account.channels.${channel}`),
+    disabled: channel === 'site',
+  })))
+
+const { locales: allLocales, setLocale } = useI18n()
+const chosenLocale = ref(locale.value)
+
+const localeChoices = computed(() =>
+  allLocales.value.map(item => ({ value: item.code, label: item.name || item.code })))
+
+const saveLocale = () => run('locale', async () => {
+  await $fetch('/api/me/locale', { method: 'PATCH', body: { locale: chosenLocale.value } })
+  await setLocale(chosenLocale.value as 'en' | 'pl')
+  notice.value = t('account.saved')
+})
+
 const sessions = ref<Array<{ token: string, createdAt: string, updatedAt: string, ipAddress?: string | null, userAgent?: string | null }>>([])
 const sessionsLoaded = ref(false)
 
@@ -210,6 +251,7 @@ async function loadSessions() {
 watch(tab, (value) => {
   if (value === 'sessions' && !sessionsLoaded.value) loadSessions()
   if (value === 'security') loadPasskeys()
+  if (value === 'notifications' && !prefsLoaded.value) loadPrefs()
 }, { immediate: true })
 
 const currentToken = computed(() => (session.value.data?.session as any)?.token ?? '')
@@ -768,6 +810,72 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     </span>
                   </button>
                 </div>
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'notifications'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('nav.account.notifications') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('account.notificationsHint') }}</p>
+
+              <UAlert
+                v-if="!mailConfigured"
+                color="warning"
+                variant="subtle"
+                class="mb-5 rounded-2xl"
+                icon="i-lucide-mail-x"
+                :description="t('account.mailUnavailable')"
+              />
+
+              <div class="max-w-lg space-y-5">
+                <div
+                  v-for="group in NOTIFICATION_GROUP_KEYS"
+                  :key="group"
+                  class="rounded-2xl border border-white/10 bg-white/5 p-4"
+                >
+                  <h3 class="mb-1 text-sm font-semibold">{{ t(`account.groups.${group}`) }}</h3>
+                  <p class="mb-3 text-xs text-muted">{{ t(`account.groupHints.${group}`) }}</p>
+                  <UCheckboxGroup
+                    v-if="prefs[group]"
+                    v-model="prefs[group]"
+                    :items="channelChoices"
+                    value-key="value"
+                    orientation="horizontal"
+                    size="sm"
+                  />
+                </div>
+
+                <UButton
+                  color="neutral"
+                  size="lg"
+                  class="rounded-xl"
+                  :loading="busy === 'prefs'"
+                  :label="t('account.save')"
+                  @click="savePrefs"
+                />
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'language'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.language') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('account.languageHint') }}</p>
+
+              <div class="max-w-xs space-y-4">
+                <USelect
+                  v-model="chosenLocale"
+                  :items="localeChoices"
+                  value-key="value"
+                  size="lg"
+                  icon="i-lucide-languages"
+                  class="w-full"
+                />
+                <UButton
+                  color="neutral"
+                  size="lg"
+                  class="rounded-xl"
+                  :loading="busy === 'locale'"
+                  :label="t('account.save')"
+                  @click="saveLocale"
+                />
               </div>
             </template>
 

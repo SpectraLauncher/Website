@@ -2506,7 +2506,27 @@
     "passkeyUnnamed": "Unnamed passkey",
     "passkeyRemove": "Remove passkey",
     "passkeyAdded": "Passkey added.",
-    "passkeyRemoved": "Passkey removed."
+    "passkeyRemoved": "Passkey removed.",
+    "language": "Language",
+    "languageHint": "Used across the site and in the e-mails we send you.",
+    "notificationsHint": "Pick how each kind of notification reaches you.",
+    "mailUnavailable": "E-mail delivery is not configured on this server, so only in-app notifications arrive.",
+    "channels": {
+      "site": "In app",
+      "email": "E-mail"
+    },
+    "groups": {
+      "social": "Friends",
+      "packs": "Modpacks",
+      "projects": "Your projects",
+      "comments": "Comments"
+    },
+    "groupHints": {
+      "social": "Friend requests and accepted invites.",
+      "packs": "Modpacks shared with you and updates to ones you use.",
+      "projects": "Moderation decisions and messages about projects you own.",
+      "comments": "Comments on your projects and replies to yours."
+    }
   },
   "friends": {
     "title": "Friends",
@@ -3350,7 +3370,9 @@
     "project_removed": "{project} was removed by moderation",
     "project_message": "New moderation message about {project}",
     "project_comment": "{actor} commented on {project}",
-    "comment_reply": "{actor} replied to your comment"
+    "comment_reply": "{actor} replied to your comment",
+    "mailBody": "Open Spectra to see the details.",
+    "mailCta": "Open Spectra"
   },
   "collections": {
     "create": "New collection",
