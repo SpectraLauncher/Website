@@ -3397,5 +3397,21 @@
     "favourite": "Do ulubionych",
     "favourited": "W ulubionych",
     "createInline": "Nowa kolekcja…"
+  },
+  "billing": {
+    "title": "Płatności",
+    "intro": "Ile zarobiłeś, ile wydałeś i gdzie idą pieniądze.",
+    "earned": "Zarobione",
+    "spent": "Wydane",
+    "commission": "Pobieramy {rate}% od każdej sprzedaży.",
+    "ofGross": "z {gross} brutto",
+    "nothingYet": "Jeszcze nic.",
+    "purchases": "Brak zakupów | 1 zakup | {n} zakupy | {n} zakupów",
+    "payouts": "Wypłaty",
+    "payoutsReady": "Gotowe",
+    "payoutsPending": "Wymaga konfiguracji",
+    "payoutsHint": "Wypłaty idą przez Stripe. Sprzedaż wymaga podpiętego konta z ukończoną weryfikacją.",
+    "partner": "Stawka partnerska",
+    "manage": "Zarządzaj kontami wypłat"
   }
 }

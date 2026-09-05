@@ -15,7 +15,7 @@ const CATALOG_PATHS = [
 // One person's own pages. These never belong in a sitemap, whatever the catalog
 // flag says, so they are listed apart from the paths that open with it.
 const ACCOUNT_PATHS = [
-  '/account', '/settings', '/notifications', '/library', '/collections',
+  '/account', '/settings', '/notifications', '/library', '/collections', '/billing',
   '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller'
 ]
 

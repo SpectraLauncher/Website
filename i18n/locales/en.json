@@ -3397,5 +3397,21 @@
     "favourite": "Favourite",
     "favourited": "Favourited",
     "createInline": "New collection…"
+  },
+  "billing": {
+    "title": "Billing",
+    "intro": "What you have earned, what you have spent, and where the money goes.",
+    "earned": "Earned",
+    "spent": "Spent",
+    "commission": "We take {rate}% of each sale.",
+    "ofGross": "of {gross} gross",
+    "nothingYet": "Nothing yet.",
+    "purchases": "No purchases | 1 purchase | {n} purchases",
+    "payouts": "Payouts",
+    "payoutsReady": "Ready",
+    "payoutsPending": "Setup needed",
+    "payoutsHint": "Payouts run through Stripe. Selling needs a connected account that has finished onboarding.",
+    "partner": "Partner rate",
+    "manage": "Manage payout accounts"
   }
 }

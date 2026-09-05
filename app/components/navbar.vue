@@ -93,6 +93,7 @@ const accountMenu = computed(() => {
             { label: t('nav.account.organizations'), icon: 'i-lucide-users', to: localePath('/organizations') },
                 { label: t('nav.account.analytics'), icon: 'i-lucide-chart-line', to: localePath('/analytics') },
             { label: t('nav.account.revenue'), icon: 'i-lucide-wallet', to: localePath('/revenue') },
+            { label: t('billing.title'), icon: 'i-lucide-credit-card', to: localePath('/billing') },
             { label: t('nav.account.library'), icon: 'i-lucide-library', to: localePath('/library') },
         ]
         : []
