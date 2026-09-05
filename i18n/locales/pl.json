@@ -24,7 +24,19 @@
     "schematics": "Schematy",
     "schematicsDesc": "Budowle do wklejenia do świata.",
     "plugins": "Pluginy",
-    "pluginsDesc": "Bukkit, Paper, Velocity i reszta."
+    "pluginsDesc": "Bukkit, Paper, Velocity i reszta.",
+    "account": {
+      "profile": "Profil",
+      "settings": "Ustawienia",
+      "notifications": "Powiadomienia",
+      "collections": "Kolekcje",
+      "projects": "Projekty",
+      "organizations": "Organizacje",
+      "analytics": "Analityka",
+      "revenue": "Przychody",
+      "library": "Biblioteka",
+      "signOut": "Wyloguj"
+    }
   },
   "hero": {
     "opensource": "open source",
@@ -2460,7 +2472,20 @@
     },
     "viewProfile": "Zobacz profil publiczny",
     "unverifiedBadge": "Niezweryfikowany",
-    "verifyWhy": "Potwierdź go, żeby zachować dostęp do konta i móc zresetować hasło, gdybyś je kiedyś zgubił."
+    "verifyWhy": "Potwierdź go, żeby zachować dostęp do konta i móc zresetować hasło, gdybyś je kiedyś zgubił.",
+    "projectsIntro": "Wszystko, co publikujesz — na własnym koncie i przez organizacje, do których należysz.",
+    "organizationsIntro": "Organizacje, do których należysz. Organizacja jest właścicielem swoich projektów i rozlicza się jako ona sama.",
+    "analyticsIntro": "Wyświetlenia i pobrania tego, co publikujesz. Boty i odświeżenia nie są liczone.",
+    "revenueIntro": "Ile zarobiła Twoja sprzedaż, po prowizji {rate}%.",
+    "noProjects": "Nic jeszcze nie opublikowano.",
+    "noOrganizations": "Nie należysz do żadnej organizacji.",
+    "noSales": "Brak sprzedaży.",
+    "noData": "Brak ruchu w tym okresie.",
+    "views": "Wyświetlenia",
+    "lastDays": "Ostatnie {n} dni",
+    "grossAndFee": "{gross} brutto, {fee} prowizji",
+    "notConnected": "Wypłaty nie są skonfigurowane",
+    "notConnectedBody": "Sprzedaż wymaga podpiętego konta, zanim pieniądze mogą do Ciebie trafić."
   },
   "friends": {
     "title": "Znajomi",

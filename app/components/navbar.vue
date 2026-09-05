@@ -3,6 +3,7 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const localePath = useLocalePath()
 
+const auth = useAuthClient()
 const session = useAuthSession()
 const me = computed(() => session.value.data?.user as { username?: string, name?: string, image?: string } | undefined)
 
@@ -69,6 +70,38 @@ const tr = (list: NavigationMenuItem[]): NavigationMenuItem[] => list.map(i => (
 
 // Hidden rather than guarded: the server already answers 404 to these routes
 // while the catalog is closed, so this only avoids linking somewhere broken.
+const accountMenu = computed(() => {
+    const user = me.value
+    if (!user) return []
+
+    const account = [
+        { label: t('nav.account.profile'), icon: 'i-lucide-user', to: localePath(`/u/${user.username}`) },
+        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/account?tab=notifications') },
+        { label: t('nav.account.settings'), icon: 'i-lucide-settings', to: localePath('/settings') },
+    ]
+
+    const creating = catalogOpen.value
+        ? [
+            { label: t('nav.account.projects'), icon: 'i-lucide-package', to: localePath('/projects') },
+            { label: t('nav.account.organizations'), icon: 'i-lucide-users', to: localePath('/organizations') },
+            { label: t('nav.account.collections'), icon: 'i-lucide-bookmark', to: localePath('/collections') },
+            { label: t('nav.account.analytics'), icon: 'i-lucide-chart-line', to: localePath('/analytics') },
+            { label: t('nav.account.revenue'), icon: 'i-lucide-wallet', to: localePath('/revenue') },
+            { label: t('nav.account.library'), icon: 'i-lucide-library', to: localePath('/library') },
+        ]
+        : []
+
+    const out = [account]
+    if (creating.length) out.push(creating)
+    out.push([{ label: t('nav.account.signOut'), icon: 'i-lucide-log-out', onSelect: signOut }])
+    return out
+})
+
+async function signOut() {
+    await auth.signOut()
+    await navigateTo(localePath('/'))
+}
+
 const localized = computed(() =>
     tr(catalogOpen.value ? [discover, ...items.value] : items.value))
 
@@ -114,16 +147,22 @@ defineExpose({ items })
                         :ui="{ base: 'rounded-xl cursor-pointer' }"
                         class="w-32"
                     />
-                    <UButton
+                    <UDropdownMenu
                         v-if="me"
-                        :to="localePath('/account')"
-                        :label="me.username || me.name"
-                        :avatar="me.image ? { src: me.image } : undefined"
-                        :icon="me.image ? undefined : 'i-lucide-user-round'"
-                        variant="ghost"
-                        color="neutral"
-                        class="rounded-xl cursor-pointer"
-                    />
+                        :items="accountMenu"
+                        :content="{ align: 'end' }"
+                        :ui="{ content: 'w-56' }"
+                    >
+                        <UButton
+                            :label="me.username || me.name"
+                            :avatar="me.image ? { src: me.image } : undefined"
+                            :icon="me.image ? undefined : 'i-lucide-user-round'"
+                            trailing-icon="i-lucide-chevron-down"
+                            variant="ghost"
+                            color="neutral"
+                            class="rounded-xl cursor-pointer"
+                        />
+                    </UDropdownMenu>
                     <UButton
                         v-else
                         :to="localePath('/login')"
@@ -170,17 +209,20 @@ defineExpose({ items })
                                 class="w-full"
                                 :ui="{ base: 'rounded-xl cursor-pointer' }"
                             />
-                            <UButton
-                                v-if="me"
-                                :to="localePath('/account')"
-                                :label="me.username || me.name"
-                                :avatar="me.image ? { src: me.image } : undefined"
-                                :icon="me.image ? undefined : 'i-lucide-user-round'"
-                                variant="soft"
-                                color="neutral"
-                                block
-                                class="rounded-xl"
-                            />
+                            <template v-if="me">
+                                <UButton
+                                    v-for="entry in accountMenu.flat()"
+                                    :key="entry.label"
+                                    :to="entry.to"
+                                    :label="entry.label"
+                                    :icon="entry.icon"
+                                    variant="ghost"
+                                    color="neutral"
+                                    block
+                                    class="justify-start rounded-xl"
+                                    @click="entry.onSelect?.()"
+                                />
+                            </template>
                             <UButton
                                 v-else
                                 :to="localePath('/login')"

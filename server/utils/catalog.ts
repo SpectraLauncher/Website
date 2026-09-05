@@ -694,3 +694,13 @@ export async function projectsByIds(ids: string[]): Promise<Map<string, ProjectR
     `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = ANY($1)`, [ids])
   return new Map(rows.map(row => [row.id, row]))
 }
+
+export async function ownedProjects(userId: string, orgIds: string[]): Promise<ProjectRow[]> {
+  // sql-safe: PROJECT_COLUMNS is a constant column list
+  return await q<ProjectRow>(
+    `SELECT ${PROJECT_COLUMNS} FROM project
+     WHERE owner_id = $1 OR ($2::text[] <> '{}' AND org_id = ANY($2))
+     ORDER BY updated DESC`,
+    [userId, orgIds],
+  )
+}

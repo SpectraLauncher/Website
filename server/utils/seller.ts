@@ -209,3 +209,43 @@ export async function refundPurchase(intentId: string) {
     [intentId],
   )
 }
+
+export interface Sale {
+  id: string
+  projectId: string
+  title: string | null
+  amount: number
+  fee: number
+  currency: string
+  completed: number | null
+}
+
+export async function salesFor(sellerIds: string[]): Promise<Sale[]> {
+  if (!sellerIds.length) return []
+
+  const rows = await q<{
+    id: string
+    project_id: string
+    title: string | null
+    amount: number
+    fee: number
+    currency: string
+    completed: string | null
+  }>(
+    `SELECT pu.id, pu.project_id, p.title, pu.amount, pu.fee, pu.currency, pu.completed
+     FROM purchase pu LEFT JOIN project p ON p.id = pu.project_id
+     WHERE pu.seller_id = ANY($1) AND pu.status = 'paid'
+     ORDER BY pu.completed DESC NULLS LAST`,
+    [sellerIds],
+  )
+
+  return rows.map(row => ({
+    id: row.id,
+    projectId: row.project_id,
+    title: row.title,
+    amount: Number(row.amount),
+    fee: Number(row.fee),
+    currency: row.currency,
+    completed: row.completed ? Number(row.completed) : null,
+  }))
+}

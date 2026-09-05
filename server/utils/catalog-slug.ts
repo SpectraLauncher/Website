@@ -37,6 +37,7 @@ const RESERVED = [
   'news', 'notifications', 'organization', 'organizations', 'plugin',
   'plugins', 'profile', 'project', 'projects', 'report', 'search', 'settings',
   'signin', 'signout', 'signup', 'support', 'team', 'teams', 'upload', 'user',
+  'analytics', 'revenue', 'collections',
   'users', 'version', 'versions', 'wiki',
 ]
 

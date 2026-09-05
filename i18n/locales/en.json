@@ -24,7 +24,19 @@
     "schematics": "Schematics",
     "schematicsDesc": "Builds to paste into your world.",
     "plugins": "Plugins",
-    "pluginsDesc": "Bukkit, Paper, Velocity and the rest."
+    "pluginsDesc": "Bukkit, Paper, Velocity and the rest.",
+    "account": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "notifications": "Notifications",
+      "collections": "Collections",
+      "projects": "Projects",
+      "organizations": "Organizations",
+      "analytics": "Analytics",
+      "revenue": "Revenue",
+      "library": "Library",
+      "signOut": "Sign out"
+    }
   },
   "hero": {
     "opensource": "open source",
@@ -2460,7 +2472,20 @@
     },
     "viewProfile": "View public profile",
     "unverifiedBadge": "Unverified",
-    "verifyWhy": "Confirm it to keep access to your account and to reset your password if you ever lose it."
+    "verifyWhy": "Confirm it to keep access to your account and to reset your password if you ever lose it.",
+    "projectsIntro": "Everything you publish, on your own account and through organizations you belong to.",
+    "organizationsIntro": "Organizations you belong to. An organization owns its projects and is paid as itself.",
+    "analyticsIntro": "Views and downloads for what you publish. Crawlers and refreshes are not counted.",
+    "revenueIntro": "What your sales have earned, after the {rate}% commission.",
+    "noProjects": "Nothing published yet.",
+    "noOrganizations": "You do not belong to any organization.",
+    "noSales": "No sales yet.",
+    "noData": "No traffic in this window.",
+    "views": "Views",
+    "lastDays": "Last {n} days",
+    "grossAndFee": "{gross} gross, {fee} commission",
+    "notConnected": "Payouts are not set up",
+    "notConnectedBody": "A sale needs a connected account before the money can reach you."
   },
   "friends": {
     "title": "Friends",
