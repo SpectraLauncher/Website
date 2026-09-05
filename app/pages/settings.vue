@@ -174,6 +174,30 @@ const saveProfile = () => run('profile', async () => {
   return res
 })
 
+const passkeys = ref<Array<{ id: string, name?: string | null, createdAt: string }>>([])
+const passkeyName = ref('')
+
+async function loadPasskeys() {
+  const res = await auth.passkey.listUserPasskeys()
+  passkeys.value = (res.data ?? []) as any
+}
+
+const addPasskey = () => run('passkey', async () => {
+  // The browser prompt is the whole flow; a rejected prompt resolves with an
+  // error rather than throwing, so nothing is added and nothing is reported.
+  const res = await auth.passkey.addPasskey({ name: passkeyName.value.trim() || undefined })
+  if (res?.error) return res
+  passkeyName.value = ''
+  await loadPasskeys()
+  notice.value = t('account.passkeyAdded')
+})
+
+const removePasskey = (id: string) => run('passkey:' + id, async () => {
+  await auth.passkey.deletePasskey({ id })
+  await loadPasskeys()
+  notice.value = t('account.passkeyRemoved')
+})
+
 const sessions = ref<Array<{ token: string, createdAt: string, updatedAt: string, ipAddress?: string | null, userAgent?: string | null }>>([])
 const sessionsLoaded = ref(false)
 
@@ -185,6 +209,7 @@ async function loadSessions() {
 
 watch(tab, (value) => {
   if (value === 'sessions' && !sessionsLoaded.value) loadSessions()
+  if (value === 'security') loadPasskeys()
 }, { immediate: true })
 
 const currentToken = computed(() => (session.value.data?.session as any)?.token ?? '')
@@ -589,6 +614,52 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       :disabled="!newEmail"
                       :label="t('account.changeEmail')"
                       @click="changeEmail"
+                    />
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-white/10 bg-black/20 p-5">
+                  <h3 class="mb-1 text-sm font-semibold">{{ t('account.passkeys') }}</h3>
+                  <p class="mb-4 text-xs text-muted">{{ t('account.passkeysHint') }}</p>
+
+                  <ul v-if="passkeys.length" class="mb-4 space-y-2">
+                    <li
+                      v-for="key in passkeys"
+                      :key="key.id"
+                      class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                    >
+                      <UIcon name="i-lucide-key-round" class="size-4 shrink-0 text-muted" />
+                      <div class="min-w-0 flex-1">
+                        <p class="truncate text-sm">{{ key.name || t('account.passkeyUnnamed') }}</p>
+                        <p class="text-xs text-dimmed">{{ new Date(key.createdAt).toLocaleDateString(locale) }}</p>
+                      </div>
+                      <UButton
+                        size="xs"
+                        variant="ghost"
+                        color="error"
+                        icon="i-lucide-trash-2"
+                        :loading="busy === 'passkey:' + key.id"
+                        :aria-label="t('account.passkeyRemove')"
+                        @click="removePasskey(key.id)"
+                      />
+                    </li>
+                  </ul>
+
+                  <div class="flex flex-wrap gap-2">
+                    <UInput
+                      v-model="passkeyName"
+                      size="lg"
+                      class="min-w-0 flex-1"
+                      :placeholder="t('account.passkeyName')"
+                    />
+                    <UButton
+                      color="neutral"
+                      size="lg"
+                      class="rounded-xl"
+                      icon="i-lucide-plus"
+                      :loading="busy === 'passkey'"
+                      :label="t('account.passkeyAdd')"
+                      @click="addPasskey"
                     />
                   </div>
                 </div>

@@ -2497,7 +2497,15 @@
     "revokeOthers": "Wyloguj wszędzie indziej",
     "sessionRevoked": "Sesja zakończona.",
     "noSessions": "Brak innych sesji.",
-    "unknownDevice": "Nieznane urządzenie"
+    "unknownDevice": "Nieznane urządzenie",
+    "passkeys": "Klucze dostępu",
+    "passkeysHint": "Loguj się odciskiem palca, twarzą lub kluczem sprzętowym zamiast hasłem.",
+    "passkeyAdd": "Dodaj klucz",
+    "passkeyName": "Nazwij to urządzenie",
+    "passkeyUnnamed": "Klucz bez nazwy",
+    "passkeyRemove": "Usuń klucz",
+    "passkeyAdded": "Klucz dodany.",
+    "passkeyRemoved": "Klucz usunięty."
   },
   "friends": {
     "title": "Znajomi",

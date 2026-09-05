@@ -2497,7 +2497,15 @@
     "revokeOthers": "Sign out everywhere else",
     "sessionRevoked": "Session ended.",
     "noSessions": "No other sessions.",
-    "unknownDevice": "Unknown device"
+    "unknownDevice": "Unknown device",
+    "passkeys": "Passkeys",
+    "passkeysHint": "Sign in with your fingerprint, face or a security key instead of a password.",
+    "passkeyAdd": "Add passkey",
+    "passkeyName": "Name this device",
+    "passkeyUnnamed": "Unnamed passkey",
+    "passkeyRemove": "Remove passkey",
+    "passkeyAdded": "Passkey added.",
+    "passkeyRemoved": "Passkey removed."
   },
   "friends": {
     "title": "Friends",

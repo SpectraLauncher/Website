@@ -1,9 +1,16 @@
 
+import { passkeyClient } from '@better-auth/passkey/client'
 import { createAuthClient } from 'better-auth/vue'
 import { oneTimeTokenClient, organizationClient, twoFactorClient, usernameClient } from 'better-auth/client/plugins'
 
 const client = createAuthClient({
-  plugins: [usernameClient(), twoFactorClient(), oneTimeTokenClient(), organizationClient()],
+  plugins: [
+    usernameClient(),
+    twoFactorClient(),
+    oneTimeTokenClient(),
+    organizationClient(),
+    passkeyClient(),
+  ],
 })
 
 export const useAuthClient = () => client

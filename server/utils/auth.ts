@@ -1,5 +1,6 @@
 
 import type { H3Event } from 'h3'
+import { passkey } from '@better-auth/passkey'
 import { betterAuth } from 'better-auth'
 import { bearer, captcha, oneTimeToken, organization, twoFactor, username } from 'better-auth/plugins'
 import { createTransport } from 'nodemailer'
@@ -24,6 +25,24 @@ function socialProviders() {
 
 export function enabledProviders(): string[] {
   return Object.keys(socialProviders())
+}
+
+export function siteOrigin(): string {
+  return process.env.NUXT_PUBLIC_SITE_URL
+    || (import.meta.dev ? 'http://localhost:3000' : 'https://usespectra.app')
+}
+
+// A passkey is bound to this exact domain and stops working if it changes, so a
+// malformed site URL must not quietly become some other host. Boot loudly
+// instead: an unparseable value is a deployment mistake, not a runtime case.
+export function relyingPartyId(): string {
+  const origin = siteOrigin()
+  try {
+    return new URL(origin).hostname
+  }
+  catch {
+    throw new Error(`NUXT_PUBLIC_SITE_URL is not a URL: ${origin}`)
+  }
 }
 
 export function turnstileSiteKey(): string {
@@ -172,8 +191,7 @@ export function useAuth() {
 
   auth = betterAuth({
     database: usePool(),
-    baseURL: process.env.NUXT_PUBLIC_SITE_URL
-      || (import.meta.dev ? 'http://localhost:3000' : 'https://usespectra.app'),
+    baseURL: siteOrigin(),
     secret: process.env.BETTER_AUTH_SECRET,
     emailAndPassword: {
       enabled: true,
@@ -250,6 +268,7 @@ export function useAuth() {
       accountLinking: { enabled: true, trustedProviders: ['discord', 'google', 'github', 'microsoft'] },
     },
     plugins: [
+      passkey({ rpID: relyingPartyId(), rpName: 'Spectra' }),
       username(),
       twoFactor({ issuer: 'Spectra Launcher' }),
       // Organizacje sa wspolwlascicielem projektow w katalogu — patrz kolumna
