@@ -111,3 +111,41 @@ describe('zamkniecie zgloszenia', () => {
     expect(source).toContain(`kind: 'report_closed'`)
   })
 })
+
+// Moderator, ktory nie moze zapytac "ktory dokladnie plik?", musi zgadywac,
+// a zgadywanie konczy sie odrzuceniem sluszengo zgloszenia.
+describe('zgloszenie ma wlasny watek', () => {
+  const thread = readFileSync('server/utils/project-thread.ts', 'utf8')
+  const module = readFileSync('server/utils/reports.ts', 'utf8')
+  const patch = readFileSync('server/api/admin/catalog/reports/[id].patch.ts', 'utf8')
+
+  it('to ten sam mechanizm co watek projektu, nie druga tabela', () => {
+    expect(thread).toContain('export async function reportThread')
+    expect(thread).toContain('WHERE m.report_id = $1')
+  })
+
+  it('wiadomosc wisi przy projekcie albo przy zgloszeniu', () => {
+    expect(thread).toContain('projectId?: string | null')
+    expect(thread).toContain('reportId?: string | null')
+  })
+
+  it('watek widzi zglaszajacy i moderacja, nikt wiecej', () => {
+    expect(module).toContain('report.reporter_id !== user.id')
+    expect(module).toContain('isAdmin(user)')
+  })
+
+  it('obcy dostaje taka sama odpowiedz jak przy nieistniejacym zgloszeniu', () => {
+    const matches = module.match(/no such report/g) ?? []
+    expect(matches.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('notatka zamykajaca ladnie w watku, nie w osobnym polu', () => {
+    expect(patch).toContain('postMessage({')
+    expect(patch).toContain('reportId: report.id')
+  })
+
+  it('odpisywanie ma wlasny budzet', () => {
+    const route = readFileSync('server/api/catalog/reports/[id]/thread.post.ts', 'utf8')
+    expect(route).toContain('key: `report-thread:${user.id}`')
+  })
+})

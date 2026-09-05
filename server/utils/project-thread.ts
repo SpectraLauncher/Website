@@ -71,7 +71,8 @@ export async function threadFor(projectId: string) {
 }
 
 export async function postMessage(input: {
-  projectId: string
+  projectId?: string | null
+  reportId?: string | null
   authorId: string
   staff: boolean
   body: string
@@ -79,9 +80,18 @@ export async function postMessage(input: {
 }) {
   const id = newId()
   await exec(
-    `INSERT INTO project_message (id, project_id, author_id, staff, body, status, created)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [id, input.projectId, input.authorId, input.staff, input.body, input.status ?? null, Date.now()],
+    `INSERT INTO project_message (id, project_id, report_id, author_id, staff, body, status, created)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [
+      id,
+      input.projectId ?? null,
+      input.reportId ?? null,
+      input.authorId,
+      input.staff,
+      input.body,
+      input.status ?? null,
+      Date.now(),
+    ],
   )
   return id
 }
@@ -170,4 +180,26 @@ export async function countComments(projectId: string): Promise<number> {
     [projectId],
   )
   return row?.n ?? 0
+}
+
+// The same thread, hanging off a report instead of a project. A moderator who
+// cannot ask "which file exactly?" has to guess, and guessing is how a correct
+// report gets dismissed.
+export async function reportThread(reportId: string) {
+  // sql-safe: AUTHOR_JOIN is a constant column list
+  const rows = await q<MessageRow & Record<string, unknown>>(
+    `SELECT m.id, m.project_id, m.author_id, m.staff, m.body, m.status, m.created, ${AUTHOR_JOIN}
+     FROM project_message m LEFT JOIN "user" u ON u.id = m.author_id
+     WHERE m.report_id = $1 ORDER BY m.created ASC`,
+    [reportId],
+  )
+
+  return rows.map(row => ({
+    id: row.id,
+    body: row.body,
+    staff: row.staff,
+    status: row.status,
+    created: Number(row.created),
+    author: author(row),
+  }))
 }

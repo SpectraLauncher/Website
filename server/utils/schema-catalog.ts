@@ -381,6 +381,16 @@ export async function ensureCatalogSchema() {
       ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
   `)
 
+  // The moderation thread hangs off a project or off a report, never both and
+  // never neither. One mechanism rather than two nearly identical tables.
+  await pool.query(`
+    ALTER TABLE project_message ALTER COLUMN project_id DROP NOT NULL;
+    ALTER TABLE project_message ADD COLUMN IF NOT EXISTS report_id TEXT
+      REFERENCES report(id) ON DELETE CASCADE;
+    CREATE INDEX IF NOT EXISTS idx_project_message_report
+      ON project_message (report_id, created);
+  `)
+
   await pool.query(`
     -- What every stored image belongs to. subject_id is polymorphic on purpose:
     -- one row can point at a project, a version, an organization, an account or

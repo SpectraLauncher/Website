@@ -10,10 +10,24 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'unknown decision' })
   }
 
+  const note = String(body.note ?? '').trim().slice(0, MAX_REPORT_BODY)
+
+  // The note goes into the thread as well, so the whole exchange reads in one
+  // place instead of ending in a field nobody scrolls to.
+  if (note) {
+    await postMessage({
+      reportId: report.id,
+      authorId: moderator.id,
+      staff: true,
+      body: note,
+      status: body.status,
+    })
+  }
+
   const updated = await closeReport({
     id: report.id,
     status: body.status,
-    note: String(body.note ?? '').trim().slice(0, MAX_REPORT_BODY),
+    note,
     moderatorId: moderator.id,
   })
 

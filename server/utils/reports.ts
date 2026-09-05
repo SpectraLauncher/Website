@@ -1,4 +1,6 @@
 
+import type { H3Event } from 'h3'
+import { isAdmin } from './admin'
 import { projectPath } from './catalog-types'
 import { exec, one, q } from './db'
 import { newId } from './ids'
@@ -192,4 +194,19 @@ export function publicReport(row: ReportRow, target: { label: string, path: stri
 
 export function deleteReport(id: string) {
   return exec('DELETE FROM report WHERE id = $1', [id])
+}
+
+// A report is visible to the person who filed it and to moderators, nobody
+// else. Anyone else gets the same answer as a report that does not exist.
+export async function reportForViewer(event: H3Event): Promise<ReportRow> {
+  const user = await requireUser(event)
+
+  const report = await reportById(String(getRouterParam(event, 'id') ?? ''))
+  if (!report) throw createError({ statusCode: 404, statusMessage: 'no such report' })
+
+  if (!isAdmin(user) && report.reporter_id !== user.id) {
+    throw createError({ statusCode: 404, statusMessage: 'no such report' })
+  }
+
+  return report
 }
