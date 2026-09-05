@@ -244,6 +244,23 @@ export async function ensureSchema() {
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS notification_prefs JSONB;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS locale TEXT;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS limits JSONB;
+  `)
+
+  await pool.query(`
+    -- Personal access tokens. Only the hash is stored, exactly like a password:
+    -- a database dump must not hand over live credentials.
+    CREATE TABLE IF NOT EXISTS access_token (
+      id         TEXT PRIMARY KEY,
+      user_id    TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      name       TEXT NOT NULL,
+      hint       TEXT NOT NULL DEFAULT '',
+      token_hash TEXT NOT NULL UNIQUE,
+      scopes     BIGINT NOT NULL DEFAULT 0,
+      expires    BIGINT,
+      last_used  BIGINT,
+      created    BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_access_token_user ON access_token (user_id, created DESC);
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
   `)
 }

@@ -42,6 +42,7 @@ const TABS = [
   { id: 'connected', icon: 'i-lucide-link', label: 'account.connected' },
   { id: 'notifications', icon: 'i-lucide-bell', label: 'nav.account.notifications' },
   { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
+  { id: 'tokens', icon: 'i-lucide-key', label: 'tokens.title' },
   { id: 'language', icon: 'i-lucide-languages', label: 'account.language' },
   { id: 'friends', icon: 'i-lucide-users', label: 'friends.title' }
 ] as const
@@ -200,6 +201,59 @@ const removePasskey = (id: string) => run('passkey:' + id, async () => {
   notice.value = t('account.passkeyRemoved')
 })
 
+const tokens = ref<Array<{
+  id: string
+  name: string
+  hint: string
+  scopes: string[]
+  expires: number | null
+  lastUsed: number | null
+}>>([])
+
+const tokensLoaded = ref(false)
+const tokenDraft = reactive({ name: '', scopes: [] as string[], expiresInDays: 0 })
+const freshToken = ref('')
+
+async function loadTokens() {
+  const res = await $fetch<{ tokens: typeof tokens.value }>('/api/me/tokens')
+  tokens.value = res.tokens
+  tokensLoaded.value = true
+}
+
+const scopeChoices = computed(() =>
+  TOKEN_SCOPE_KEYS.map(value => ({ value, label: t(`tokens.scopes.${value}`) })))
+
+const expiryChoices = computed(() => [
+  { value: 0, label: t('tokens.never') },
+  { value: 30, label: t('tokens.days', { n: 30 }) },
+  { value: 90, label: t('tokens.days', { n: 90 }) },
+  { value: 365, label: t('tokens.days', { n: 365 }) },
+])
+
+const createToken = () => run('token', async () => {
+  const res = await $fetch<{ token: string }>('/api/me/tokens', {
+    method: 'POST',
+    body: {
+      name: tokenDraft.name,
+      scopes: tokenDraft.scopes,
+      expiresInDays: tokenDraft.expiresInDays || null,
+    },
+  })
+
+  // Shown once. There is no second chance to copy it, so it stays on screen
+  // until the person dismisses it themselves.
+  freshToken.value = res.token
+  tokenDraft.name = ''
+  tokenDraft.scopes = []
+  await loadTokens()
+})
+
+const revokeAccessToken = (id: string) => run('token:' + id, async () => {
+  await $fetch(`/api/me/tokens/${id}`, { method: 'DELETE' })
+  await loadTokens()
+  notice.value = t('tokens.revoked')
+})
+
 const prefs = ref<Record<string, string[]>>({})
 const mailConfigured = ref(true)
 const prefsLoaded = ref(false)
@@ -252,6 +306,7 @@ watch(tab, (value) => {
   if (value === 'sessions' && !sessionsLoaded.value) loadSessions()
   if (value === 'security') loadPasskeys()
   if (value === 'notifications' && !prefsLoaded.value) loadPrefs()
+  if (value === 'tokens' && !tokensLoaded.value) loadTokens()
 }, { immediate: true })
 
 const currentToken = computed(() => (session.value.data?.session as any)?.token ?? '')
@@ -875,6 +930,102 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :loading="busy === 'locale'"
                   :label="t('account.save')"
                   @click="saveLocale"
+                />
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'tokens'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('tokens.title') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('tokens.hint') }}</p>
+
+              <UAlert
+                v-if="freshToken"
+                color="success"
+                variant="subtle"
+                class="mb-5 rounded-2xl"
+                icon="i-lucide-key"
+                :title="t('tokens.copyNow')"
+              >
+                <template #description>
+                  <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
+                    {{ freshToken }}
+                  </code>
+                  <UButton
+                    class="mt-2 rounded-lg"
+                    size="xs"
+                    variant="soft"
+                    color="neutral"
+                    :label="t('tokens.dismiss')"
+                    @click="freshToken = ''"
+                  />
+                </template>
+              </UAlert>
+
+              <ul v-if="tokens.length" class="mb-6 space-y-2">
+                <li
+                  v-for="token in tokens"
+                  :key="token.id"
+                  class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+                >
+                  <UIcon name="i-lucide-key" class="size-4 shrink-0 text-muted" />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium">
+                      {{ token.name }}
+                      <span class="font-mono text-xs text-dimmed">…{{ token.hint }}</span>
+                    </p>
+                    <p class="truncate text-xs text-dimmed">
+                      {{ token.scopes.length }} ·
+                      {{ token.lastUsed
+                        ? t('tokens.lastUsed', { when: new Date(token.lastUsed).toLocaleDateString(locale) })
+                        : t('tokens.neverUsed') }}
+                    </p>
+                  </div>
+                  <UButton
+                    size="xs"
+                    variant="ghost"
+                    color="error"
+                    icon="i-lucide-trash-2"
+                    :loading="busy === 'token:' + token.id"
+                    :aria-label="t('tokens.revoke')"
+                    @click="revokeAccessToken(token.id)"
+                  />
+                </li>
+              </ul>
+
+              <p v-else-if="tokensLoaded" class="mb-6 text-sm text-dimmed">{{ t('tokens.none') }}</p>
+
+              <div class="max-w-lg space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
+                <h3 class="text-sm font-semibold">{{ t('tokens.create') }}</h3>
+
+                <UFormField :label="t('tokens.name')">
+                  <UInput v-model="tokenDraft.name" class="w-full" :placeholder="t('tokens.namePlaceholder')" />
+                </UFormField>
+
+                <UFormField :label="t('tokens.expiry')">
+                  <USelect
+                    v-model="tokenDraft.expiresInDays"
+                    :items="expiryChoices"
+                    value-key="value"
+                    class="w-full"
+                  />
+                </UFormField>
+
+                <UFormField :label="t('tokens.scopesLabel')">
+                  <UCheckboxGroup
+                    v-model="tokenDraft.scopes"
+                    :items="scopeChoices"
+                    value-key="value"
+                    size="sm"
+                  />
+                </UFormField>
+
+                <UButton
+                  color="neutral"
+                  class="rounded-xl"
+                  :disabled="!tokenDraft.scopes.length"
+                  :loading="busy === 'token'"
+                  :label="t('tokens.create')"
+                  @click="createToken"
                 />
               </div>
             </template>

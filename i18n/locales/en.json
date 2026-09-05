@@ -3440,5 +3440,38 @@
     "resolve": "Acted on it",
     "dismiss": "No action needed",
     "gone": "Item no longer exists"
+  },
+  "tokens": {
+    "title": "API tokens",
+    "hint": "Hand a script a narrow slice of your account instead of your password.",
+    "create": "Create token",
+    "name": "Name",
+    "namePlaceholder": "What is it for?",
+    "expiry": "Expires",
+    "never": "Never",
+    "days": "{n} days",
+    "scopesLabel": "What it may do",
+    "none": "No tokens yet.",
+    "revoke": "Revoke token",
+    "revoked": "Token revoked.",
+    "lastUsed": "last used {when}",
+    "neverUsed": "never used",
+    "copyNow": "Copy it now — it is not shown again",
+    "dismiss": "I have copied it",
+    "scopes": {
+      "user:read": "Read your profile",
+      "user:write": "Edit your profile",
+      "notifications:read": "Read notifications",
+      "notifications:write": "Mark notifications read",
+      "projects:read": "Read your projects",
+      "projects:write": "Edit your projects",
+      "projects:create": "Create projects",
+      "versions:read": "Read versions",
+      "versions:write": "Upload versions",
+      "collections:read": "Read collections",
+      "collections:write": "Edit collections",
+      "analytics:read": "Read analytics",
+      "payouts:read": "Read payouts"
+    }
   }
 }

@@ -3440,5 +3440,38 @@
     "resolve": "Podjęto działanie",
     "dismiss": "Bez działania",
     "gone": "Obiekt już nie istnieje"
+  },
+  "tokens": {
+    "title": "Tokeny API",
+    "hint": "Daj skryptowi wąski wycinek konta zamiast hasła.",
+    "create": "Utwórz token",
+    "name": "Nazwa",
+    "namePlaceholder": "Do czego służy?",
+    "expiry": "Wygasa",
+    "never": "Nigdy",
+    "days": "{n} dni",
+    "scopesLabel": "Co wolno",
+    "none": "Nie masz tokenów.",
+    "revoke": "Unieważnij token",
+    "revoked": "Token unieważniony.",
+    "lastUsed": "ostatnio {when}",
+    "neverUsed": "nieużywany",
+    "copyNow": "Skopiuj teraz — nie pokażemy go ponownie",
+    "dismiss": "Skopiowałem",
+    "scopes": {
+      "user:read": "Odczyt profilu",
+      "user:write": "Edycja profilu",
+      "notifications:read": "Odczyt powiadomień",
+      "notifications:write": "Oznaczanie powiadomień",
+      "projects:read": "Odczyt twoich projektów",
+      "projects:write": "Edycja twoich projektów",
+      "projects:create": "Tworzenie projektów",
+      "versions:read": "Odczyt wersji",
+      "versions:write": "Wgrywanie wersji",
+      "collections:read": "Odczyt kolekcji",
+      "collections:write": "Edycja kolekcji",
+      "analytics:read": "Odczyt analityki",
+      "payouts:read": "Odczyt wypłat"
+    }
   }
 }
