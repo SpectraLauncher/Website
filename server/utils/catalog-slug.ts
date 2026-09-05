@@ -30,7 +30,7 @@ const INFRASTRUCTURE = [
 const RESERVED = [
   'about', 'blog', 'browse', 'create', 'dashboard', 'discover', 'docs',
   'download', 'downloads', 'edit', 'explore', 'faq', 'files', 'follow',
-  'help', 'home', 'imprint', 'index', 'invite', 'invites', 'legal', 'me',
+  'help', 'home', 'imprint', 'index', 'invite', 'invites', 'legal', 'library', 'me',
   'messages', 'new',
   'news', 'notifications', 'organization', 'organizations', 'plugin',
   'plugins', 'profile', 'project', 'projects', 'report', 'search', 'settings',

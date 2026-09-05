@@ -466,6 +466,7 @@ export async function attachFile(versionId: string | number, file: FileInput): P
 }
 
 export interface ListQuery {
+  ownerId?: string
   type?: string
   statuses?: readonly string[]
   query?: string
@@ -498,6 +499,7 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
     where.push(clause.replace('$?', `$${params.length}`))
   }
 
+  if (input.ownerId) add('owner_id = $?', input.ownerId)
   if (input.type) add('type = $?', input.type)
   // Absent means the listed set, never "everything" — a listing that forgets to
   // pass a status must not start showing drafts.
@@ -669,4 +671,12 @@ export async function updateGalleryImage(id: string, patch: {
 
 export async function removeGalleryImage(id: string) {
   await exec('DELETE FROM project_gallery WHERE id = $1', [id])
+}
+
+export async function projectsByIds(ids: string[]): Promise<Map<string, ProjectRow>> {
+  if (!ids.length) return new Map()
+  // sql-safe: PROJECT_COLUMNS is a constant column list
+  const rows = await q<ProjectRow>(
+    `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = ANY($1)`, [ids])
+  return new Map(rows.map(row => [row.id, row]))
 }

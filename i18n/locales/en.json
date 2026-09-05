@@ -3182,5 +3182,11 @@
       "review": "Under review",
       "ready": "Ready"
     }
+  },
+  "library": {
+    "title": "Your library",
+    "intro": "Everything you have bought. A purchase stays yours even if the project later changes price or leaves the listings.",
+    "empty": "Nothing bought yet.",
+    "gone": "This project is no longer available"
   }
 }

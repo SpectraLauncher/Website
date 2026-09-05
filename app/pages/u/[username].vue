@@ -33,6 +33,14 @@ interface Profile {
   }
   activity: Array<{ day: string, launches: number, seconds: number }>
   badges: Array<{ slug: string, name: string, description: string, image: string | null }>
+  projects: Array<{
+    id: string
+    path: string
+    title: string
+    summary: string
+    icon: string | null
+    downloads: number
+  }>
 }
 
 const username = computed(() => String(route.params.username ?? ''))
@@ -361,6 +369,34 @@ useSchemaOrg(computed(() => (data.value
 
         <section class="relative z-10 container mx-auto grid gap-4 px-4 pb-24 pt-10 lg:grid-cols-[320px_1fr] lg:items-start">
           <div class="flex flex-col gap-4">
+            <div v-if="data.projects?.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
+              <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
+                <UIcon name="i-lucide-package" class="size-4 text-primary" />
+                {{ t('catalog.org.projects') }}
+                <span class="text-dimmed">({{ data.projects.length }})</span>
+              </h2>
+
+              <ul class="space-y-2">
+                <li v-for="project in data.projects" :key="project.id">
+                  <NuxtLink
+                    :to="localePath(project.path)"
+                    class="flex items-center gap-3 rounded-xl px-2 py-1.5 transition-colors hover:bg-white/5"
+                  >
+                    <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-white/5">
+                      <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
+                      <UIcon v-else name="i-lucide-package" class="size-4 text-dimmed" />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate text-sm font-medium">{{ project.title }}</span>
+                      <span class="block text-xs text-dimmed">
+                        {{ t('catalog.downloads', { n: project.downloads.toLocaleString() }) }}
+                      </span>
+                    </span>
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+
             <div v-if="data.badges.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <UIcon name="i-lucide-award" class="size-4 text-primary" />

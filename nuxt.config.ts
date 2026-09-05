@@ -9,7 +9,7 @@ const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
 const CATALOG_PATHS = [
   '/mod', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project',
-  '/verification', '/seller'
+  '/verification', '/seller', '/library'
 ]
 
 const PRIVATE_PATHS = [

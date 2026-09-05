@@ -71,6 +71,11 @@ export default defineEventHandler(async (event) => {
 
   const badges = await badgesOf(user.id)
 
+  const projects = catalogIsIndexable()
+    ? (await listProjects({ ownerId: user.id, limit: 12, sort: 'downloads' })).hits
+      .map(shortProject)
+    : []
+
   const { friendsVisibility, presence, lastSeen: _raw, ...safe } = user
 
   return {
@@ -89,5 +94,6 @@ export default defineEventHandler(async (event) => {
     },
     activity,
     badges,
+    projects,
   }
 })

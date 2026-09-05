@@ -3182,5 +3182,11 @@
       "review": "W weryfikacji",
       "ready": "Gotowe"
     }
+  },
+  "library": {
+    "title": "Twoja biblioteka",
+    "intro": "Wszystko, co kupiłeś. Zakup zostaje Twój, nawet jeśli projekt później zmieni cenę albo zniknie z list.",
+    "empty": "Nic jeszcze nie kupiono.",
+    "gone": "Ten projekt nie jest już dostępny"
   }
 }
