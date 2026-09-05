@@ -12,6 +12,7 @@ interface Member {
   name: string | null
   image: string | null
   joined: number
+  permissions: OrgPermission[]
 }
 
 interface OrgProject {
@@ -46,10 +47,96 @@ const { data, error, refresh } = await useFetch<{
   members: Member[]
   projects: OrgProject[]
   role: string | null
+  permissions: OrgPermission[]
+  rank: number
 }>(() => `/api/org/${encodeURIComponent(slug.value)}`)
 
 const org = computed(() => data.value?.org ?? null)
-const canEdit = computed(() => data.value?.role === 'owner' || data.value?.role === 'admin')
+
+const session = useAuthSession()
+const myId = computed(() => (session.value.data?.user as { id?: string } | undefined)?.id ?? '')
+
+const mine = computed(() => data.value?.permissions ?? [])
+const may = (permission: OrgPermission) => mine.value.includes(permission)
+
+const canEdit = computed(() => may('edit_details'))
+const myRank = computed(() => data.value?.rank ?? -1)
+
+// A member level with you is not yours to touch, so the row shows nothing
+// rather than a control the server would refuse.
+const canManage = (member: Member) =>
+  member.userId !== myId.value && rankOf(member.role) < myRank.value
+
+const editingMember = ref<string | null>(null)
+const memberRole = ref('member')
+const memberPermissions = ref<OrgPermission[]>([])
+
+function openMember(member: Member) {
+  editingMember.value = member.userId
+  memberRole.value = member.role
+  memberPermissions.value = [...member.permissions]
+}
+
+// You cannot hand out what you do not hold, so the rest is not offered.
+const permissionChoices = computed(() =>
+  ORG_PERMISSION_KEYS.filter(key => may(key))
+    .map(key => ({ value: key, label: t(`catalog.org.permissions.${key}`) })))
+const roleChoices = computed(() =>
+  ORG_ROLES.filter(role => rankOf(role) <= myRank.value)
+    .map(role => ({ value: role, label: t(`catalog.org.roles.${role}`) })))
+
+async function saveMember(member: Member) {
+  busy.value = member.userId
+  problem.value = ''
+  try {
+    await $fetch(`/api/org/${encodeURIComponent(slug.value)}/members/${member.userId}`, {
+      method: 'PATCH',
+      body: { role: memberRole.value, permissions: memberPermissions.value },
+    })
+    editingMember.value = null
+    await refresh()
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    busy.value = ''
+  }
+}
+
+async function removeMember(member: Member) {
+  if (!confirm(t('catalog.org.confirmRemove', { name: member.username || member.name }))) return
+  busy.value = member.userId
+  problem.value = ''
+  try {
+    await $fetch(`/api/org/${encodeURIComponent(slug.value)}/members/${member.userId}`, {
+      method: 'DELETE',
+    })
+    await refresh()
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    busy.value = ''
+  }
+}
+
+async function leave() {
+  if (!confirm(t('catalog.org.confirmLeave'))) return
+  busy.value = 'leave'
+  problem.value = ''
+  try {
+    await $fetch(`/api/org/${encodeURIComponent(slug.value)}/leave`, { method: 'POST' })
+    await navigateTo(localePath('/organizations'))
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    busy.value = ''
+  }
+}
 
 const editing = ref(false)
 const busy = ref('')
@@ -274,24 +361,105 @@ useSeoMeta({
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <h2 class="text-lg font-semibold">{{ t('catalog.org.members') }}</h2>
               <ul class="mt-4 space-y-3">
-                <li v-for="member in data!.members" :key="member.userId" class="flex items-center gap-3">
-                  <NuxtLink
-                    :to="member.username ? localePath(`/u/${member.username}`) : ''"
-                    class="flex min-w-0 flex-1 items-center gap-3"
+                <li v-for="member in data!.members" :key="member.userId">
+                  <div class="flex items-center gap-3">
+                    <NuxtLink
+                      :to="member.username ? localePath(`/u/${member.username}`) : ''"
+                      class="flex min-w-0 flex-1 items-center gap-3"
+                    >
+                      <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+                        <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
+                        <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
+                      </span>
+                      <span class="min-w-0 flex-1 truncate text-sm">
+                        {{ member.username || member.name || '—' }}
+                      </span>
+                    </NuxtLink>
+                    <UBadge
+                      variant="subtle"
+                      size="sm"
+                      :label="t(`catalog.org.roles.${member.role}`)"
+                    />
+                    <UButton
+                      v-if="canManage(member) && may('edit_member')"
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
+                      icon="i-lucide-settings-2"
+                      :aria-label="t('catalog.org.editMember')"
+                      @click="editingMember === member.userId ? editingMember = null : openMember(member)"
+                    />
+                    <UButton
+                      v-if="canManage(member) && may('remove_member')"
+                      size="xs"
+                      variant="ghost"
+                      color="error"
+                      icon="i-lucide-user-minus"
+                      :loading="busy === member.userId"
+                      :aria-label="t('catalog.org.removeMember')"
+                      @click="removeMember(member)"
+                    />
+                  </div>
+
+                  <div
+                    v-if="editingMember === member.userId"
+                    class="mt-3 rounded-2xl border border-white/10 bg-white/5 p-4"
                   >
-                    <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
-                      <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
-                      <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
-                    </span>
-                    <span class="min-w-0 flex-1 truncate text-sm">
-                      {{ member.username || member.name || '—' }}
-                    </span>
-                  </NuxtLink>
-                  <UBadge variant="subtle" size="sm" :label="member.role" />
+                    <UFormField :label="t('catalog.org.role')" size="sm">
+                      <USelect
+                        v-model="memberRole"
+                        :items="roleChoices"
+                        value-key="value"
+                        size="sm"
+                        class="w-full"
+                      />
+                    </UFormField>
+
+                    <p class="mt-4 mb-2 text-xs font-semibold">{{ t('catalog.org.permissions.title') }}</p>
+                    <p v-if="memberRole === 'owner'" class="text-xs text-dimmed">
+                      {{ t('catalog.org.ownerHasAll') }}
+                    </p>
+                    <UCheckboxGroup
+                      v-else
+                      v-model="memberPermissions"
+                      :items="permissionChoices"
+                      value-key="value"
+                      size="sm"
+                    />
+
+                    <div class="mt-4 flex justify-end gap-2">
+                      <UButton
+                        size="xs"
+                        variant="ghost"
+                        color="neutral"
+                        :label="t('catalog.cancel')"
+                        @click="editingMember = null"
+                      />
+                      <UButton
+                        size="xs"
+                        color="neutral"
+                        :loading="busy === member.userId"
+                        :label="t('account.save')"
+                        @click="saveMember(member)"
+                      />
+                    </div>
+                  </div>
                 </li>
               </ul>
 
-              <div v-if="canEdit" class="mt-5 border-t border-white/10 pt-4">
+              <div v-if="data!.role" class="mt-5 border-t border-white/10 pt-4">
+                <UButton
+                  size="xs"
+                  variant="ghost"
+                  color="error"
+                  icon="i-lucide-log-out"
+                  :loading="busy === 'leave'"
+                  :label="t('catalog.org.leave')"
+                  @click="leave"
+                />
+              </div>
+
+              <div v-if="may('manage_invites')" class="mt-5 border-t border-white/10 pt-4">
                 <p class="text-xs text-dimmed">{{ t('catalog.org.inviteHint') }}</p>
                 <div class="mt-2 flex gap-2">
                   <UInput

@@ -336,6 +336,12 @@ export async function ensureCatalogSchema() {
       REFERENCES project(id) ON DELETE CASCADE
   `)
 
+  // Per-member rights inside an organization. NULL means "whatever the role is
+  // worth by default", so existing rows keep working without a backfill.
+  await pool.query(`
+    ALTER TABLE member ADD COLUMN IF NOT EXISTS permissions BIGINT
+  `)
+
   // Both flags are columns rather than fields inside metadata, and deliberately:
   // the organization edit endpoint rewrites metadata wholesale, so a flag living
   // there would be wiped by an owner editing their own description — or worse,

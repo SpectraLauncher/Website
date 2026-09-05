@@ -1,7 +1,9 @@
 
 import { type ProjectRow, num } from './catalog'
 import { LISTED_STATUSES, projectPath } from './catalog-types'
-import { one, q } from './db'
+import type { H3Event } from 'h3'
+import { isAdmin } from './admin'
+import { exec, one, q } from './db'
 
 export interface OrgRow {
   id: string
@@ -20,6 +22,7 @@ export interface OrgMember {
   name: string | null
   image: string | null
   joined: number
+  permissions: OrgPermission[]
 }
 
 export interface OrgMeta {
@@ -42,17 +45,11 @@ export function orgMeta(raw: unknown): OrgMeta {
   }
 
   const body = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>
-  const links: Record<string, string> = {}
-  if (body.links && typeof body.links === 'object') {
-    for (const [key, item] of Object.entries(body.links as Record<string, unknown>)) {
-      if (typeof item === 'string' && item.trim()) links[key.slice(0, 40)] = item.trim().slice(0, 500)
-    }
-  }
 
   return {
     summary: typeof body.summary === 'string' ? body.summary.slice(0, 400) : '',
     description: typeof body.description === 'string' ? body.description.slice(0, 100_000) : '',
-    links,
+    links: cleanLinks(body.links),
   }
 }
 
@@ -68,12 +65,13 @@ export async function orgMembers(orgId: string): Promise<OrgMember[]> {
   const rows = await q<{
     userId: string
     role: string
+    permissions: string | number | null
     username: string | null
     name: string | null
     image: string | null
     createdAt: string | Date
   }>(
-    `SELECT m."userId", m.role, u.username, u.name, u.image, m."createdAt"
+    `SELECT m."userId", m.role, m.permissions, u.username, u.name, u.image, m."createdAt"
      FROM member m JOIN "user" u ON u.id = m."userId"
      WHERE m."organizationId" = $1
      ORDER BY CASE m.role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, u.username`,
@@ -87,6 +85,7 @@ export async function orgMembers(orgId: string): Promise<OrgMember[]> {
     name: row.name,
     image: row.image,
     joined: new Date(row.createdAt).getTime() || 0,
+    permissions: maskToList(permissionsOf(row.role, row.permissions === null ? null : Number(row.permissions))),
   }))
 }
 
@@ -195,4 +194,88 @@ export async function projectOwner(
   return user
     ? { kind: 'user', slug: user.username, name: user.name ?? user.username, image: user.image }
     : null
+}
+
+export interface Standing {
+  role: string
+  mask: number
+  rank: number
+  siteAdmin: boolean
+}
+
+export async function orgStanding(
+  orgId: string,
+  user: { id: string, role?: string | null },
+): Promise<Standing | null> {
+  const row = await one<{ role: string, permissions: string | number | null }>(
+    'SELECT role, permissions FROM member WHERE "organizationId" = $1 AND "userId" = $2',
+    [orgId, user.id],
+  )
+
+  // A site administrator acts with an owner's hand without being a member, so
+  // an abandoned organization is still reachable.
+  if (!row) {
+    return isAdmin(user)
+      ? { role: 'owner', mask: ALL_ORG_PERMISSIONS, rank: ORG_ROLE_RANK.owner, siteAdmin: true }
+      : null
+  }
+
+  const stored = row.permissions === null ? null : Number(row.permissions)
+  return {
+    role: row.role,
+    mask: isAdmin(user) ? ALL_ORG_PERMISSIONS : permissionsOf(row.role, stored),
+    rank: isAdmin(user) ? ORG_ROLE_RANK.owner : rankOf(row.role),
+    siteAdmin: isAdmin(user),
+  }
+}
+
+export async function ownerCount(orgId: string): Promise<number> {
+  const row = await one<{ n: number }>(
+    `SELECT count(*)::int AS n FROM member WHERE "organizationId" = $1 AND role = 'owner'`,
+    [orgId],
+  )
+  return row?.n ?? 0
+}
+
+export function setMemberRole(orgId: string, userId: string, role: string) {
+  return exec('UPDATE member SET role = $3 WHERE "organizationId" = $1 AND "userId" = $2',
+    [orgId, userId, role])
+}
+
+export function setMemberPermissions(orgId: string, userId: string, mask: number | null) {
+  return exec('UPDATE member SET permissions = $3 WHERE "organizationId" = $1 AND "userId" = $2',
+    [orgId, userId, mask])
+}
+
+export function removeMember(orgId: string, userId: string) {
+  return exec('DELETE FROM member WHERE "organizationId" = $1 AND "userId" = $2', [orgId, userId])
+}
+
+export interface MemberContext {
+  org: OrgRow
+  actor: Standing
+  target: OrgMember
+}
+
+// Every member route needs the same four answers, and getting any of them wrong
+// is a privilege bug rather than a 500.
+export async function memberContext(event: H3Event): Promise<MemberContext> {
+  const user = await requireCatalogRead(event)
+  if (!user) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+
+  const org = await orgBySlug(String(getRouterParam(event, 'slug') ?? ''))
+  if (!org) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+
+  const actor = await orgStanding(org.id, user)
+  if (!actor) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+
+  const userId = String(getRouterParam(event, 'userId') ?? '')
+  const target = (await orgMembers(org.id)).find(member => member.userId === userId)
+  if (!target) throw createError({ statusCode: 404, statusMessage: 'no such member' })
+
+  if (target.userId === user.id) {
+    throw createError({ statusCode: 409, statusMessage: 'use the leave endpoint for yourself' })
+  }
+
+  return { org, actor, target }
 }

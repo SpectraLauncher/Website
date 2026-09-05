@@ -16,7 +16,15 @@ const GATED_DIRS = [
   'server/api/v2',
 ]
 
-const GATES = ['requireCatalogWrite(event)', 'requireCatalogRead(event)', 'requireAdmin(event)']
+// memberContext is a guard of its own — it calls requireCatalogRead and then
+// resolves the actor's standing. It is accepted here only because the test
+// below pins that it really does call one.
+const GATES = [
+  'requireCatalogWrite(event)',
+  'requireCatalogRead(event)',
+  'requireAdmin(event)',
+  'memberContext(event)',
+]
 
 // A CORS preflight has no credentials to check, so it cannot call a user guard.
 // It still must not answer 204 to a route that is closed, because that confirms
@@ -62,5 +70,16 @@ describe('kazda trasa katalogu ma straznika', () => {
   // brama nie moze byc cachowana odpowiedzia.
   it.each(files)('%s nie cachuje odpowiedzi przed straznikiem', (file) => {
     expect(readFileSync(file, 'utf8')).not.toContain('defineCachedEventHandler')
+  })
+})
+
+describe('opakowania straznikow same wolaja straznika', () => {
+  it('memberContext wola requireCatalogRead', () => {
+    const source = readFileSync('server/utils/organization.ts', 'utf8')
+    const start = source.indexOf('export async function memberContext')
+    expect(start).toBeGreaterThan(-1)
+
+    const body = source.slice(start, start + 900)
+    expect(body).toContain('requireCatalogRead(event)')
   })
 })

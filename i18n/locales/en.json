@@ -2982,7 +2982,29 @@
       "acceptInvite": "Accept",
       "rejectInvite": "Decline",
       "openOrg": "Open the organization",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "role": "Role",
+      "editMember": "Edit member",
+      "removeMember": "Remove from organization",
+      "confirmRemove": "Remove {name} from this organization?",
+      "leave": "Leave organization",
+      "confirmLeave": "Leave this organization? You lose access to its projects.",
+      "ownerHasAll": "An owner always holds every permission.",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "member": "Member"
+      },
+      "permissions": {
+        "title": "Permissions",
+        "edit_details": "Edit organization details",
+        "manage_invites": "Invite people",
+        "remove_member": "Remove members",
+        "edit_member": "Edit member roles and permissions",
+        "add_project": "Add projects",
+        "remove_project": "Remove projects",
+        "delete_organization": "Delete the organization"
+      }
     },
     "warn": {
       "datapack": "This looks like a datapack, which the catalog does not carry yet.",

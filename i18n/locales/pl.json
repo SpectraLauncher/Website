@@ -2982,7 +2982,29 @@
       "acceptInvite": "Przyjmij",
       "rejectInvite": "Odrzuć",
       "openOrg": "Otwórz organizację",
-      "signIn": "Zaloguj się"
+      "signIn": "Zaloguj się",
+      "role": "Rola",
+      "editMember": "Edytuj członka",
+      "removeMember": "Usuń z organizacji",
+      "confirmRemove": "Usunąć {name} z tej organizacji?",
+      "leave": "Opuść organizację",
+      "confirmLeave": "Opuścić tę organizację? Stracisz dostęp do jej projektów.",
+      "ownerHasAll": "Właściciel zawsze ma wszystkie uprawnienia.",
+      "roles": {
+        "owner": "Właściciel",
+        "admin": "Administrator",
+        "member": "Członek"
+      },
+      "permissions": {
+        "title": "Uprawnienia",
+        "edit_details": "Edycja danych organizacji",
+        "manage_invites": "Zapraszanie osób",
+        "remove_member": "Usuwanie członków",
+        "edit_member": "Edycja ról i uprawnień członków",
+        "add_project": "Dodawanie projektów",
+        "remove_project": "Usuwanie projektów",
+        "delete_organization": "Usunięcie organizacji"
+      }
     },
     "warn": {
       "datapack": "To wygląda na datapack, którego katalog jeszcze nie obsługuje.",

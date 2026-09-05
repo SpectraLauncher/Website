@@ -5,9 +5,10 @@ export default defineEventHandler(async (event) => {
   const org = await orgBySlug(String(getRouterParam(event, 'slug') ?? ''))
   if (!org) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
 
-  const role = await isOrgMember(org.id, user.id)
-  if (role !== 'owner' && role !== 'admin') {
-    throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+  const actor = await orgStanding(org.id, user)
+  if (!actor) throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+  if (!has(actor.mask, 'manage_invites')) {
+    throw createError({ statusCode: 403, statusMessage: 'you cannot invite here' })
   }
 
   rateLimit(event, { key: `org-invite:${user.id}`, limit: 10, windowMs: 60_000 })
@@ -23,6 +24,9 @@ export default defineEventHandler(async (event) => {
   if (!email) return { ok: true }
 
   const invited = body.role === 'admin' ? 'admin' : 'member'
+  if (rankOf(invited) > actor.rank) {
+    throw createError({ statusCode: 403, statusMessage: 'you cannot invite above your own role' })
+  }
 
   await useAuth().api.createInvitation({
     body: { email, role: invited, organizationId: org.id },
