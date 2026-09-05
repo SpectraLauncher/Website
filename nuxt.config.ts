@@ -8,19 +8,24 @@ const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 // They are never prerendered, which is what keeps them out of llms.txt and the
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
 const CATALOG_PATHS = [
-  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project',
-  '/verification', '/seller', '/library',
-  '/projects', '/organizations', '/analytics', '/revenue', '/collections', '/settings'
+  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project'
+]
+
+// One person's own pages. These never belong in a sitemap, whatever the catalog
+// flag says, so they are listed apart from the paths that open with it.
+const ACCOUNT_PATHS = [
+  '/account', '/settings', '/notifications', '/library', '/collections',
+  '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller'
 ]
 
 const PRIVATE_PATHS = [
   '/admin',
-  '/account',
   '/login',
   '/reset-password',
   '/secret',
   '/launcher/auth',
   '/s/',
+  ...ACCOUNT_PATHS,
   ...(CATALOG_PUBLIC ? [] : CATALOG_PATHS)
 ]
 

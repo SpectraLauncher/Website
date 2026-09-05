@@ -18,7 +18,13 @@ interface PublicUser {
 }
 
 interface Profile {
-  user: PublicUser & { createdAt: string, mcUsername: string | null, mcUuid: string | null }
+  user: PublicUser & {
+    createdAt: string
+    mcUsername: string | null
+    mcUuid: string | null
+    bio: string | null
+    links: Record<string, string> | null
+  }
   friends: Array<PublicUser & { friendshipId: number, status: Status }>
   visibility: 'public' | 'mutual'
   isOwner: boolean
@@ -49,6 +55,11 @@ const { data, error } = await useFetch<Profile>(() => `/api/u/${encodeURICompone
 
 const label = (u: PublicUser) => u.username || u.name || '—'
 const mc = computed(() => data.value?.user.mcUsername ?? '')
+
+const profileLinks = computed(() =>
+  LINK_KINDS
+    .filter(kind => data.value?.user.links?.[kind])
+    .map(kind => ({ kind, url: data.value!.user.links![kind]! })))
 
 const joined = computed(() => {
   const raw = data.value?.user.createdAt
@@ -322,6 +333,27 @@ useSchemaOrg(computed(() => (data.value
             <div class="min-w-0 flex-1 pb-6">
               <h1 class="mb-2 truncate text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">{{ data.user.name || label(data.user) }}</h1>
               <p class="mb-4 font-mono text-muted">@{{ data.user.username }}</p>
+
+              <p v-if="data.user.bio" class="mb-4 max-w-prose whitespace-pre-wrap text-sm text-muted">
+                {{ data.user.bio }}
+              </p>
+
+              <div v-if="profileLinks.length" class="mb-4 flex flex-wrap gap-2">
+                <UButton
+                  v-for="link in profileLinks"
+                  :key="link.kind"
+                  :to="link.url"
+                  :icon="LINK_ICONS[link.kind]"
+                  :label="t(`links.${link.kind}`)"
+                  size="xs"
+                  variant="soft"
+                  color="neutral"
+                  class="rounded-lg"
+                  target="_blank"
+                  rel="nofollow ugc noopener noreferrer"
+                  external
+                />
+              </div>
 
               <div class="mb-1 flex items-center gap-1">
                 <UButton

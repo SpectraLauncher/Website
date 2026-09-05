@@ -106,3 +106,24 @@ describe('statusy: widoczny z linku to nie to samo co widoczny na liscie', () =>
     }
   })
 })
+
+// Strony jednego konta nie sa czescia katalogu i nie otwieraja sie razem z nim.
+// Wczesniej /settings siedzialo w CATALOG_PATHS, wiec zdjecie flagi wpusciloby
+// je do sitemapy.
+describe('strony konta sa prywatne niezaleznie od flagi', () => {
+  const accountPaths = arrayLiteral(nuxtConfig, 'ACCOUNT_PATHS')
+
+  it.each(['/settings', '/notifications', '/library', '/projects', '/organizations',
+    '/analytics', '/revenue', '/collections', '/account'])('%s jest w ACCOUNT_PATHS', (path) => {
+    expect(accountPaths).toContain(path)
+  })
+
+  it('ACCOUNT_PATHS wchodza do PRIVATE_PATHS bezwarunkowo', () => {
+    expect(nuxtConfig).toContain('...ACCOUNT_PATHS,')
+  })
+
+  it('zadna sciezka konta nie zalezy od CATALOG_PUBLIC', () => {
+    const catalogPaths = arrayLiteral(nuxtConfig, 'CATALOG_PATHS')
+    for (const path of accountPaths) expect(catalogPaths, path).not.toContain(path)
+  })
+})
