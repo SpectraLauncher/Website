@@ -223,13 +223,37 @@ async function loadGameVersions() {
   } catch { gameVersions.value = [] }
 }
 
+function withAllLinks(project: FullProject): FullProject {
+  const links: Record<string, string> = {}
+  for (const kind of LINK_KINDS) links[kind] = project.links?.[kind] ?? ''
+  return { ...project, links }
+}
+
+const decisionNote = ref('')
+
+async function moderate(decision: 'approve' | 'reject' | 'remove') {
+  if (!selected.value) return
+  busy.value = decision
+  error.value = ''
+  try {
+    const res = await $fetch<{ project: FullProject }>(
+      `/api/admin/catalog/projects/${selected.value.id}/moderate`,
+      { method: 'POST', body: { decision, body: decisionNote.value } },
+    )
+    selected.value = { ...withAllLinks(res.project), versions: selected.value.versions }
+    decisionNote.value = ''
+    announce(t('catalog.admin.saved'))
+    await loadProjects()
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
 async function open(id: string) {
   busy.value = 'open'
   error.value = ''
   try {
     const res = await $fetch<{ project: FullProject, gallery: GalleryImage[] }>(
       `/api/admin/catalog/projects/${id}`)
-    selected.value = res.project
+    selected.value = withAllLinks(res.project)
     gallery.value = res.gallery ?? []
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
@@ -249,7 +273,7 @@ async function create() {
         authorship: true,
       },
     })
-    selected.value = res.project
+    selected.value = withAllLinks(res.project)
     creating.value = false
     draft.title = ''
     draft.slug = ''
@@ -281,11 +305,10 @@ async function save() {
         orgId: p.orgId ?? '',
         price: Math.round(Number(p.price) || 0),
         currency: p.currency || 'eur',
-        categories: p.categories,
         environment: p.environment,
       },
     })
-    selected.value = { ...res.project, versions: p.versions }
+    selected.value = { ...withAllLinks(res.project), versions: p.versions }
     announce(t('catalog.admin.saved'))
     await loadProjects()
   } catch (e) { fail(e) } finally { busy.value = '' }
@@ -734,9 +757,74 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 :description="saleNote"
               />
 
+              <div class="mt-6">
+                <h3 class="mb-1 text-sm font-semibold">{{ t('catalog.links') }}</h3>
+                <p class="mb-3 text-xs text-dimmed">{{ t('catalog.admin.linksHint') }}</p>
+                <div class="grid gap-2 sm:grid-cols-2">
+                  <UInput
+                    v-for="kind in LINK_KINDS"
+                    :key="kind"
+                    v-model="selected.links[kind]"
+                    :icon="LINK_ICONS[kind]"
+                    type="url"
+                    :placeholder="t(`links.${kind}`)"
+                  />
+                </div>
+              </div>
+
               <p class="mt-3 text-xs text-dimmed">
                 {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
               </p>
+            </div>
+
+            <div
+              v-if="selected"
+              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+            >
+              <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
+              <p class="mb-4 text-xs text-dimmed">{{ t('catalog.admin.moderationHint') }}</p>
+
+              <UTextarea
+                v-model="decisionNote"
+                :rows="3"
+                :maxlength="4000"
+                :placeholder="t('catalog.staffReplyPlaceholder')"
+                class="w-full"
+              />
+
+              <div class="mt-3 flex flex-wrap gap-2">
+                <UButton
+                  color="success"
+                  variant="soft"
+                  class="rounded-xl"
+                  icon="i-lucide-badge-check"
+                  :loading="busy === 'approve'"
+                  :label="t('catalog.admin.approve')"
+                  @click="moderate('approve')"
+                />
+                <UButton
+                  color="error"
+                  variant="soft"
+                  class="rounded-xl"
+                  icon="i-lucide-circle-x"
+                  :disabled="!decisionNote.trim()"
+                  :loading="busy === 'reject'"
+                  :label="t('catalog.admin.reject')"
+                  @click="moderate('reject')"
+                />
+                <UButton
+                  color="error"
+                  variant="soft"
+                  class="rounded-xl"
+                  icon="i-lucide-trash-2"
+                  :disabled="!decisionNote.trim()"
+                  :loading="busy === 'remove'"
+                  :label="t('catalog.admin.remove')"
+                  @click="moderate('remove')"
+                />
+              </div>
+
+              <ProjectModeration :key="selected.slug" :slug="selected.slug" />
             </div>
 
             <div

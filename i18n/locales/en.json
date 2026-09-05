@@ -3058,7 +3058,12 @@
       "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free.",
       "imageTitle": "Caption",
       "featured": "Featured",
-      "addImage": "Add an image"
+      "addImage": "Add an image",
+      "linksHint": "Only http and https addresses are stored. Empty removes the link.",
+      "moderationHint": "A rejection or removal needs a message — it is what the author reads and appeals against.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "remove": "Remove"
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",
@@ -3187,6 +3192,30 @@
     "plugins": {
       "title": "Plugins",
       "sub": "Server-side plugins for Bukkit, Spigot, Paper, Purpur, Folia, Sponge and the proxies. The platform is read from the plugin descriptor, not from a form."
+    },
+    "comments": "Comments",
+    "comment": "Post",
+    "commentPlaceholder": "Share what you think about this project",
+    "signInToComment": "Sign in to comment",
+    "noComments": "No comments yet.",
+    "deleteComment": "Delete comment",
+    "hidden": "Hidden",
+    "reply": "Reply",
+    "cancel": "Cancel",
+    "moderation": "Moderation",
+    "appeal": "Appeal",
+    "appealHint": "Fix what the message below asks for, then reply here to have the decision reviewed again.",
+    "appealPlaceholder": "Explain what you changed",
+    "staffReplyPlaceholder": "Message to the author",
+    "staff": "Staff",
+    "deletedUser": "Deleted account",
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "unlisted": "Unlisted",
+      "archived": "Archived",
+      "rejected": "Rejected",
+      "removed": "Removed"
     }
   },
   "verification": {
@@ -3264,5 +3293,21 @@
     "x": "X",
     "mastodon": "Mastodon",
     "bluesky": "Bluesky"
+  },
+  "notifications": {
+    "empty": "Nothing here yet.",
+    "markAll": "Mark all read",
+    "dismiss": "Dismiss",
+    "someone": "Someone",
+    "friend_request": "{actor} sent you a friend request",
+    "friend_accepted": "{actor} accepted your friend request",
+    "instance_invite": "{actor} shared a modpack with you",
+    "instance_update": "{actor} updated a modpack you use",
+    "project_approved": "{project} was approved and is now public",
+    "project_rejected": "{project} was rejected by moderation",
+    "project_removed": "{project} was removed by moderation",
+    "project_message": "New moderation message about {project}",
+    "project_comment": "{actor} commented on {project}",
+    "comment_reply": "{actor} replied to your comment"
   }
 }

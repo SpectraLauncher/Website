@@ -67,6 +67,9 @@ const localePath = useLocalePath()
 
 const body = computed(() => renderMarkdown(props.project.description))
 
+const linkIcon = (name: string) => LINK_ICONS[name as LinkKind] ?? 'i-lucide-external-link'
+const linkLabel = (name: string) => (isLinkKind(name) ? t(`links.${name}`) : name)
+
 const buying = ref(false)
 const buyProblem = ref('')
 
@@ -316,13 +319,16 @@ const sizeLabel = (bytes: number) =>
                 rel="nofollow ugc noopener noreferrer"
                 class="inline-flex items-center gap-1.5 text-primary hover:underline"
               >
-                <UIcon name="i-lucide-external-link" class="size-3.5" />
-                {{ name }}
+                <UIcon :name="linkIcon(name)" class="size-3.5" />
+                {{ linkLabel(name) }}
               </a>
             </li>
           </ul>
         </div>
       </aside>
     </div>
+
+    <ProjectModeration :slug="project.slug" />
+    <ProjectComments :slug="project.slug" />
   </section>
 </template>

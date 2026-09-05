@@ -36,6 +36,12 @@ onMounted(() => {
 
 const catalogOpen = computed(() => useRuntimeConfig().public.catalogPublic === true)
 
+const { unread, refresh: refreshNotifications } = useNotifications()
+
+watch(me, (user) => {
+    if (user) refreshNotifications()
+}, { immediate: true })
+
 const discover: NavigationMenuItem = {
     label: 'nav.discover',
     children: [
@@ -76,7 +82,7 @@ const accountMenu = computed(() => {
 
     const account = [
         { label: t('nav.account.profile'), icon: 'i-lucide-user', to: localePath(`/u/${user.username}`) },
-        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/settings?tab=friends') },
+        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/notifications') },
         { label: t('nav.account.settings'), icon: 'i-lucide-settings', to: localePath('/settings') },
     ]
 
@@ -146,6 +152,22 @@ defineExpose({ items })
                         :ui="{ base: 'rounded-xl cursor-pointer' }"
                         class="w-32"
                     />
+                    <UChip
+                        v-if="me"
+                        :show="unread > 0"
+                        :text="unread > 99 ? '99+' : unread"
+                        size="xl"
+                        color="primary"
+                    >
+                        <UButton
+                            :to="localePath('/notifications')"
+                            icon="i-lucide-bell"
+                            variant="ghost"
+                            color="neutral"
+                            :aria-label="t('nav.account.notifications')"
+                            class="rounded-xl cursor-pointer"
+                        />
+                    </UChip>
                     <UDropdownMenu
                         v-if="me"
                         :items="accountMenu"

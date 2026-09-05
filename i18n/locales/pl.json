@@ -3058,7 +3058,12 @@
       "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym.",
       "imageTitle": "Podpis",
       "featured": "Wyróżniony",
-      "addImage": "Dodaj obraz"
+      "addImage": "Dodaj obraz",
+      "linksHint": "Zapisywane są tylko adresy http i https. Puste pole usuwa link.",
+      "moderationHint": "Odrzucenie i usunięcie wymaga wiadomości — to ją czyta autor i od niej się odwołuje.",
+      "approve": "Zaakceptuj",
+      "reject": "Odrzuć",
+      "remove": "Usuń"
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",
@@ -3187,6 +3192,30 @@
     "plugins": {
       "title": "Pluginy",
       "sub": "Pluginy serwerowe pod Bukkit, Spigot, Paper, Purpur, Folia, Sponge i proxy. Platforma jest czytana z deskryptora pluginu, a nie z formularza."
+    },
+    "comments": "Komentarze",
+    "comment": "Wyślij",
+    "commentPlaceholder": "Napisz, co sądzisz o tym projekcie",
+    "signInToComment": "Zaloguj się, aby komentować",
+    "noComments": "Brak komentarzy.",
+    "deleteComment": "Usuń komentarz",
+    "hidden": "Ukryty",
+    "reply": "Odpowiedz",
+    "cancel": "Anuluj",
+    "moderation": "Moderacja",
+    "appeal": "Odwołaj się",
+    "appealHint": "Popraw to, o co prosi wiadomość poniżej, a potem odpisz tutaj, aby decyzja została rozpatrzona ponownie.",
+    "appealPlaceholder": "Wyjaśnij, co zmieniłeś",
+    "staffReplyPlaceholder": "Wiadomość do autora",
+    "staff": "Moderacja",
+    "deletedUser": "Usunięte konto",
+    "status": {
+      "draft": "Szkic",
+      "published": "Opublikowany",
+      "unlisted": "Niepubliczny",
+      "archived": "Zarchiwizowany",
+      "rejected": "Odrzucony",
+      "removed": "Usunięty"
     }
   },
   "verification": {
@@ -3264,5 +3293,21 @@
     "x": "X",
     "mastodon": "Mastodon",
     "bluesky": "Bluesky"
+  },
+  "notifications": {
+    "empty": "Nic tu jeszcze nie ma.",
+    "markAll": "Oznacz wszystkie",
+    "dismiss": "Odrzuć",
+    "someone": "Ktoś",
+    "friend_request": "{actor} wysłał ci zaproszenie do znajomych",
+    "friend_accepted": "{actor} przyjął twoje zaproszenie",
+    "instance_invite": "{actor} udostępnił ci modpack",
+    "instance_update": "{actor} zaktualizował modpack, którego używasz",
+    "project_approved": "{project} został zaakceptowany i jest publiczny",
+    "project_rejected": "{project} został odrzucony przez moderację",
+    "project_removed": "{project} został usunięty przez moderację",
+    "project_message": "Nowa wiadomość moderacji o {project}",
+    "project_comment": "{actor} skomentował {project}",
+    "comment_reply": "{actor} odpowiedział na twój komentarz"
   }
 }
