@@ -76,7 +76,7 @@ const accountMenu = computed(() => {
 
     const account = [
         { label: t('nav.account.profile'), icon: 'i-lucide-user', to: localePath(`/u/${user.username}`) },
-        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/account?tab=notifications') },
+        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/settings?tab=friends') },
         { label: t('nav.account.settings'), icon: 'i-lucide-settings', to: localePath('/settings') },
     ]
 
@@ -84,8 +84,7 @@ const accountMenu = computed(() => {
         ? [
             { label: t('nav.account.projects'), icon: 'i-lucide-package', to: localePath('/projects') },
             { label: t('nav.account.organizations'), icon: 'i-lucide-users', to: localePath('/organizations') },
-            { label: t('nav.account.collections'), icon: 'i-lucide-bookmark', to: localePath('/collections') },
-            { label: t('nav.account.analytics'), icon: 'i-lucide-chart-line', to: localePath('/analytics') },
+                { label: t('nav.account.analytics'), icon: 'i-lucide-chart-line', to: localePath('/analytics') },
             { label: t('nav.account.revenue'), icon: 'i-lucide-wallet', to: localePath('/revenue') },
             { label: t('nav.account.library'), icon: 'i-lucide-library', to: localePath('/library') },
         ]
