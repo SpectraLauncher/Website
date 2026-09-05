@@ -3510,7 +3510,8 @@
       "entry_unreadable": "Nieczytelny wpis",
       "unreadable": "Nieczytelne archiwum",
       "missing": "Brak zapisanego obiektu"
-    }
+    },
+    "scanAll": "Przeskanuj {n} niesprawdzonych"
   },
   "ledger": {
     "title": "Księga",

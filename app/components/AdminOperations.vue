@@ -60,6 +60,9 @@ const act = async (key: string, run: () => Promise<unknown>) => {
 const rescan = (id: string) =>
   act('scan:' + id, () => $fetch(`/api/admin/catalog/scans/${id}`, { method: 'POST' }))
 
+const scanAll = () =>
+  act('scanAll', () => $fetch('/api/admin/catalog/scans', { method: 'POST' }))
+
 const sweep = () =>
   act('sweep', () => $fetch('/api/admin/catalog/images', { method: 'POST' }))
 
@@ -105,6 +108,16 @@ const megabytes = (bytes: number) => (bytes / 1024 / 1024).toFixed(1)
         :loading="busy === 'load'"
         :label="t('catalog.admin.refresh')"
         @click="load"
+      />
+      <UButton
+        v-if="scans?.unscanned"
+        size="sm"
+        variant="subtle"
+        color="warning"
+        icon="i-lucide-scan-search"
+        :loading="busy === 'scanAll'"
+        :label="t('ops.scanAll', { n: scans.unscanned })"
+        @click="scanAll"
       />
       <UButton
         size="sm"

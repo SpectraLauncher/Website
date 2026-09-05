@@ -103,3 +103,17 @@ export async function blockingScanIssues(projectId: string): Promise<number> {
 }
 
 export { worstSeverity }
+
+// Files that predate scanning. Nothing enqueues them on its own, so without a
+// backfill an existing catalog sits at "never looked at" forever — and that
+// state blocks publishing, which would make the first moderation action after
+// the deploy fail for no visible reason.
+export async function queueUnscanned(limit = 500): Promise<number> {
+  const rows = await q<{ id: string }>(
+    'SELECT id FROM version_file WHERE scan_verdict IS NULL LIMIT $1',
+    [limit],
+  )
+
+  for (const row of rows) await queueScan(row.id)
+  return rows.length
+}

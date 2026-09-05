@@ -98,8 +98,12 @@ export function limitFor(path: string, method: string): { name: string, limit: n
   // authenticated endpoint is still an unlimited endpoint.
   if (path.startsWith('/api/org/')) return { name: 'org', limit: 60 }
   if (path.startsWith('/api/me/')) return { name: 'me', limit: 60 }
+  // The launcher polls this every 30 seconds, so one signed-in person costs two
+  // requests a minute. The budget is per address, and a whole dorm or an ISP
+  // doing carrier-grade NAT arrives as one address — hence room for a few
+  // hundred of them rather than the sixty a tighter number would allow.
   if (path === '/api/notifications' || path.startsWith('/api/notifications/')) {
-    return { name: 'notifications', limit: 120 }
+    return { name: 'notifications', limit: 900 }
   }
 
   if (path === '/api/telemetry') return { name: 'telemetry', limit: 30 }

@@ -3510,7 +3510,8 @@
       "entry_unreadable": "Unreadable entry",
       "unreadable": "Unreadable archive",
       "missing": "Stored object missing"
-    }
+    },
+    "scanAll": "Scan {n} unscanned"
   },
   "ledger": {
     "title": "Ledger",
