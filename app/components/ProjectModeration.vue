@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BadgeProps } from '@nuxt/ui'
+
 interface ThreadAuthor {
   id: string
   name: string | null
@@ -64,7 +66,7 @@ async function send() {
   }
 }
 
-const STATUS_COLOR: Record<string, string> = {
+const STATUS_COLOR: Record<string, BadgeProps['color']> = {
   published: 'success',
   rejected: 'error',
   removed: 'error',
@@ -109,7 +111,7 @@ async function submit() {
       <UIcon name="i-lucide-gavel" class="size-5 text-muted" />
       <h2 class="text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
       <UBadge
-        :color="(STATUS_COLOR[status] ?? 'neutral') as any"
+        :color="STATUS_COLOR[status] ?? 'neutral'"
         variant="subtle"
         :label="t(`catalog.status.${status}`)"
       />
@@ -134,7 +136,7 @@ async function submit() {
           <UBadge
             v-if="message.status"
             size="sm"
-            :color="(STATUS_COLOR[message.status] ?? 'neutral') as any"
+            :color="STATUS_COLOR[message.status] ?? 'neutral'"
             variant="subtle"
             :label="t(`catalog.status.${message.status}`)"
           />
