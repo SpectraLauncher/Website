@@ -10,5 +10,10 @@ export default defineEventHandler(async (event) => {
   const files = await filesForVersions(versions.map(v => v.id))
   const byVersion = groupFiles(files)
 
-  return { versions: versions.map(v => fullVersion(v, byVersion.get(v.id) ?? [])) }
+  return {
+    versions: await Promise.all(versions.map(async v => ({
+      ...fullVersion(v, byVersion.get(v.id) ?? []),
+      dependencies: await dependenciesOf(v.id),
+    }))),
+  }
 })

@@ -348,6 +348,7 @@ export async function deleteProject(id: string | number) {
 }
 
 export interface VersionInput {
+  packFiles?: unknown
   number?: unknown
   name?: unknown
   changelog?: unknown
@@ -384,6 +385,10 @@ export async function createVersion(
       newId(),
     ],
   )
+
+  if (Array.isArray(input.packFiles) && input.packFiles.length) {
+    await replaceDependencies(row!.id, input.packFiles as never)
+  }
 
   await refreshProjectFacets(projectId)
   return row!

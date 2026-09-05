@@ -2,7 +2,7 @@
 import { normalizeSlug } from './catalog-slug'
 import type { ProjectType } from './catalog-types'
 import { expandRange, minecraftVersions, releaseIds } from './game-versions'
-import { type ModInfo, readArchiveInfo } from './mod-manifest'
+import { type ModInfo, type PackFile, readArchiveInfo } from './mod-manifest'
 import { type SchematicInfo, parseSchematic, schematicGrid } from './schematic'
 import { previewDocument, previewKey, voxelize } from './schematic-voxels'
 import { storeDerived } from './content-store'
@@ -19,6 +19,7 @@ export interface UploadAnalysis {
   gameVersionRange: string | null
   gameVersions: string[]
   environment: string[]
+  packFiles: PackFile[]
   meta: Record<string, unknown>
   // Translation keys with parameters, not sentences — the client decides the
   // language, and the server has no idea which one that is.
@@ -38,6 +39,7 @@ function blank(): UploadAnalysis {
     gameVersionRange: null,
     gameVersions: [],
     environment: [],
+    packFiles: [],
     meta: {},
     warnings: [],
   }
@@ -65,6 +67,16 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
     // Quilt loads Fabric mods unchanged, so a Fabric jar is usable on both and
     // saying so is a fact about the loader, not a guess about the mod.
     if (info.loaders.includes('fabric')) out.loaders = ['fabric', 'quilt']
+  }
+
+  if (info.kind === 'modpack') {
+    out.detected = 'modpack'
+    out.loaders = info.loaders
+    out.meta = { fileCount: info.packFiles.length }
+    out.packFiles = info.packFiles
+    if (!info.packFiles.length) {
+      out.warnings.push({ code: 'catalog.warn.emptyModpack', params: {} })
+    }
   }
 
   if (info.kind === 'shader') {

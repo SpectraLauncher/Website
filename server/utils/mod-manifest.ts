@@ -3,7 +3,7 @@ import { type TomlTable, parseManifest, parseToml } from './toml'
 import { type Zip, openZip } from './zip'
 
 export type Loader = 'fabric' | 'quilt' | 'forge' | 'neoforge'
-export type PackKind = 'mod' | 'resourcepack' | 'shader' | 'datapack' | 'unknown'
+export type PackKind = 'mod' | 'modpack' | 'resourcepack' | 'shader' | 'datapack' | 'unknown'
 
 export interface ModInfo {
   kind: PackKind
@@ -24,6 +24,15 @@ export interface ModInfo {
   gameVersionRange: string | null
   packFormat: number | null
   shaderEngines: string[]
+  packFiles: PackFile[]
+}
+
+export interface PackFile {
+  path: string
+  size: number
+  hashes: { sha1: string, sha512: string }
+  downloads: string[]
+  env: { client?: string, server?: string } | null
 }
 
 function empty(kind: PackKind): ModInfo {
@@ -41,7 +50,57 @@ function empty(kind: PackKind): ModInfo {
     gameVersionRange: null,
     packFormat: null,
     shaderEngines: [],
+    packFiles: [],
   }
+}
+
+interface MrpackIndex {
+  formatVersion?: number
+  name?: string
+  summary?: string
+  versionId?: string
+  dependencies?: Record<string, string>
+  files?: Array<{
+    path?: string
+    fileSize?: number
+    hashes?: { sha1?: string, sha512?: string }
+    downloads?: string[]
+    env?: { client?: string, server?: string }
+  }>
+}
+
+// The loader is whichever loader key the index declares alongside minecraft.
+const MRPACK_LOADERS: Record<string, Loader> = {
+  'fabric-loader': 'fabric',
+  'quilt-loader': 'quilt',
+  'forge': 'forge',
+  'neoforge': 'neoforge',
+}
+
+function fromMrpack(index: MrpackIndex): ModInfo {
+  const info = empty('modpack')
+  const dependencies = index.dependencies ?? {}
+
+  info.name = str(index.name)
+  info.version = str(index.versionId)
+  info.description = str(index.summary)
+  info.gameVersionRange = str(dependencies.minecraft)
+
+  for (const [key, loader] of Object.entries(MRPACK_LOADERS)) {
+    if (dependencies[key]) info.loaders = [loader]
+  }
+
+  info.packFiles = (index.files ?? [])
+    .filter(file => typeof file.path === 'string' && file.hashes?.sha512)
+    .map(file => ({
+      path: file.path!,
+      size: Number(file.fileSize) || 0,
+      hashes: { sha1: String(file.hashes?.sha1 ?? ''), sha512: String(file.hashes!.sha512) },
+      downloads: (file.downloads ?? []).filter(url => typeof url === 'string'),
+      env: file.env ?? null,
+    }))
+
+  return info
 }
 
 const str = (v: unknown): string | null =>
@@ -170,6 +229,10 @@ function shaderEngines(zip: Zip): string[] {
 
 export function readArchiveInfo(body: Uint8Array): ModInfo {
   const zip = openZip(body)
+
+  if (zip.has('modrinth.index.json')) {
+    return fromMrpack(zip.readJson<MrpackIndex>('modrinth.index.json') ?? {})
+  }
 
   for (const { entry, loader } of MANIFESTS) {
     if (!zip.has(entry)) continue

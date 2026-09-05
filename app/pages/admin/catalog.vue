@@ -408,6 +408,7 @@ async function addVersion() {
           gameVersions: versionDraft.gameVersions,
           loaders: versionDraft.loaders,
           meta: analysis.value?.meta ?? {},
+          packFiles: analysis.value?.packFiles ?? [],
         },
       })
 

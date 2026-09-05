@@ -2944,7 +2944,8 @@
       "unknownLegacyIds": "Nie udało się nazwać {n} starych ID bloków, więc lista materiałów jest niepełna.",
       "unreadable": "Nie udało się odczytać {filename}: {reason}",
       "previewTruncated": "Budowla jest na tyle duża, że podgląd 3D pokazuje tylko jej część.",
-      "noPreview": "Brak podglądu 3D: {reason}"
+      "noPreview": "Brak podglądu 3D: {reason}",
+      "emptyModpack": "Ten modpack nie wymienia żadnych plików, więc nic by się nie zainstalowało."
     },
     "sale": {
       "unknownLicense": "Nie zapisano tu licencji, więc nic nie powie Ci, czy wolno to sprzedawać. Upewnij się, że masz prawa.",

@@ -2944,7 +2944,8 @@
       "unknownLegacyIds": "{n} legacy block id(s) could not be named, so the material list is incomplete.",
       "unreadable": "Could not read {filename}: {reason}",
       "previewTruncated": "The build is large enough that the 3D preview shows only part of it.",
-      "noPreview": "No 3D preview: {reason}"
+      "noPreview": "No 3D preview: {reason}",
+      "emptyModpack": "This modpack lists no files, so nothing would be installed."
     },
     "sale": {
       "unknownLicense": "No licence is recorded here, so nothing can tell you whether selling this is allowed. Make sure you hold the rights.",
