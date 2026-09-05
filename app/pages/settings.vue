@@ -39,6 +39,7 @@ const TABS = [
   { id: 'profile', icon: 'i-lucide-user-round', label: 'account.profile' },
   { id: 'security', icon: 'i-lucide-shield-check', label: 'account.security' },
   { id: 'privacy', icon: 'i-lucide-eye-off', label: 'account.privacy' },
+  { id: 'blocks', icon: 'i-lucide-user-x', label: 'account.blocks' },
   { id: 'connected', icon: 'i-lucide-link', label: 'account.connected' },
   { id: 'notifications', icon: 'i-lucide-bell', label: 'nav.account.notifications' },
   { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
@@ -201,6 +202,45 @@ const removePasskey = (id: string) => run('passkey:' + id, async () => {
   notice.value = t('account.passkeyRemoved')
 })
 
+const blocked = ref<Array<{ id: string, username: string | null, name: string | null, image: string | null }>>([])
+const blocksLoaded = ref(false)
+const blockName = ref('')
+
+async function loadBlocks() {
+  const res = await $fetch<{ blocked: typeof blocked.value }>('/api/me/blocks')
+  blocked.value = res.blocked
+  blocksLoaded.value = true
+}
+
+const addBlock = () => run('block', async () => {
+  await $fetch('/api/me/blocks', { method: 'POST', body: { username: blockName.value.trim() } })
+  blockName.value = ''
+  await loadBlocks()
+})
+
+const removeBlock = (id: string) => run('block:' + id, async () => {
+  await $fetch(`/api/me/blocks/${id}`, { method: 'DELETE' })
+  await loadBlocks()
+})
+
+// Closing is previewed before it happens: an action with no undo that the
+// person cannot see the shape of is one they cannot agree to.
+const closure = ref<{
+  blockers: Array<{ code: string, detail: string }>
+  footprint: Record<string, number>
+} | null>(null)
+
+const closeConfirm = ref('')
+
+async function loadClosure() {
+  closure.value = await $fetch('/api/me/close')
+}
+
+const closeAccount = () => run('close', async () => {
+  await $fetch('/api/me/close', { method: 'POST', body: { confirm: closeConfirm.value } })
+  await navigateTo(localePath('/'))
+})
+
 const tokens = ref<Array<{
   id: string
   name: string
@@ -307,6 +347,8 @@ watch(tab, (value) => {
   if (value === 'security') loadPasskeys()
   if (value === 'notifications' && !prefsLoaded.value) loadPrefs()
   if (value === 'tokens' && !tokensLoaded.value) loadTokens()
+  if (value === 'blocks' && !blocksLoaded.value) loadBlocks()
+  if (value === 'privacy' && !closure.value) loadClosure()
 }, { immediate: true })
 
 const currentToken = computed(() => (session.value.data?.session as any)?.token ?? '')
@@ -866,6 +908,56 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   </button>
                 </div>
               </div>
+
+              <div class="mt-10 max-w-md rounded-2xl border border-error/40 bg-error/5 p-5">
+                <h3 class="mb-1 text-sm font-semibold">{{ t('account.close') }}</h3>
+                <p class="mb-4 text-xs text-muted">{{ t('account.closeHint') }}</p>
+
+                <div v-if="closure" class="space-y-4">
+                  <UAlert
+                    v-if="closure.blockers.length"
+                    color="warning"
+                    variant="subtle"
+                    :title="t('account.closeBlocked')"
+                  >
+                    <template #description>
+                      <ul class="mt-1 list-inside list-disc text-xs">
+                        <li v-for="blocker in closure.blockers" :key="blocker.code + blocker.detail">
+                          {{ t(`account.closeBlockers.${blocker.code}`, { detail: blocker.detail }) }}
+                        </li>
+                      </ul>
+                    </template>
+                  </UAlert>
+
+                  <template v-else>
+                    <p class="text-xs text-muted">
+                      {{ t('account.closeFootprint', {
+                        projects: closure.footprint.projects,
+                        collections: closure.footprint.collections,
+                        comments: closure.footprint.comments,
+                      }) }}
+                    </p>
+
+                    <UInput
+                      v-model="closeConfirm"
+                      size="lg"
+                      class="w-full"
+                      :placeholder="t('account.closeConfirm', { username: user?.username })"
+                    />
+
+                    <UButton
+                      color="error"
+                      size="lg"
+                      class="rounded-xl"
+                      icon="i-lucide-trash-2"
+                      :disabled="closeConfirm.trim().toLowerCase() !== (user?.username ?? '').toLowerCase()"
+                      :loading="busy === 'close'"
+                      :label="t('account.close')"
+                      @click="closeAccount"
+                    />
+                  </template>
+                </div>
+              </div>
             </template>
 
             <template v-else-if="tab === 'notifications'">
@@ -931,6 +1023,59 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :label="t('account.save')"
                   @click="saveLocale"
                 />
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'blocks'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.blocks') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('account.blocksHint') }}</p>
+
+              <div class="max-w-md space-y-4">
+                <div class="flex flex-wrap gap-2">
+                  <UInput
+                    v-model="blockName"
+                    size="lg"
+                    class="min-w-0 flex-1"
+                    icon="i-lucide-at-sign"
+                    :placeholder="t('auth.username')"
+                    @keyup.enter="addBlock"
+                  />
+                  <UButton
+                    color="neutral"
+                    size="lg"
+                    class="rounded-xl"
+                    :disabled="!blockName.trim()"
+                    :loading="busy === 'block'"
+                    :label="t('account.block')"
+                    @click="addBlock"
+                  />
+                </div>
+
+                <ul v-if="blocked.length" class="space-y-2">
+                  <li
+                    v-for="person in blocked"
+                    :key="person.id"
+                    class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                  >
+                    <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+                      <img v-if="person.image" :src="person.image" alt="" class="size-full object-cover">
+                      <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
+                    </span>
+                    <span class="min-w-0 flex-1 truncate text-sm">
+                      {{ person.username || person.name }}
+                    </span>
+                    <UButton
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
+                      :loading="busy === 'block:' + person.id"
+                      :label="t('account.unblock')"
+                      @click="removeBlock(person.id)"
+                    />
+                  </li>
+                </ul>
+
+                <p v-else-if="blocksLoaded" class="text-sm text-dimmed">{{ t('account.noBlocks') }}</p>
               </div>
             </template>
 

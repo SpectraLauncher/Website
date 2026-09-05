@@ -2528,6 +2528,20 @@
       "projects": "Moderation decisions and messages about projects you own.",
       "comments": "Comments on your projects and replies to yours.",
       "moderation": "Reports you filed, and — for moderators — reports waiting in the queue."
+    },
+    "blocks": "Blocked",
+    "blocksHint": "Blocked people cannot reach you, and you do not see what they write. They are never told.",
+    "block": "Block",
+    "unblock": "Unblock",
+    "noBlocks": "Nobody is blocked.",
+    "close": "Delete account",
+    "closeHint": "This cannot be undone. Your projects, collections and comments go with it.",
+    "closeBlocked": "Something has to be settled first",
+    "closeConfirm": "Type {username} to confirm",
+    "closeFootprint": "This removes {projects} project(s), {collections} collection(s) and {comments} comment(s).",
+    "closeBlockers": {
+      "sole_owner": "You are the only owner of {detail} — hand it over or delete it first.",
+      "has_sales": "{detail} completed sale(s) have to stay attributable."
     }
   },
   "friends": {
@@ -3472,6 +3486,52 @@
       "collections:write": "Edit collections",
       "analytics:read": "Read analytics",
       "payouts:read": "Read payouts"
+    }
+  },
+  "ops": {
+    "title": "Operations",
+    "unscanned": "Files not scanned",
+    "orphaned": "Orphaned images",
+    "tracked": "tracked",
+    "jobs": "Jobs waiting",
+    "failed": "{n} failed",
+    "sweep": "Sweep orphans",
+    "retry": "Retry failed jobs",
+    "flagged": "Flagged files",
+    "rescan": "Scan again",
+    "findings": {
+      "path_traversal": "Path traversal",
+      "executable_entry": "Executable inside",
+      "disguised_executable": "Disguised executable",
+      "nested_archive": "Nested archive",
+      "compression_bomb": "Compression bomb",
+      "suspicious_host": "Suspicious host",
+      "known_marker": "Known malware marker",
+      "entry_unreadable": "Unreadable entry",
+      "unreadable": "Unreadable archive",
+      "missing": "Stored object missing"
+    }
+  },
+  "ledger": {
+    "title": "Ledger",
+    "available": "Available",
+    "request": "Request payout",
+    "summary": "Earned {earned}, commission {commission}, paid out {paidOut}",
+    "minimum": "Minimum payout is {amount}",
+    "empty": "Nothing in the ledger yet.",
+    "kinds": {
+      "sale": "Sale",
+      "commission": "Commission",
+      "refund": "Refund",
+      "payout": "Payout",
+      "adjustment": "Adjustment"
+    },
+    "statuses": {
+      "requested": "Requested",
+      "processing": "Processing",
+      "paid": "Paid",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
     }
   }
 }

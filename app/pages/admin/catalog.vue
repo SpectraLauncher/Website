@@ -724,6 +724,11 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
         </div>
 
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+          <h2 class="mb-4 text-lg font-semibold">{{ t('ops.title') }}</h2>
+          <AdminOperations />
+        </div>
+
+        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="mb-4 flex flex-wrap items-center gap-3">
             <UIcon name="i-lucide-inbox" class="size-5 text-muted" />
             <h2 class="text-lg font-semibold">{{ t('catalog.admin.queue') }}</h2>

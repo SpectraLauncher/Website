@@ -2528,6 +2528,20 @@
       "projects": "Decyzje moderacji i wiadomości o twoich projektach.",
       "comments": "Komentarze pod twoimi projektami i odpowiedzi na twoje.",
       "moderation": "Twoje zgłoszenia, a dla moderatorów — zgłoszenia czekające w kolejce."
+    },
+    "blocks": "Zablokowani",
+    "blocksHint": "Zablokowani nie mogą się z tobą kontaktować, a ty nie widzisz tego, co piszą. Nie dowiadują się o blokadzie.",
+    "block": "Zablokuj",
+    "unblock": "Odblokuj",
+    "noBlocks": "Nikogo nie zablokowałeś.",
+    "close": "Usuń konto",
+    "closeHint": "Tego nie da się cofnąć. Twoje projekty, kolekcje i komentarze znikną razem z nim.",
+    "closeBlocked": "Najpierw trzeba coś uporządkować",
+    "closeConfirm": "Wpisz {username}, aby potwierdzić",
+    "closeFootprint": "Usunie to {projects} projekt(y), {collections} kolekcji i {comments} komentarz(y).",
+    "closeBlockers": {
+      "sole_owner": "Jesteś jedynym właścicielem {detail} — przekaż ją albo usuń.",
+      "has_sales": "{detail} zakończona sprzedaż musi pozostać przypisana."
     }
   },
   "friends": {
@@ -3472,6 +3486,52 @@
       "collections:write": "Edycja kolekcji",
       "analytics:read": "Odczyt analityki",
       "payouts:read": "Odczyt wypłat"
+    }
+  },
+  "ops": {
+    "title": "Operacje",
+    "unscanned": "Pliki niesprawdzone",
+    "orphaned": "Osierocone obrazy",
+    "tracked": "śledzone",
+    "jobs": "Zadania w kolejce",
+    "failed": "{n} nieudanych",
+    "sweep": "Posprzątaj sieroty",
+    "retry": "Ponów nieudane",
+    "flagged": "Oflagowane pliki",
+    "rescan": "Skanuj ponownie",
+    "findings": {
+      "path_traversal": "Wyjście poza katalog",
+      "executable_entry": "Plik wykonywalny w środku",
+      "disguised_executable": "Ukryty plik wykonywalny",
+      "nested_archive": "Zagnieżdżone archiwum",
+      "compression_bomb": "Bomba kompresyjna",
+      "suspicious_host": "Podejrzany adres",
+      "known_marker": "Znany marker złośliwego kodu",
+      "entry_unreadable": "Nieczytelny wpis",
+      "unreadable": "Nieczytelne archiwum",
+      "missing": "Brak zapisanego obiektu"
+    }
+  },
+  "ledger": {
+    "title": "Księga",
+    "available": "Dostępne",
+    "request": "Zamów wypłatę",
+    "summary": "Zarobione {earned}, prowizja {commission}, wypłacone {paidOut}",
+    "minimum": "Minimalna wypłata to {amount}",
+    "empty": "Księga jest jeszcze pusta.",
+    "kinds": {
+      "sale": "Sprzedaż",
+      "commission": "Prowizja",
+      "refund": "Zwrot",
+      "payout": "Wypłata",
+      "adjustment": "Korekta"
+    },
+    "statuses": {
+      "requested": "Zamówiona",
+      "processing": "W realizacji",
+      "paid": "Wypłacona",
+      "failed": "Nieudana",
+      "cancelled": "Anulowana"
     }
   }
 }
