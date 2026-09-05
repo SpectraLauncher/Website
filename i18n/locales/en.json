@@ -22,7 +22,9 @@
     "modpacks": "Modpacks",
     "modpacksDesc": "Whole setups, ready to install.",
     "schematics": "Schematics",
-    "schematicsDesc": "Builds to paste into your world."
+    "schematicsDesc": "Builds to paste into your world.",
+    "plugins": "Plugins",
+    "pluginsDesc": "Bukkit, Paper, Velocity and the rest."
   },
   "hero": {
     "opensource": "open source",
@@ -3056,7 +3058,15 @@
       "litematic": "Litematica",
       "sponge": "Sponge",
       "structure": "Structure block",
-      "mcedit": "MCEdit (legacy)"
+      "mcedit": "MCEdit (legacy)",
+      "bukkit": "Bukkit",
+      "spigot": "Spigot",
+      "paper": "Paper",
+      "purpur": "Purpur",
+      "folia": "Folia",
+      "bungeecord": "BungeeCord",
+      "velocity": "Velocity",
+      "waterfall": "Waterfall"
     },
     "buyFor": "Buy for {price}",
     "owned": "You own this",
@@ -3123,10 +3133,23 @@
       "transportation": "Transportation",
       "tweaks": "Tweaks",
       "utility": "Utility",
-      "vanilla-like": "Vanilla like"
+      "vanilla-like": "Vanilla like",
+      "admin-tools": "Admin tools",
+      "anti-grief": "Anti-grief",
+      "chat": "Chat",
+      "moderation": "Moderation",
+      "permissions": "Permissions",
+      "protection": "Protection",
+      "teleportation": "Teleportation",
+      "world-management": "World management",
+      "worldgen": "World generation"
     },
     "follows": "{n} follows",
-    "gallery": "Gallery"
+    "gallery": "Gallery",
+    "plugins": {
+      "title": "Plugins",
+      "sub": "Server-side plugins for Bukkit, Spigot, Paper, Purpur, Folia, Sponge and the proxies. The platform is read from the plugin descriptor, not from a form."
+    }
   },
   "verification": {
     "title": "Verification",

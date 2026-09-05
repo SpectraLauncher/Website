@@ -17,7 +17,9 @@ const ROUTES = [
   'reset-password', 's', 'secret', 'seller', 'terms', 'tools', 'u', 'verification',
 ]
 
-const TYPE_PREFIXES = ['mod', 'pack', 'shader', 'resourcepack', 'schematic', 'org']
+const TYPE_PREFIXES = [
+  'mod', 'plugin', 'pack', 'shader', 'resourcepack', 'schematic', 'org',
+]
 
 const INFRASTRUCTURE = [
   'api', 'render', '_nuxt', '_og', '_ipx', '__sitemap__', '.well-known',

@@ -9,6 +9,7 @@ const localePath = useLocalePath()
 // in a new tab and reads correctly to a crawler.
 const TABS = [
   { type: 'mod', to: '/mod', icon: 'i-lucide-puzzle', key: 'mods' },
+  { type: 'plugin', to: '/plugin', icon: 'i-lucide-plug', key: 'plugins' },
   { type: 'resourcepack', to: '/resourcepack', icon: 'i-lucide-image', key: 'resourcepacks' },
   { type: 'shader', to: '/shader', icon: 'i-lucide-sun', key: 'shaders' },
   { type: 'modpack', to: '/pack', icon: 'i-lucide-boxes', key: 'modpacks' },

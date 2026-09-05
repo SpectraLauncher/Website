@@ -77,7 +77,7 @@ interface Analysis {
   warnings: Warning[]
 }
 
-const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'modpack'] as const
+const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'plugin', 'modpack'] as const
 const STATUS_IDS = ['draft', 'published', 'unlisted', 'archived', 'rejected', 'removed'] as const
 
 const TYPES = computed(() =>

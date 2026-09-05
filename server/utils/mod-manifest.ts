@@ -1,9 +1,14 @@
 
 import { type TomlTable, parseManifest, parseToml } from './toml'
 import { type Zip, openZip } from './zip'
+import { parseYaml, yamlList, yamlString } from './yaml'
 
-export type Loader = 'fabric' | 'quilt' | 'forge' | 'neoforge'
-export type PackKind = 'mod' | 'modpack' | 'resourcepack' | 'shader' | 'datapack' | 'unknown'
+export type Loader =
+  | 'fabric' | 'quilt' | 'forge' | 'neoforge'
+  | 'bukkit' | 'spigot' | 'paper' | 'purpur' | 'folia'
+  | 'sponge' | 'bungeecord' | 'velocity' | 'waterfall'
+export type PackKind =
+  | 'mod' | 'plugin' | 'modpack' | 'resourcepack' | 'shader' | 'datapack' | 'unknown'
 
 export interface ModInfo {
   kind: PackKind
@@ -181,6 +186,63 @@ function forgeLike(toml: TomlTable, loader: Loader, manifest: Record<string, str
   return info
 }
 
+// A plugin descriptor names the platform it was written for, and the platforms
+// are a family tree: Purpur forks Paper, Paper forks Spigot, Spigot forks
+// Bukkit, and Waterfall forks BungeeCord. A jar built for the parent runs on the
+// forks, which is why one descriptor yields several loaders.
+//
+// Registry: descriptor inside the archive -> the platforms it runs on. Order
+// matters, because a proxy plugin may also carry a plugin.yml.
+const PLUGIN_MANIFESTS: Array<{ entry: string, loaders: Loader[], format: 'yaml' | 'json' }> = [
+  { entry: 'velocity-plugin.json', loaders: ['velocity'], format: 'json' },
+  { entry: 'bungee.yml', loaders: ['bungeecord', 'waterfall'], format: 'yaml' },
+  { entry: 'META-INF/sponge_plugins.json', loaders: ['sponge'], format: 'json' },
+  { entry: 'paper-plugin.yml', loaders: ['paper', 'purpur'], format: 'yaml' },
+  { entry: 'plugin.yml', loaders: ['bukkit', 'spigot', 'paper', 'purpur'], format: 'yaml' },
+]
+
+function fromPluginYaml(zip: Zip, entry: string, loaders: Loader[]): ModInfo {
+  const info = empty('plugin')
+  const doc = parseYaml(zip.readText(entry) ?? '')
+
+  info.loaders = [...loaders]
+  info.modId = yamlString(doc.name)
+  info.name = yamlString(doc.name)
+  info.version = yamlString(doc.version)
+  info.description = yamlString(doc.description)
+  info.authors = yamlList(doc.authors ?? doc.author)
+  info.gameVersionRange = yamlString(doc['api-version'])
+  info.environment = 'server'
+
+  const website = yamlString(doc.website)
+  if (website) info.links.homepage = website
+
+  // Folia runs plugins on several region threads at once, so it only accepts a
+  // plugin that says it was written for that.
+  if (doc['folia-supported'] === true) info.loaders.push('folia')
+
+  return info
+}
+
+function fromPluginJson(zip: Zip, entry: string, loaders: Loader[]): ModInfo {
+  const info = empty('plugin')
+  const doc = zip.readJson<Record<string, any>>(entry) ?? {}
+  const body = Array.isArray(doc.plugins) ? (doc.plugins[0] ?? {}) : doc
+
+  info.loaders = [...loaders]
+  info.modId = str(body.id)
+  info.name = str(body.name) ?? str(body.id)
+  info.version = str(body.version)
+  info.description = str(body.description)
+  info.authors = asAuthors(body.authors ?? body.contributors)
+  info.environment = 'server'
+
+  const url = str(body.url) ?? str(body.links?.homepage)
+  if (url) info.links.homepage = url
+
+  return info
+}
+
 // Registry: file inside the archive -> loader. Order matters, because NeoForge
 // also leaves the old mods.toml in the jar — the first match wins. Adding a
 // loader is one line here and one branch in readArchiveInfo.
@@ -245,6 +307,13 @@ export function readArchiveInfo(body: Uint8Array): ModInfo {
     info.packFormat = readPackMeta(zip).packFormat
     if (!info.version) info.version = str(manifest['Implementation-Version'])
     return info
+  }
+
+  for (const { entry, loaders, format } of PLUGIN_MANIFESTS) {
+    if (!zip.has(entry)) continue
+    return format === 'yaml'
+      ? fromPluginYaml(zip, entry, loaders)
+      : fromPluginJson(zip, entry, loaders)
   }
 
   const engines = shaderEngines(zip)

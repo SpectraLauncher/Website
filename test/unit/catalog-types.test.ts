@@ -21,11 +21,13 @@ describe('typy projektow', () => {
     expect(projectPath('mod', 'sodium')).toBe('/mod/sodium')
     expect(projectPath('modpack', 'better-mc')).toBe('/pack/better-mc')
     expect(projectPath('schematic', 'zamek')).toBe('/schematic/zamek')
+    expect(projectPath('plugin', 'essentials')).toBe('/plugin/essentials')
   })
 
   it('straznik typu nie przepuszcza smieci', () => {
     expect(isProjectType('mod')).toBe(true)
-    expect(isProjectType('plugin')).toBe(false)
+    expect(isProjectType('plugin')).toBe(true)
+    expect(isProjectType('datapack')).toBe(false)
     expect(isProjectType(null)).toBe(false)
     expect(isProjectType(['mod'])).toBe(false)
   })

@@ -1,11 +1,14 @@
 
-export const PROJECT_TYPES = ['mod', 'modpack', 'shader', 'resourcepack', 'schematic'] as const
+export const PROJECT_TYPES = [
+  'mod', 'plugin', 'modpack', 'shader', 'resourcepack', 'schematic',
+] as const
 export type ProjectType = typeof PROJECT_TYPES[number]
 
 // Registry: URL prefix per project type. Adding a sixth type means an entry
 // here, an entry in PROJECT_TYPES and a page in app/pages/<prefix>/[slug].vue.
 export const TYPE_PREFIX: Record<ProjectType, string> = {
   mod: 'mod',
+  plugin: 'plugin',
   modpack: 'pack',
   shader: 'shader',
   resourcepack: 'resourcepack',
@@ -117,6 +120,11 @@ export const CATEGORIES: Record<ProjectType, readonly string[]> = {
   schematic: [
     'base', 'farm', 'house', 'interior', 'landscape', 'medieval', 'modern',
     'redstone', 'ship', 'statue', 'storage', 'tower', 'transport',
+  ],
+  plugin: [
+    'admin-tools', 'anti-grief', 'chat', 'economy', 'game-mechanics', 'library',
+    'minigame', 'moderation', 'permissions', 'protection', 'social',
+    'teleportation', 'utility', 'world-management', 'worldgen',
   ],
 }
 

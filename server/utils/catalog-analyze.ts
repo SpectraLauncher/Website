@@ -69,6 +69,13 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
     if (info.loaders.includes('fabric')) out.loaders = ['fabric', 'quilt']
   }
 
+  if (info.kind === 'plugin') {
+    out.detected = 'plugin'
+    out.loaders = info.loaders
+    out.environment = ['server']
+    out.meta = { pluginId: info.modId }
+  }
+
   if (info.kind === 'modpack') {
     out.detected = 'modpack'
     out.loaders = info.loaders

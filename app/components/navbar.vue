@@ -39,6 +39,7 @@ const discover: NavigationMenuItem = {
     label: 'nav.discover',
     children: [
         { label: 'nav.mods', icon: 'i-lucide-puzzle', to: localePath('/mod'), description: 'nav.modsDesc' },
+        { label: 'nav.plugins', icon: 'i-lucide-plug', to: localePath('/plugin'), description: 'nav.pluginsDesc' },
         { label: 'nav.resourcepacks', icon: 'i-lucide-image', to: localePath('/resourcepack'), description: 'nav.resourcepacksDesc' },
         { label: 'nav.shaders', icon: 'i-lucide-sun', to: localePath('/shader'), description: 'nav.shadersDesc' },
         { label: 'nav.modpacks', icon: 'i-lucide-boxes', to: localePath('/pack'), description: 'nav.modpacksDesc' },
