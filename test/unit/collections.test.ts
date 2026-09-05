@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
+import { readFileSync } from 'node:fs'
+
 import {
+  COLLECTION_KINDS,
   COLLECTION_VISIBILITIES,
   collectionVisible,
   isCollectionVisibility,
@@ -44,6 +47,59 @@ describe('isCollectionVisibility', () => {
     for (const value of COLLECTION_VISIBILITIES) expect(isCollectionVisibility(value)).toBe(true)
     for (const bad of ['public', '', null, 42, undefined]) {
       expect(isCollectionVisibility(bad), String(bad)).toBe(false)
+    }
+  })
+})
+
+describe('polka ulubionych', () => {
+  const source = readFileSync('server/utils/collections.ts', 'utf8')
+  const schema = readFileSync('server/utils/schema-catalog.ts', 'utf8')
+
+  it('jest osobnym rodzajem kolekcji', () => {
+    expect([...COLLECTION_KINDS]).toEqual(['favourites', 'custom'])
+  })
+
+  // Dwa szybkie klikniecia gwiazdki nie moga zrobic dwoch polek, bo projekt
+  // wpadlby do jednej z nich i znikal z widoku przy nastepnym odczycie.
+  it('baza dopuszcza tylko jedna na konto', () => {
+    expect(schema).toContain('uniq_collection_favourites')
+    expect(schema).toContain(`ON collection (user_id) WHERE kind = 'favourites'`)
+  })
+
+  it('tworzenie znosi wyscig zamiast rzucac', () => {
+    expect(source).toContain('ON CONFLICT (user_id)')
+    expect(source).toContain('DO NOTHING')
+  })
+
+  // Polka jest miejscem, na ktore trafia gwiazdka. Skasowanie jej zostawiloby
+  // przycisk bez celu.
+  it('nie da sie jej skasowac', () => {
+    expect(source).toContain(`DELETE FROM collection WHERE id = $1 AND kind <> 'favourites'`)
+  })
+
+  it('nie da sie jej przemianowac, bo nazwa idzie z tlumaczenia', () => {
+    expect(source).toContain(`current.kind === 'favourites' || input.title === undefined`)
+  })
+})
+
+describe('ulubione a obserwowanie', () => {
+  // Dwa rozne pytania: "chce wiedziec o aktualizacjach" i "chce to miec pod
+  // reka". Gdyby gwiazdka ruszala licznik obserwujacych, publiczna popularnosc
+  // projektu mieszalaby sie z prywatna polka czytelnika.
+  it('gwiazdka nie dotyka tabeli obserwowania', () => {
+    for (const route of ['favourite.post.ts', 'favourite.delete.ts']) {
+      const source = readFileSync(`server/api/catalog/project/[slug]/${route}`, 'utf8')
+      expect(source, route).not.toContain('followProject')
+      expect(source, route).not.toContain('project_follow')
+      expect(source, route).toContain('favouritesFor(user.id)')
+    }
+  })
+
+  it('obie trasy sprawdzaja widocznosc projektu', () => {
+    for (const route of ['favourite.post.ts', 'favourite.delete.ts']) {
+      const source = readFileSync(`server/api/catalog/project/[slug]/${route}`, 'utf8')
+      expect(source, route).toContain('requireCatalogRead(event)')
+      expect(source, route).toContain('visibleProject(project, user)')
     }
   })
 })

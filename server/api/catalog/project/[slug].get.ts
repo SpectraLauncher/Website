@@ -22,12 +22,14 @@ export default defineEventHandler(async (event) => {
     : false
 
   const following = viewer ? await isFollowing(viewer.id, project!.id) : false
+  const favourited = viewer ? await isFavourite(viewer.id, project!.id) : false
 
   return {
     project: {
       ...fullProject(project!, versions, files),
       owner,
       following,
+      favourited,
       price,
       currency: project!.currency,
       owned,

@@ -44,6 +44,7 @@ export interface CatalogProjectData {
   owned?: boolean
   follows: number
   following?: boolean
+  favourited?: boolean
   owner?: {
     kind: 'user' | 'organization'
     slug: string | null
@@ -69,6 +70,27 @@ const body = computed(() => renderMarkdown(props.project.description))
 
 const session = useAuthSession()
 const signedIn = computed(() => Boolean(session.value.data))
+
+const favourited = ref(props.project.favourited === true)
+const favouriteBusy = ref(false)
+
+watch(() => props.project.favourited, value => (favourited.value = value === true))
+
+// Following is about being told when a project changes; a favourite is a shelf
+// the reader keeps. Same project, two unrelated questions, two controls.
+async function toggleFavourite() {
+  favouriteBusy.value = true
+  const next = !favourited.value
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(props.project.slug)}/favourite`, {
+      method: next ? 'POST' : 'DELETE',
+    })
+    favourited.value = next
+  }
+  finally {
+    favouriteBusy.value = false
+  }
+}
 
 interface CollectionSummary { id: string, title: string, projects: number }
 
@@ -240,6 +262,20 @@ const sizeLabel = (bytes: number) =>
               :class="following ? 'text-primary' : ''"
             />
             {{ t('catalog.follows', { n: count(followCount) }) }}
+          </button>
+          <button
+            v-if="signedIn"
+            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
+            :disabled="favouriteBusy"
+            :aria-pressed="favourited"
+            @click="toggleFavourite"
+          >
+            <UIcon
+              name="i-lucide-star"
+              class="size-4"
+              :class="favourited ? 'text-primary' : ''"
+            />
+            {{ favourited ? t('collections.favourited') : t('collections.favourite') }}
           </button>
           <UDropdownMenu
             v-if="signedIn"

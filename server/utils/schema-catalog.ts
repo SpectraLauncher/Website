@@ -160,6 +160,13 @@ export async function ensureCatalogSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_collection_user ON collection (user_id, updated DESC);
 
+    -- 'favourites' is the one-click shelf every account gets on first use;
+    -- everything else is a list the user made and named. The partial unique
+    -- index is what stops a second one appearing on a double click.
+    ALTER TABLE collection ADD COLUMN IF NOT EXISTS kind TEXT NOT NULL DEFAULT 'custom';
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_collection_favourites
+      ON collection (user_id) WHERE kind = 'favourites';
+
     CREATE TABLE IF NOT EXISTS collection_project (
       collection_id TEXT NOT NULL REFERENCES collection(id) ON DELETE CASCADE,
       project_id    TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,

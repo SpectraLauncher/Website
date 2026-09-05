@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface Collection {
   id: string
+  kind: 'favourites' | 'custom'
   title: string
   summary: string
   icon: string | null
@@ -78,6 +79,17 @@ async function remove(collection: Collection) {
   }
 }
 
+// The built-in shelf carries a stored English title it never shows; its label
+// comes from the locale like every other piece of chrome.
+const label = (collection: Collection) =>
+  collection.kind === 'favourites' ? t('collections.favourites') : collection.title
+
+// It is the shelf everything lands on, so it goes first regardless of when it
+// was last touched.
+const ordered = computed(() =>
+  [...collections.value].sort((a, b) =>
+    Number(b.kind === 'favourites') - Number(a.kind === 'favourites')))
+
 const VISIBILITIES = computed(() =>
   (['private', 'unlisted', 'listed'] as const).map(id => ({
     value: id,
@@ -126,19 +138,24 @@ const VISIBILITIES = computed(() =>
 
     <ul v-if="collections.length" class="space-y-3">
       <li
-        v-for="collection in collections"
+        v-for="collection in ordered"
         :key="collection.id"
         class="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
       >
-        <UIcon name="i-lucide-bookmark" class="size-5 shrink-0 text-muted" />
+        <UIcon
+          :name="collection.kind === 'favourites' ? 'i-lucide-star' : 'i-lucide-bookmark'"
+          class="size-5 shrink-0"
+          :class="collection.kind === 'favourites' ? 'text-primary' : 'text-muted'"
+        />
         <NuxtLink :to="localePath(`/collection/${collection.id}`)" class="min-w-0 flex-1">
-          <p class="truncate font-medium hover:underline">{{ collection.title }}</p>
+          <p class="truncate font-medium hover:underline">{{ label(collection) }}</p>
           <p class="truncate text-xs text-dimmed">
             {{ t('collections.count', { n: collection.projects }) }}
             · {{ t(`collections.visibility.${collection.visibility}`) }}
           </p>
         </NuxtLink>
         <UButton
+          v-if="collection.kind !== 'favourites'"
           size="xs"
           variant="ghost"
           color="error"

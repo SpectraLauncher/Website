@@ -3348,6 +3348,9 @@
       "private": "Private",
       "unlisted": "Unlisted",
       "listed": "Public"
-    }
+    },
+    "favourites": "Favourites",
+    "favourite": "Favourite",
+    "favourited": "Favourited"
   }
 }

@@ -16,6 +16,9 @@ export const MAX_TITLE = 80
 export const MAX_SUMMARY = 300
 export const MAX_PROJECTS = 500
 
+export const COLLECTION_KINDS = ['favourites', 'custom'] as const
+export type CollectionKind = typeof COLLECTION_KINDS[number]
+
 export interface CollectionRow {
   id: string
   user_id: string
@@ -23,11 +26,12 @@ export interface CollectionRow {
   summary: string
   icon: string | null
   visibility: CollectionVisibility
+  kind: CollectionKind
   created: string | number
   updated: string | number
 }
 
-const COLUMNS = 'id, user_id, title, summary, icon, visibility, created, updated'
+const COLUMNS = 'id, user_id, title, summary, icon, visibility, kind, created, updated'
 
 export function isCollectionVisibility(value: unknown): value is CollectionVisibility {
   return COLLECTION_VISIBILITIES.includes(value as CollectionVisibility)
@@ -93,7 +97,9 @@ export async function updateCollection(id: string, input: {
   const current = await collectionById(id)
   if (!current) throw createError({ statusCode: 404, statusMessage: 'no such collection' })
 
-  const title = input.title === undefined
+  // The built-in shelf is labelled from a translation, so renaming it would
+  // change a string nobody ever sees.
+  const title = current.kind === 'favourites' || input.title === undefined
     ? current.title
     : String(input.title).trim().slice(0, MAX_TITLE) || current.title
 
@@ -114,7 +120,47 @@ export async function updateCollection(id: string, input: {
 }
 
 export function deleteCollection(id: string) {
-  return exec('DELETE FROM collection WHERE id = $1', [id])
+  return exec(`DELETE FROM collection WHERE id = $1 AND kind <> 'favourites'`, [id])
+}
+
+// Created on the first star rather than at sign-up, so an account that never
+// uses it never carries an empty row. ON CONFLICT is what makes a double click
+// idempotent instead of a duplicate.
+export async function favouritesFor(userId: string): Promise<CollectionRow> {
+  // sql-safe: COLUMNS is a constant column list
+  const existing = await one<CollectionRow>(
+    `SELECT ${COLUMNS} FROM collection WHERE user_id = $1 AND kind = 'favourites'`,
+    [userId],
+  )
+  if (existing) return existing
+
+  const now = Date.now()
+  // sql-safe: COLUMNS is a constant column list
+  const created = await one<CollectionRow>(
+    `INSERT INTO collection (id, user_id, title, visibility, kind, created, updated)
+     VALUES ($1, $2, $3, 'private', 'favourites', $4, $4)
+     ON CONFLICT (user_id) WHERE kind = 'favourites' DO NOTHING
+     RETURNING ${COLUMNS}`,
+    [newId(), userId, 'Favourites', now],
+  )
+  if (created) return created
+
+  // Lost the race with another request; the row it wrote is the answer.
+  // sql-safe: COLUMNS is a constant column list
+  return (await one<CollectionRow>(
+    `SELECT ${COLUMNS} FROM collection WHERE user_id = $1 AND kind = 'favourites'`,
+    [userId],
+  ))!
+}
+
+export async function isFavourite(userId: string, projectId: string): Promise<boolean> {
+  const row = await one<{ project_id: string }>(
+    `SELECT cp.project_id FROM collection_project cp
+     JOIN collection c ON c.id = cp.collection_id
+     WHERE c.user_id = $1 AND c.kind = 'favourites' AND cp.project_id = $2`,
+    [userId, projectId],
+  )
+  return Boolean(row)
 }
 
 // A collection may hold a project the viewer cannot see — it went private, or
@@ -175,6 +221,7 @@ export async function collectionsHolding(userId: string, projectId: string): Pro
 export function publicCollection(row: CollectionRow & { projects?: number }) {
   return {
     id: row.id,
+    kind: row.kind ?? 'custom',
     title: row.title,
     summary: row.summary,
     icon: row.icon,

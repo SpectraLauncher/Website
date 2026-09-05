@@ -10,6 +10,7 @@ const id = computed(() => String(route.params.id))
 const { data, error: loadError, refresh } = await useFetch<{
   collection: {
     id: string
+    kind: 'favourites' | 'custom'
     title: string
     summary: string
     visibility: 'private' | 'unlisted' | 'listed'
@@ -29,7 +30,13 @@ const { data, error: loadError, refresh } = await useFetch<{
   }>
 }>(() => `/api/catalog/collections/${id.value}`)
 
-useHead({ title: () => data.value?.collection.title ?? t('nav.account.collections') })
+const title = computed(() => {
+  const collection = data.value?.collection
+  if (!collection) return t('nav.account.collections')
+  return collection.kind === 'favourites' ? t('collections.favourites') : collection.title
+})
+
+useHead({ title })
 
 // A collection that is not listed must not be indexed even when its address is
 // shared; only a listed one may be.
@@ -69,7 +76,7 @@ async function remove(projectId: string) {
 
     <template v-else-if="data">
       <div class="mb-8">
-        <h1 class="text-3xl font-semibold tracking-tight">{{ data.collection.title }}</h1>
+        <h1 class="text-3xl font-semibold tracking-tight">{{ title }}</h1>
         <p v-if="data.collection.summary" class="mt-2 max-w-prose text-muted">
           {{ data.collection.summary }}
         </p>
