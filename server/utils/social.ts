@@ -1,7 +1,5 @@
 
-import { projectPath } from './catalog-types'
 import { exec, one, q } from './db'
-import { mailForNotification } from './notification-copy'
 
 export type FriendStatus = 'pending' | 'accepted' | 'blocked'
 // Adding a kind: one entry here, one `notifications.<kind>` string per locale,
@@ -155,32 +153,16 @@ export async function notify(n: {
   // Mail is a copy of the bell, never a second decision: if the row was not
   // written — a duplicate in the same millisecond — nothing is sent either. A
   // mail server being down must not fail the action that caused the notice.
-  if (written) enqueue('mail', () => deliverMail(n))
+  if (written) {
+    await enqueue('mail', {
+      userId: n.userId,
+      kind: n.kind,
+      actorId: n.actorId ?? null,
+      projectId: n.projectId ?? null,
+    }).catch(e => console.error('[notify] enqueue mail', e))
+  }
 
   return written
-}
-
-async function deliverMail(n: {
-  userId: string
-  kind: NotificationKind
-  actorId?: string | null
-  projectId?: string | null
-}) {
-  const actor = n.actorId
-    ? await one<{ name: string | null, username: string | null }>(
-      'SELECT name, username FROM "user" WHERE id = $1', [n.actorId])
-    : null
-
-  const project = n.projectId
-    ? await one<{ title: string, slug: string, type: string }>(
-      'SELECT title, slug, type FROM project WHERE id = $1', [n.projectId])
-    : null
-
-  await mailForNotification(n.userId, n.kind, {
-    actorName: actor?.name || actor?.username,
-    projectTitle: project?.title,
-    path: project ? projectPath(project.type, project.slug) : null,
-  })
 }
 
 function writeNotification(n: {

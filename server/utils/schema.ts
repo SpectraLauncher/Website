@@ -247,6 +247,24 @@ export async function ensureSchema() {
   `)
 
   await pool.query(`
+    -- Background work. In the database rather than in memory so a restart does
+    -- not drop it and several replicas can share one line.
+    CREATE TABLE IF NOT EXISTS job (
+      id         TEXT PRIMARY KEY,
+      kind       TEXT NOT NULL,
+      payload    JSONB NOT NULL DEFAULT '{}',
+      status     TEXT NOT NULL DEFAULT 'pending',
+      attempts   INTEGER NOT NULL DEFAULT 0,
+      run_after  BIGINT NOT NULL,
+      locked_by  TEXT,
+      locked_at  BIGINT,
+      last_error TEXT,
+      created    BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_job_claim ON job (status, run_after);
+  `)
+
+  await pool.query(`
     -- One direction, and never shown to the blocked person.
     CREATE TABLE IF NOT EXISTS user_block (
       user_id    TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,

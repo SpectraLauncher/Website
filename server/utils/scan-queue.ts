@@ -18,16 +18,7 @@ export interface FlaggedFile {
 // Scanning happens off the request: a 200 MB jar takes seconds to walk and the
 // person uploading it should not be the one waiting.
 export function queueScan(fileId: string) {
-  enqueue('scan', () => scanFile(fileId))
-}
-
-// The upload already holds the bytes, so the first scan never fetches them back
-// out of storage.
-export function queueScanBytes(fileId: string, body: Uint8Array) {
-  enqueue('scan', async () => {
-    const result = scanArchive(body)
-    await store(fileId, result.verdict, result.findings)
-  })
+  return enqueue('scan', { fileId })
 }
 
 export async function scanFile(fileId: string): Promise<void> {

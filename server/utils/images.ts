@@ -96,10 +96,7 @@ export async function sweepOrphans(limit = 200): Promise<number> {
 }
 
 export function queueSweep() {
-  enqueue('cleanup', async () => {
-    const removed = await sweepOrphans()
-    if (removed) console.info(`[images] removed ${removed} orphaned object(s)`)
-  })
+  return enqueue('cleanup')
 }
 
 export async function imageStats(): Promise<{ tracked: number, orphaned: number, bytes: number }> {

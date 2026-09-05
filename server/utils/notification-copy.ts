@@ -1,4 +1,5 @@
 
+import { projectPath } from './catalog-types'
 import { one } from './db'
 import { localeOrDefault, translate } from './i18n-server'
 import { mailNotification } from './notify-mail'
@@ -34,5 +35,33 @@ export async function mailForNotification(userId: string, kind: string, context:
     body: translate(locale, 'notifications.mailBody'),
     ctaLabel: translate(locale, 'notifications.mailCta'),
     path: destination(kind, context),
+  })
+}
+
+// The job handler's side of a notification e-mail. It takes ids rather than
+// objects because a queued job is JSON on disk, so everything it needs has to
+// be looked up again when it finally runs.
+export async function deliverNotificationMail(job: {
+  userId: string
+  kind: string
+  actorId: string | null
+  projectId: string | null
+}) {
+  if (!job.userId || !job.kind) return
+
+  const actor = job.actorId
+    ? await one<{ name: string | null, username: string | null }>(
+      'SELECT name, username FROM "user" WHERE id = $1', [job.actorId])
+    : null
+
+  const project = job.projectId
+    ? await one<{ title: string, slug: string, type: string }>(
+      'SELECT title, slug, type FROM project WHERE id = $1', [job.projectId])
+    : null
+
+  await mailForNotification(job.userId, job.kind, {
+    actorName: actor?.name || actor?.username,
+    projectTitle: project?.title,
+    path: project ? projectPath(project.type, project.slug) : null,
   })
 }
