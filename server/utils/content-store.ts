@@ -6,7 +6,7 @@ import { type R2Config, r2Put, r2Size, useR2 } from './r2'
 // What the Cloudflare proxy lets through, and what the legacy share.post.ts
 // route already accepts.
 //
-// ponytail: the whole file sits in memory because readRawBody buffers. Move to a
+// the whole file sits in memory because readRawBody buffers. Move to a
 // presigned PUT and streaming hashes once modpacks ship bundled mods, or a mod
 // goes over 100 MB.
 export const MAX_CONTENT_BYTES = 100 * 1024 * 1024

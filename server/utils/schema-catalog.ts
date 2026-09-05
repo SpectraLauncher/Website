@@ -9,7 +9,7 @@ import { usePool } from './db'
 // every later column in its own ALTER ... ADD COLUMN IF NOT EXISTS, because on a
 // database that already has the table, IF NOT EXISTS skips the whole statement.
 //
-// ponytail: no migration versioning. At the first destructive change (dropping a
+// no migration versioning. At the first destructive change (dropping a
 // column, rebuilding an index) add a schema_migration table with a number and
 // run the steps in order.
 export async function ensureCatalogSchema() {

@@ -343,7 +343,7 @@ export async function deleteProject(id: string | number) {
   // so nothing is removed from storage here — a stray object costs pennies, a
   // wrongly deleted one breaks every other project that hashes to it.
   //
-  // ponytail: no garbage collection for orphaned objects. Add a sweep that
+  // no garbage collection for orphaned objects. Add a sweep that
   // deletes content/ keys with no version_file row once storage cost matters.
   await exec('DELETE FROM project WHERE id = $1', [id])
 }
@@ -581,7 +581,7 @@ export interface Facets {
 // carries: a filter that returns nothing the moment it is clicked is worse than
 // no filter, and the whole point of showing counts is to promise otherwise.
 //
-// ponytail: computed per request off the live table. Materialise into a facet
+// computed per request off the live table. Materialise into a facet
 // table on a timer once this stops being instant, which for Postgres is a long
 // way past where this catalog will ever get.
 export async function catalogFacets(type?: string): Promise<Facets> {

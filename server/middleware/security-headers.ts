@@ -7,7 +7,7 @@
 // being loaded off an attacker-chosen host, which is the common case — but it
 // is weaker than the launcher's CSP in tauri.conf.json.
 //
-// ponytail: 'unsafe-inline' is the ceiling here. Add nuxt-security for nonces
+// 'unsafe-inline' is the ceiling here. Add nuxt-security for nonces
 // if inline-script injection ever becomes a realistic risk.
 
 const TURNSTILE = 'https://challenges.cloudflare.com'

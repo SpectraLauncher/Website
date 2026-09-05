@@ -99,7 +99,7 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
   }
 }
 
-// ponytail: two hot-row UPDATEs per download. Move to an append-only counter
+// two hot-row UPDATEs per download. Move to an append-only counter
 // table with periodic aggregation if a popular file ever makes these contend.
 export async function countDownload(
   versionId: string | number,

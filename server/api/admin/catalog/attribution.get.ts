@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const rows = await metricsBetween(from, to)
   const shares = revenueShares(rows)
 
-  // ponytail: pruning rides along with the report, which is the only thing that
+  // pruning rides along with the report, which is the only thing that
   // reads this table regularly. Move it to a scheduled task if the report stops
   // being opened.
   await pruneViewSeen().catch(e => console.error('[attribution] prune', e))

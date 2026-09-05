@@ -74,7 +74,7 @@ export function readCentralDirectory(buf: Buffer, limits: ZipLimits = ZIP_LIMITS
   // ZIP64 rejected outright rather than parsed wrongly in silence: its 16- and
   // 32-bit fields are saturated and the real values live in a separate record.
   //
-  // ponytail: brak obslugi ZIP64. Doimplementowac, kiedy pojawi sie archiwum
+  // brak obslugi ZIP64. Doimplementowac, kiedy pojawi sie archiwum
   // over 4 GB or with more than 65535 entries — within a 100 MB upload that
   // cannot happen honestly.
   if (eocd >= 20 && buf.readUInt32LE(eocd - 20) === ZIP64_EOCD_LOCATOR_SIG) {

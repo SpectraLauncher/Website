@@ -63,7 +63,7 @@ export function rateLimit(event: H3Event, options: { key: string, limit: number,
 // what keeps the anonymous surface usable. Endpoints keyed by user id keep
 // their own inline limits instead.
 //
-// ponytail: in-process buckets, so this resets on deploy and is per-replica.
+// in-process buckets, so this resets on deploy and is per-replica.
 // Move to Cloudflare rate-limiting rules (or a shared store) before scaling out.
 
 const SENSITIVE_AUTH = [

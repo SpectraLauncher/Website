@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   // Size is checked with it, so a descriptor cannot point at a different file
   // than the one that was uploaded.
   //
-  // ponytail: sha1 is taken on the caller's word because recomputing it means
+  // sha1 is taken on the caller's word because recomputing it means
   // pulling the object back out of R2. Fine while writes are admin-only; the
   // open-upload stage has to hash server-side instead.
   if (!await contentExists(key, size)) {

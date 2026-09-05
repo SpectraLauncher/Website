@@ -114,7 +114,7 @@ function stateFromCompound(entry: NbtCompound): BlockState {
 // packing inside the game itself, which stopped spanning boundaries in 1.16;
 // confusing the two gives you a schematic that looks like noise.
 //
-// ponytail: BigInt arithmetic, so ~2M blocks takes seconds. Rewrite on 32-bit
+// BigInt arithmetic, so ~2M blocks takes seconds. Rewrite on 32-bit
 // pairs if anyone uploads a city-sized schematic.
 export function unpackSpanning(longs: BigInt64Array, bits: number, count: number): Uint32Array {
   if (bits < 1 || bits > 32) fail(`unsupported entry width: ${bits}`)
@@ -600,7 +600,7 @@ function gridFromLitematic(root: NbtCompound): SchematicGrid {
   const regions = asCompound(root.Regions)
   if (!regions) fail('no Regions section')
 
-  // ponytail: only the first region is rendered. Litematica writes one for the
+  // only the first region is rendered. Litematica writes one for the
   // overwhelming majority of builds; merging several needs their Position
   // offsets resolved into a shared bounding box first.
   const body = asCompound(Object.values(regions)[0])
