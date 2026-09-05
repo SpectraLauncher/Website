@@ -3351,6 +3351,7 @@
     },
     "favourites": "Favourites",
     "favourite": "Favourite",
-    "favourited": "Favourited"
+    "favourited": "Favourited",
+    "createInline": "New collection…"
   }
 }

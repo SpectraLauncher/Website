@@ -71,73 +71,67 @@ const body = computed(() => renderMarkdown(props.project.description))
 const session = useAuthSession()
 const signedIn = computed(() => Boolean(session.value.data))
 
-const favourited = ref(props.project.favourited === true)
-const favouriteBusy = ref(false)
+const {
+  collections,
+  holding,
+  loaded: collectionsLoaded,
+  favourited,
+  busy: favouriteBusy,
+  load: loadCollections,
+  setMembership,
+  toggleFavourite,
+  createAndAdd,
+} = useProjectCollections(computed(() => props.project))
 
-watch(() => props.project.favourited, value => (favourited.value = value === true))
+watch(() => props.project.favourited, value => (favourited.value = value === true), { immediate: true })
 
-// Following is about being told when a project changes; a favourite is a shelf
-// the reader keeps. Same project, two unrelated questions, two controls.
-async function toggleFavourite() {
-  favouriteBusy.value = true
-  const next = !favourited.value
+const menuOpen = ref(false)
+const naming = ref(false)
+const newName = ref('')
+const creating = ref(false)
+
+watch(menuOpen, (open) => {
+  if (open && !collectionsLoaded.value) loadCollections()
+  if (!open) naming.value = false
+})
+
+async function submitName() {
+  creating.value = true
   try {
-    await $fetch(`/api/catalog/project/${encodeURIComponent(props.project.slug)}/favourite`, {
-      method: next ? 'POST' : 'DELETE',
-    })
-    favourited.value = next
+    if (await createAndAdd(newName.value)) {
+      newName.value = ''
+      naming.value = false
+    }
   }
   finally {
-    favouriteBusy.value = false
+    creating.value = false
   }
 }
 
-interface CollectionSummary { id: string, title: string, projects: number }
-
-const collections = ref<CollectionSummary[]>([])
-const holding = ref<string[]>([])
-const collectionBusy = ref(false)
-
-async function loadCollections() {
-  collectionBusy.value = true
-  try {
-    const res = await $fetch<{ collections: CollectionSummary[], holding: string[] }>(
-      '/api/catalog/collections', { query: { holding: props.project.id } })
-    collections.value = res.collections
-    holding.value = res.holding
-  }
-  finally {
-    collectionBusy.value = false
-  }
-}
-
-async function toggleCollection(collectionId: string) {
-  const inside = holding.value.includes(collectionId)
-  await $fetch(`/api/catalog/collections/${collectionId}/projects`, {
-    method: inside ? 'DELETE' : 'POST',
-    ...(inside
-      ? { query: { projectId: props.project.id } }
-      : { body: { projectId: props.project.id } }),
-  })
-  holding.value = inside
-    ? holding.value.filter(id => id !== collectionId)
-    : [...holding.value, collectionId]
-}
+const collectionLabel = (collection: CollectionSummary) =>
+  collection.kind === 'favourites' ? t('collections.favourites') : collection.title
 
 const collectionMenu = computed(() => {
   const rows = collections.value.map(collection => ({
-    label: collection.title,
-    icon: holding.value.includes(collection.id) ? 'i-lucide-check' : 'i-lucide-plus',
-    onSelect: (event: Event) => {
-      // Keeping the menu open lets one project be filed in several collections
-      // without reopening it each time.
-      event.preventDefault()
-      toggleCollection(collection.id)
-    },
+    label: collectionLabel(collection),
+    type: 'checkbox' as const,
+    checked: holding.value.includes(collection.id),
+    // Keeping the menu open lets one project be filed in several collections
+    // without reopening it each time.
+    onSelect: (event: Event) => event.preventDefault(),
+    onUpdateChecked: (checked: boolean) => setMembership(collection.id, checked),
   }))
 
   return [
     rows.length ? rows : [{ label: t('collections.none'), disabled: true }],
+    [{
+      label: t('collections.createInline'),
+      icon: 'i-lucide-plus',
+      onSelect: (event: Event) => {
+        event.preventDefault()
+        naming.value = true
+      },
+    }],
     [{
       label: t('collections.manage'),
       icon: 'i-lucide-settings',
@@ -263,35 +257,45 @@ const sizeLabel = (bytes: number) =>
             />
             {{ t('catalog.follows', { n: count(followCount) }) }}
           </button>
-          <button
-            v-if="signedIn"
-            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
-            :disabled="favouriteBusy"
-            :aria-pressed="favourited"
-            @click="toggleFavourite"
-          >
-            <UIcon
-              name="i-lucide-star"
-              class="size-4"
-              :class="favourited ? 'text-primary' : ''"
+          <UFieldGroup v-if="signedIn" size="xs">
+            <UButton
+              :icon="favourited ? 'i-lucide-star' : 'i-lucide-star'"
+              :variant="favourited ? 'solid' : 'outline'"
+              :color="favourited ? 'primary' : 'neutral'"
+              :loading="favouriteBusy"
+              :aria-pressed="favourited"
+              :label="favourited ? t('collections.favourited') : t('collections.favourite')"
+              @click="toggleFavourite"
             />
-            {{ favourited ? t('collections.favourited') : t('collections.favourite') }}
-          </button>
-          <UDropdownMenu
-            v-if="signedIn"
-            :items="collectionMenu"
-            :content="{ align: 'start' }"
-            :ui="{ content: 'w-64' }"
-          >
-            <button
-              class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
-              :disabled="collectionBusy"
-              @click="loadCollections"
+            <UDropdownMenu
+              v-model:open="menuOpen"
+              :items="collectionMenu"
+              :content="{ align: 'end' }"
+              :ui="{ content: 'w-64' }"
             >
-              <UIcon name="i-lucide-bookmark" class="size-4" />
-              {{ t('collections.save') }}
-            </button>
-          </UDropdownMenu>
+              <UButton
+                icon="i-lucide-chevron-down"
+                variant="outline"
+                color="neutral"
+                :aria-label="t('collections.save')"
+              />
+
+              <template #content-bottom>
+                <div v-if="naming" class="border-t border-default p-1.5">
+                  <UInput
+                    v-model="newName"
+                    autofocus
+                    size="xs"
+                    class="w-full"
+                    :placeholder="t('collections.titlePlaceholder')"
+                    :loading="creating"
+                    @keydown.enter.prevent="submitName"
+                    @keydown.esc.prevent="naming = false"
+                  />
+                </div>
+              </template>
+            </UDropdownMenu>
+          </UFieldGroup>
           <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
             <UIcon name="i-lucide-tag" class="size-4" />
             {{ priceLabel }}
