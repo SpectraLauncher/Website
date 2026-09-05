@@ -30,6 +30,7 @@ export interface ModInfo {
   packFormat: number | null
   shaderEngines: string[]
   packFiles: PackFile[]
+  multiPlatform: boolean
 }
 
 export interface PackFile {
@@ -56,6 +57,7 @@ function empty(kind: PackKind): ModInfo {
     packFormat: null,
     shaderEngines: [],
     packFiles: [],
+    multiPlatform: false,
   }
 }
 
@@ -289,13 +291,7 @@ function shaderEngines(zip: Zip): string[] {
   return [...engines].sort()
 }
 
-export function readArchiveInfo(body: Uint8Array): ModInfo {
-  const zip = openZip(body)
-
-  if (zip.has('modrinth.index.json')) {
-    return fromMrpack(zip.readJson<MrpackIndex>('modrinth.index.json') ?? {})
-  }
-
+function readModDescriptor(zip: Zip): ModInfo | null {
   for (const { entry, loader } of MANIFESTS) {
     if (!zip.has(entry)) continue
 
@@ -308,13 +304,55 @@ export function readArchiveInfo(body: Uint8Array): ModInfo {
     if (!info.version) info.version = str(manifest['Implementation-Version'])
     return info
   }
+  return null
+}
 
-  for (const { entry, loaders, format } of PLUGIN_MANIFESTS) {
+// Every matching descriptor is read, not just the first. A plugin shipped for
+// several platforms carries one descriptor per platform, and returning on the
+// first would describe a jar that runs on nine of them as running on one.
+function readPluginDescriptor(zip: Zip): ModInfo | null {
+  let info: ModInfo | null = null
+  const loaders = new Set<Loader>()
+
+  for (const { entry, loaders: platforms, format } of PLUGIN_MANIFESTS) {
     if (!zip.has(entry)) continue
-    return format === 'yaml'
-      ? fromPluginYaml(zip, entry, loaders)
-      : fromPluginJson(zip, entry, loaders)
+
+    const parsed = format === 'yaml'
+      ? fromPluginYaml(zip, entry, platforms)
+      : fromPluginJson(zip, entry, platforms)
+
+    for (const loader of parsed.loaders) loaders.add(loader)
+    // The first descriptor found wins on metadata; the rest only add platforms.
+    info ??= parsed
   }
+
+  if (!info) return null
+  info.loaders = [...loaders]
+  return info
+}
+
+export function readArchiveInfo(body: Uint8Array): ModInfo {
+  const zip = openZip(body)
+
+  if (zip.has('modrinth.index.json')) {
+    return fromMrpack(zip.readJson<MrpackIndex>('modrinth.index.json') ?? {})
+  }
+
+  const mod = readModDescriptor(zip)
+  const plugin = readPluginDescriptor(zip)
+
+  // One jar can be both: some projects ship a mod loader descriptor and a plugin
+  // descriptor side by side. Every platform it declares is reported, and the
+  // richer mod metadata is kept, but which type it gets filed under is a
+  // judgement the form asks a human to make.
+  if (mod && plugin) {
+    mod.loaders = [...new Set([...mod.loaders, ...plugin.loaders])]
+    mod.multiPlatform = true
+    return mod
+  }
+
+  if (mod) return mod
+  if (plugin) return plugin
 
   const engines = shaderEngines(zip)
   if (engines.length) {

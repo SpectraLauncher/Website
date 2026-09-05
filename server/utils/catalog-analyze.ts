@@ -106,6 +106,13 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
     out.warnings.push({ code: 'catalog.warn.datapack', params: {} })
   }
 
+  if (info.multiPlatform) {
+    out.warnings.push({
+      code: 'catalog.warn.multiPlatform',
+      params: { loaders: info.loaders.join(', ') },
+    })
+  }
+
   if (!out.gameVersions.length && out.gameVersionRange) {
     out.warnings.push({
       code: 'catalog.warn.unresolvedRange',

@@ -7,6 +7,7 @@ import {
   isLicense,
   isProjectType,
   isVersionChannel,
+  loadersForType,
   projectPath,
 } from '../../server/utils/catalog-types'
 
@@ -48,5 +49,33 @@ describe('licencje', () => {
     expect(isLicense('MIT')).toBe(true)
     expect(isLicense('ARR')).toBe(true)
     expect(isLicense('WTFPL')).toBe(false)
+  })
+})
+
+describe('przynaleznosc do listy wg loadera', () => {
+  it('loadery modowe naleza do modow, pluginowe do pluginow', () => {
+    expect(loadersForType('mod')).toEqual(
+      expect.arrayContaining(['fabric', 'quilt', 'forge', 'neoforge']))
+    expect(loadersForType('plugin')).toEqual(
+      expect.arrayContaining(['bukkit', 'spigot', 'paper', 'purpur', 'folia',
+        'sponge', 'bungeecord', 'velocity', 'waterfall']))
+  })
+
+  // Jar niosacy deskryptory obu swiatow ma sie znalezc na obu listach, bo
+  // przynaleznosc wyprowadzamy z loaderow, a nie z jednej kolumny typu.
+  it('loadery obu swiatow nie mieszaja sie ze soba', () => {
+    for (const loader of ['fabric', 'forge']) {
+      expect(loadersForType('plugin'), loader).not.toContain(loader)
+    }
+    for (const loader of ['paper', 'velocity']) {
+      expect(loadersForType('mod'), loader).not.toContain(loader)
+    }
+  })
+
+  it('kazdy typ ma przypisany co najmniej jeden loader', () => {
+    for (const type of PROJECT_TYPES) {
+      if (type === 'modpack') continue
+      expect(loadersForType(type), type).not.toHaveLength(0)
+    }
   })
 })

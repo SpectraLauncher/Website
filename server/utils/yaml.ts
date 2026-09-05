@@ -1,8 +1,32 @@
 
 export type YamlValue = string | number | boolean | null | YamlValue[] | { [key: string]: YamlValue }
 
+// A comment starts at a hash preceded by whitespace, so an address ending in a
+// fragment is not cut in half. Descriptors in the wild do carry trailing
+// comments on the same line as a value.
+const QUOTE = String.fromCharCode(39)
+
+export function stripComment(raw: string): string {
+  let quote: string | null = null
+
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i]!
+    if (quote) {
+      if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '"' || ch === QUOTE) {
+      quote = ch
+      continue
+    }
+    if (ch === '#' && (i === 0 || /\s/.test(raw[i - 1]!))) return raw.slice(0, i)
+  }
+
+  return raw
+}
+
 function scalar(raw: string): YamlValue {
-  const value = raw.trim()
+  const value = stripComment(raw).trim()
   if (!value || value === '~' || value === 'null') return null
   if (value === 'true' || value === 'yes') return true
   if (value === 'false' || value === 'no') return false

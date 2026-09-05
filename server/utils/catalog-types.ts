@@ -135,3 +135,40 @@ export function isEnvironment(value: unknown): value is Environment {
 export function categoriesFor(type: ProjectType): readonly string[] {
   return CATEGORIES[type] ?? []
 }
+
+// Registry: loader -> the project types it makes a project a member of. A jar
+// can carry descriptors for several platforms at once, and such a project
+// belongs in every listing those platforms belong to — a plugin that also ships
+// a Fabric descriptor is findable under both.
+//
+// The type column stays single and decides the canonical URL; membership of a
+// listing is derived from here.
+export const LOADER_TYPES: Record<string, ProjectType[]> = {
+  fabric: ['mod'],
+  quilt: ['mod'],
+  forge: ['mod'],
+  neoforge: ['mod'],
+  bukkit: ['plugin'],
+  spigot: ['plugin'],
+  paper: ['plugin'],
+  purpur: ['plugin'],
+  folia: ['plugin'],
+  sponge: ['plugin'],
+  bungeecord: ['plugin'],
+  velocity: ['plugin'],
+  waterfall: ['plugin'],
+  iris: ['shader'],
+  optifine: ['shader'],
+  canvas: ['shader'],
+  minecraft: ['resourcepack'],
+  litematic: ['schematic'],
+  sponge_schematic: ['schematic'],
+  structure: ['schematic'],
+  mcedit: ['schematic'],
+}
+
+export function loadersForType(type: ProjectType): string[] {
+  return Object.entries(LOADER_TYPES)
+    .filter(([, types]) => types.includes(type))
+    .map(([loader]) => loader)
+}

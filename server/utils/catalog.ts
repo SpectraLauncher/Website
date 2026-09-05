@@ -4,6 +4,7 @@ import { isPublicId, newId } from './ids'
 import {
   LISTED_STATUSES,
   categoriesFor,
+  loadersForType,
   isEnvironment,
   isLicense,
   isProjectStatus,
@@ -505,7 +506,15 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   }
 
   if (input.ownerId) add('owner_id = $?', input.ownerId)
-  if (input.type) add('type = $?', input.type)
+
+  // A project belongs to a listing either because that is its own type or
+  // because it carries a loader belonging to that type, so a jar built for
+  // Fabric and for Paper is found under both.
+  if (input.type && isProjectType(input.type)) {
+    const kin = loadersForType(input.type)
+    params.push(input.type, kin)
+    where.push(`(type = $${params.length - 1} OR loaders && $${params.length})`) // sql-safe: placeholder numbers only
+  }
   // Absent means the listed set, never "everything" — a listing that forgets to
   // pass a status must not start showing drafts.
   add('status = ANY($?)', input.statuses ?? LISTED_STATUSES)
@@ -577,8 +586,8 @@ export interface Facets {
 // way past where this catalog will ever get.
 export async function catalogFacets(type?: string): Promise<Facets> {
   const params: unknown[] = [LISTED_STATUSES]
-  const scope = type ? 'AND type = $2' : ''
-  if (type) params.push(type)
+  const scope = type ? 'AND (p.type = $2 OR p.loaders && $3)' : ''
+  if (type) params.push(type, isProjectType(type) ? loadersForType(type) : [])
 
   const spread = async (column: string) => {
     // sql-safe: `column` and `scope` are constants chosen here, never request text
