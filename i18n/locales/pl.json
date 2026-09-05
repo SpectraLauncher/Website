@@ -2401,7 +2401,8 @@
     "verifyResend": "Wyślij link ponownie",
     "verifyResent": "Wysłane. Daj mu chwilę.",
     "legal": "Zakładając konto akceptujesz {terms} i {privacy}.",
-    "verifyBodySignIn": "To konto nie jest jeszcze potwierdzone. Właśnie wysłaliśmy nowy link — otwórz go, żeby dokończyć logowanie."
+    "verifyBodySignIn": "To konto nie jest jeszcze potwierdzone. Właśnie wysłaliśmy nowy link — otwórz go, żeby dokończyć logowanie.",
+    "signInPasskey": "Zaloguj się kluczem dostępu"
   },
   "launcherAuth": {
     "title": "Logowanie do launchera",

@@ -77,6 +77,34 @@ async function signIn() {
   await navigateTo(next.value)
 }
 
+// Only offered where the browser can actually satisfy it; elsewhere the button
+// would open a prompt that cannot be answered.
+const passkeySupported = ref(false)
+onMounted(() => {
+  passkeySupported.value = typeof window !== 'undefined' && !!window.PublicKeyCredential
+})
+
+const passkeyBusy = ref(false)
+
+async function signInWithPasskey() {
+  passkeyBusy.value = true
+  error.value = ''
+  try {
+    const res = await auth.signIn.passkey()
+    if (res?.error) {
+      error.value = res.error.message || t('auth.genericError')
+      return
+    }
+    await navigateTo(next.value)
+  }
+  catch {
+    // A cancelled or timed-out prompt is not a failure worth shouting about.
+  }
+  finally {
+    passkeyBusy.value = false
+  }
+}
+
 async function signUp() {
   const res = await run(() => auth.signUp.email(
     {
@@ -226,6 +254,18 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
             class="mt-5"
             icon="i-lucide-mail-check"
             :description="sent"
+          />
+
+          <UButton
+            v-if="passkeySupported && isSignForm && mode !== 'signup'"
+            class="mt-6"
+            variant="outline"
+            color="neutral"
+            block
+            icon="i-lucide-key-round"
+            :loading="passkeyBusy"
+            :label="t('auth.signInPasskey')"
+            @click="signInWithPasskey"
           />
 
           <template v-if="providers.length && isSignForm">

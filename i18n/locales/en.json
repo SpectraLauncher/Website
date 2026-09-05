@@ -2401,7 +2401,8 @@
     "verifyResend": "Send the link again",
     "verifyResent": "Sent. Give it a moment.",
     "legal": "By creating an account you accept the {terms} and the {privacy}.",
-    "verifyBodySignIn": "This account is not confirmed yet. We just sent a fresh link — open it to finish signing in."
+    "verifyBodySignIn": "This account is not confirmed yet. We just sent a fresh link — open it to finish signing in.",
+    "signInPasskey": "Sign in with a passkey"
   },
   "launcherAuth": {
     "title": "Signing in to the launcher",
