@@ -5,6 +5,8 @@ export default defineEventHandler(async (event) => {
 
   rateLimit(event, { key: `collection:${user.id}`, limit: 20, windowMs: 60_000 })
 
+  await requireHeadroom(user.id, 'collections')
+
   const body = await readBody<Record<string, unknown>>(event) ?? {}
   const collection = await createCollection(user.id, body)
 

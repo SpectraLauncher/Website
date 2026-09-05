@@ -243,6 +243,7 @@ export async function ensureSchema() {
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS bio TEXT;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS notification_prefs JSONB;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS locale TEXT;
+    ALTER TABLE "user" ADD COLUMN IF NOT EXISTS limits JSONB;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
   `)
 }

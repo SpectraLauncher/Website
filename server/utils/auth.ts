@@ -301,7 +301,11 @@ export function useAuth() {
       // tym, zanim katalog w ogole zobaczy swiatlo dzienne.
       organization({
         creatorRole: 'owner',
-        allowUserToCreateOrganization: user => catalogIsPublic() || isAdmin(user),
+        allowUserToCreateOrganization: async (user) => {
+          if (!catalogIsPublic() && !isAdmin(user)) return false
+          const state = await limitState(user.id, 'organizations')
+          return state.current < state.max
+        },
         sendInvitationEmail: async (data) => {
           const site = mailAssetOrigin()
           await sendMail(data.email, `Join ${data.organization.name} on Spectra`, mailTemplate({
