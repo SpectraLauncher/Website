@@ -144,6 +144,31 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_project_follow_project ON project_follow (project_id);
   `)
 
+  await pool.query(`
+    -- A user's own list of projects. visibility follows the project rules rather
+    -- than inventing new ones: listed shows on the profile, unlisted opens only
+    -- for whoever holds the address, private is the owner alone.
+    CREATE TABLE IF NOT EXISTS collection (
+      id          TEXT PRIMARY KEY,
+      user_id     TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      title       TEXT NOT NULL,
+      summary     TEXT NOT NULL DEFAULT '',
+      icon        TEXT,
+      visibility  TEXT NOT NULL DEFAULT 'private',
+      created     BIGINT NOT NULL,
+      updated     BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_collection_user ON collection (user_id, updated DESC);
+
+    CREATE TABLE IF NOT EXISTS collection_project (
+      collection_id TEXT NOT NULL REFERENCES collection(id) ON DELETE CASCADE,
+      project_id    TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      added         BIGINT NOT NULL,
+      PRIMARY KEY (collection_id, project_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_collection_project ON collection_project (project_id);
+  `)
+
   // Daily attribution per project. Views and downloads are what a revenue split
   // is computed from, and they cannot be reconstructed after the fact, so they
   // are collected from the day the catalog opens rather than from the day a

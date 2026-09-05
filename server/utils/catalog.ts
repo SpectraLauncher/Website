@@ -79,6 +79,12 @@ const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, descr
   status, license, license_url, icon, categories, game_versions, loaders, environment,
   links, meta, price, currency, downloads, follows, created, updated, published`
 
+// The column list spans lines, so a join that needs it aliased cannot just glue
+// a prefix onto a split on ", ".
+export function projectColumns(alias: string): string {
+  return PROJECT_COLUMNS.split(',').map(c => `${alias}.${c.trim()}`).join(', ')
+}
+
 const VERSION_COLUMNS = `id, project_id, number, name, changelog, channel,
   game_versions, loaders, meta, downloads, created`
 

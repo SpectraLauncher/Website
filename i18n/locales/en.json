@@ -3329,5 +3329,25 @@
     "project_message": "New moderation message about {project}",
     "project_comment": "{actor} commented on {project}",
     "comment_reply": "{actor} replied to your comment"
+  },
+  "collections": {
+    "create": "New collection",
+    "titlePlaceholder": "Collection name",
+    "summaryPlaceholder": "What is in it?",
+    "empty": "No collections yet.",
+    "emptyOne": "Nothing saved here yet.",
+    "notFound": "This collection does not exist, or is not yours to see.",
+    "count": "No projects | 1 project | {n} projects",
+    "delete": "Delete collection",
+    "confirmDelete": "Delete \"{title}\"? The projects themselves are not touched.",
+    "remove": "Remove from collection",
+    "save": "Save",
+    "none": "No collections yet",
+    "manage": "Manage collections",
+    "visibility": {
+      "private": "Private",
+      "unlisted": "Unlisted",
+      "listed": "Public"
+    }
   }
 }

@@ -3329,5 +3329,25 @@
     "project_message": "Nowa wiadomość moderacji o {project}",
     "project_comment": "{actor} skomentował {project}",
     "comment_reply": "{actor} odpowiedział na twój komentarz"
+  },
+  "collections": {
+    "create": "Nowa kolekcja",
+    "titlePlaceholder": "Nazwa kolekcji",
+    "summaryPlaceholder": "Co w niej jest?",
+    "empty": "Nie masz jeszcze kolekcji.",
+    "emptyOne": "Nic tu jeszcze nie zapisano.",
+    "notFound": "Ta kolekcja nie istnieje albo nie jest dla ciebie.",
+    "count": "Brak projektów | 1 projekt | {n} projekty | {n} projektów",
+    "delete": "Usuń kolekcję",
+    "confirmDelete": "Usunąć \"{title}\"? Same projekty zostają nietknięte.",
+    "remove": "Usuń z kolekcji",
+    "save": "Zapisz",
+    "none": "Brak kolekcji",
+    "manage": "Zarządzaj kolekcjami",
+    "visibility": {
+      "private": "Prywatna",
+      "unlisted": "Niepubliczna",
+      "listed": "Publiczna"
+    }
   }
 }

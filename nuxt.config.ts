@@ -8,7 +8,8 @@ const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 // They are never prerendered, which is what keeps them out of llms.txt and the
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
 const CATALOG_PATHS = [
-  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project'
+  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project',
+  '/collection'
 ]
 
 // One person's own pages. These never belong in a sitemap, whatever the catalog

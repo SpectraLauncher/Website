@@ -67,6 +67,63 @@ const localePath = useLocalePath()
 
 const body = computed(() => renderMarkdown(props.project.description))
 
+const session = useAuthSession()
+const signedIn = computed(() => Boolean(session.value.data))
+
+interface CollectionSummary { id: string, title: string, projects: number }
+
+const collections = ref<CollectionSummary[]>([])
+const holding = ref<string[]>([])
+const collectionBusy = ref(false)
+
+async function loadCollections() {
+  collectionBusy.value = true
+  try {
+    const res = await $fetch<{ collections: CollectionSummary[], holding: string[] }>(
+      '/api/catalog/collections', { query: { holding: props.project.id } })
+    collections.value = res.collections
+    holding.value = res.holding
+  }
+  finally {
+    collectionBusy.value = false
+  }
+}
+
+async function toggleCollection(collectionId: string) {
+  const inside = holding.value.includes(collectionId)
+  await $fetch(`/api/catalog/collections/${collectionId}/projects`, {
+    method: inside ? 'DELETE' : 'POST',
+    ...(inside
+      ? { query: { projectId: props.project.id } }
+      : { body: { projectId: props.project.id } }),
+  })
+  holding.value = inside
+    ? holding.value.filter(id => id !== collectionId)
+    : [...holding.value, collectionId]
+}
+
+const collectionMenu = computed(() => {
+  const rows = collections.value.map(collection => ({
+    label: collection.title,
+    icon: holding.value.includes(collection.id) ? 'i-lucide-check' : 'i-lucide-plus',
+    onSelect: (event: Event) => {
+      // Keeping the menu open lets one project be filed in several collections
+      // without reopening it each time.
+      event.preventDefault()
+      toggleCollection(collection.id)
+    },
+  }))
+
+  return [
+    rows.length ? rows : [{ label: t('collections.none'), disabled: true }],
+    [{
+      label: t('collections.manage'),
+      icon: 'i-lucide-settings',
+      to: localePath('/collections'),
+    }],
+  ]
+})
+
 const linkIcon = (name: string) => LINK_ICONS[name as LinkKind] ?? 'i-lucide-external-link'
 const linkLabel = (name: string) => (isLinkKind(name) ? t(`links.${name}`) : name)
 
@@ -184,6 +241,21 @@ const sizeLabel = (bytes: number) =>
             />
             {{ t('catalog.follows', { n: count(followCount) }) }}
           </button>
+          <UDropdownMenu
+            v-if="signedIn"
+            :items="collectionMenu"
+            :content="{ align: 'start' }"
+            :ui="{ content: 'w-64' }"
+          >
+            <button
+              class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
+              :disabled="collectionBusy"
+              @click="loadCollections"
+            >
+              <UIcon name="i-lucide-bookmark" class="size-4" />
+              {{ t('collections.save') }}
+            </button>
+          </UDropdownMenu>
           <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
             <UIcon name="i-lucide-tag" class="size-4" />
             {{ priceLabel }}
