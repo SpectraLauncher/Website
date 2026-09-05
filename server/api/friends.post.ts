@@ -12,6 +12,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such user' })
   }
 
+  // Same answer as a missing account: whether a block exists is not something
+  // the blocked person gets to learn.
+  if (await eitherBlocked(me.id, target.id)) {
+    throw createError({ statusCode: 404, statusMessage: 'no such user' })
+  }
+
   const existing = await one<{ id: number, status: string, requester_id: string }>(
     `SELECT id, status, requester_id FROM friendship
      WHERE (requester_id = $1 AND addressee_id = $2) OR (requester_id = $2 AND addressee_id = $1)`,

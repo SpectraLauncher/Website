@@ -247,6 +247,16 @@ export async function ensureSchema() {
   `)
 
   await pool.query(`
+    -- One direction, and never shown to the blocked person.
+    CREATE TABLE IF NOT EXISTS user_block (
+      user_id    TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      blocked_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      created    BIGINT NOT NULL,
+      PRIMARY KEY (user_id, blocked_id)
+    );
+  `)
+
+  await pool.query(`
     -- Personal access tokens. Only the hash is stored, exactly like a password:
     -- a database dump must not hand over live credentials.
     CREATE TABLE IF NOT EXISTS access_token (

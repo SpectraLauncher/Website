@@ -12,6 +12,8 @@ export default defineEventHandler(async (event) => {
     size: 256,
     accepted: ACCEPTED,
     maxBytes: MAX_BYTES,
+    context: 'project',
+    subjectId: project.id,
   })
 
   await exec('UPDATE project SET icon = $2, updated = $3 WHERE id = $1',

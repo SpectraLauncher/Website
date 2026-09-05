@@ -381,6 +381,22 @@ export async function ensureCatalogSchema() {
       ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
   `)
 
+  await pool.query(`
+    -- What every stored image belongs to. subject_id is polymorphic on purpose:
+    -- one row can point at a project, a version, an organization, an account or
+    -- a report, so it cannot be a foreign key and the sweep checks by hand.
+    CREATE TABLE IF NOT EXISTS stored_image (
+      id         TEXT PRIMARY KEY,
+      object_key TEXT NOT NULL UNIQUE,
+      context    TEXT NOT NULL,
+      owner_id   TEXT REFERENCES "user"(id) ON DELETE SET NULL,
+      subject_id TEXT,
+      size       BIGINT NOT NULL DEFAULT 0,
+      created    BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_stored_image_subject ON stored_image (context, subject_id);
+  `)
+
   // Per-member rights inside an organization. NULL means "whatever the role is
   // worth by default", so existing rows keep working without a backfill.
   await pool.query(`

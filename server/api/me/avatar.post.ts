@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
   const image = await reencodeWebp(body, { size: SIZE, fit: 'cover' })
 
   const key = `avatars/${me.id}.webp`
+  await recordImage({ key, context: 'user', ownerId: me.id, subjectId: me.id, size: image.length })
   try {
     await r2Put(r2, key, image, 'image/webp')
   } catch (e) {

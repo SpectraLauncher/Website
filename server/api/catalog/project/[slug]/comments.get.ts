@@ -8,5 +8,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such project' })
   }
 
-  return { comments: await listComments(project!.id, isAdmin(viewer)) }
+  // A block is the viewer's own filter, so it applies to what they are shown
+  // rather than to what exists.
+  const hidden = viewer ? await blockedIds(viewer.id) : []
+
+  return { comments: await listComments(project!.id, isAdmin(viewer), hidden) }
 })

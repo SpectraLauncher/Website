@@ -12,6 +12,10 @@ export async function storeProjectImage(event: H3Event, options: {
   accepted: string[]
   maxBytes: number
   fit?: 'cover' | 'contain'
+  // Recorded so the sweep can find this object again once its subject is gone.
+  context?: ImageContext
+  subjectId?: string | null
+  ownerId?: string | null
 }): Promise<string> {
   const r2 = useR2()
   if (!r2) throw createError({ statusCode: 501, statusMessage: 'image storage is not configured' })
@@ -34,6 +38,16 @@ export async function storeProjectImage(event: H3Event, options: {
   } catch (e) {
     console.error('[catalog image]', e)
     throw createError({ statusCode: 502, statusMessage: 'could not store the image' })
+  }
+
+  if (options.context) {
+    await recordImage({
+      key: options.key,
+      context: options.context,
+      ownerId: options.ownerId ?? null,
+      subjectId: options.subjectId ?? null,
+      size: image.length,
+    })
   }
 
   return `${r2.publicUrl}/${options.key}?v=${Date.now()}`

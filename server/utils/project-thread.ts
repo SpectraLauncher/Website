@@ -86,15 +86,20 @@ export async function postMessage(input: {
   return id
 }
 
-export async function listComments(projectId: string, viewerIsStaff: boolean) {
+export async function listComments(
+  projectId: string,
+  viewerIsStaff: boolean,
+  hiddenAuthors: string[] = [],
+) {
   // sql-safe: AUTHOR_JOIN is a constant column list
   const rows = await q<CommentRow & Record<string, unknown>>(
     `SELECT c.id, c.project_id, c.author_id, c.parent_id, c.body, c.hidden,
             c.created, c.updated, ${AUTHOR_JOIN}
      FROM project_comment c JOIN "user" u ON u.id = c.author_id
      WHERE c.project_id = $1 AND ($2 OR NOT c.hidden)
+       AND NOT (c.author_id = ANY($3))
      ORDER BY c.created ASC`,
-    [projectId, viewerIsStaff],
+    [projectId, viewerIsStaff, hiddenAuthors],
   )
 
   const shape = (row: typeof rows[number]) => ({

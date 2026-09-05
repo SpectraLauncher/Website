@@ -20,6 +20,8 @@ export default defineEventHandler(async (event) => {
     fit: 'contain',
     accepted: ACCEPTED,
     maxBytes: MAX_BYTES,
+    context: 'project',
+    subjectId: project.id,
   })
 
   const image = await addGalleryImage(id, project.id, url, existing.length)

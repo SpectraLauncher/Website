@@ -37,6 +37,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 502, statusMessage: 'could not store the image' })
   }
 
+  await recordImage({
+    key,
+    context: 'organization',
+    ownerId: user.id,
+    subjectId: org.id,
+    size: image.length,
+  })
+
   const url = `${r2.publicUrl}/${key}?v=${Date.now()}`
   await exec('UPDATE organization SET logo = $2 WHERE id = $1', [org.id, url])
   return { logo: url }

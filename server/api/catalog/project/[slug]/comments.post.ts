@@ -13,6 +13,13 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{ body?: unknown, parentId?: unknown }>(event) ?? {}
   const parentId = body.parentId ? String(body.parentId) : null
 
+  if (parentId) {
+    const parent = await commentById(parentId)
+    if (parent && await eitherBlocked(user.id, parent.author_id)) {
+      throw createError({ statusCode: 403, statusMessage: 'you cannot reply to this person' })
+    }
+  }
+
   const { id } = await addComment({
     projectId: project!.id,
     authorId: user.id,
