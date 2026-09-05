@@ -189,11 +189,32 @@ export async function openPurchase(input: {
 // Driven by the webhook rather than by the browser coming back from Stripe: the
 // buyer closing the tab must not decide whether a payment counted.
 export async function completePurchase(sessionId: string, intentId: string | null) {
-  await exec(
+  const moved = await exec(
     `UPDATE purchase SET status = 'paid', intent_id = $2, completed = $3
      WHERE session_id = $1 AND status = 'pending'`,
     [sessionId, intentId, Date.now()],
   )
+
+  // A webhook can arrive twice. Only the delivery that actually moved the row
+  // writes to the ledger, and the ledger has its own unique reference behind
+  // that as a second line of defence.
+  if (!moved) return
+
+  const purchase = await one<PurchaseRow>(
+    `SELECT id, buyer_id, project_id, seller_id, amount, fee, currency, status
+     FROM purchase WHERE session_id = $1`,
+    [sessionId],
+  )
+
+  if (purchase?.seller_id) {
+    await recordSale({
+      sellerId: purchase.seller_id,
+      purchaseId: purchase.id,
+      gross: Number(purchase.amount),
+      fee: Number(purchase.fee),
+      currency: purchase.currency,
+    })
+  }
 }
 
 export async function failPurchase(sessionId: string) {
@@ -204,10 +225,28 @@ export async function failPurchase(sessionId: string) {
 }
 
 export async function refundPurchase(intentId: string) {
-  await exec(
+  const purchase = await one<PurchaseRow>(
+    `SELECT id, buyer_id, project_id, seller_id, amount, fee, currency, status
+     FROM purchase WHERE intent_id = $1 AND status = 'paid'`,
+    [intentId],
+  )
+
+  const moved = await exec(
     `UPDATE purchase SET status = 'refunded' WHERE intent_id = $1 AND status = 'paid'`,
     [intentId],
   )
+  if (!moved || !purchase?.seller_id) return
+
+  // The refund is its own row rather than a deletion of the sale: the ledger
+  // has to keep showing that the sale happened.
+  await recordEntry({
+    sellerId: purchase.seller_id,
+    kind: 'refund',
+    amount: -(Number(purchase.amount) - Number(purchase.fee)),
+    currency: purchase.currency,
+    reference: purchase.id,
+    note: 'refunded',
+  })
 }
 
 export interface Sale {
@@ -248,4 +287,15 @@ export async function salesFor(sellerIds: string[]): Promise<Sale[]> {
     currency: row.currency,
     completed: row.completed ? Number(row.completed) : null,
   }))
+}
+
+// Every seller account this person controls: their own, and those of the
+// organizations they own. Anything outside this list is somebody else's money.
+export async function sellerIdsFor(user: { id: string }): Promise<string[]> {
+  const own = await sellerFor(user.id, null)
+
+  const orgs = (await organizationsOf(user.id)).filter(org => org.role === 'owner')
+  const orgSellers = await Promise.all(orgs.map(org => sellerFor(null, org.id)))
+
+  return [own, ...orgSellers].filter(Boolean).map(seller => seller!.id)
 }

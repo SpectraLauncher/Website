@@ -381,6 +381,55 @@ export async function ensureCatalogSchema() {
       ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
   `)
 
+  await pool.query(`
+    -- An append-only ledger. Amounts are signed: earned is positive, what left
+    -- is negative, so a balance is the sum and never a stored column somebody
+    -- has to keep correct.
+    CREATE TABLE IF NOT EXISTS payout_ledger (
+      id        TEXT PRIMARY KEY,
+      seller_id TEXT NOT NULL REFERENCES seller(id) ON DELETE CASCADE,
+      kind      TEXT NOT NULL,
+      amount    BIGINT NOT NULL,
+      currency  TEXT NOT NULL,
+      reference TEXT,
+      note      TEXT NOT NULL DEFAULT '',
+      created   BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_ledger_seller ON payout_ledger (seller_id, created DESC);
+
+    CREATE TABLE IF NOT EXISTS payout (
+      id        TEXT PRIMARY KEY,
+      seller_id TEXT NOT NULL REFERENCES seller(id) ON DELETE CASCADE,
+      amount    BIGINT NOT NULL,
+      currency  TEXT NOT NULL,
+      status    TEXT NOT NULL DEFAULT 'requested',
+      note      TEXT NOT NULL DEFAULT '',
+      requested BIGINT NOT NULL,
+      settled   BIGINT
+    );
+    CREATE INDEX IF NOT EXISTS idx_payout_seller ON payout (seller_id, requested DESC);
+  `)
+
+  // A webhook can arrive twice, so the same sale must not be able to credit the
+  // ledger twice.
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_ledger_reference
+      ON payout_ledger (seller_id, kind, reference) WHERE reference IS NOT NULL
+  `)
+
+  await pool.query(`
+    -- Rights granted on one project, to somebody who is not its owner. The
+    -- organization grants a working set already; this is for the rest.
+    CREATE TABLE IF NOT EXISTS project_member (
+      project_id  TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
+      user_id     TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      permissions BIGINT NOT NULL DEFAULT 0,
+      created     BIGINT NOT NULL,
+      PRIMARY KEY (project_id, user_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_project_member_user ON project_member (user_id);
+  `)
+
   // The moderation thread hangs off a project or off a report, never both and
   // never neither. One mechanism rather than two nearly identical tables.
   await pool.query(`
