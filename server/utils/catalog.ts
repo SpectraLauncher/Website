@@ -473,6 +473,7 @@ export interface ListQuery {
   environment?: string[]
   licenses?: string[]
   sort?: 'downloads' | 'updated' | 'created' | 'relevance'
+  direction?: 'asc' | 'desc'
   offset?: number
   limit?: number
 }
@@ -528,10 +529,12 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
 
   // Relevance needs a query to rank against; without one it means nothing, so it
   // falls back rather than ordering everything by a constant zero.
+  const oldestFirst = input.direction === 'asc'
+
   const order = input.sort === 'updated'
-    ? 'updated DESC'
+    ? (oldestFirst ? 'updated ASC' : 'updated DESC')
     : input.sort === 'created'
-      ? 'created DESC'
+      ? (oldestFirst ? 'created ASC' : 'created DESC')
       : input.sort === 'relevance' && searchParam
         // sql-safe: searchParam is a placeholder number this function generated
         ? `ts_rank_cd(search, plainto_tsquery('simple', $${searchParam})) DESC, downloads DESC`
@@ -694,4 +697,25 @@ export async function ownedProjects(userId: string, orgIds: string[]): Promise<P
      ORDER BY updated DESC`,
     [userId, orgIds],
   )
+}
+
+export interface QueueCounts {
+  pending: number
+  rejected: number
+  draft: number
+}
+
+export async function queueCounts(): Promise<QueueCounts> {
+  const rows = await q<{ status: string, n: number }>(
+    `SELECT status, count(*)::int AS n FROM project
+     WHERE status = ANY($1) GROUP BY status`,
+    [['pending', 'rejected', 'draft']],
+  )
+
+  const by = new Map(rows.map(row => [row.status, row.n]))
+  return {
+    pending: by.get('pending') ?? 0,
+    rejected: by.get('rejected') ?? 0,
+    draft: by.get('draft') ?? 0,
+  }
 }

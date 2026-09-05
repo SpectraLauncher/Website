@@ -75,11 +75,33 @@ const STATUS_COLOR: Record<string, string> = {
 
 const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
 const needsAppeal = computed(() => status.value === 'rejected' || status.value === 'removed')
+const canSubmit = computed(() => isSubmittable(status.value))
+
+const submitting = ref(false)
+
+async function submit() {
+  submitting.value = true
+  error.value = ''
+  try {
+    await $fetch(`/api/catalog/project/${props.slug}/submit`, {
+      method: 'POST',
+      body: { body: draft.value.trim() || undefined },
+    })
+    draft.value = ''
+    await load()
+  }
+  catch (e: any) {
+    error.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    submitting.value = false
+  }
+}
 </script>
 
 <template>
   <section
-    v-if="visible && (messages.length || needsAppeal || isStaff)"
+    v-if="visible && (messages.length || needsAppeal || canSubmit || status === 'pending' || isStaff)"
     class="mt-10 rounded-3xl border p-6"
     :class="needsAppeal ? 'border-error/40 bg-error/5' : 'border-white/10 bg-white/[0.02]'"
   >
@@ -94,6 +116,8 @@ const needsAppeal = computed(() => status.value === 'rejected' || status.value =
     </header>
 
     <p v-if="needsAppeal" class="mb-4 text-sm text-muted">{{ t('catalog.appealHint') }}</p>
+    <p v-else-if="status === 'pending'" class="mb-4 text-sm text-muted">{{ t('catalog.pendingHint') }}</p>
+    <p v-else-if="canSubmit" class="mb-4 text-sm text-muted">{{ t('catalog.submitHint') }}</p>
 
     <ul v-if="messages.length" class="mb-5 space-y-3">
       <li
@@ -129,7 +153,17 @@ const needsAppeal = computed(() => status.value === 'rejected' || status.value =
       :placeholder="isStaff ? t('catalog.staffReplyPlaceholder') : t('catalog.appealPlaceholder')"
       class="w-full"
     />
-    <div class="mt-2 flex justify-end">
+    <div class="mt-2 flex flex-wrap justify-end gap-2">
+      <UButton
+        v-if="canSubmit && !isStaff"
+        size="sm"
+        color="primary"
+        class="rounded-xl"
+        icon="i-lucide-send"
+        :loading="submitting"
+        :label="t('catalog.submit')"
+        @click="submit"
+      />
       <UButton
         size="sm"
         color="neutral"

@@ -3053,7 +3053,8 @@
         "unlisted": "Tylko z linku — nie trafia na listy",
         "archived": "Zarchiwizowany — widoczny, bez rozwoju",
         "rejected": "Odrzucony przez moderację",
-        "removed": "Usunięty"
+        "removed": "Usunięty",
+        "pending": "Oczekuje"
       },
       "badges": {
         "draft": "szkic",
@@ -3061,7 +3062,8 @@
         "unlisted": "z linku",
         "archived": "archiwum",
         "rejected": "odrzucony",
-        "removed": "usunięty"
+        "removed": "usunięty",
+        "pending": "Oczekuje"
       },
       "price": "Cena w groszach (0 = darmowy)",
       "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym.",
@@ -3072,7 +3074,12 @@
       "moderationHint": "Odrzucenie i usunięcie wymaga wiadomości — to ją czyta autor i od niej się odwołuje.",
       "approve": "Zaakceptuj",
       "reject": "Odrzuć",
-      "remove": "Usuń"
+      "remove": "Usuń",
+      "queue": "Kolejka moderacji",
+      "queueEmpty": "Nic nie czeka.",
+      "review": "Sprawdź",
+      "refresh": "Odśwież",
+      "waiting": "{days} d"
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",
@@ -3224,8 +3231,12 @@
       "unlisted": "Niepubliczny",
       "archived": "Zarchiwizowany",
       "rejected": "Odrzucony",
-      "removed": "Usunięty"
-    }
+      "removed": "Usunięty",
+      "pending": "Oczekuje"
+    },
+    "submit": "Zgłoś do sprawdzenia",
+    "submitHint": "Wyślij projekt do moderacji. Do czasu akceptacji pozostaje prywatny.",
+    "pendingHint": "Czeka na moderatora. Dostaniesz powiadomienie, gdy zapadnie decyzja."
   },
   "verification": {
     "title": "Weryfikacja",

@@ -20,6 +20,7 @@ export type VersionChannel = typeof VERSION_CHANNELS[number]
 
 export const PROJECT_STATUSES = [
   'draft',
+  'pending',
   'published',
   'unlisted',
   'archived',
@@ -40,6 +41,22 @@ export const LINKABLE_STATUSES: readonly ProjectStatus[] = ['published', 'archiv
 
 export function isProjectStatus(value: unknown): value is ProjectStatus {
   return PROJECT_STATUSES.includes(value as ProjectStatus)
+}
+
+// The moderation queue. A draft is somebody still working; only a submission
+// asks for a decision, which is why the two are separate states.
+export const QUEUED_STATUSES: readonly ProjectStatus[] = ['pending']
+
+// What an author may put into the queue. A rejected project goes back in once
+// it has been fixed; a removed one does not requeue itself.
+export const SUBMITTABLE_STATUSES: readonly ProjectStatus[] = ['draft', 'rejected']
+
+export function isQueued(status: string): boolean {
+  return QUEUED_STATUSES.includes(status as ProjectStatus)
+}
+
+export function isSubmittable(status: string): boolean {
+  return SUBMITTABLE_STATUSES.includes(status as ProjectStatus)
 }
 
 export function isListed(status: string): boolean {

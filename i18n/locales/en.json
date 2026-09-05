@@ -3053,7 +3053,8 @@
         "unlisted": "Link only — stays off the listings",
         "archived": "Archived — visible, no longer developed",
         "rejected": "Rejected by moderation",
-        "removed": "Removed"
+        "removed": "Removed",
+        "pending": "Pending review"
       },
       "badges": {
         "draft": "draft",
@@ -3061,7 +3062,8 @@
         "unlisted": "link only",
         "archived": "archived",
         "rejected": "rejected",
-        "removed": "removed"
+        "removed": "removed",
+        "pending": "Pending"
       },
       "price": "Price in cents (0 = free)",
       "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free.",
@@ -3072,7 +3074,12 @@
       "moderationHint": "A rejection or removal needs a message — it is what the author reads and appeals against.",
       "approve": "Approve",
       "reject": "Reject",
-      "remove": "Remove"
+      "remove": "Remove",
+      "queue": "Review queue",
+      "queueEmpty": "Nothing waiting.",
+      "review": "Review",
+      "refresh": "Refresh",
+      "waiting": "{days} d"
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",
@@ -3224,8 +3231,12 @@
       "unlisted": "Unlisted",
       "archived": "Archived",
       "rejected": "Rejected",
-      "removed": "Removed"
-    }
+      "removed": "Removed",
+      "pending": "Pending review"
+    },
+    "submit": "Submit for review",
+    "submitHint": "Send this project to moderation. It stays private until it is approved.",
+    "pendingHint": "Waiting for a moderator. You will be notified when there is a decision."
   },
   "verification": {
     "title": "Verification",

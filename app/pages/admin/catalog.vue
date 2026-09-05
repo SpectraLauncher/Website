@@ -78,7 +78,7 @@ interface Analysis {
 }
 
 const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'plugin', 'modpack'] as const
-const STATUS_IDS = ['draft', 'published', 'unlisted', 'archived', 'rejected', 'removed'] as const
+const STATUS_IDS = PROJECT_STATUSES
 
 const TYPES = computed(() =>
   TYPE_IDS.map(id => ({ value: id, label: t(`catalog.admin.types.${id}`) })))
@@ -93,8 +93,40 @@ const statusBadge = (status: string) =>
 
 const STATUS_COLORS: Record<string, 'success' | 'warning' | 'error' | 'neutral'> = {
   published: 'success',
+  pending: 'warning',
   unlisted: 'warning',
   rejected: 'error',
+}
+
+interface QueueEntry {
+  id: string
+  title: string
+  path: string
+  type: string
+  status: string
+  icon: string | null
+  waiting: number
+  owner: { kind: string, slug: string | null, name: string | null, image: string | null } | null
+}
+
+const queue = ref<QueueEntry[]>([])
+const queueCounts = ref({ pending: 0, rejected: 0, draft: 0 })
+const queueStatus = ref('pending')
+
+async function loadQueue() {
+  busy.value = 'queue'
+  try {
+    const res = await $fetch<{ hits: QueueEntry[], counts: typeof queueCounts.value }>(
+      '/api/admin/catalog/queue', { query: { status: queueStatus.value } })
+    queue.value = res.hits
+    queueCounts.value = res.counts
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+// Days rather than a date: what matters in a queue is how long somebody has
+// been waiting, not when they pressed the button.
+function waitingDays(ms: number): number {
+  return Math.floor(ms / 86_400_000)
 }
 
 const CHANNELS = [
@@ -243,7 +275,7 @@ async function moderate(decision: 'approve' | 'reject' | 'remove') {
     selected.value = { ...withAllLinks(res.project), versions: selected.value.versions }
     decisionNote.value = ''
     announce(t('catalog.admin.saved'))
-    await loadProjects()
+    await Promise.all([loadProjects(), loadQueue()])
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
@@ -515,6 +547,7 @@ const materials = computed(() => {
 
 onMounted(() => {
   loadProjects()
+  loadQueue()
   loadGameVersions()
   loadOrganizations()
   loadVocabulary()
@@ -577,6 +610,74 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           icon="i-lucide-check"
           :description="notice"
         />
+
+        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+          <div class="mb-4 flex flex-wrap items-center gap-3">
+            <UIcon name="i-lucide-inbox" class="size-5 text-muted" />
+            <h2 class="text-lg font-semibold">{{ t('catalog.admin.queue') }}</h2>
+            <span class="flex-1"></span>
+            <UButton
+              v-for="entry in ([
+                { id: 'pending', n: queueCounts.pending },
+                { id: 'rejected', n: queueCounts.rejected },
+                { id: 'draft', n: queueCounts.draft },
+              ] as const)"
+              :key="entry.id"
+              size="xs"
+              :variant="queueStatus === entry.id ? 'solid' : 'ghost'"
+              color="neutral"
+              class="rounded-lg"
+              :label="`${t(`catalog.admin.statuses.${entry.id}`)} (${entry.n})`"
+              @click="queueStatus = entry.id; loadQueue()"
+            />
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              icon="i-lucide-refresh-cw"
+              :loading="busy === 'queue'"
+              :aria-label="t('catalog.admin.refresh')"
+              @click="loadQueue"
+            />
+          </div>
+
+          <ul v-if="queue.length" class="space-y-2">
+            <li
+              v-for="entry in queue"
+              :key="entry.id"
+              class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
+            >
+              <img
+                v-if="entry.icon"
+                :src="entry.icon"
+                alt=""
+                class="size-9 shrink-0 rounded-lg object-cover"
+              >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-medium">{{ entry.title }}</p>
+                <p class="truncate text-xs text-dimmed">
+                  {{ t(`catalog.admin.types.${entry.type}`) }}
+                  <template v-if="entry.owner"> · {{ entry.owner.name || entry.owner.slug }}</template>
+                </p>
+              </div>
+              <UBadge
+                variant="subtle"
+                size="sm"
+                :color="waitingDays(entry.waiting) >= 7 ? 'error' : 'neutral'"
+                :label="t('catalog.admin.waiting', { days: waitingDays(entry.waiting) })"
+              />
+              <UButton
+                size="xs"
+                variant="subtle"
+                color="neutral"
+                :label="t('catalog.admin.review')"
+                @click="creating = false; open(entry.id)"
+              />
+            </li>
+          </ul>
+
+          <p v-else class="py-6 text-center text-sm text-dimmed">{{ t('catalog.admin.queueEmpty') }}</p>
+        </div>
 
         <div class="grid gap-4 lg:grid-cols-[340px_1fr]">
           <aside class="rounded-3xl border border-zinc-600/50 bg-black/30 p-4 backdrop-blur-sm">
