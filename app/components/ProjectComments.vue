@@ -165,7 +165,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
             />
           </header>
 
-          <p class="mt-2 whitespace-pre-wrap text-sm text-muted">{{ comment.body }}</p>
+          <p class="mt-2 whitespace-pre-wrap break-words text-sm text-muted">{{ comment.body }}</p>
 
           <UButton
             v-if="me"
@@ -229,7 +229,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
                 @click="remove(reply.id)"
               />
             </header>
-            <p class="mt-2 whitespace-pre-wrap text-sm text-muted">{{ reply.body }}</p>
+            <p class="mt-2 whitespace-pre-wrap break-words text-sm text-muted">{{ reply.body }}</p>
           </li>
         </ul>
       </li>

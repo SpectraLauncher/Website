@@ -142,7 +142,7 @@ async function submit() {
           />
           <span class="text-xs text-dimmed">{{ when(message.created) }}</span>
         </header>
-        <p class="mt-2 whitespace-pre-wrap text-sm text-muted">{{ message.body }}</p>
+        <p class="mt-2 whitespace-pre-wrap break-words text-sm text-muted">{{ message.body }}</p>
       </li>
     </ul>
 

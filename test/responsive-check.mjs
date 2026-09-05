@@ -57,6 +57,15 @@ for (const root of ROOTS) {
       }
     }
 
+    // Tekst wpisany przez czlowieka trafia tu w calosci. Jeden wklejony dlugi
+    // adres bez spacji rozpycha kontener, bo pre-wrap lamie na spacjach, a tam
+    // ich nie ma.
+    for (const attr of classAttributes(source)) {
+      if (/whitespace-pre-wrap/.test(attr) && !/break-words|break-all/.test(attr)) {
+        problems.push(`${file} — whitespace-pre-wrap bez break-words, dlugi adres sie nie zlamie`)
+      }
+    }
+
     if (/<table\b/.test(source) && !scrolls) {
       problems.push(`${file} — <table> bez kontenera z overflow-x-auto`)
     }

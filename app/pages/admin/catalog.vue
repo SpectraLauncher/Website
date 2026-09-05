@@ -692,7 +692,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 </span>
               </div>
 
-              <p class="mb-3 whitespace-pre-wrap text-sm text-muted">{{ report.body }}</p>
+              <p class="mb-3 whitespace-pre-wrap break-words text-sm text-muted">{{ report.body }}</p>
 
               <UInput
                 v-model="reportNote[report.id]"

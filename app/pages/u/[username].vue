@@ -334,7 +334,7 @@ useSchemaOrg(computed(() => (data.value
               <h1 class="mb-2 truncate text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">{{ data.user.name || label(data.user) }}</h1>
               <p class="mb-4 font-mono text-muted">@{{ data.user.username }}</p>
 
-              <p v-if="data.user.bio" class="mb-4 max-w-prose whitespace-pre-wrap text-sm text-muted">
+              <p v-if="data.user.bio" class="mb-4 max-w-prose whitespace-pre-wrap break-words text-sm text-muted">
                 {{ data.user.bio }}
               </p>
 
