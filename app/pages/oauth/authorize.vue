@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const lifetimeLabel = useLifetimeLabel()
 const localePath = useLocalePath()
 const route = useRoute()
 const session = useAuthSession()
@@ -9,6 +10,7 @@ useSeoMeta({ robots: 'noindex,nofollow' })
 
 const info = ref<{
   client: { id: string, name: string, icon: string | null }
+  tokenDays: number
   scopes: string[]
   redirect: string
   state: string
@@ -111,6 +113,9 @@ const host = computed(() => {
           </li>
         </ul>
 
+        <p class="mb-2 text-xs text-dimmed">
+          {{ t('oauth.lasts', { period: lifetimeLabel(info.tokenDays) }) }}
+        </p>
         <p class="mb-6 break-words text-xs text-dimmed">
           {{ t('oauth.returnsTo', { host }) }}
         </p>

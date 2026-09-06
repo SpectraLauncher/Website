@@ -11,6 +11,7 @@ import {
   pickRedirect,
   redirectMatches,
 } from '../../shared/utils/oauth'
+import { TOKEN_LIFETIMES, expiryFrom, lifetimeDays } from '../../shared/utils/token-scopes'
 
 // The redirect is where an authorization code is delivered. A client that
 // accepts an unregistered one hands the code to whoever asked for it, which is
@@ -159,5 +160,58 @@ describe('the flow refuses what it should', () => {
   // A revoke button that leaves the application working is a lie.
   it('withdrawing consent takes the tokens with it', () => {
     expect(module).toContain('DELETE FROM access_token WHERE client_id = $1 AND user_id = $2')
+  })
+})
+
+describe('how long a token lives', () => {
+  it('offers every period the site advertises', () => {
+    expect([...TOKEN_LIFETIMES]).toEqual([1, 7, 14, 30, 90, 365, 730, 0])
+  })
+
+  it('zero means it does not expire', () => {
+    expect(expiryFrom(0)).toBeNull()
+    expect(expiryFrom(30, 1_000)).toBe(1_000 + 30 * 86_400_000)
+  })
+
+  // A caller asking for 45 days gets a sane token rather than a rejection it
+  // has no way to act on.
+  it('an unlisted period falls back instead of failing', () => {
+    expect(lifetimeDays(45)).toBe(30)
+    expect(lifetimeDays('nonsense')).toBe(30)
+    expect(lifetimeDays(undefined)).toBe(30)
+  })
+
+  it('a listed period is kept, including never', () => {
+    expect(lifetimeDays(1)).toBe(1)
+    expect(lifetimeDays(730)).toBe(730)
+    expect(lifetimeDays(0)).toBe(0)
+  })
+
+  it('the client decides, and the token honours it', () => {
+    const module = readFileSync('server/utils/oauth.ts', 'utf8')
+    const route = readFileSync('server/api/oauth/token.post.ts', 'utf8')
+
+    expect(module).toContain('expiryFrom(lifetimeDays(input.tokenDays))')
+    expect(route).toContain('tokenDays: client.token_days')
+  })
+
+  // Agreeing to access without being told how long it lasts is not agreeing.
+  it('the consent screen states the period', () => {
+    const get = readFileSync('server/api/oauth/authorize.get.ts', 'utf8')
+    const page = readFileSync('app/pages/oauth/authorize.vue', 'utf8')
+
+    expect(get).toContain('tokenDays: client.token_days')
+    expect(page).toContain("t('oauth.lasts'")
+  })
+
+  it('every period has a label in both languages', () => {
+    for (const loc of ['en', 'pl']) {
+      const d = JSON.parse(readFileSync(`i18n/locales/${loc}.json`, 'utf8'))
+      expect(d.tokens.lifetimes.never, loc).toBeTruthy()
+
+      for (const days of TOKEN_LIFETIMES.filter(n => n > 0)) {
+        expect(d.tokens.lifetimes[String(days)], `${loc}:${days}`).toBeTruthy()
+      }
+    }
   })
 })

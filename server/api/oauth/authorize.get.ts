@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     client: { id: client.id, name: client.name, icon: client.icon },
+    tokenDays: client.token_days,
     scopes: maskToScopes(asked),
     redirect,
     state: cleanState(query.state),

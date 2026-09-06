@@ -304,6 +304,7 @@ export async function ensureSchema() {
       secret_hash   TEXT NOT NULL,
       redirect_uris TEXT[] NOT NULL DEFAULT '{}',
       max_scopes    BIGINT NOT NULL DEFAULT 0,
+      token_days    INTEGER NOT NULL DEFAULT 30,
       created       BIGINT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_oauth_client_owner ON oauth_client (owner_id);
@@ -328,6 +329,8 @@ export async function ensureSchema() {
       created      BIGINT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_oauth_code_expiry ON oauth_code (expires);
+
+    ALTER TABLE oauth_client ADD COLUMN IF NOT EXISTS token_days INTEGER NOT NULL DEFAULT 30;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
   `)
 }

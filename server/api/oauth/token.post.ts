@@ -29,12 +29,13 @@ export default defineEventHandler(async (event) => {
     clientId: client.id,
     userId: redeemed.userId,
     scopes: redeemed.scopes,
+    tokenDays: client.token_days,
   })
 
   return {
     access_token: token,
     token_type: 'Bearer',
-    expires_in: expiresIn,
+    expires_in: expiresIn ?? undefined,
     scope: maskToScopes(redeemed.scopes).join(' '),
   }
 })

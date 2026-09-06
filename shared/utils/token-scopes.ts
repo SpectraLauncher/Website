@@ -72,3 +72,27 @@ export function expandImplied(mask: number): number {
   }
   return out
 }
+
+// How long a token may live, in days. Zero means it does not expire, which is
+// offered because a server-side integration that nobody watches is worse served
+// by a token that dies quietly than by one that stays.
+//
+// To add a period: one entry here. The label is derived, so nothing else needs
+// touching.
+export const TOKEN_LIFETIMES = [1, 7, 14, 30, 90, 365, 730, 0] as const
+
+export type TokenLifetime = typeof TOKEN_LIFETIMES[number]
+
+export function isTokenLifetime(value: unknown): value is TokenLifetime {
+  return TOKEN_LIFETIMES.includes(Number(value) as TokenLifetime)
+}
+
+// Anything not on the list becomes the default rather than an error: a caller
+// asking for 45 days gets a sane token instead of a rejection it cannot fix.
+export function lifetimeDays(value: unknown, fallback: TokenLifetime = 30): TokenLifetime {
+  return isTokenLifetime(value) ? Number(value) as TokenLifetime : fallback
+}
+
+export function expiryFrom(days: TokenLifetime, now = Date.now()): number | null {
+  return days > 0 ? now + days * 86_400_000 : null
+}

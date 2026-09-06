@@ -2,6 +2,7 @@
 import qrcode from 'qrcode-generator'
 
 const { t, locale } = useI18n()
+const lifetimeLabel = useLifetimeLabel()
 const localePath = useLocalePath()
 const auth = useAuthClient()
 const session = useAuthSession()
@@ -204,11 +205,17 @@ const removePasskey = (id: string) => run('passkey:' + id, async () => {
 })
 
 const authorizations = ref<Array<{ id: string, name: string, icon: string | null, scopes: string[] }>>([])
-const clients = ref<Array<{ id: string, name: string, redirectUris: string[], scopes: number }>>([])
+const clients = ref<Array<{
+  id: string
+  name: string
+  redirectUris: string[]
+  scopes: number
+  tokenDays: number
+}>>([])
 const appsLoaded = ref(false)
 const freshSecret = ref('')
 
-const clientDraft = reactive({ name: '', redirectUris: '', scopes: [] as string[] })
+const clientDraft = reactive({ name: '', redirectUris: '', scopes: [] as string[], tokenDays: 30 })
 
 async function loadApps() {
   const [grants, own] = await Promise.all([
@@ -231,8 +238,9 @@ const createClient = () => run('client', async () => {
     method: 'POST',
     body: {
       name: clientDraft.name,
-      redirectUris: clientDraft.redirectUris.split(/[s,]+/).filter(Boolean),
+      redirectUris: clientDraft.redirectUris.split(/[\s,]+/).filter(Boolean),
       scopes: clientDraft.scopes,
+      tokenDays: clientDraft.tokenDays,
     },
   })
   freshSecret.value = res.secret
@@ -313,12 +321,8 @@ async function loadTokens() {
 const scopeChoices = computed(() =>
   TOKEN_SCOPE_KEYS.map(value => ({ value, label: t(`tokens.scopes.${value}`) })))
 
-const expiryChoices = computed(() => [
-  { value: 0, label: t('tokens.never') },
-  { value: 30, label: t('tokens.days', { n: 30 }) },
-  { value: 90, label: t('tokens.days', { n: 90 }) },
-  { value: 365, label: t('tokens.days', { n: 365 }) },
-])
+const expiryChoices = computed(() =>
+  TOKEN_LIFETIMES.map(days => ({ value: days, label: lifetimeLabel(days) })))
 
 const createToken = () => run('token', async () => {
   const res = await $fetch<{ token: string }>('/api/me/tokens', {
@@ -1220,6 +1224,9 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   <p class="mt-2 break-all text-xs text-dimmed">
                     {{ client.redirectUris.join(' · ') }}
                   </p>
+                  <p class="text-xs text-dimmed">
+                    {{ t('oauth.tokenLife') }}: {{ lifetimeLabel(client.tokenDays) }}
+                  </p>
                 </li>
               </ul>
 
@@ -1236,6 +1243,15 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     :rows="2"
                     class="w-full"
                     placeholder="https://example.com/callback"
+                  />
+                </UFormField>
+
+                <UFormField :label="t('oauth.tokenLife')" :help="t('oauth.tokenLifeHint')">
+                  <USelect
+                    v-model="clientDraft.tokenDays"
+                    :items="expiryChoices"
+                    value-key="value"
+                    class="w-full"
                   />
                 </UFormField>
 

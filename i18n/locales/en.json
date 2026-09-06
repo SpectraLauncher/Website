@@ -3497,6 +3497,16 @@
       "collections:write": "Edit collections",
       "analytics:read": "Read analytics",
       "payouts:read": "Read payouts"
+    },
+    "lifetimes": {
+      "1": "1 day",
+      "7": "7 days",
+      "14": "14 days",
+      "30": "30 days",
+      "90": "90 days",
+      "365": "1 year",
+      "730": "2 years",
+      "never": "Never"
     }
   },
   "ops": {
@@ -3620,6 +3630,9 @@
     "redirectsHint": "One per line. https only, except localhost.",
     "maxScopes": "Most it may ever ask for",
     "rotate": "New secret",
-    "deleteClient": "Delete application"
+    "deleteClient": "Delete application",
+    "tokenLife": "Token lifetime",
+    "tokenLifeHint": "How long an access token stays valid before the person has to approve again.",
+    "lasts": "Access lasts: {period}."
   }
 }

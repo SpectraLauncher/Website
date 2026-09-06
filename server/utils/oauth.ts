@@ -7,9 +7,11 @@ import { newId } from './ids'
 import {
   ALL_TOKEN_SCOPES,
   expandImplied,
+  expiryFrom,
+  lifetimeDays,
   scopesToMask,
 } from '../../shared/utils/token-scopes'
-import { OAUTH_CODE_TTL_MS, OAUTH_TOKEN_TTL_MS, cleanRedirectUris } from '../../shared/utils/oauth'
+import { OAUTH_CODE_TTL_MS, cleanRedirectUris } from '../../shared/utils/oauth'
 
 export interface ClientRow {
   id: string
@@ -19,10 +21,11 @@ export interface ClientRow {
   secret_hash: string
   redirect_uris: string[]
   max_scopes: string | number
+  token_days: number
   created: string | number
 }
 
-const CLIENT_COLUMNS = 'id, owner_id, name, icon, secret_hash, redirect_uris, max_scopes, created'
+const CLIENT_COLUMNS = 'id, owner_id, name, icon, secret_hash, redirect_uris, max_scopes, token_days, created'
 
 function hash(value: string): string {
   return createHash('sha256').update(value).digest('hex')
@@ -57,6 +60,7 @@ export async function createClient(input: {
   name: string
   redirectUris: unknown
   scopes: unknown
+  tokenDays?: unknown
 }): Promise<CreatedClient> {
   const name = String(input.name ?? '').trim().slice(0, 80)
   if (!name) throw createError({ statusCode: 400, statusMessage: 'name is required' })
@@ -75,9 +79,10 @@ export async function createClient(input: {
 
   // sql-safe: CLIENT_COLUMNS is a constant column list
   const row = await one<ClientRow>(
-    `INSERT INTO oauth_client (id, owner_id, name, secret_hash, redirect_uris, max_scopes, created)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ${CLIENT_COLUMNS}`,
-    [newId(), input.ownerId, name, hash(secret), uris, max, Date.now()],
+    `INSERT INTO oauth_client
+       (id, owner_id, name, secret_hash, redirect_uris, max_scopes, token_days, created)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING ${CLIENT_COLUMNS}`,
+    [newId(), input.ownerId, name, hash(secret), uris, max, lifetimeDays(input.tokenDays), Date.now()],
   )
 
   return { row: row!, secret }
@@ -87,6 +92,7 @@ export async function updateClient(id: string, input: {
   name?: unknown
   redirectUris?: unknown
   scopes?: unknown
+  tokenDays?: unknown
 }): Promise<ClientRow> {
   const current = await clientById(id)
   if (!current) throw createError({ statusCode: 404, statusMessage: 'no such client' })
@@ -105,7 +111,7 @@ export async function updateClient(id: string, input: {
 
   // sql-safe: CLIENT_COLUMNS is a constant column list
   const row = await one<ClientRow>(
-    `UPDATE oauth_client SET name = $2, redirect_uris = $3, max_scopes = $4
+    `UPDATE oauth_client SET name = $2, redirect_uris = $3, max_scopes = $4, token_days = $5
      WHERE id = $1 RETURNING ${CLIENT_COLUMNS}`,
     [
       id,
@@ -114,6 +120,7 @@ export async function updateClient(id: string, input: {
         : current.name,
       uris,
       max,
+      input.tokenDays === undefined ? current.token_days : lifetimeDays(input.tokenDays),
     ],
   )
   return row!
@@ -226,12 +233,16 @@ export async function redeemCode(input: {
   return { userId: row.user_id, scopes: Number(row.scopes) }
 }
 
+// The application decides how long its tokens live, within the list of periods
+// the site offers, and the consent screen shows that choice before anyone agrees.
 export async function issueOAuthToken(input: {
   clientId: string
   userId: string
   scopes: number
-}): Promise<{ token: string, expiresIn: number }> {
+  tokenDays: number
+}): Promise<{ token: string, expiresIn: number | null }> {
   const secret = randomBytes(32).toString('base64url')
+  const expires = expiryFrom(lifetimeDays(input.tokenDays))
   const token = `spx_${secret}`
 
   await exec(
@@ -245,12 +256,12 @@ export async function issueOAuthToken(input: {
       secret.slice(-6),
       createHash('sha256').update(token).digest('hex'),
       input.scopes,
-      Date.now() + OAUTH_TOKEN_TTL_MS,
+      expires,
       Date.now(),
     ],
   )
 
-  return { token, expiresIn: Math.floor(OAUTH_TOKEN_TTL_MS / 1000) }
+  return { token, expiresIn: expires === null ? null : Math.floor((expires - Date.now()) / 1000) }
 }
 
 export function publicClient(row: ClientRow) {
@@ -260,6 +271,7 @@ export function publicClient(row: ClientRow) {
     icon: row.icon,
     redirectUris: row.redirect_uris,
     scopes: Number(row.max_scopes),
+    tokenDays: row.token_days,
     created: Number(row.created),
   }
 }

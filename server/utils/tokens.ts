@@ -10,7 +10,9 @@ import {
   TOKEN_PREFIX,
   type TokenScope,
   expandImplied,
+  expiryFrom,
   hasScope,
+  lifetimeDays,
   maskToScopes,
   scopesToMask,
 } from '../../shared/utils/token-scopes'
@@ -54,10 +56,7 @@ export async function createToken(input: {
   const secret = randomBytes(TOKEN_BYTES).toString('base64url')
   const token = `${TOKEN_PREFIX}${secret}`
 
-  const days = Number(input.expiresInDays)
-  const expires = Number.isFinite(days) && days > 0
-    ? Date.now() + Math.min(days, 365) * 86_400_000
-    : null
+  const expires = expiryFrom(lifetimeDays(input.expiresInDays))
 
   // sql-safe: COLUMNS is a constant column list
   const row = await one<TokenRow>(
