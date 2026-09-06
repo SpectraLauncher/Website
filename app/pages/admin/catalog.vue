@@ -263,6 +263,46 @@ function withAllLinks(project: FullProject): FullProject {
 
 const decisionNote = ref('')
 
+const disclosures = ref<DisclosureMap>({})
+
+function loadDisclosures(project: FullProject) {
+  disclosures.value = JSON.parse(JSON.stringify(project.disclosures ?? {}))
+}
+
+function toggleDisclosure(key: DisclosureKey) {
+  if (disclosures.value[key]) {
+    const next = { ...disclosures.value }
+    delete next[key]
+    disclosures.value = next
+    return
+  }
+  disclosures.value = { ...disclosures.value, [key]: { note: '', options: [], lock: 'open' } }
+}
+
+function toggleOption(key: DisclosureKey, option: string) {
+  const entry = disclosures.value[key]
+  if (!entry) return
+
+  entry.options = entry.options.includes(option)
+    ? entry.options.filter(o => o !== option)
+    : [...entry.options, option]
+}
+
+const saveDisclosures = async () => {
+  if (!selected.value) return
+  busy.value = 'disclosures'
+  try {
+    await $fetch(`/api/admin/catalog/projects/${selected.value.id}/disclosures`, {
+      method: 'PATCH',
+      body: { disclosures: disclosures.value },
+    })
+    announce(t('catalog.admin.saved'))
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+const lockChoices = computed(() =>
+  LOCK_STATES.map(value => ({ value, label: t(`disclosures.lock.${value}`) })))
+
 interface ReportEntry {
   id: string
   reason: string
@@ -323,6 +363,7 @@ async function open(id: string) {
     const res = await $fetch<{ project: FullProject, gallery: GalleryImage[] }>(
       `/api/admin/catalog/projects/${id}`)
     selected.value = withAllLinks(res.project)
+    loadDisclosures(res.project)
     gallery.value = res.gallery ?? []
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
@@ -988,6 +1029,64 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                     :placeholder="t(`links.${kind}`)"
                   />
                 </div>
+              </div>
+
+              <div class="mt-6">
+                <h3 class="mb-1 text-sm font-semibold">{{ t('disclosures.manage') }}</h3>
+                <p class="mb-3 text-xs text-dimmed">{{ t('disclosures.hint') }}</p>
+
+                <ul class="space-y-2">
+                  <li
+                    v-for="key in DISCLOSURE_KEYS"
+                    :key="key"
+                    class="rounded-2xl border border-white/10 bg-white/5 p-3"
+                  >
+                    <UCheckbox
+                      :model-value="Boolean(disclosures[key])"
+                      :label="t(`disclosures.${key}`)"
+                      size="sm"
+                      @update:model-value="toggleDisclosure(key)"
+                    />
+
+                    <div v-if="disclosures[key]" class="mt-3 space-y-2 pl-6">
+                      <div v-if="DISCLOSURES[key].options.length" class="flex flex-wrap gap-3">
+                        <UCheckbox
+                          v-for="option in DISCLOSURES[key].options"
+                          :key="option"
+                          :model-value="disclosures[key]!.options.includes(option)"
+                          :label="t(`disclosures.options.${key}.${option}`)"
+                          size="sm"
+                          @update:model-value="toggleOption(key, option)"
+                        />
+                      </div>
+
+                      <UInput
+                        v-model="disclosures[key]!.note"
+                        size="sm"
+                        class="w-full"
+                        :maxlength="500"
+                        :placeholder="t('disclosures.note')"
+                      />
+
+                      <USelect
+                        v-model="disclosures[key]!.lock"
+                        :items="lockChoices"
+                        value-key="value"
+                        size="sm"
+                        class="w-full sm:w-64"
+                      />
+                    </div>
+                  </li>
+                </ul>
+
+                <UButton
+                  class="mt-3 rounded-xl"
+                  size="sm"
+                  color="neutral"
+                  :loading="busy === 'disclosures'"
+                  :label="t('account.save')"
+                  @click="saveDisclosures"
+                />
               </div>
 
               <p class="mt-3 text-xs text-dimmed">

@@ -80,6 +80,7 @@ export function fullProject(row: ProjectRow, versions: VersionRow[], files: File
     license: row.license,
     licenseUrl: row.license_url,
     links: row.links,
+    disclosures: row.disclosures,
     meta: row.meta,
     ownerId: row.owner_id,
     orgId: row.org_id,

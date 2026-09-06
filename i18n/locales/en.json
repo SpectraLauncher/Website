@@ -3567,5 +3567,36 @@
       "view_analytics": "View analytics",
       "view_payouts": "View payouts"
     }
+  },
+  "disclosures": {
+    "title": "What this project declares",
+    "hint": "Stated by the author. A moderator can pin an entry the author cannot then remove.",
+    "ai_content": "Made with AI",
+    "advertisements": "Contains advertisements",
+    "epilepsy_triggers": "May trigger epilepsy",
+    "system_interactions": "Interacts with your system",
+    "telemetry": "Collects telemetry",
+    "derivative_work": "Derivative work",
+    "paid_features": "Has paid features",
+    "options": {
+      "ai_content": {
+        "code": "code",
+        "assets": "assets",
+        "text": "text",
+        "functionality": "functionality"
+      },
+      "telemetry": {
+        "opt_in": "opt-in",
+        "opt_out": "opt-out"
+      }
+    },
+    "lock": {
+      "open": "Author may change",
+      "cannot_remove": "Author may not remove",
+      "locked": "Locked by moderation"
+    },
+    "note": "Note",
+    "manage": "Declarations",
+    "lockLabel": "Lock"
   }
 }

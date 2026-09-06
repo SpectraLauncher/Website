@@ -32,6 +32,7 @@ export interface ProjectRow {
   loaders: string[]
   environment: string[]
   links: Record<string, string>
+  disclosures: DisclosureMap
   meta: Record<string, unknown>
   price: number
   currency: string
@@ -77,7 +78,7 @@ export function num(value: string | number | null | undefined): number {
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
   status, license, license_url, icon, categories, game_versions, loaders, environment,
-  links, meta, price, currency, downloads, follows, created, updated, published`
+  links, disclosures, meta, price, currency, downloads, follows, created, updated, published`
 
 // The column list spans lines, so a join that needs it aliased cannot just glue
 // a prefix onto a split on ", ".
@@ -175,6 +176,7 @@ export interface ProjectInput {
   icon?: unknown
   categories?: unknown
   links?: unknown
+  disclosures?: unknown
   meta?: unknown
   orgId?: unknown
   environment?: unknown
@@ -296,9 +298,9 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   const row = await one<ProjectRow>(
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
-       links = $11, meta = $12, published = $13, updated = $14,
-       owner_id = $15, org_id = $16, price = $17, currency = $18,
-       environment = $19
+       links = $11, disclosures = $12, meta = $13, published = $14, updated = $15,
+       owner_id = $16, org_id = $17, price = $18, currency = $19,
+       environment = $20
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -317,6 +319,9 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         : stringList(input.categories, 20)
           .filter(c => categoriesFor(current.type).includes(c)),
       JSON.stringify(input.links === undefined ? current.links : cleanLinks(input.links)),
+      JSON.stringify(input.disclosures === undefined
+        ? current.disclosures
+        : mergeAuthorEdit(current.disclosures, cleanDisclosures(input.disclosures))),
       JSON.stringify(input.meta === undefined
         ? current.meta
         : (input.meta && typeof input.meta === 'object' ? input.meta : {})),

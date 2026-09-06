@@ -418,6 +418,10 @@ export async function ensureCatalogSchema() {
   `)
 
   await pool.query(`
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS disclosures JSONB NOT NULL DEFAULT '{}'
+  `)
+
+  await pool.query(`
     -- Rights granted on one project, to somebody who is not its owner. The
     -- organization grants a working set already; this is for the rest.
     CREATE TABLE IF NOT EXISTS project_member (

@@ -32,6 +32,7 @@ export interface CatalogProjectData {
   license: string | null
   licenseUrl: string | null
   links: Record<string, string>
+  disclosures: DisclosureMap
   categories: string[]
   loaders: string[]
   gameVersions: string[]
@@ -418,6 +419,8 @@ const sizeLabel = (bytes: number) =>
 
       <aside class="space-y-6">
         <slot name="sidebar" />
+
+        <ProjectDisclosures :disclosures="project.disclosures ?? {}" />
 
         <div
           v-if="Object.keys(project.links).length"

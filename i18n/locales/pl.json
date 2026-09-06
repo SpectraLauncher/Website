@@ -3567,5 +3567,36 @@
       "view_analytics": "Podgląd analityki",
       "view_payouts": "Podgląd wypłat"
     }
+  },
+  "disclosures": {
+    "title": "Co deklaruje ten projekt",
+    "hint": "Deklaruje autor. Moderator może przypiąć wpis, którego autor już nie zdejmie.",
+    "ai_content": "Tworzony z użyciem AI",
+    "advertisements": "Zawiera reklamy",
+    "epilepsy_triggers": "Może wywołać atak padaczki",
+    "system_interactions": "Ingeruje w system",
+    "telemetry": "Zbiera telemetrię",
+    "derivative_work": "Praca pochodna",
+    "paid_features": "Ma płatne funkcje",
+    "options": {
+      "ai_content": {
+        "code": "kod",
+        "assets": "grafika",
+        "text": "teksty",
+        "functionality": "mechaniki"
+      },
+      "telemetry": {
+        "opt_in": "za zgodą",
+        "opt_out": "domyślnie włączona"
+      }
+    },
+    "lock": {
+      "open": "Autor może zmieniać",
+      "cannot_remove": "Autor nie może usunąć",
+      "locked": "Zablokowane przez moderację"
+    },
+    "note": "Notatka",
+    "manage": "Deklaracje",
+    "lockLabel": "Blokada"
   }
 }
