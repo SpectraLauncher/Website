@@ -38,6 +38,13 @@ let requestId = 0
 
 const bust = ref(0)
 
+// The pose gallery exists to choose a pose, so its thumbnails do not follow the
+// lighting and effect controls. They used to, which meant every change to a
+// toggle re-requested all 29 of them — ten changes exhausted the render budget
+// and the characters simply stopped appearing.
+const poseThumbUrl = (poseId: string) =>
+  `/render/${poseId}/${encodeURIComponent(player.value)}/full?size=128`
+
 const renderUrl = (poseId: string, cropId: RenderCrop, px: number) => {
   const extra = [
     lightId.value === 'flat' ? '' : `&light=${lightId.value}`,
@@ -329,7 +336,7 @@ onMounted(search)
             >
               <span class="mb-1 grid aspect-square place-items-center rounded-xl bg-[#101010]">
                 <img
-                  :src="renderUrl(p.id, 'full', 128)"
+                  :src="poseThumbUrl(p.id)"
                   loading="lazy"
                   class="max-h-full w-auto [image-rendering:pixelated]"
                   :alt="p.id"

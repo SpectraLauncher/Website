@@ -6,7 +6,10 @@ const MAX_SIZE = 1024
 const DEFAULT_SIZE = 512
 
 export default defineEventHandler(async (event) => {
-  rateLimit(event, { key: `render:${clientIp(event)}`, limit: 300, windowMs: 60_000 })
+  // One visit to the pose tool asks for a gallery of thumbnails plus a preview,
+  // and a household or a school arrives as one address, so the budget is sized
+  // for a page that legitimately renders in bulk rather than for a single image.
+  rateLimit(event, { key: `render:${clientIp(event)}`, limit: 900, windowMs: 60_000 })
 
   const type = String(getRouterParam(event, 'type') ?? '').toLowerCase()
   const rawPlayer = String(getRouterParam(event, 'player') ?? '')
