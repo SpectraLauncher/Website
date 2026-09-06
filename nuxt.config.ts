@@ -1,7 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { TOOLS } from './app/utils/tools'
+import { LEGAL_DOCUMENTS } from './shared/utils/legal'
 
 const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
+
+const LEGAL_PATHS = LEGAL_DOCUMENTS.map(doc => doc.path).filter(path => path.startsWith('/legal/'))
 
 // Every URL prefix the catalog owns. While CATALOG_PUBLIC is off these join
 // PRIVATE_PATHS, which is what keeps them out of robots.txt and the sitemap.
@@ -37,7 +40,9 @@ const PRERENDER = [
   ...TOOLS.filter(tool => tool.page).map(tool => `/tools/${tool.id}`),
   '/privacy',
   '/terms',
-  '/cookies'
+  '/cookies',
+  '/legal',
+  ...LEGAL_PATHS
 ]
 
 export default defineNuxtConfig({

@@ -4,7 +4,8 @@ const { t } = useI18n()
 const COOKIES = [
   { name: 'better-auth.session_token', kind: 'essential', life: 'cookies.life.session' },
   { name: 'spectra_lang', kind: 'functional', life: 'cookies.life.year' },
-  { name: 'cf_clearance', kind: 'security', life: 'cookies.life.cloudflare' }
+  { name: 'cf_clearance', kind: 'security', life: 'cookies.life.cloudflare' },
+  { name: 'better-auth.two_factor', kind: 'essential', life: 'cookies.life.minutes' }
 ]
 
 const STORAGE = [

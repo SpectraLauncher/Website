@@ -2646,7 +2646,7 @@
   "privacy": {
     "title": "Polityka prywatności",
     "intro": "Co zbieramy, po co, komu to przekazujemy i co możesz z tym zrobić. Bez ogólników — poniżej jest lista konkretnych danych, które przetwarza ta strona i launcher.",
-    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
     "sections": [
       {
         "title": "Kto odpowiada za dane",
@@ -2667,7 +2667,9 @@
         "body": [
           "Zakładając konto, podajesz adres e-mail i hasło. Hasła nie przechowujemy — zapisujemy wyłącznie jego skrót kryptograficzny, z którego nie da się odtworzyć oryginału.",
           "Do konta należą też: nazwa użytkownika, nazwa wyświetlana, opcjonalny awatar oraz — jeśli ją włączysz — konfiguracja weryfikacji dwuetapowej.",
-          "Jeśli logujesz się przez Discorda, Google, GitHuba albo Microsoft, otrzymujemy od nich identyfikator konta, adres e-mail, nazwę i zdjęcie profilowe. Nie dostajemy Twojego hasła do tamtej usługi."
+          "Jeśli logujesz się przez Discorda, Google, GitHuba albo Microsoft, otrzymujemy od nich identyfikator konta, adres e-mail, nazwę i zdjęcie profilowe. Nie dostajemy Twojego hasła do tamtej usługi.",
+          "Zamiast hasła możesz dodać klucz dostępu. Przechowujemy klucz publiczny i jego identyfikator, nigdy nic, czym dałoby się podpisać coś w twoim imieniu.",
+          "Każda sesja jest zapisywana z czasem, adresem, z którego przyszła, i nagłówkiem przeglądarki, żebyś widział je w ustawieniach i mógł każdą zakończyć."
         ]
       },
       {
@@ -2691,6 +2693,71 @@
           "Udostępniając instancję, wysyłasz na nasz serwer jej zawartość oraz metadane: nazwę, wersję gry, loader i liczbę modów. Pliki trafiają do magazynu obiektowego Cloudflare R2.",
           "Zapisujemy też, komu paczka została wysłana i którą jej wersję zainstalowano — dzięki temu odbiorcy dostają powiadomienie o aktualizacji.",
           "Kody udostępnień wygasają, a wraz z nimi usuwane są pliki."
+        ]
+      },
+      {
+        "title": "Projekty, które publikujesz",
+        "body": [
+          "Projekt zawiera to, co w nim umieścisz: nazwę, adres, opis, obrazy, linki, licencję, kategorie i zaznaczone deklaracje. Wszystko to jest publiczne, gdy projekt jest publiczny, i zostaje przypisane do twojego konta.",
+          "Trzymamy historię zmian projektu, w tym szkice i wersje, które nigdy nie zostały zaakceptowane, bo decyzję moderacyjną trzeba móc później sprawdzić.",
+          "Liczby pobrań i obserwujących są zbiorcze. Zapisujemy, że pobranie nastąpiło, a nie kto go dokonał."
+        ]
+      },
+      {
+        "title": "Pliki, które wgrywasz",
+        "body": [
+          "Dla każdego pliku przechowujemy nazwę, rozmiar oraz skróty SHA-1 i SHA-512. Po skrótach launcher rozpoznaje plik, który już ma, i po nich wykrywamy duplikaty.",
+          "Metadane czytamy z samego pliku — manifest loadera, format paczki, nagłówek schematu — zamiast ufać temu, co zostało wpisane w formularzu.",
+          "Każdy wgrany plik jest skanowany, zanim będzie mógł zostać opublikowany. Skan patrzy na strukturę archiwum i na ślady znanego złośliwego kodu; wynik jest zapisywany przy pliku i pokazywany moderatorom.",
+          "Pliki leżą w Cloudflare R2 i są serwowane z adresów zawierających skrót."
+        ]
+      },
+      {
+        "title": "Komentarze i rozmowy",
+        "body": [
+          "Komentarze przy projekcie są publiczne, razem z twoją nazwą i czasem napisania. Edycja zachowuje poprzednią treść, więc poprawka po odpowiedzi jest widoczna.",
+          "Wiadomości między autorem a moderatorem przy projekcie widzi zespół projektu i moderatorzy, a nie publiczność.",
+          "Zgłoszenie zakłada wątek. Zgłoszony nie widzi, kto go zgłosił, ale widzi samo zgłoszenie i jego treść."
+        ]
+      },
+      {
+        "title": "Organizacje",
+        "body": [
+          "Organizacja zapisuje, kto do niej należy, jakie ma uprawnienia, kto go zaprosił i kiedy dołączył. Członkowie i ich role są publiczne, uprawnienia nie.",
+          "Wyjście z organizacji usuwa cię z niej, ale projekty zostają przy organizacji, tak samo jak zapis zmian, które w niej wprowadziłeś."
+        ]
+      },
+      {
+        "title": "Zgłoszenia i moderacja",
+        "body": [
+          "Zgłoszenie przechowuje, kto je złożył, czego dotyczy, jaki powód wybrano i co napisano, i zostaje po zamknięciu, żeby dało się zobaczyć powtarzalność.",
+          "Decyzje moderacyjne — akceptacja, odrzucenie, usunięcie, powód i kto ją podjął — są trzymane tak długo, jak istnieje konto, bo od nich zależą odwołania i sprawy powtórzone.",
+          "Zablokowanie kogoś zapisuje, że go zablokowałeś. Ta osoba nie dostaje o tym informacji."
+        ]
+      },
+      {
+        "title": "E-maile, które wysyłamy",
+        "body": [
+          "Wysyłamy e-maile w sprawach konta, które nie mogą być opcjonalne — potwierdzenie adresu, reset hasła, alerty bezpieczeństwa — oraz powiadomienia, o które poprosiłeś pocztą.",
+          "Zakładka powiadomień w ustawieniach decyduje, które rodzaje przychodzą mailem, w serwisie albo obydwoma kanałami. Poczta dotycząca konta i bezpieczeństwa nie jest przełączalna.",
+          "Poczta wychodzi przez serwer pocztowy skonfigurowany dla tego serwisu. Jego operator przetwarza adres i treść w tranzycie, jak każdy przekaźnik poczty."
+        ]
+      },
+      {
+        "title": "Sprzedaż i płatności",
+        "body": [
+          "Jeśli sprzedajesz, Stripe zbiera i trzyma twoje dane tożsamości i dane bankowe bezpośrednio. My nigdy nie widzimy numeru karty ani numeru konta.",
+          "Przechowujemy to, czego wymaga księga: kwotę, walutę, prowizję, projekt, czas i identyfikator transakcji nadany przez Stripe.",
+          "Zakup zapisuje, że twoje konto ma ten projekt, i dzięki temu możesz go pobrać ponownie.",
+          "Stripe jest niezależnym administratorem tego, co zbiera, na podstawie własnej polityki prywatności."
+        ]
+      },
+      {
+        "title": "Tokeny i aplikacje",
+        "body": [
+          "Osobisty token dostępu przechowuje nazwę, zakresy, czas utworzenia, czas wygaśnięcia i ostatnie użycie. Sam token trzymamy wyłącznie jako skrót i pokazujemy raz, przy tworzeniu.",
+          "Aplikacja OAuth przechowuje nazwę, adresy powrotu i właściciela. Kiedy ją autoryzujesz, zapisujemy, które konto nadało które zakresy której aplikacji, żeby dało się to później cofnąć.",
+          "Do aplikacji nie trafia nic z twojego hasła, a aplikacja widzi tylko to, na co pozwalają jej zakresy."
         ]
       },
       {
@@ -2729,7 +2796,9 @@
         "body": [
           "Dane konta i funkcji społecznościowych przetwarzamy w celu wykonania umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO).",
           "Logi, ochronę przed nadużyciami i anonimową telemetrię przetwarzamy w oparciu o nasz uzasadniony interes (art. 6 ust. 1 lit. f RODO), którym jest utrzymanie i rozwój usługi.",
-          "Podpięcie konta Minecraft i publiczne udostępnienie listy znajomych odbywa się na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO), którą możesz w każdej chwili wycofać."
+          "Podpięcie konta Minecraft i publiczne udostępnienie listy znajomych odbywa się na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO), którą możesz w każdej chwili wycofać.",
+          "Publikowanie, sprzedaż i zakup wykonujemy w ramach umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO). Zapisy moderacyjne, zgłoszenia nadużyć i skanowanie plików opierają się na naszym prawnie uzasadnionym interesie (art. 6 ust. 1 lit. f RODO) w utrzymaniu bezpieczeństwa platformy.",
+          "Linie księgi i faktury trzymamy w wykonaniu obowiązku prawnego (art. 6 ust. 1 lit. c RODO)."
         ]
       },
       {
@@ -2738,14 +2807,25 @@
           "Cloudflare — hosting, sieć dostarczania treści, ochrona przed botami i magazyn plików.",
           "Mojang Studios i Microsoft — gdy wyświetlamy skórkę lub pelerynę, odpytujemy ich serwery o publiczne dane profilu Minecraft.",
           "Dostawcy logowania zewnętrznego — Discord, Google, GitHub, Microsoft — wyłącznie w zakresie samego logowania.",
-          "Nie sprzedajemy danych i nie przekazujemy ich do celów reklamowych."
+          "Nie sprzedajemy danych i nie przekazujemy ich do celów reklamowych.",
+          "Stripe — płatności, wypłaty i weryfikacja tożsamości wymagana, zanim komukolwiek zapłaci.",
+          "Serwer pocztowy skonfigurowany dla tego serwisu, przez który idą wysyłane przez nas e-maile."
         ]
       },
       {
         "title": "Jak długo przechowujemy dane",
         "body": [
           "Dane konta trzymamy do momentu jego usunięcia. Usunięcie konta kasuje profil, listę znajomych, powiadomienia, odznaki, aktywność, awatar i udostępnione paczki.",
-          "Udostępnione paczki znikają wraz z wygaśnięciem kodu. Logi serwera i anonimowa telemetria są przechowywane przez ograniczony czas potrzebny do analizy problemów."
+          "Udostępnione paczki znikają wraz z wygaśnięciem kodu. Logi serwera i anonimowa telemetria są przechowywane przez ograniczony czas potrzebny do analizy problemów.",
+          "Decyzje moderacyjne i zgłoszenia trzymamy, dopóki istnieje konto. Linie księgi trzymamy przez okres wymagany przepisami rachunkowymi, czyli dłużej niż samo konto."
+        ]
+      },
+      {
+        "title": "Usunięcie konta",
+        "body": [
+          "Konto możesz usunąć samodzielnie na stronie konta. Usuwa to profil, znajomych, powiadomienia, odznaki, aktywność, awatar, udostępnione paczki, kolekcje, komentarze i tokeny.",
+          "Trzy rzeczy to przetrwają i uczciwiej powiedzieć to teraz, niż żebyś odkrył to potem. Projekty, od których zależą inni, są przenoszone albo wycofywane zamiast znikać; zapis moderacyjny usuniętego projektu zostaje, bo inaczej usunięcie konta i założenie nowego by go kasowało; a linie księgi zostają tak długo, jak wymagają tego przepisy rachunkowe.",
+          "To, co zostaje, jest odłączane od ciebie tam, gdzie się da. Komentarz pozostawiony na miejscu pokazuje się jako od usuniętego konta."
         ]
       },
       {
@@ -2760,7 +2840,8 @@
         "title": "Bezpieczeństwo",
         "body": [
           "Połączenie ze stroną jest szyfrowane. Hasła przechowujemy wyłącznie jako skróty, a konto możesz dodatkowo zabezpieczyć weryfikacją dwuetapową.",
-          "Żaden system nie jest w pełni odporny na naruszenia. Jeśli dojdzie do incydentu zagrażającego Twoim prawom, poinformujemy Cię o nim."
+          "Żaden system nie jest w pełni odporny na naruszenia. Jeśli dojdzie do incydentu zagrażającego Twoim prawom, poinformujemy Cię o nim.",
+          "Tokeny dostępu przechowujemy jako skróty, wgrywane pliki są skanowane, zanim będzie je można opublikować, a treść wysyłanych e-maili jest escapowana, żeby nazwa wpisana przez kogoś innego nie stała się znacznikiem w wiadomości."
         ]
       },
       {
@@ -2780,7 +2861,7 @@
   "terms": {
     "title": "Regulamin",
     "intro": "Zasady korzystania ze strony Spectra i ze Spectra Launchera.",
-    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
     "sections": [
       {
         "title": "Czego dotyczy regulamin",
@@ -2814,12 +2895,52 @@
         ]
       },
       {
+        "title": "Publikowanie projektu",
+        "body": [
+          "Publikowanie jest otwarte dla kont, którym je włączyliśmy. Wszystko, co publikowane, przechodzi przez sprawdzenie, zanim stanie się widoczne, i dalej podlega Zasadom treści.",
+          "Prawa autorskie do tego, co publikujesz, zostają twoje. Publikując, dajesz nam prawo do trzymania tego, pokazywania i przekazywania launcherom oraz API — nic ponad to, co potrzebne do działania serwisu, i kończy się to, kiedy zdejmiesz treść.",
+          "Musisz mieć prawo publikować to, co publikujesz, łącznie z tym, co dołączone w pliku. Wybrana licencja dotyczy twojej pracy; nie nadaje praw, których nie masz.",
+          "Deklaracje przy projekcie są częścią jego opisu. Zaznaczenie którejś niezgodnie z prawdą albo pozostawienie niezaznaczonej, kiedy ma zastosowanie, jest naruszeniem tego regulaminu, a nie tylko zasad."
+        ]
+      },
+      {
+        "title": "Sprawdzanie, decyzje i odwołania",
+        "body": [
+          "Sprawdzamy to, co jest publikowane, i możemy to odrzucić, ukryć albo usunąć. Każda decyzja przychodzi z uzasadnieniem, wypisanym przy projekcie.",
+          "Na decyzję można odpisać i poprosić o ponowne spojrzenie. Nie obiecujemy wyniku; obiecujemy, że przeczyta to człowiek.",
+          "Możemy zadziałać bez ostrzeżenia, gdy treść jest złośliwa, nielegalna albo naraża ludzi. Wszystko inne najpierw dostaje rozmowę."
+        ]
+      },
+      {
+        "title": "Sprzedaż",
+        "body": [
+          "Pobieranie opłat za projekt reguluje osobny dokument Sprzedaż i wypłaty, który obowiązuje obok tego regulaminu i który akceptujesz, włączając sprzedaż.",
+          "Licencja, za którą kupujący zapłacił, przetrwa ciebie, twój projekt i tę umowę."
+        ]
+      },
+      {
+        "title": "API, tokeny i aplikacje",
+        "body": [
+          "API jest otwarte do budowania rzeczy. Użyj osobistego tokenu dostępu albo aplikacji OAuth i nadaj tylko te zakresy, które są potrzebne.",
+          "Token działa jako ty. Wszystko, co nim zrobione, jest traktowane jako zrobione przez ciebie, więc trzymaj go jak hasło i unieważnij, kiedy przestaje być potrzebny.",
+          "Limity zapytań obowiązują na adres i na konto. Odpowiadanie na 429 natychmiastowym ponowieniem, rozkładanie zapytań na wiele adresów albo budowanie czegokolwiek pod obejście limitu kończy dostęp.",
+          "Jeśli prowadzisz aplikację OAuth, odpowiadasz za to, co robi z dostępem, który ludzie jej nadali, i za to, żeby wprost powiedzieć im, co zrobi, zanim go nadadzą."
+        ]
+      },
+      {
         "title": "Czego nie wolno",
         "body": [
           "Łamać prawa, praw autorskich ani cudzej prywatności.",
           "Rozpowszechniać złośliwego oprogramowania, treści nielegalnych, nienawistnych lub nękających.",
           "Obchodzić zabezpieczeń, przeciążać usługi, zbierać danych innych użytkowników ani automatycznie zakładać kont.",
           "Wykorzystywać usługi do omijania zakupu Minecrafta lub uwierzytelniania Mojanga."
+        ]
+      },
+      {
+        "title": "Limity konta",
+        "body": [
+          "Jedno konto może mieć określoną liczbę projektów, organizacji i kolekcji, a projekt określoną liczbę wersji. Aktualne liczby są w Zasadach treści.",
+          "Zakładanie dodatkowych kont, żeby obejść limit albo zawieszenie, samo w sobie jest naruszeniem."
         ]
       },
       {
@@ -2852,6 +2973,13 @@
         ]
       },
       {
+        "title": "Zgłoszenia praw autorskich i bezpieczeństwa",
+        "body": [
+          "Zgłoszenia naruszenia praw autorskich idą według Polityki praw autorskich, która określa, co musi zawierać zgłoszenie, jak na nie odpowiedzieć i co dzieje się z kontami, które dostają je regularnie.",
+          "Podatności idą według dokumentu o zgłaszaniu podatności. Zgłoszenie w dobrej wierze i zgodnie z nim nie będzie traktowane jako naruszenie tego regulaminu."
+        ]
+      },
+      {
         "title": "Zmiany regulaminu",
         "body": [
           "Regulamin możemy zmieniać. Data ostatniej zmiany jest na górze strony, a dalsze korzystanie z usługi po zmianie oznacza jej akceptację."
@@ -2868,7 +2996,7 @@
   "cookies": {
     "title": "Pliki cookie",
     "intro": "Ta strona nie prowadzi analityki ani reklamy. Używamy tylko tego, bez czego usługa nie zadziała, oraz jednego ciasteczka zapamiętującego język.",
-    "updated": "Ostatnia aktualizacja: 28 sierpnia 2026",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
     "sections": [
       {
         "title": "Czym są pliki cookie",
@@ -2899,12 +3027,14 @@
     "life": {
       "session": "Do wylogowania",
       "year": "Rok",
-      "cloudflare": "Ustalany przez Cloudflare"
+      "cloudflare": "Ustalany przez Cloudflare",
+      "minutes": "Kilka minut"
     },
     "why": {
       "better_auth_session_token": "Utrzymuje zalogowanie. Bez niego każde przejście na inną stronę wymagałoby ponownego logowania.",
       "spectra_lang": "Zapamiętuje wybrany język, żeby nie wracał do domyślnego przy każdej wizycie.",
-      "cf_clearance": "Stawiane przez Cloudflare przy weryfikacji, że nie jesteś botem. Pojawia się tylko wtedy, gdy taka weryfikacja zostanie uruchomiona."
+      "cf_clearance": "Stawiane przez Cloudflare przy weryfikacji, że nie jesteś botem. Pojawia się tylko wtedy, gdy taka weryfikacja zostanie uruchomiona.",
+      "better_auth_two_factor": "Ustawiane tylko na czas potwierdzania drugiego składnika przy logowaniu i znika, gdy się skończy. Nie niesie żadnych danych konta."
     },
     "storageTitle": "Pamięć przeglądarki",
     "storage": {
@@ -3750,5 +3880,332 @@
         "compat": "Zgodność i pomocnicze"
       }
     }
+  },
+  "legal": {
+    "title": "Dokumenty",
+    "intro": "Wszystko, co reguluje korzystanie ze Spectry, publikowanie na niej i zarabianie przez nią. Napisane po to, żeby to przeczytać, a nie przetrwać.",
+    "others": "Pozostałe dokumenty",
+    "contact": "Coś jest niejasne albo uważasz, że jest źle — napisz na %EMAIL%.",
+    "summaries": {
+      "terms": "Umowa między tobą a nami, o serwis i launcher.",
+      "rules": "Co można tu publikować i za co projekt znika.",
+      "copyright": "Jak zgłosić naruszenie i jak odpowiedzieć na zgłoszenie.",
+      "monetization": "Sprzedaż projektu, nasza prowizja i wypłaty.",
+      "privacy": "Co zbieramy, po co, komu przekazujemy i co możesz z tym zrobić.",
+      "cookies": "Te kilka ciasteczek, które serwis ustawia, i czemu nie ma banera.",
+      "security": "Jak zgłosić podatność i co się potem dzieje."
+    }
+  },
+  "rules": {
+    "title": "Zasady treści",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "intro": "Co można publikować na Spectrze. Projekt łamiący te zasady jest odrzucany albo usuwany, bez względu na to, kto go napisał.",
+    "sections": [
+      {
+        "title": "1. Kogo dotyczą",
+        "body": [
+          "Wszystko, co się tu pojawia, przechodzi przez sprawdzenie, zanim stanie się widoczne: projekty, wersje, pliki, opisy, obrazy i linki. Te zasady są tym, z czym sprawdzenie porównuje.",
+          "Dotyczą tak samo każdego projektu, w tym naszych. Zasada, która wiąże tylko innych, nie jest zasadą."
+        ]
+      },
+      {
+        "title": "2. Treści zabronione",
+        "body": [
+          "Projekt nie może zawierać żadnej z poniższych rzeczy, linkować do niej ani istnieć po to, żeby ją dostarczyć."
+        ],
+        "points": [
+          "Złośliwe oprogramowanie w każdej postaci: backdoory, zdalny dostęp, koparki, keyloggery, wykradanie danych logowania, kod pobierający i uruchamiający cokolwiek niezadeklarowanego.",
+          "Kod, który czyta, wysyła albo zmienia cokolwiek poza grą i własnymi plikami, nie mówiąc o tym wprost w opisie.",
+          "Treści seksualne, treści seksualizujące nieletnich, drastyczne obrazy oraz materiały, których celem jest zszokować.",
+          "Nękanie, groźby i treści atakujące ludzi ze względu na rasę, pochodzenie, narodowość, religię, niepełnosprawność, płeć, tożsamość płciową czy orientację.",
+          "Treści promujące samookaleczenie, terroryzm albo poważne przestępstwa.",
+          "Cokolwiek nielegalnego u nas albo u ciebie, w tym wykradzione dane logowania, pirackie oprogramowanie i handel kontami."
+        ]
+      },
+      {
+        "title": "3. Napisz, co to robi",
+        "body": [
+          "Opis, obrazy i metadane muszą się zgadzać z tym, co pliki faktycznie robią. Projekt, którego opis jest zgadywanką, zaślepką albo reklamą czegoś innego, jest odrzucany.",
+          "Jeśli projekt zbiera telemetrię, wyświetla reklamy, łączy się z serwerem, czyta pliki poza katalogiem gry, zawiera migające obrazy albo pobiera opłatę za część tego, co robi — to trafia do deklaracji. Deklaracje istnieją po to, żeby nikt nie musiał czytać jara, żeby się dowiedzieć.",
+          "Moderator, który ustali, że deklaracja jest prawdziwa, może ją zablokować i wtedy autor jej nie odznaczy. To jest to, co zatrzymuje cichą edycję po akceptacji.",
+          "Zrzuty ekranu mają być z tego projektu. Galeria z cudzej pracy to usunięcie, nie ostrzeżenie."
+        ]
+      },
+      {
+        "title": "4. Cheaty i exploity",
+        "body": [
+          "Klienty i modyfikacje, których celem jest nieuczciwa przewaga na serwerach, których gracz nie kontroluje, nie są tu publikowane. Dotyczy to killaury, x-raya, zasięgu, wspomagania celowania, latania na survivalu i wszystkiego sprzedawanego jako obejście anticheata.",
+          "Narzędzia do gry jednoosobowej i na własne serwery są w porządku: pomoce kreatywne, edytory świata, nakładki debugowe, minimapy z możliwością wyłączenia po stronie serwera.",
+          "Granicą jest to, czy coś jest zrobione po to, żeby ograć innych ludzi na serwerze, który się na to nie zgodził."
+        ]
+      },
+      {
+        "title": "5. Repostowanie i prace pochodne",
+        "body": [
+          "Publikuj swoją pracę albo pracę, którą masz prawo publikować. Wrzucenie cudzego projektu — tych samych plików, przepakowanych albo przekompilowanych — jest usuwane od razu.",
+          "Fork, port na inny loader albo wersję gry oraz tłumaczenie są mile widziane, o ile pozwala na to licencja oryginału. Napisz wprost w opisie, z czego to pochodzi, podlinkuj oryginał i zaznacz deklarację pracy pochodnej.",
+          "Biblioteki dołączone do pliku muszą na to pozwalać swoimi licencjami. Licencja wybrana na projekcie dotyczy twojej własnej pracy, a nie tego, co dołączyłeś.",
+          "Zgłoszenia naruszenia praw autorskich mają własną procedurę, opisaną w Polityce praw autorskich."
+        ]
+      },
+      {
+        "title": "6. Generatywna sztuczna inteligencja",
+        "body": [
+          "AI nie jest tu zakazane, ale musi być zadeklarowane. Jeśli kod, zasoby, teksty albo działanie w grze zostały wygenerowane, zaznacz deklarację AI i napisz, co dokładnie.",
+          "Niezadeklarowana treść z AI jest traktowana jak fałszywy opis, czyli usunięcie z punktu 3.",
+          "Dwie rzeczy są odrzucane niezależnie od deklaracji: zasoby wygenerowane z rozpoznawalnej pracy konkretnego twórcy i podane jako własne oraz projekty generowane masowo, publikowane po to, żeby zająć nazwy albo napompować profil."
+        ]
+      },
+      {
+        "title": "7. Nazwy, adresy i podszywanie się",
+        "body": [
+          "Nazwa i adres projektu nie mogą sugerować, że zrobił go ktoś inny, ani że jest to oficjalne wydanie czegoś, czym nie jest.",
+          "Rejestrowanie nazw po to, żeby je trzymać, odsprzedać albo odebrać oczywistemu właścicielowi, to zajmowanie nazw i nazwa jest zwalniana.",
+          "Konta i organizacje podszywające się pod inną osobę, firmę albo kogoś z naszej obsługi są usuwane."
+        ]
+      },
+      {
+        "title": "8. Limity",
+        "body": [
+          "Jedno konto może mieć 50 projektów, 10 organizacji i 100 kolekcji, a projekt 500 wersji. Limity istnieją po to, żeby automatyczne nadużycia były kosztowne, a nie po to, żeby komukolwiek przeszkadzać.",
+          "Jeśli masz powód, żeby przekroczyć któryś, napisz na %EMAIL% zamiast zakładać drugie konto."
+        ]
+      },
+      {
+        "title": "9. Egzekwowanie",
+        "body": [
+          "Zwykle kończy się jednym z trzech: akceptacja, odesłanie z uzasadnieniem albo usunięcie. Każda decyzja przychodzi jako wiadomość przy projekcie, z wypisanym powodem.",
+          "Na tę wiadomość można odpisać, poprawić problem i poprosić o ponowne spojrzenie. Odwołanie czyta człowiek.",
+          "Poważne przypadki — złośliwe oprogramowanie, treści seksualne z udziałem nieletnich, skoordynowane nadużycia — pomijają rozmowę, a razem z projektem znika konto.",
+          "Publikowanie w kółko tego, co już zostało usunięte, jest traktowane jako jedna trwająca sprawa, a nie seria pierwszych przewinień."
+        ]
+      },
+      {
+        "title": "10. Zgłaszanie",
+        "body": [
+          "Każdy projekt, wersja, komentarz, użytkownik i organizacja ma przycisk zgłoszenia. Wybierz najbliższy powód — spam, prawa autorskie, treści nieodpowiednie, złośliwe oprogramowanie, zajmowanie nazwy albo inny — i napisz, co widziałeś.",
+          "Zgłoszenie zakłada wątek. Zobaczysz, kiedy ktoś się nim zajmie i czym się skończyło.",
+          "Zgłoszenia wysyłane hurtem albo po to, żeby kogoś nękać, kosztują zgłaszającego możliwość zgłaszania."
+        ]
+      }
+    ]
+  },
+  "copyright": {
+    "title": "Polityka praw autorskich",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "intro": "Jak nam powiedzieć, że coś tutaj narusza twoje prawa autorskie, jak odpowiedzieć na zgłoszenie przeciwko tobie i co się dzieje z kontami, które dostają je regularnie.",
+    "sections": [
+      {
+        "title": "Zanim wyślesz zgłoszenie",
+        "body": [
+          "Większość tego, co wygląda tu na naruszenie, jest kwestią licencji — fork, na który licencja pozwalała, albo port, na który autor się zgodził. Jeśli projekt podaje oryginał i go linkuje, zajrzyj tam najpierw.",
+          "Zgłoszenie jest oświadczeniem prawnym. Wysłanie go w sprawie treści, do których nie masz praw, albo treści używanych legalnie, ma konsekwencje dla ciebie, a nie dla projektu."
+        ]
+      },
+      {
+        "title": "Zgłoszenie naruszenia",
+        "body": [
+          "Napisz na %EMAIL% z tematem „Prawa autorskie”. Zgłoszenie musi zawierać wszystko poniżej, inaczej nie możemy na nie zareagować."
+        ],
+        "points": [
+          "Jaki utwór jest naruszany, z linkiem albo opisem pozwalającym go zidentyfikować.",
+          "Adres projektu, wersji, pliku albo obrazu na Spectrze, który go narusza. Jeden adres na pozycję.",
+          "Twoje imię i nazwisko, adres pocztowy i adres e-mail.",
+          "Oświadczenie, że w dobrej wierze uważasz, iż to wykorzystanie nie jest dozwolone przez uprawnionego, jego przedstawiciela ani przepisy.",
+          "Oświadczenie, że podane informacje są prawdziwe i że jesteś uprawnionym albo działasz w jego imieniu.",
+          "Twój podpis, elektroniczny albo własnoręczny."
+        ]
+      },
+      {
+        "title": "Co z tym robimy",
+        "body": [
+          "Kompletne zgłoszenie realizujemy bez czekania na autora. Treść znika, a autor dostaje informację, co zostało usunięte, dlaczego i przez kogo, razem z kopią zgłoszenia.",
+          "Nie usuwamy całego projektu z powodu jednego obrazu albo jednego pliku, jeśli wystarczy usunąć tę jedną rzecz.",
+          "Nie jesteśmy sądem. Działamy na podstawie tego, co zgłoszenie stwierdza, i przywracamy treść, kiedy każe nam to sprzeciw albo wasze porozumienie."
+        ]
+      },
+      {
+        "title": "Odpowiedź na zgłoszenie",
+        "body": [
+          "Jeśli twoja treść została usunięta, a uważasz, że zgłoszenie było błędne — masz prawa, licencja na to pozwala albo pomylono treści — odpisz na wiadomość przy projekcie albo napisz na %EMAIL% z tematem „Sprzeciw”."
+        ],
+        "points": [
+          "Wskaż, co zostało usunięte i gdzie było.",
+          "Oświadczenie, w dobrej wierze i pod rygorem odpowiedzialności za fałszywe oświadczenie, jeśli cię ona dotyczy, że treść usunięto przez pomyłkę albo błędną identyfikację.",
+          "Twoje imię i nazwisko, adres pocztowy i adres e-mail.",
+          "Zgodę na jurysdykcję sądów wskazanych w Regulaminie."
+        ]
+      },
+      {
+        "title": "Po sprzeciwie",
+        "body": [
+          "Przekazujemy sprzeciw temu, kto wysłał zgłoszenie, razem z danymi kontaktowymi, które sprzeciw zawiera. Jeśli w ciągu 14 dni nie dostaniemy informacji, że sprawa trafiła do sądu, treść wraca.",
+          "Wysłanie sprzeciwu oznacza, że druga strona dostaje twoje dane kontaktowe. Tak działa ta procedura; nie ma jej anonimowej wersji."
+        ]
+      },
+      {
+        "title": "Powtarzające się naruszenia",
+        "body": [
+          "Konto, które zbiera uwzględnione zgłoszenia, traci możliwość publikowania, a potem samo konto. Liczymy zgłoszenia uwzględnione, a nie otrzymane, więc fałszywe zgłoszenie przeciwko tobie nie liczy się przeciwko tobie.",
+          "Usunięcie i wrzucenie tej samej treści od nowa nie zeruje licznika."
+        ]
+      },
+      {
+        "title": "Nadużywanie procedury",
+        "body": [
+          "Zgłoszenia wysyłane po to, żeby usunąć konkurencję, przejąć nazwę albo w sprawie treści, których nie posiadasz, są nadużyciem. Odrzucamy je i zachowujemy ślad.",
+          "Tam, gdzie przepisy przewidują odszkodowanie za fałszywe zgłoszenie, autor może z tego skorzystać. Przekażemy to, co mamy, jeśli poprosi sąd."
+        ]
+      }
+    ]
+  },
+  "security": {
+    "title": "Zgłaszanie podatności",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "intro": "Jak zgłosić podatność w Spectrze, co uznajemy za objęte zakresem i czego możesz się po nas spodziewać po wysłaniu zgłoszenia.",
+    "sections": [
+      {
+        "title": "Zgłaszanie",
+        "body": [
+          "Napisz na %EMAIL% z tematem „Security”. Opisz, co znalazłeś, jak to powtórzyć i co z tego ma atakujący. Krótki dowód działania jest wart więcej niż raport ze skanera.",
+          "Najpierw zgłoś prywatnie. Nie zakładaj publicznego zgłoszenia, nie publikuj tego i nie mów nikomu, dopóki nie jest naprawione.",
+          "Dostaniesz odpowiedź od człowieka. Jeśli przez 72 godziny nic nie przyjdzie, wyślij ponownie — załóż, że zginęło, a nie że zostało zignorowane."
+        ]
+      },
+      {
+        "title": "W zakresie",
+        "body": [
+          "Wszystko, co pozwala komuś zrobić to, czego robić nie powinien."
+        ],
+        "points": [
+          "Serwis i jego API, w tym katalog, system kont i endpointy launchera.",
+          "Uwierzytelnianie i sesje: klucze dostępu, dwa składniki, reset hasła, aplikacje OAuth, osobiste tokeny dostępu.",
+          "Autoryzacja: dostanie się do danych innego konta, do projektów innej organizacji albo do funkcji moderatora.",
+          "Wgrywane pliki: ominięcie skanowania, wyjście poza katalog, bomby dekompresyjne, wykonanie się przechowywanej treści gdziekolwiek.",
+          "Wstrzyknięcia dowolnego rodzaju, w tym w renderowane opisy i w wysyłane przez nas e-maile.",
+          "Wszystko dotyczące płatności, księgi wypłat i kwot w niej."
+        ]
+      },
+      {
+        "title": "Poza zakresem",
+        "body": [
+          "Tych rzeczy nie przyjmujemy jako zgłoszeń — bo nie są podatnościami albo są znanym, świadomym kompromisem."
+        ],
+        "points": [
+          "Brakujące nagłówki, flagi na ciasteczkach, które nic nie niosą, albo ocena ze skanera, bez pokazania ataku, który z tego korzysta.",
+          "Odmowa usługi, zalewanie ruchem i wszystko, co pogarsza działanie serwisu innym.",
+          "Socjotechnika wobec nas, naszych użytkowników albo dostawców, oraz ataki fizyczne.",
+          "To, że da się dojść do limitu zapytań — chyba że pokażesz, że sam limit jest zepsuty.",
+          "Podatności w usługach zewnętrznych, z których korzystamy — te zgłoś u nich.",
+          "Znaleziska wymagające już przejętego urządzenia albo już wykradzionego tokenu."
+        ]
+      },
+      {
+        "title": "O co prosimy",
+        "body": [
+          "Używaj własnych kont i własnych danych. Nie czytaj, nie zmieniaj i nie zachowuj cudzych.",
+          "Zatrzymaj się na dowodzie. Kiedy potrafisz pokazać, że problem istnieje, nie musisz sprawdzać, jak daleko sięga.",
+          "Nie pogarszaj działania serwisu i nie zostawiaj testowych treści. Jeśli zostawiłeś, napisz — posprzątamy.",
+          "Daj nam rozsądny czas na naprawę, zanim powiesz o tym publicznie. Po wydaniu poprawki nie będziemy się spierać o datę."
+        ]
+      },
+      {
+        "title": "Co z tego masz",
+        "body": [
+          "Nie prowadzimy programu nagród i nie ma tu pieniędzy. Uczciwiej to napisać od razu, niż pozwolić ci się o tym dowiedzieć po pracy.",
+          "Co oferujemy: prawdziwą odpowiedź, poprawkę i wzmiankę przy niej, jeśli chcesz. Poproś o anonimowość, a ją dostaniesz.",
+          "Zgłoszenie w dobrej wierze i zgodnie z tym dokumentem nie będzie przez nas ścigane i powiemy to, jeśli ktoś nas o to poprosi."
+        ]
+      },
+      {
+        "title": "Złośliwy plik to co innego",
+        "body": [
+          "Opublikowany tu plik, który okazuje się złośliwy, nie jest zgłoszeniem podatności — użyj przycisku zgłoszenia przy projekcie, z powodem „złośliwe oprogramowanie”. Takie zgłoszenia idą przed wszystkimi innymi.",
+          "Jeśli uważasz, że plik przeszedł przez skanowanie przy wgrywaniu, napisz to wprost. Ta część jest podatnością i chcemy o niej wiedzieć."
+        ]
+      }
+    ]
+  },
+  "monetization": {
+    "title": "Sprzedaż i wypłaty",
+    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "intro": "Zasady pobierania opłat za projekt na Spectrze: kto może, co dostaje kupujący, ile bierzemy i jak pieniądze do ciebie trafiają.",
+    "sections": [
+      {
+        "title": "Kto może sprzedawać",
+        "body": [
+          "Sprzedaż jest domyślnie wyłączona. Włącza się ją na koncie po weryfikacji i wymaga podpiętego konta Stripe, które może przyjmować wypłaty w twoim kraju.",
+          "Musisz mieć prawo sprzedawać to, co sprzedajesz. Projekt pochodny od pracy na licencji zakazującej użycia komercyjnego nie może być tu sprzedawany, niezależnie od licencji wybranej na projekcie.",
+          "Organizacja sprzedaje przez konto, które ją posiada. Uprawnienia wewnątrz organizacji decydują, kto może zmienić cenę; nie zmieniają tego, komu płacimy."
+        ]
+      },
+      {
+        "title": "Co dostaje kupujący",
+        "body": [
+          "Zakup daje kupującemu osobistą, nieprzenoszalną licencję na pobieranie i używanie każdej wersji tego projektu, także wydanej później, dopóki istnieje jego konto.",
+          "To nie jest abonament. Nie pobieramy opłaty drugi raz za ten sam projekt i nie da się odebrać licencji, za którą ktoś zapłacił.",
+          "Jeśli przestaniesz publikować projekt, ci, którzy go kupili, zachowują dostęp do tego, co kupili. Weź to pod uwagę, zanim za coś zaczniesz brać pieniądze.",
+          "Kupujący nie mogą rozpowszechniać tego, co kupili. Dochodzenie tego wobec konkretnej osoby jest twoją sprawą; my reagujemy na zgłoszenia dotyczące treści trzymanych tutaj."
+        ]
+      },
+      {
+        "title": "Ceny",
+        "body": [
+          "Ceny ustawia się na projekcie w euro albo w dolarach amerykańskich. Kupujący płaci w jednej z tych walut, a kwota, którą widzi, jest kwotą, którą zostanie obciążony.",
+          "Cenę możesz zmienić kiedy chcesz. Zmiana działa na zakupy po niej, nigdy na te przed nią.",
+          "Projekt może być darmowy z płatnymi elementami, ale wtedy musi mieć zaznaczoną deklarację płatnych funkcji. Odkrycie płatnej ściany po pobraniu to usunięcie."
+        ]
+      },
+      {
+        "title": "Nasza prowizja",
+        "body": [
+          "Bierzemy 1% z każdej sprzedaży. Dla partnerów i zweryfikowanych organizacji jest to 0,5%.",
+          "Prowizja jest potrącana ze sprzedaży, a nie doliczana do niej. Kupujący nigdy nie płaci więcej z jej powodu.",
+          "Opłaty za obsługę płatności należą do Stripe i są przez nich naliczane osobno. Nic do nich nie dokładamy i nic z nich nie dostajemy.",
+          "Jeśli zmienimy prowizję, będzie dotyczyła sprzedaży po zmianie, a dowiesz się o niej, zanim zacznie obowiązywać."
+        ]
+      },
+      {
+        "title": "Księga",
+        "body": [
+          "Każdy ruch to linia w twojej księdze: kwota brutto sprzedaży, prowizja jako osobna ujemna linia, zwrot, wypłata. Twoje saldo to suma tych linii i nic poza tym.",
+          "Linii nigdy nie edytujemy ani nie usuwamy. Korekta to kolejna linia, dzięki czemu historia zostaje czytelna.",
+          "Księga jest tym, na podstawie czego płacimy, i tym, co pokazalibyśmy, gdyby jakakolwiek kwota była kiedyś sporna."
+        ]
+      },
+      {
+        "title": "Wypłaty",
+        "body": [
+          "Wypłatę zamawiasz na swojej stronie sprzedawcy. Minimum to 10,00 w walucie salda, bo poniżej tego przelew kosztuje więcej, niż przenosi.",
+          "Wypłaty idą przez Stripe na podpięte konto. Ile potem trwa, zależy od Stripe i twojego banku.",
+          "Sprzedaż można wypłacić po upływie okna na obciążenie zwrotne. Z żadnego innego powodu nie trzymamy pieniędzy dłużej.",
+          "Wypłata, której nie da się zrealizować — zamknięte konto, nieudana weryfikacja, odrzucony przelew — wraca na saldo jako linia, a my mówimy dlaczego."
+        ]
+      },
+      {
+        "title": "Zwroty i obciążenia zwrotne",
+        "body": [
+          "Zwroty rozpatrujemy indywidualnie. Kupujący, który nie może użyć tego, co kupił, bo projekt przestał działać zgodnie z opisem, dostaje pieniądze z powrotem, a zwrot pojawia się jako linia obciążająca twoje saldo.",
+          "Obciążenie zwrotne cofa sprzedaż i jej prowizję. Opłata, którą operator za to nalicza, jest twoja, bo obciąża transakcję, a nie nas.",
+          "Seria obciążeń zwrotnych albo zwrotów przy jednym projekcie wstrzymuje jego sprzedaż na czas sprawdzenia dlaczego."
+        ]
+      },
+      {
+        "title": "Podatki",
+        "body": [
+          "Za podatek od tego, co zarobisz, odpowiadasz ty. Nie potrącamy go, nie doradzamy w tej sprawie i niczego za ciebie nie składamy.",
+          "Stripe zbiera dane, których wymaga twój kraj, zanim ci zapłaci, i raportuje to, co ma obowiązek raportować.",
+          "Tam, gdzie od zakupu należny jest VAT albo podatek od sprzedaży, jest pobierany przy płatności i nigdy nie jest liczony jako twój zarobek."
+        ]
+      },
+      {
+        "title": "Zakończenie",
+        "body": [
+          "Sprzedaż możesz wyłączyć w dowolnym momencie. Wydane licencje to przetrwają, a saldo dalej jest twoje do wypłaty.",
+          "Możemy zawiesić sprzedaż na koncie, co do którego mamy podstawy sądzić, że dopuszcza się oszustwa, prania pieniędzy albo sprzedaje coś, do czego nie ma praw. Wtedy saldo jest wstrzymane na czas sprawdzenia, a nie zabrane.",
+          "Jeśli konto zostanie usunięte za łamanie zasad, to, co już zostało zarobione, i tak zostanie wypłacone. Nie używamy pieniędzy jako kary."
+        ]
+      }
+    ]
   }
 }

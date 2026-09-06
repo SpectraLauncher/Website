@@ -3,9 +3,10 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 
 const LEGAL = [
-  { key: 'privacy.title', to: '/privacy' },
   { key: 'terms.title', to: '/terms' },
-  { key: 'cookies.title', to: '/cookies' }
+  { key: 'privacy.title', to: '/privacy' },
+  { key: 'legal.title', to: '/legal' },
+  { key: 'docs.title', to: '/docs' }
 ]
 </script>
 

@@ -2646,7 +2646,7 @@
   "privacy": {
     "title": "Privacy policy",
     "intro": "What we collect, why, who we pass it to and what you can do about it. No hand-waving — below is the actual list of data this site and the launcher process.",
-    "updated": "Last updated: 28 August 2026",
+    "updated": "Last updated: 6 September 2026",
     "sections": [
       {
         "title": "Who is responsible",
@@ -2667,7 +2667,9 @@
         "body": [
           "Creating an account means giving an email address and a password. We never store the password itself — only a cryptographic hash it cannot be recovered from.",
           "The account also holds a username, a display name, an optional avatar and, if you turn it on, two-factor configuration.",
-          "If you sign in through Discord, Google, GitHub or Microsoft, we receive an account identifier, email address, name and profile picture from them. We never receive your password to that service."
+          "If you sign in through Discord, Google, GitHub or Microsoft, we receive an account identifier, email address, name and profile picture from them. We never receive your password to that service.",
+          "You can add a passkey instead of a password. What we store is the public key and an identifier for it, never anything that could sign on your behalf.",
+          "Every session is recorded with the time, the address it came from and the browser header, so you can see them in the settings and end any of them."
         ]
       },
       {
@@ -2691,6 +2693,71 @@
           "Sharing an instance uploads its contents and metadata: name, game version, loader and mod count. Files are stored in Cloudflare R2 object storage.",
           "We also record who a pack was sent to and which revision they installed, which is what lets recipients be told about updates.",
           "Share codes expire, and the stored files are removed with them."
+        ]
+      },
+      {
+        "title": "Projects you publish",
+        "body": [
+          "A project holds what you put in it: name, address, description, images, links, licence, categories and the declarations you tick. All of it is public once the project is, and it stays attached to your account.",
+          "We keep the edit history of a project, including drafts and versions that were never approved, because a moderation decision has to be reviewable afterwards.",
+          "Download counts and follower counts are aggregate. We record that a download happened, not who made it."
+        ]
+      },
+      {
+        "title": "Files you upload",
+        "body": [
+          "For every file we store the name, size, and a SHA-1 and SHA-512 hash. The hashes are how a launcher recognises a file it already has, and how a duplicate is spotted.",
+          "We read metadata out of the file itself — the loader manifest, the pack format, the schematic header — rather than trusting what was typed into the form.",
+          "Every upload is scanned before it can be published. The scan looks at the archive structure and at markers of known malicious code; what it finds is stored with the file and shown to moderators.",
+          "Files are stored in Cloudflare R2 object storage and served from addresses that contain the hash."
+        ]
+      },
+      {
+        "title": "Comments and conversations",
+        "body": [
+          "Comments on a project are public, with your name and the time you wrote them. Editing one keeps the previous text, so an edit after a reply is visible.",
+          "Messages between an author and a moderator on a project are visible to the project team and to moderators, not to the public.",
+          "A report opens a thread. Whoever you reported does not see who reported them, but they see the report and what it says."
+        ]
+      },
+      {
+        "title": "Organisations",
+        "body": [
+          "An organisation records who is in it, what permissions each member holds, who invited them and when they joined. Members and their roles are public; permissions are not.",
+          "Leaving an organisation removes you from it, but the projects stay with the organisation, and so does the record of the changes you made while you were in it."
+        ]
+      },
+      {
+        "title": "Reports and moderation",
+        "body": [
+          "A report stores who filed it, against what, the reason chosen and what was written, and it is kept after it is closed so a pattern can be seen.",
+          "Moderation decisions — approval, rejection, removal, the reason and who made it — are kept for as long as the account exists, because appeals and repeat cases both depend on them.",
+          "Blocking someone stores that you blocked them. They are not told."
+        ]
+      },
+      {
+        "title": "E-mail we send",
+        "body": [
+          "We send e-mail for account matters that cannot be optional — verifying an address, resetting a password, security alerts — and for notifications you have asked to receive by mail.",
+          "The notifications tab in the settings decides which kinds arrive by mail, in the site, or both. Account and security mail is not switchable.",
+          "Mail leaves through the mail server configured for this site. Its operator handles the address and the content in transit, as any mail relay does."
+        ]
+      },
+      {
+        "title": "Selling and payments",
+        "body": [
+          "If you sell, Stripe collects and holds your identity and bank details directly. We never see a card number or a bank account number.",
+          "We store what the ledger needs: the amount, the currency, the commission, the project, the time, and Stripe’s identifier for the transaction.",
+          "A purchase records that your account owns that project, which is what lets you download it again later.",
+          "Stripe is an independent controller for what it collects, under its own privacy policy."
+        ]
+      },
+      {
+        "title": "Tokens and applications",
+        "body": [
+          "A personal access token stores its name, its scopes, when it was created, when it expires and when it was last used. The token itself is stored only as a hash and is shown once, at creation.",
+          "An OAuth application stores its name, its redirect addresses and its owner. When you authorise one, we store which account granted which scopes to which application, so it can be withdrawn later.",
+          "Nothing about your password reaches an application, and an application only ever sees what its scopes allow."
         ]
       },
       {
@@ -2729,7 +2796,9 @@
         "body": [
           "Account and social data are processed to perform the service agreement (Art. 6(1)(b) GDPR).",
           "Logs, abuse prevention and anonymous telemetry rest on our legitimate interest (Art. 6(1)(f) GDPR) in keeping the service running and improving it.",
-          "Linking a Minecraft account and making your friend list public rest on your consent (Art. 6(1)(a) GDPR), which you may withdraw at any time."
+          "Linking a Minecraft account and making your friend list public rest on your consent (Art. 6(1)(a) GDPR), which you may withdraw at any time.",
+          "Publishing, selling and buying are performed under the service agreement (Art. 6(1)(b) GDPR). Moderation records, abuse reports and file scanning rest on our legitimate interest (Art. 6(1)(f) GDPR) in keeping the platform safe.",
+          "Ledger lines and invoices are kept to satisfy a legal obligation (Art. 6(1)(c) GDPR)."
         ]
       },
       {
@@ -2738,14 +2807,25 @@
           "Cloudflare — hosting, content delivery, bot protection and file storage.",
           "Mojang Studios and Microsoft — when a skin or cape is displayed, we query their servers for public Minecraft profile data.",
           "External sign-in providers — Discord, Google, GitHub, Microsoft — strictly for signing in.",
-          "We do not sell data and we do not pass it on for advertising."
+          "We do not sell data and we do not pass it on for advertising.",
+          "Stripe — payments, payouts, and the identity checks required before it will pay someone.",
+          "The mail server configured for this site, which carries the e-mail we send."
         ]
       },
       {
         "title": "How long we keep it",
         "body": [
           "Account data is kept until the account is deleted. Deleting an account removes the profile, friends, notifications, badges, activity, avatar and shared packs.",
-          "Shared packs disappear when their code expires. Server logs and anonymous telemetry are kept for the limited period needed to investigate problems."
+          "Shared packs disappear when their code expires. Server logs and anonymous telemetry are kept for the limited period needed to investigate problems.",
+          "Moderation decisions and reports are kept while the account exists. Ledger lines are kept for the period accounting law requires, which is longer than the account."
+        ]
+      },
+      {
+        "title": "Deleting your account",
+        "body": [
+          "You can delete your account yourself from the account page. It removes the profile, friends, notifications, badges, activity, avatar, shared packs, collections, comments and tokens.",
+          "Three things survive it, and it is fairer to say so than to discover it later. Projects that other people depend on are transferred or retired rather than vanishing; the moderation record of a removed project is kept, because otherwise deleting and re-registering would erase it; and ledger lines are kept for as long as accounting law requires.",
+          "What survives is detached from you where it can be. A comment left in place is shown as from a deleted account."
         ]
       },
       {
@@ -2760,7 +2840,8 @@
         "title": "Security",
         "body": [
           "The connection to the site is encrypted. Passwords are stored only as hashes, and you can add two-factor authentication.",
-          "No system is immune to breaches. If an incident puts your rights at risk, we will tell you about it."
+          "No system is immune to breaches. If an incident puts your rights at risk, we will tell you about it.",
+          "Access tokens are stored as hashes, uploads are scanned before they can be published, and what we send by e-mail is escaped so that a name typed by someone else cannot become markup in a message."
         ]
       },
       {
@@ -2780,7 +2861,7 @@
   "terms": {
     "title": "Terms of service",
     "intro": "The rules for using the Spectra site and Spectra Launcher.",
-    "updated": "Last updated: 28 August 2026",
+    "updated": "Last updated: 6 September 2026",
     "sections": [
       {
         "title": "What these terms cover",
@@ -2814,12 +2895,52 @@
         ]
       },
       {
+        "title": "Publishing a project",
+        "body": [
+          "Publishing is open to accounts we have enabled it for. Everything published goes through review before it becomes visible, and stays subject to the Content Rules afterwards.",
+          "You keep the copyright in what you publish. By publishing it you give us the right to host it, show it, and pass it to launchers and to the API — nothing beyond running the service, and it ends when you take the content down.",
+          "You must have the right to publish what you publish, including anything bundled inside a file. The licence you pick applies to your work; it does not grant rights you do not hold.",
+          "The declarations on a project are part of its description. Ticking one falsely, or leaving one unticked when it applies, is a breach of these terms and not merely of the rules."
+        ]
+      },
+      {
+        "title": "Review, decisions and appeals",
+        "body": [
+          "We review what is published and we can reject, hide or remove it. Every decision comes with a reason, written on the project.",
+          "You can reply to that decision and ask for it to be looked at again. We do not promise an outcome; we do promise a person reads it.",
+          "We can act without warning where content is malicious, illegal, or puts people at risk. Everything else gets the conversation first."
+        ]
+      },
+      {
+        "title": "Selling",
+        "body": [
+          "Charging for a project is governed by the separate Selling and Payouts terms, which apply in addition to these and which you accept when you enable selling.",
+          "A licence a buyer has paid for survives you, your project, and this agreement."
+        ]
+      },
+      {
+        "title": "The API, tokens and applications",
+        "body": [
+          "The API is open for building things with. Use a personal access token or an OAuth application, and give it only the scopes it needs.",
+          "A token acts as you. Anything done with it is treated as done by you, so keep it as you would keep a password and revoke it when it is no longer needed.",
+          "Rate limits apply per address and per account. Answering a 429 by retrying immediately, running your requests through many addresses, or building anything designed to get past a limit ends the access.",
+          "If you run an OAuth application, you are responsible for what it does with the access people grant it, and for telling them plainly what it will do before they grant it."
+        ]
+      },
+      {
         "title": "What is not allowed",
         "body": [
           "Breaking the law, copyright or somebody else\\u2019s privacy.",
           "Distributing malware or illegal, hateful or harassing content.",
           "Circumventing protections, overloading the service, harvesting other users\\u2019 data or creating accounts automatically.",
           "Using the service to avoid buying Minecraft or to bypass Mojang authentication."
+        ]
+      },
+      {
+        "title": "Limits on an account",
+        "body": [
+          "One account may own a fixed number of projects, organisations and collections, and a project a fixed number of versions. The current figures are in the Content Rules.",
+          "Opening extra accounts to get past a limit, or to get past a suspension, is a breach in itself."
         ]
       },
       {
@@ -2852,6 +2973,13 @@
         ]
       },
       {
+        "title": "Copyright and security complaints",
+        "body": [
+          "Copyright complaints follow the Copyright Policy, which sets out what a notice needs, how to answer one, and what happens to accounts that keep receiving them.",
+          "Vulnerabilities follow the Security Notice. Reporting one in good faith and within that notice will not be treated as a breach of these terms."
+        ]
+      },
+      {
         "title": "Changes to these terms",
         "body": [
           "We may change these terms. The date of the last change is at the top of the page, and continuing to use the service after a change means accepting it."
@@ -2868,7 +2996,7 @@
   "cookies": {
     "title": "Cookies",
     "intro": "This site runs no analytics and no advertising. We use only what the service cannot work without, plus one cookie that remembers your language.",
-    "updated": "Last updated: 28 August 2026",
+    "updated": "Last updated: 6 September 2026",
     "sections": [
       {
         "title": "What cookies are",
@@ -2899,12 +3027,14 @@
     "life": {
       "session": "Until you sign out",
       "year": "One year",
-      "cloudflare": "Set by Cloudflare"
+      "cloudflare": "Set by Cloudflare",
+      "minutes": "A few minutes"
     },
     "why": {
       "better_auth_session_token": "Keeps you signed in. Without it every page would ask you to log in again.",
       "spectra_lang": "Remembers the language you chose so it does not reset on every visit.",
-      "cf_clearance": "Set by Cloudflare when it verifies you are not a bot. It appears only if that check is triggered."
+      "cf_clearance": "Set by Cloudflare when it verifies you are not a bot. It appears only if that check is triggered.",
+      "better_auth_two_factor": "Set only while a second factor is being confirmed at sign-in, and gone once it is. It carries no account data."
     },
     "storageTitle": "Browser storage",
     "storage": {
@@ -3750,5 +3880,332 @@
         "compat": "Compatibility and helpers"
       }
     }
+  },
+  "legal": {
+    "title": "Legal",
+    "intro": "Everything that governs using Spectra, publishing on it and being paid through it. Written to be read, not to be survived.",
+    "others": "The other documents",
+    "contact": "Anything unclear, or anything you think is wrong: write to %EMAIL%.",
+    "summaries": {
+      "terms": "The agreement between you and us for the site and the launcher.",
+      "rules": "What may be published here, and what gets a project removed.",
+      "copyright": "How to report an infringement and how to answer one.",
+      "monetization": "Selling a project, our commission, and how payouts work.",
+      "privacy": "What we collect, why, who we pass it to and what you can do about it.",
+      "cookies": "The handful of cookies this site sets, and why there is no banner.",
+      "security": "How to report a vulnerability and what happens when you do."
+    }
+  },
+  "rules": {
+    "title": "Content Rules",
+    "updated": "Last updated: 6 September 2026",
+    "intro": "What may be published on Spectra. A project that breaks these rules is rejected or removed, whoever wrote it.",
+    "sections": [
+      {
+        "title": "1. Who these rules apply to",
+        "body": [
+          "Everything published here goes through review before it is visible: projects, versions, files, descriptions, images and links. These rules are what review checks against.",
+          "They apply the same to every project, including ours. A rule that only binds other people is not a rule."
+        ]
+      },
+      {
+        "title": "2. Prohibited content",
+        "body": [
+          "A project must not contain, link to, or exist to deliver any of the following."
+        ],
+        "points": [
+          "Malware of any kind: backdoors, remote access, cryptominers, keyloggers, credential stealers, or code that fetches and runs anything not declared.",
+          "Code that reads, sends or modifies anything outside the game and its own files without saying so plainly in the description.",
+          "Sexual content, content sexualising minors, gore, or material whose point is to shock.",
+          "Harassment, threats, or content attacking people over race, ethnicity, nationality, religion, disability, sex, gender identity or sexual orientation.",
+          "Content promoting self-harm, terrorism, or serious crime.",
+          "Anything illegal where we or you are, including stolen credentials, pirated software and account-selling."
+        ]
+      },
+      {
+        "title": "3. Say what it does",
+        "body": [
+          "The description, the images and the metadata must match what the files actually do. A project whose description is a guess, a placeholder, or an advertisement for something else is rejected.",
+          "If a project collects telemetry, shows advertisements, talks to a server, reads files outside the game directory, contains flashing imagery, or charges for part of what it does, that goes in the declarations. The declarations exist so nobody has to read a jar to find out.",
+          "A moderator who establishes that a declaration is true may pin it, and after that the author cannot untick it. That is what stops the quiet edit after approval.",
+          "Screenshots must be of the project. A gallery of someone else’s work is a removal, not a warning."
+        ]
+      },
+      {
+        "title": "4. Cheats and exploits",
+        "body": [
+          "Clients and modifications whose purpose is to gain an unfair advantage on servers the player does not control are not published here. That covers killaura, x-ray, reach, aim assistance, flight on survival servers and anything sold as a bypass for an anti-cheat.",
+          "Tools for single-player and for servers you run yourself are fine: creative helpers, world editors, debug overlays, minimaps with a server opt-out.",
+          "The line is whether it is designed to defeat other people on a server that did not agree to it."
+        ]
+      },
+      {
+        "title": "5. Reuploads and derived work",
+        "body": [
+          "Publish your own work, or work you have the right to publish. Reuploading someone else’s project — the same files, a repack, or a recompile — is removed on sight.",
+          "A fork, a port to another loader or game version, or a translation is welcome when the original licence allows it. Say plainly in the description what it is derived from, link the original, and tick the derived work declaration.",
+          "Third-party libraries bundled in a file must be allowed by their licences. The licence you pick on the project applies to your own work in it, not to what you have bundled.",
+          "Copyright complaints have their own process, described in the Copyright Policy."
+        ]
+      },
+      {
+        "title": "6. Generative AI",
+        "body": [
+          "AI is not banned here, but it has to be declared. If code, assets, text or in-game functionality were generated, tick the AI declaration and say which.",
+          "Undeclared AI content is treated as a false description, which is a removal under section 3.",
+          "Two things are refused whether declared or not: assets generated from an identifiable artist’s work and presented as original, and bulk-generated projects published to occupy names or inflate a profile."
+        ]
+      },
+      {
+        "title": "7. Names, addresses and impersonation",
+        "body": [
+          "A project name and address must not suggest it is by someone it is not, or that it is an official release of something it is not.",
+          "Registering names to hold, resell or deny them to their obvious owner is name squatting, and the name is released.",
+          "Accounts and organisations pretending to be another person, a company, or a member of our staff are removed."
+        ]
+      },
+      {
+        "title": "8. Limits",
+        "body": [
+          "One account may own 50 projects, 10 organisations and 100 collections, and a project may hold 500 versions. The limits exist to keep automated abuse expensive, not to stop anyone working.",
+          "If you have a reason to go past one, write to %EMAIL% rather than opening a second account."
+        ]
+      },
+      {
+        "title": "9. Enforcement",
+        "body": [
+          "The usual outcome is one of three: approved, sent back with a reason, or removed. Every decision arrives as a message on the project, with the reason written out.",
+          "You can reply to that message, fix the problem, and ask for another look. An appeal is read by a person.",
+          "Serious cases — malware, sexual content involving minors, coordinated abuse — skip the conversation, and the account goes with the project.",
+          "Repeatedly publishing what has already been removed is treated as a single ongoing case, not as a series of first offences."
+        ]
+      },
+      {
+        "title": "10. Reporting something",
+        "body": [
+          "Every project, version, comment, user and organisation has a report button. Pick the closest reason — spam, copyright, inappropriate, malicious, name squatting, or other — and say what you saw.",
+          "A report opens a thread. You will see when it is picked up and how it ended.",
+          "Reports filed in bulk, or filed to harass, cost the reporter their ability to file them."
+        ]
+      }
+    ]
+  },
+  "copyright": {
+    "title": "Copyright Policy",
+    "updated": "Last updated: 6 September 2026",
+    "intro": "How to tell us something here infringes your copyright, how to answer a notice against you, and what happens to accounts that keep receiving them.",
+    "sections": [
+      {
+        "title": "Before you send a notice",
+        "body": [
+          "Most of what looks like infringement here is a licence question — a fork the licence allowed, or a port the author permitted. If the project names an original and links it, look there first.",
+          "A notice is a legal statement. Sending one about content you do not hold the rights to, or content whose use is permitted, has consequences for you rather than for the project."
+        ]
+      },
+      {
+        "title": "Reporting an infringement",
+        "body": [
+          "Write to %EMAIL% with the subject “Copyright”. A notice has to contain all of the following, or we cannot act on it."
+        ],
+        "points": [
+          "What work is infringed, with a link to it or enough detail to identify it.",
+          "The address of the project, version, file or image on Spectra that infringes it. One address per item.",
+          "Your name, postal address and email address.",
+          "A statement that you believe in good faith the use is not authorised by the rights holder, its agent, or the law.",
+          "A statement that the information is accurate, and that you are the rights holder or authorised to act for them.",
+          "Your signature, electronic or physical."
+        ]
+      },
+      {
+        "title": "What we do with it",
+        "body": [
+          "A complete notice is acted on without waiting for the author. The content is taken down and the author is told what was removed, why, and by whom, with a copy of the notice.",
+          "We do not remove a whole project over one image or one file when removing that item is enough.",
+          "We are not a court. We act on what a notice states, and we restore content when a counter-notice or a settlement between you says to."
+        ]
+      },
+      {
+        "title": "Answering a notice",
+        "body": [
+          "If your content was removed and you believe the notice was wrong — you hold the rights, the licence permits it, or it was misidentified — reply to the message on your project, or write to %EMAIL% with the subject “Counter-notice”."
+        ],
+        "points": [
+          "Identify what was removed and where it was.",
+          "A statement, in good faith and under whatever penalty for a false statement applies to you, that it was removed by mistake or misidentification.",
+          "Your name, postal address and email address.",
+          "Your consent to the jurisdiction of the courts named in the Terms of Use."
+        ]
+      },
+      {
+        "title": "After a counter-notice",
+        "body": [
+          "We pass the counter-notice to whoever sent the original, including the contact details it contains. If they do not tell us within 14 days that they have gone to court, the content goes back up.",
+          "Sending a counter-notice means the other side gets your contact details. That is how the process works; there is no anonymous version of it."
+        ]
+      },
+      {
+        "title": "Repeat infringement",
+        "body": [
+          "An account that accumulates upheld notices loses the ability to publish, and then loses the account. We count upheld notices, not notices received, so a false claim against you does not count against you.",
+          "Deleting and reuploading the same content does not reset the count."
+        ]
+      },
+      {
+        "title": "Misusing this process",
+        "body": [
+          "Notices sent to remove a competitor, to take a name, or over content you do not own are abuse. We refuse them, and we keep the record.",
+          "Where the law provides for damages against a false notice, the author is free to use it. We will provide what we hold if a court asks."
+        ]
+      }
+    ]
+  },
+  "security": {
+    "title": "Security Notice",
+    "updated": "Last updated: 6 September 2026",
+    "intro": "How to report a vulnerability in Spectra, what we consider in scope, and what you can expect from us after you send it.",
+    "sections": [
+      {
+        "title": "Reporting",
+        "body": [
+          "Write to %EMAIL% with the subject “Security”. Describe what you found, how to reproduce it, and what an attacker gets out of it. A short proof of concept is worth more than a scanner report.",
+          "Report privately first. Do not open a public issue, post it, or tell anyone else until it is fixed.",
+          "You will get a human reply. If you do not hear anything within 72 hours, send it again — assume it was lost, not ignored."
+        ]
+      },
+      {
+        "title": "In scope",
+        "body": [
+          "Anything that lets someone do what they should not be able to do."
+        ],
+        "points": [
+          "The site and its API, including the catalog, the account system and the launcher endpoints.",
+          "Authentication and sessions: passkeys, two-factor, password reset, OAuth applications, personal access tokens.",
+          "Authorisation: reaching another account’s data, another organisation’s projects, or moderator functions.",
+          "Uploaded files: escaping the scan, path traversal, decompression bombs, stored content executing anywhere.",
+          "Injection of any kind, including into rendered descriptions and into e-mail we send.",
+          "Anything to do with payments, the payout ledger, or the amounts in it."
+        ]
+      },
+      {
+        "title": "Out of scope",
+        "body": [
+          "These are not accepted as reports, either because they are not vulnerabilities or because they are already known trade-offs."
+        ],
+        "points": [
+          "Missing headers, cookie flags on cookies that carry nothing, or a scanner grade, without an attack that uses them.",
+          "Denial of service, traffic floods, and anything that degrades the service for other people.",
+          "Social engineering of us, our users, or our providers, and physical attacks.",
+          "Rate limits being reachable, unless you can show the limit itself is broken.",
+          "Vulnerabilities in third-party services we use — report those to them.",
+          "Findings that need an already-compromised device or an already-stolen token."
+        ]
+      },
+      {
+        "title": "What we ask",
+        "body": [
+          "Use your own accounts and your own data. Do not read, change or keep anyone else’s.",
+          "Stop at proof. Once you can show the problem exists, you do not need to see how far it goes.",
+          "Do not degrade the service, and do not leave test content behind. If you did, say so and we will clean it up.",
+          "Give us reasonable time to fix it before saying anything publicly. We will not argue about a date after the fix is out."
+        ]
+      },
+      {
+        "title": "What you get",
+        "body": [
+          "We do not run a bounty programme and there is no money in this. Saying so up front is fairer than letting you find out after the work.",
+          "What we do offer: a real reply, a fix, and credit on the fix if you want it. Ask to stay anonymous and you will.",
+          "Report in good faith and within this notice and we will not pursue you for it, and we will say so if anyone asks us to."
+        ]
+      },
+      {
+        "title": "A malicious file is something else",
+        "body": [
+          "A file published here that turns out to be malicious is not a vulnerability report — use the report button on the project, with the malicious reason. Those are looked at ahead of everything else.",
+          "If you believe a file got past the upload scanner, say that explicitly in the report. That part is a vulnerability and we want to know."
+        ]
+      }
+    ]
+  },
+  "monetization": {
+    "title": "Selling and Payouts",
+    "updated": "Last updated: 6 September 2026",
+    "intro": "The terms for charging for a project on Spectra: who may, what a buyer gets, what we take, and how the money reaches you.",
+    "sections": [
+      {
+        "title": "Who may sell",
+        "body": [
+          "Selling is off by default. It is enabled per account after verification, and it needs a connected Stripe account that can receive payouts in your country.",
+          "You must have the right to sell what you are selling. A project derived from work under a licence that forbids commercial use cannot be sold here, whatever the licence you picked on the project.",
+          "An organisation sells through the account that owns it. Permissions inside the organisation decide who may change a price; they do not change who is paid."
+        ]
+      },
+      {
+        "title": "What the buyer gets",
+        "body": [
+          "A purchase gives the buyer a personal, non-transferable licence to download and use every version of that project, including versions published later, for as long as the account exists.",
+          "It is not a subscription. We do not charge again for the same project, and you cannot revoke a licence somebody paid for.",
+          "If you stop publishing a project, people who bought it keep access to what they bought. Plan for that before you charge for something.",
+          "Buyers may not redistribute what they bought. Enforcing that against a specific person is your job; we act on reports about content hosted here."
+        ]
+      },
+      {
+        "title": "Prices",
+        "body": [
+          "Prices are set per project in euro or US dollars. The buyer pays in one of those, and the amount they see is the amount they are charged.",
+          "You may change a price at any time. The change applies to purchases after it, never to purchases before it.",
+          "A project may be free with paid parts, but if it is, the paid features declaration has to be ticked. Discovering the paywall after the download is a removal."
+        ]
+      },
+      {
+        "title": "Our commission",
+        "body": [
+          "We take 1% of each sale. For partners and verified organisations it is 0.5%.",
+          "The commission comes out of the sale, not on top of it. A buyer never pays more because of it.",
+          "Payment processing fees are Stripe’s and are charged separately by them. We do not add to them and we do not receive any part of them.",
+          "If we change the commission, it applies to sales after the change, and you will be told before it takes effect."
+        ]
+      },
+      {
+        "title": "The ledger",
+        "body": [
+          "Every movement is a line in your ledger: the gross amount of a sale, the commission as its own negative line, a refund, a payout. Your balance is the sum of those lines and nothing else.",
+          "Lines are never edited or deleted. A correction is another line, so the history stays readable.",
+          "The ledger is what we pay against, and what we would show if a figure were ever disputed."
+        ]
+      },
+      {
+        "title": "Payouts",
+        "body": [
+          "You request a payout from your seller page. The minimum is 10.00 in your balance currency, because below that the transfer costs more than it moves.",
+          "Payouts go through Stripe to the account you connected. How long it then takes is between Stripe and your bank.",
+          "A sale is available to pay out after the window for a chargeback on it has passed. Money is not held longer than that for any other reason.",
+          "A payout we cannot complete — a closed account, failed verification, a rejected transfer — returns to your balance as a line, and we tell you why."
+        ]
+      },
+      {
+        "title": "Refunds and chargebacks",
+        "body": [
+          "Refunds are handled case by case. A buyer who cannot use what they bought because the project no longer works as described gets their money back, and the refund appears as a line against your balance.",
+          "A chargeback reverses the sale and its commission. The fee the processor charges for it is yours, because it lands on the transaction, not on us.",
+          "A pattern of chargebacks or refunds against one project stops sales of it while we look at why."
+        ]
+      },
+      {
+        "title": "Tax",
+        "body": [
+          "You are responsible for the tax on what you earn. We do not withhold it, we do not advise on it, and we do not file anything on your behalf.",
+          "Stripe collects the identification your country requires before it will pay you, and it reports what it is obliged to report.",
+          "Where sales tax or VAT is due on a purchase, it is collected at checkout and never counted as your earnings."
+        ]
+      },
+      {
+        "title": "Ending it",
+        "body": [
+          "You can turn selling off at any time. Existing licences survive it, and your balance is still yours to withdraw.",
+          "We can suspend selling for an account we believe is committing fraud, laundering money, or selling what it has no right to sell. If we do, the balance is held while it is looked at, not taken.",
+          "If your account is removed for breaking the rules, anything already earned is still paid out. We do not use money as a penalty."
+        ]
+      }
+    ]
   }
 }
