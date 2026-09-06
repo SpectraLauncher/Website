@@ -3453,7 +3453,18 @@
     "note": "Note for the reporter (optional)",
     "resolve": "Acted on it",
     "dismiss": "No action needed",
-    "gone": "Item no longer exists"
+    "gone": "Item no longer exists",
+    "mine": "My reports",
+    "mineHint": "What you reported and what a moderator decided.",
+    "noneMine": "You have not reported anything.",
+    "conversation": "Conversation",
+    "noMessages": "No messages yet.",
+    "replyPlaceholder": "Add something a moderator should know",
+    "statuses": {
+      "open": "Open",
+      "resolved": "Acted on",
+      "dismissed": "No action"
+    }
   },
   "tokens": {
     "title": "API tokens",
@@ -3533,6 +3544,28 @@
       "paid": "Paid",
       "failed": "Failed",
       "cancelled": "Cancelled"
+    }
+  },
+  "projectMembers": {
+    "title": "Members",
+    "hint": "Who else may work on this project, and exactly what they may do.",
+    "none": "Nobody else has been added.",
+    "add": "Add",
+    "edit": "Edit permissions",
+    "remove": "Remove from project",
+    "count": "no permissions | 1 permission | {n} permissions",
+    "grantHint": "You can only hand out what you hold yourself; the rest is greyed out.",
+    "permissions": {
+      "upload_version": "Upload versions",
+      "delete_version": "Delete versions",
+      "edit_details": "Edit details",
+      "edit_body": "Edit description",
+      "manage_invites": "Add people",
+      "remove_member": "Remove people",
+      "edit_member": "Edit permissions",
+      "delete_project": "Delete the project",
+      "view_analytics": "View analytics",
+      "view_payouts": "View payouts"
     }
   }
 }

@@ -441,6 +441,7 @@ const sizeLabel = (bytes: number) =>
       </aside>
     </div>
 
+    <ProjectMembers :slug="project.slug" />
     <ProjectModeration :slug="project.slug" />
     <ProjectComments :slug="project.slug" />
   </section>

@@ -3453,7 +3453,18 @@
     "note": "Notatka dla zgłaszającego (opcjonalna)",
     "resolve": "Podjęto działanie",
     "dismiss": "Bez działania",
-    "gone": "Obiekt już nie istnieje"
+    "gone": "Obiekt już nie istnieje",
+    "mine": "Moje zgłoszenia",
+    "mineHint": "Co zgłosiłeś i co zdecydował moderator.",
+    "noneMine": "Nic jeszcze nie zgłosiłeś.",
+    "conversation": "Rozmowa",
+    "noMessages": "Brak wiadomości.",
+    "replyPlaceholder": "Dodaj coś, co moderator powinien wiedzieć",
+    "statuses": {
+      "open": "Otwarte",
+      "resolved": "Podjęto działanie",
+      "dismissed": "Bez działania"
+    }
   },
   "tokens": {
     "title": "Tokeny API",
@@ -3533,6 +3544,28 @@
       "paid": "Wypłacona",
       "failed": "Nieudana",
       "cancelled": "Anulowana"
+    }
+  },
+  "projectMembers": {
+    "title": "Członkowie",
+    "hint": "Kto jeszcze może pracować nad tym projektem i co dokładnie mu wolno.",
+    "none": "Nikogo jeszcze nie dodano.",
+    "add": "Dodaj",
+    "edit": "Edytuj uprawnienia",
+    "remove": "Usuń z projektu",
+    "count": "brak uprawnień | 1 uprawnienie | {n} uprawnienia | {n} uprawnień",
+    "grantHint": "Możesz nadać tylko to, co sam masz; reszta jest wyszarzona.",
+    "permissions": {
+      "upload_version": "Wgrywanie wersji",
+      "delete_version": "Usuwanie wersji",
+      "edit_details": "Edycja danych",
+      "edit_body": "Edycja opisu",
+      "manage_invites": "Dodawanie osób",
+      "remove_member": "Usuwanie osób",
+      "edit_member": "Edycja uprawnień",
+      "delete_project": "Usunięcie projektu",
+      "view_analytics": "Podgląd analityki",
+      "view_payouts": "Podgląd wypłat"
     }
   }
 }

@@ -16,7 +16,8 @@ const CATALOG_PATHS = [
 // flag says, so they are listed apart from the paths that open with it.
 const ACCOUNT_PATHS = [
   '/account', '/settings', '/notifications', '/library', '/collections', '/billing',
-  '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller'
+  '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller',
+  '/reports'
 ]
 
 const PRIVATE_PATHS = [
