@@ -98,77 +98,85 @@ const VISIBILITIES = computed(() =>
 </script>
 
 <template>
-  <section class="mx-auto max-w-4xl px-4 py-12">
-    <div class="mb-8 flex flex-wrap items-center gap-3">
-      <h1 class="text-2xl font-semibold tracking-tight">{{ t('nav.account.collections') }}</h1>
-      <span class="flex-1"></span>
-      <UButton
-        color="neutral"
-        class="rounded-xl"
-        icon="i-lucide-plus"
-        :label="t('collections.create')"
-        @click="creating = !creating"
-      />
+  <div>
+    <Navbar />
+
+    <div class="relative">
+      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
+
+      <section class="mx-auto max-w-4xl px-4 pb-24 pt-40">
+        <div class="mb-8 flex flex-wrap items-center gap-3">
+          <h1 class="text-2xl font-semibold tracking-tight">{{ t('nav.account.collections') }}</h1>
+          <span class="flex-1"></span>
+          <UButton
+            color="neutral"
+            class="rounded-xl"
+            icon="i-lucide-plus"
+            :label="t('collections.create')"
+            @click="creating = !creating"
+          />
+        </div>
+
+        <UAlert v-if="error" color="error" variant="subtle" class="mb-4 rounded-2xl" :description="error" />
+
+        <div v-if="creating" class="mb-6 rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <UInput v-model="draft.title" :placeholder="t('collections.titlePlaceholder')" />
+            <USelect v-model="draft.visibility" :items="VISIBILITIES" value-key="value" />
+            <UTextarea
+              v-model="draft.summary"
+              :rows="2"
+              :placeholder="t('collections.summaryPlaceholder')"
+              class="sm:col-span-2"
+            />
+          </div>
+          <div class="mt-3 flex justify-end">
+            <UButton
+              color="neutral"
+              class="rounded-xl"
+              :disabled="!draft.title.trim()"
+              :loading="busy === 'create'"
+              :label="t('collections.create')"
+              @click="create"
+            />
+          </div>
+        </div>
+
+        <ul v-if="collections.length" class="space-y-3">
+          <li
+            v-for="collection in ordered"
+            :key="collection.id"
+            class="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
+          >
+            <UIcon
+              :name="collection.kind === 'favourites' ? 'i-lucide-star' : 'i-lucide-bookmark'"
+              class="size-5 shrink-0"
+              :class="collection.kind === 'favourites' ? 'text-primary' : 'text-muted'"
+            />
+            <NuxtLink :to="localePath(`/collection/${collection.id}`)" class="min-w-0 flex-1">
+              <p class="truncate font-medium hover:underline">{{ label(collection) }}</p>
+              <p class="truncate text-xs text-dimmed">
+                {{ t('collections.count', { n: collection.projects }) }}
+                · {{ t(`collections.visibility.${collection.visibility}`) }}
+              </p>
+            </NuxtLink>
+            <UButton
+              v-if="collection.kind !== 'favourites'"
+              size="xs"
+              variant="ghost"
+              color="error"
+              icon="i-lucide-trash-2"
+              :loading="busy === collection.id"
+              :aria-label="t('collections.delete')"
+              @click="remove(collection)"
+            />
+          </li>
+        </ul>
+
+        <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
+          {{ t('collections.empty') }}
+        </p>
+      </section>
     </div>
-
-    <UAlert v-if="error" color="error" variant="subtle" class="mb-4 rounded-2xl" :description="error" />
-
-    <div v-if="creating" class="mb-6 rounded-3xl border border-white/10 bg-white/[0.02] p-6">
-      <div class="grid gap-3 sm:grid-cols-2">
-        <UInput v-model="draft.title" :placeholder="t('collections.titlePlaceholder')" />
-        <USelect v-model="draft.visibility" :items="VISIBILITIES" value-key="value" />
-        <UTextarea
-          v-model="draft.summary"
-          :rows="2"
-          :placeholder="t('collections.summaryPlaceholder')"
-          class="sm:col-span-2"
-        />
-      </div>
-      <div class="mt-3 flex justify-end">
-        <UButton
-          color="neutral"
-          class="rounded-xl"
-          :disabled="!draft.title.trim()"
-          :loading="busy === 'create'"
-          :label="t('collections.create')"
-          @click="create"
-        />
-      </div>
-    </div>
-
-    <ul v-if="collections.length" class="space-y-3">
-      <li
-        v-for="collection in ordered"
-        :key="collection.id"
-        class="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
-      >
-        <UIcon
-          :name="collection.kind === 'favourites' ? 'i-lucide-star' : 'i-lucide-bookmark'"
-          class="size-5 shrink-0"
-          :class="collection.kind === 'favourites' ? 'text-primary' : 'text-muted'"
-        />
-        <NuxtLink :to="localePath(`/collection/${collection.id}`)" class="min-w-0 flex-1">
-          <p class="truncate font-medium hover:underline">{{ label(collection) }}</p>
-          <p class="truncate text-xs text-dimmed">
-            {{ t('collections.count', { n: collection.projects }) }}
-            · {{ t(`collections.visibility.${collection.visibility}`) }}
-          </p>
-        </NuxtLink>
-        <UButton
-          v-if="collection.kind !== 'favourites'"
-          size="xs"
-          variant="ghost"
-          color="error"
-          icon="i-lucide-trash-2"
-          :loading="busy === collection.id"
-          :aria-label="t('collections.delete')"
-          @click="remove(collection)"
-        />
-      </li>
-    </ul>
-
-    <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
-      {{ t('collections.empty') }}
-    </p>
-  </section>
+  </div>
 </template>

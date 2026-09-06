@@ -42,105 +42,113 @@ useSeoMeta({ title: () => t('billing.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <section class="mx-auto max-w-4xl px-4 py-12">
-    <h1 class="mb-2 text-2xl font-semibold tracking-tight">{{ t('billing.title') }}</h1>
-    <p class="mb-8 text-sm text-muted">{{ t('billing.intro') }}</p>
+  <div>
+    <Navbar />
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div class="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
-        <h2 class="mb-1 text-sm font-semibold">{{ t('billing.earned') }}</h2>
-        <p class="mb-4 text-xs text-dimmed">
-          {{ t('billing.commission', { rate: ((revenue?.rate ?? 0) * 100).toFixed(1) }) }}
-        </p>
+    <div class="relative">
+      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 
-        <ul v-if="earned.length" class="space-y-1">
-          <li v-for="[currency, total] in earned" :key="currency" class="text-lg font-medium">
-            {{ money(total.net, currency) }}
-            <span class="text-xs text-dimmed">{{ t('billing.ofGross', { gross: money(total.gross, currency) }) }}</span>
-          </li>
-        </ul>
-        <p v-else class="text-sm text-dimmed">{{ t('billing.nothingYet') }}</p>
+      <section class="mx-auto max-w-4xl px-4 pb-24 pt-40">
+        <h1 class="mb-2 text-2xl font-semibold tracking-tight">{{ t('billing.title') }}</h1>
+        <p class="mb-8 text-sm text-muted">{{ t('billing.intro') }}</p>
 
-        <UButton
-          class="mt-4 rounded-xl"
-          size="sm"
-          variant="ghost"
-          color="neutral"
-          trailing-icon="i-lucide-arrow-right"
-          :to="localePath('/revenue')"
-          :label="t('nav.account.revenue')"
-        />
-      </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+            <h2 class="mb-1 text-sm font-semibold">{{ t('billing.earned') }}</h2>
+            <p class="mb-4 text-xs text-dimmed">
+              {{ t('billing.commission', { rate: ((revenue?.rate ?? 0) * 100).toFixed(1) }) }}
+            </p>
 
-      <div class="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
-        <h2 class="mb-1 text-sm font-semibold">{{ t('billing.spent') }}</h2>
-        <p class="mb-4 text-xs text-dimmed">
-          {{ t('billing.purchases', { n: library?.items.length ?? 0 }) }}
-        </p>
+            <ul v-if="earned.length" class="space-y-1">
+              <li v-for="[currency, total] in earned" :key="currency" class="text-lg font-medium">
+                {{ money(total.net, currency) }}
+                <span class="text-xs text-dimmed">{{ t('billing.ofGross', { gross: money(total.gross, currency) }) }}</span>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-dimmed">{{ t('billing.nothingYet') }}</p>
 
-        <ul v-if="Object.keys(spent).length" class="space-y-1">
-          <li v-for="(total, currency) in spent" :key="currency" class="text-lg font-medium">
-            {{ money(total, String(currency)) }}
-          </li>
-        </ul>
-        <p v-else class="text-sm text-dimmed">{{ t('billing.nothingYet') }}</p>
+            <UButton
+              class="mt-4 rounded-xl"
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              trailing-icon="i-lucide-arrow-right"
+              :to="localePath('/revenue')"
+              :label="t('nav.account.revenue')"
+            />
+          </div>
 
-        <UButton
-          class="mt-4 rounded-xl"
-          size="sm"
-          variant="ghost"
-          color="neutral"
-          trailing-icon="i-lucide-arrow-right"
-          :to="localePath('/library')"
-          :label="t('nav.account.library')"
-        />
-      </div>
-    </div>
+          <div class="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+            <h2 class="mb-1 text-sm font-semibold">{{ t('billing.spent') }}</h2>
+            <p class="mb-4 text-xs text-dimmed">
+              {{ t('billing.purchases', { n: library?.items.length ?? 0 }) }}
+            </p>
 
-    <div class="mt-4 rounded-3xl border border-white/10 bg-white/[0.02] p-6">
-      <div class="mb-3 flex flex-wrap items-center gap-3">
-        <h2 class="text-sm font-semibold">{{ t('billing.payouts') }}</h2>
-        <UBadge
-          size="sm"
-          variant="subtle"
-          :color="ready ? 'success' : 'warning'"
-          :label="ready ? t('billing.payoutsReady') : t('billing.payoutsPending')"
-        />
-        <UBadge
-          v-if="seller?.partner"
-          size="sm"
-          variant="subtle"
-          :label="t('billing.partner')"
-        />
-      </div>
+            <ul v-if="Object.keys(spent).length" class="space-y-1">
+              <li v-for="(total, currency) in spent" :key="currency" class="text-lg font-medium">
+                {{ money(total, String(currency)) }}
+              </li>
+            </ul>
+            <p v-else class="text-sm text-dimmed">{{ t('billing.nothingYet') }}</p>
 
-      <p class="mb-4 text-xs text-muted">{{ t('billing.payoutsHint') }}</p>
+            <UButton
+              class="mt-4 rounded-xl"
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              trailing-icon="i-lucide-arrow-right"
+              :to="localePath('/library')"
+              :label="t('nav.account.library')"
+            />
+          </div>
+        </div>
 
-      <ul v-if="seller?.organizations.length" class="mb-4 space-y-2">
-        <li
-          v-for="org in seller.organizations"
-          :key="org.slug"
-          class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm"
-        >
-          <span class="min-w-0 flex-1 truncate">{{ org.name }}</span>
-          <UBadge
+        <div class="mt-4 rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+          <div class="mb-3 flex flex-wrap items-center gap-3">
+            <h2 class="text-sm font-semibold">{{ t('billing.payouts') }}</h2>
+            <UBadge
+              size="sm"
+              variant="subtle"
+              :color="ready ? 'success' : 'warning'"
+              :label="ready ? t('billing.payoutsReady') : t('billing.payoutsPending')"
+            />
+            <UBadge
+              v-if="seller?.partner"
+              size="sm"
+              variant="subtle"
+              :label="t('billing.partner')"
+            />
+          </div>
+
+          <p class="mb-4 text-xs text-muted">{{ t('billing.payoutsHint') }}</p>
+
+          <ul v-if="seller?.organizations.length" class="mb-4 space-y-2">
+            <li
+              v-for="org in seller.organizations"
+              :key="org.slug"
+              class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm"
+            >
+              <span class="min-w-0 flex-1 truncate">{{ org.name }}</span>
+              <UBadge
+                size="sm"
+                variant="subtle"
+                :color="org.seller?.payoutsEnabled ? 'success' : 'warning'"
+                :label="org.seller?.payoutsEnabled ? t('billing.payoutsReady') : t('billing.payoutsPending')"
+              />
+            </li>
+          </ul>
+
+          <UButton
+            class="rounded-xl"
             size="sm"
-            variant="subtle"
-            :color="org.seller?.payoutsEnabled ? 'success' : 'warning'"
-            :label="org.seller?.payoutsEnabled ? t('billing.payoutsReady') : t('billing.payoutsPending')"
+            variant="ghost"
+            color="neutral"
+            trailing-icon="i-lucide-arrow-right"
+            :to="localePath('/seller')"
+            :label="t('billing.manage')"
           />
-        </li>
-      </ul>
-
-      <UButton
-        class="rounded-xl"
-        size="sm"
-        variant="ghost"
-        color="neutral"
-        trailing-icon="i-lucide-arrow-right"
-        :to="localePath('/seller')"
-        :label="t('billing.manage')"
-      />
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 </template>

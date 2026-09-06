@@ -29,57 +29,65 @@ function line(item: NotificationItem): string {
 </script>
 
 <template>
-  <section class="mx-auto max-w-3xl px-4 py-12">
-    <div class="mb-8 flex flex-wrap items-center gap-3">
-      <h1 class="text-2xl font-semibold tracking-tight">{{ t('nav.account.notifications') }}</h1>
-      <UBadge v-if="unread" :label="String(unread)" variant="subtle" />
-      <span class="flex-1"></span>
-      <UButton
-        v-if="unread"
-        size="sm"
-        variant="ghost"
-        color="neutral"
-        icon="i-lucide-check-check"
-        :label="t('notifications.markAll')"
-        @click="markRead()"
-      />
-    </div>
+  <div>
+    <Navbar />
 
-    <ul v-if="items.length" class="space-y-2">
-      <li
-        v-for="item in items"
-        :key="item.id"
-        class="flex items-start gap-3 rounded-2xl border p-4 transition-colors"
-        :class="item.read ? 'border-white/10 bg-white/[0.02]' : 'border-primary/30 bg-primary/5'"
-      >
-        <UIcon :name="notificationIcon(item.kind)" class="mt-0.5 size-5 shrink-0 text-muted" />
+    <div class="relative">
+      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 
-        <div class="min-w-0 flex-1">
-          <component
-            :is="target(item) ? 'NuxtLink' : 'span'"
-            :to="target(item) ?? undefined"
-            class="block text-sm"
-            :class="target(item) ? 'hover:underline' : ''"
-            @click="!item.read && markRead([item.id])"
-          >
-            {{ line(item) }}
-          </component>
-          <p class="mt-1 text-xs text-dimmed">{{ when(item.created) }}</p>
+      <section class="mx-auto max-w-3xl px-4 pb-24 pt-40">
+        <div class="mb-8 flex flex-wrap items-center gap-3">
+          <h1 class="text-2xl font-semibold tracking-tight">{{ t('nav.account.notifications') }}</h1>
+          <UBadge v-if="unread" :label="String(unread)" variant="subtle" />
+          <span class="flex-1"></span>
+          <UButton
+            v-if="unread"
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-check-check"
+            :label="t('notifications.markAll')"
+            @click="markRead()"
+          />
         </div>
 
-        <UButton
-          size="xs"
-          variant="ghost"
-          color="neutral"
-          icon="i-lucide-x"
-          :aria-label="t('notifications.dismiss')"
-          @click="dismiss(item.id)"
-        />
-      </li>
-    </ul>
+        <ul v-if="items.length" class="space-y-2">
+          <li
+            v-for="item in items"
+            :key="item.id"
+            class="flex items-start gap-3 rounded-2xl border p-4 transition-colors"
+            :class="item.read ? 'border-white/10 bg-white/[0.02]' : 'border-primary/30 bg-primary/5'"
+          >
+            <UIcon :name="notificationIcon(item.kind)" class="mt-0.5 size-5 shrink-0 text-muted" />
 
-    <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
-      {{ t('notifications.empty') }}
-    </p>
-  </section>
+            <div class="min-w-0 flex-1">
+              <component
+                :is="target(item) ? 'NuxtLink' : 'span'"
+                :to="target(item) ?? undefined"
+                class="block text-sm"
+                :class="target(item) ? 'hover:underline' : ''"
+                @click="!item.read && markRead([item.id])"
+              >
+                {{ line(item) }}
+              </component>
+              <p class="mt-1 text-xs text-dimmed">{{ when(item.created) }}</p>
+            </div>
+
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              icon="i-lucide-x"
+              :aria-label="t('notifications.dismiss')"
+              @click="dismiss(item.id)"
+            />
+          </li>
+        </ul>
+
+        <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
+          {{ t('notifications.empty') }}
+        </p>
+      </section>
+    </div>
+  </div>
 </template>

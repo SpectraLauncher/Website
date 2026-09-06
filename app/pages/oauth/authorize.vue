@@ -76,72 +76,76 @@ const host = computed(() => {
 </script>
 
 <template>
-  <section class="mx-auto flex min-h-[70vh] max-w-lg items-center px-4 py-12">
-    <div class="w-full">
-      <UAlert
-        v-if="error"
-        color="error"
-        variant="subtle"
-        class="rounded-2xl"
-        icon="i-lucide-triangle-alert"
-        :description="error"
-      />
+  <div>
+    <Navbar />
 
-      <div
-        v-else-if="info"
-        class="rounded-3xl border border-zinc-600/50 bg-black/30 p-8 backdrop-blur-sm"
-      >
-        <div class="mb-6 flex flex-wrap items-center gap-4">
-          <span class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <img v-if="info.client.icon" :src="info.client.icon" alt="" class="size-full object-cover">
-            <UIcon v-else name="i-lucide-boxes" class="size-6 text-dimmed" />
-          </span>
-          <div class="min-w-0">
-            <h1 class="truncate text-xl font-semibold tracking-tight">{{ info.client.name }}</h1>
-            <p class="text-sm text-muted">{{ t('oauth.asks') }}</p>
+    <section class="mx-auto flex min-h-[70vh] max-w-lg items-center px-4 pb-12 pt-32">
+      <div class="w-full">
+        <UAlert
+          v-if="error"
+          color="error"
+          variant="subtle"
+          class="rounded-2xl"
+          icon="i-lucide-triangle-alert"
+          :description="error"
+        />
+
+        <div
+          v-else-if="info"
+          class="rounded-3xl border border-zinc-600/50 bg-black/30 p-8 backdrop-blur-sm"
+        >
+          <div class="mb-6 flex flex-wrap items-center gap-4">
+            <span class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <img v-if="info.client.icon" :src="info.client.icon" alt="" class="size-full object-cover">
+              <UIcon v-else name="i-lucide-boxes" class="size-6 text-dimmed" />
+            </span>
+            <div class="min-w-0">
+              <h1 class="truncate text-xl font-semibold tracking-tight">{{ info.client.name }}</h1>
+              <p class="text-sm text-muted">{{ t('oauth.asks') }}</p>
+            </div>
           </div>
+
+          <ul class="mb-6 space-y-2">
+            <li
+              v-for="scope in info.scopes"
+              :key="scope"
+              class="flex items-start gap-2 text-sm"
+            >
+              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
+              <span class="text-muted">{{ t(`tokens.scopes.${scope}`) }}</span>
+            </li>
+          </ul>
+
+          <p class="mb-2 text-xs text-dimmed">
+            {{ t('oauth.lasts', { period: lifetimeLabel(info.tokenDays) }) }}
+          </p>
+          <p class="mb-6 break-words text-xs text-dimmed">
+            {{ t('oauth.returnsTo', { host }) }}
+          </p>
+
+          <div class="flex flex-wrap gap-2">
+            <UButton
+              color="neutral"
+              size="lg"
+              class="flex-1 justify-center rounded-xl"
+              :loading="busy === 'approve'"
+              :label="info.known ? t('oauth.continue') : t('oauth.allow')"
+              @click="decide(true)"
+            />
+            <UButton
+              variant="ghost"
+              color="neutral"
+              size="lg"
+              class="rounded-xl"
+              :loading="busy === 'deny'"
+              :label="t('oauth.deny')"
+              @click="decide(false)"
+            />
+          </div>
+
+          <p class="mt-4 text-xs text-dimmed">{{ t('oauth.revokeLater') }}</p>
         </div>
-
-        <ul class="mb-6 space-y-2">
-          <li
-            v-for="scope in info.scopes"
-            :key="scope"
-            class="flex items-start gap-2 text-sm"
-          >
-            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
-            <span class="text-muted">{{ t(`tokens.scopes.${scope}`) }}</span>
-          </li>
-        </ul>
-
-        <p class="mb-2 text-xs text-dimmed">
-          {{ t('oauth.lasts', { period: lifetimeLabel(info.tokenDays) }) }}
-        </p>
-        <p class="mb-6 break-words text-xs text-dimmed">
-          {{ t('oauth.returnsTo', { host }) }}
-        </p>
-
-        <div class="flex flex-wrap gap-2">
-          <UButton
-            color="neutral"
-            size="lg"
-            class="flex-1 justify-center rounded-xl"
-            :loading="busy === 'approve'"
-            :label="info.known ? t('oauth.continue') : t('oauth.allow')"
-            @click="decide(true)"
-          />
-          <UButton
-            variant="ghost"
-            color="neutral"
-            size="lg"
-            class="rounded-xl"
-            :loading="busy === 'deny'"
-            :label="t('oauth.deny')"
-            @click="decide(false)"
-          />
-        </div>
-
-        <p class="mt-4 text-xs text-dimmed">{{ t('oauth.revokeLater') }}</p>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
