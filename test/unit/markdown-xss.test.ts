@@ -63,3 +63,25 @@ describe('renderMarkdown nie wpuszcza kodu', () => {
     expect(out).toContain('loading="lazy"')
   })
 })
+
+// markdown-it decodes a punycode hostname back to Unicode for display, so a bare
+// address renders as a lookalike while linking to the real one. The address is
+// what a reader judges before clicking.
+describe('a link reads as the place it goes', () => {
+  const homograph = 'https://xn--pple-43d.com/'
+
+  it('an autolinked address is shown as it will be visited', () => {
+    const out = renderMarkdown(homograph)
+    expect(out).toContain(`>${homograph}<`)
+    expect(out).not.toContain('аpple.com')
+  })
+
+  it('the address itself is untouched', () => {
+    expect(renderMarkdown(homograph)).toContain(`href="${homograph}"`)
+  })
+
+  it('an ordinary address still reads normally', () => {
+    const out = renderMarkdown('https://example.com/a')
+    expect(out).toContain('>https://example.com/a<')
+  })
+})

@@ -11,6 +11,12 @@ const md = new MarkdownIt({
   typographer: false,
 })
 
+// markdown-it decodes a punycode hostname back to Unicode for display, so a bare
+// https://xn--pple-43d.com/ renders as apple.com with a Cyrillic a while linking
+// to the real thing. The address is what a reader judges before clicking, so it
+// is shown exactly as it will be visited.
+md.normalizeLinkText = (url: string) => url
+
 // Every link leaves for somewhere we do not control, so it opens away from the
 // page and cannot reach back through window.opener.
 const defaultLink = md.renderer.rules.link_open
