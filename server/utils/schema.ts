@@ -289,6 +289,45 @@ export async function ensureSchema() {
       created    BIGINT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_access_token_user ON access_token (user_id, created DESC);
+  `)
+
+  await pool.query(`
+    -- A token issued through OAuth belongs to a client as well as to a person,
+    -- so withdrawing consent can take exactly those tokens with it.
+    ALTER TABLE access_token ADD COLUMN IF NOT EXISTS client_id TEXT;
+
+    CREATE TABLE IF NOT EXISTS oauth_client (
+      id            TEXT PRIMARY KEY,
+      owner_id      TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      name          TEXT NOT NULL,
+      icon          TEXT,
+      secret_hash   TEXT NOT NULL,
+      redirect_uris TEXT[] NOT NULL DEFAULT '{}',
+      max_scopes    BIGINT NOT NULL DEFAULT 0,
+      created       BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_oauth_client_owner ON oauth_client (owner_id);
+
+    -- What one person agreed to give one application.
+    CREATE TABLE IF NOT EXISTS oauth_grant (
+      client_id TEXT NOT NULL REFERENCES oauth_client(id) ON DELETE CASCADE,
+      user_id   TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      scopes    BIGINT NOT NULL DEFAULT 0,
+      created   BIGINT NOT NULL,
+      PRIMARY KEY (client_id, user_id)
+    );
+
+    -- Ten minutes, one use. Only the hash is kept, as with any credential.
+    CREATE TABLE IF NOT EXISTS oauth_code (
+      code_hash    TEXT PRIMARY KEY,
+      client_id    TEXT NOT NULL REFERENCES oauth_client(id) ON DELETE CASCADE,
+      user_id      TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      scopes       BIGINT NOT NULL DEFAULT 0,
+      redirect_uri TEXT NOT NULL,
+      expires      BIGINT NOT NULL,
+      created      BIGINT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_oauth_code_expiry ON oauth_code (expires);
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
   `)
 }

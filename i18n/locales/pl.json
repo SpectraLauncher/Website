@@ -3598,5 +3598,28 @@
     "note": "Notatka",
     "manage": "Deklaracje",
     "lockLabel": "Blokada"
+  },
+  "oauth": {
+    "title": "Autoryzacja aplikacji",
+    "asks": "chce dostępu do twojego konta",
+    "allow": "Zezwól",
+    "continue": "Kontynuuj",
+    "deny": "Anuluj",
+    "returnsTo": "Wrócisz na {host}.",
+    "revokeLater": "Możesz to cofnąć w dowolnej chwili w ustawieniach.",
+    "apps": "Aplikacje",
+    "appsHint": "Aplikacje, którym dałeś dostęp, i aplikacje, które sam zbudowałeś.",
+    "authorized": "Nadany dostęp",
+    "noneAuthorized": "Żadna aplikacja nie ma dostępu.",
+    "revoke": "Cofnij",
+    "revoked": "Dostęp cofnięty.",
+    "mine": "Twoje aplikacje",
+    "register": "Zarejestruj aplikację",
+    "namePlaceholder": "Jak się nazywa?",
+    "redirects": "Adresy powrotu",
+    "redirectsHint": "Po jednym w linii. Tylko https, poza localhost.",
+    "maxScopes": "Maksimum, o jakie może prosić",
+    "rotate": "Nowy sekret",
+    "deleteClient": "Usuń aplikację"
   }
 }

@@ -44,6 +44,7 @@ const TABS = [
   { id: 'notifications', icon: 'i-lucide-bell', label: 'nav.account.notifications' },
   { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
   { id: 'tokens', icon: 'i-lucide-key', label: 'tokens.title' },
+  { id: 'apps', icon: 'i-lucide-boxes', label: 'oauth.apps' },
   { id: 'language', icon: 'i-lucide-languages', label: 'account.language' },
   { id: 'friends', icon: 'i-lucide-users', label: 'friends.title' }
 ] as const
@@ -202,6 +203,55 @@ const removePasskey = (id: string) => run('passkey:' + id, async () => {
   notice.value = t('account.passkeyRemoved')
 })
 
+const authorizations = ref<Array<{ id: string, name: string, icon: string | null, scopes: string[] }>>([])
+const clients = ref<Array<{ id: string, name: string, redirectUris: string[], scopes: number }>>([])
+const appsLoaded = ref(false)
+const freshSecret = ref('')
+
+const clientDraft = reactive({ name: '', redirectUris: '', scopes: [] as string[] })
+
+async function loadApps() {
+  const [grants, own] = await Promise.all([
+    $fetch<{ authorizations: typeof authorizations.value }>('/api/me/authorizations'),
+    $fetch<{ clients: typeof clients.value }>('/api/me/oauth-clients'),
+  ])
+  authorizations.value = grants.authorizations
+  clients.value = own.clients
+  appsLoaded.value = true
+}
+
+const revokeApp = (id: string) => run('app:' + id, async () => {
+  await $fetch(`/api/me/authorizations/${id}`, { method: 'DELETE' })
+  await loadApps()
+  notice.value = t('oauth.revoked')
+})
+
+const createClient = () => run('client', async () => {
+  const res = await $fetch<{ secret: string }>('/api/me/oauth-clients', {
+    method: 'POST',
+    body: {
+      name: clientDraft.name,
+      redirectUris: clientDraft.redirectUris.split(/[s,]+/).filter(Boolean),
+      scopes: clientDraft.scopes,
+    },
+  })
+  freshSecret.value = res.secret
+  clientDraft.name = ''
+  clientDraft.redirectUris = ''
+  clientDraft.scopes = []
+  await loadApps()
+})
+
+const rotateClient = (id: string) => run('rotate:' + id, async () => {
+  const res = await $fetch<{ secret: string }>(`/api/me/oauth-clients/${id}/secret`, { method: 'POST' })
+  freshSecret.value = res.secret
+})
+
+const deleteClient = (id: string) => run('client:' + id, async () => {
+  await $fetch(`/api/me/oauth-clients/${id}`, { method: 'DELETE' })
+  await loadApps()
+})
+
 const blocked = ref<Array<{ id: string, username: string | null, name: string | null, image: string | null }>>([])
 const blocksLoaded = ref(false)
 const blockName = ref('')
@@ -348,6 +398,7 @@ watch(tab, (value) => {
   if (value === 'notifications' && !prefsLoaded.value) loadPrefs()
   if (value === 'tokens' && !tokensLoaded.value) loadTokens()
   if (value === 'blocks' && !blocksLoaded.value) loadBlocks()
+  if (value === 'apps' && !appsLoaded.value) loadApps()
   if (value === 'privacy' && !closure.value) loadClosure()
 }, { immediate: true })
 
@@ -1076,6 +1127,135 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 </ul>
 
                 <p v-else-if="blocksLoaded" class="text-sm text-dimmed">{{ t('account.noBlocks') }}</p>
+              </div>
+            </template>
+
+            <template v-else-if="tab === 'apps'">
+              <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('oauth.apps') }}</h2>
+              <p class="mb-6 text-sm text-muted">{{ t('oauth.appsHint') }}</p>
+
+              <UAlert
+                v-if="freshSecret"
+                color="success"
+                variant="subtle"
+                class="mb-5 rounded-2xl"
+                icon="i-lucide-key"
+                :title="t('tokens.copyNow')"
+              >
+                <template #description>
+                  <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
+                    {{ freshSecret }}
+                  </code>
+                  <UButton
+                    class="mt-2 rounded-lg"
+                    size="xs"
+                    variant="soft"
+                    color="neutral"
+                    :label="t('tokens.dismiss')"
+                    @click="freshSecret = ''"
+                  />
+                </template>
+              </UAlert>
+
+              <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.authorized') }}</h3>
+
+              <ul v-if="authorizations.length" class="mb-8 space-y-2">
+                <li
+                  v-for="app in authorizations"
+                  :key="app.id"
+                  class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+                >
+                  <UIcon name="i-lucide-boxes" class="size-4 shrink-0 text-muted" />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium">{{ app.name }}</p>
+                    <p class="truncate text-xs text-dimmed">
+                      {{ app.scopes.map(s => t(`tokens.scopes.${s}`)).join(', ') }}
+                    </p>
+                  </div>
+                  <UButton
+                    size="xs"
+                    variant="ghost"
+                    color="error"
+                    :loading="busy === 'app:' + app.id"
+                    :label="t('oauth.revoke')"
+                    @click="revokeApp(app.id)"
+                  />
+                </li>
+              </ul>
+
+              <p v-else-if="appsLoaded" class="mb-8 text-sm text-dimmed">{{ t('oauth.noneAuthorized') }}</p>
+
+              <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.mine') }}</h3>
+
+              <ul v-if="clients.length" class="mb-6 space-y-2">
+                <li
+                  v-for="client in clients"
+                  :key="client.id"
+                  class="rounded-xl border border-white/10 bg-white/5 p-4"
+                >
+                  <div class="flex flex-wrap items-center gap-3">
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-sm font-medium">{{ client.name }}</p>
+                      <p class="truncate font-mono text-xs text-dimmed">{{ client.id }}</p>
+                    </div>
+                    <UButton
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
+                      icon="i-lucide-refresh-cw"
+                      :loading="busy === 'rotate:' + client.id"
+                      :label="t('oauth.rotate')"
+                      @click="rotateClient(client.id)"
+                    />
+                    <UButton
+                      size="xs"
+                      variant="ghost"
+                      color="error"
+                      icon="i-lucide-trash-2"
+                      :loading="busy === 'client:' + client.id"
+                      :aria-label="t('oauth.deleteClient')"
+                      @click="deleteClient(client.id)"
+                    />
+                  </div>
+                  <p class="mt-2 break-all text-xs text-dimmed">
+                    {{ client.redirectUris.join(' · ') }}
+                  </p>
+                </li>
+              </ul>
+
+              <div class="max-w-lg space-y-4 rounded-2xl border border-white/10 bg-black/20 p-5">
+                <h3 class="text-sm font-semibold">{{ t('oauth.register') }}</h3>
+
+                <UFormField :label="t('tokens.name')">
+                  <UInput v-model="clientDraft.name" class="w-full" :placeholder="t('oauth.namePlaceholder')" />
+                </UFormField>
+
+                <UFormField :label="t('oauth.redirects')" :help="t('oauth.redirectsHint')">
+                  <UTextarea
+                    v-model="clientDraft.redirectUris"
+                    :rows="2"
+                    class="w-full"
+                    placeholder="https://example.com/callback"
+                  />
+                </UFormField>
+
+                <UFormField :label="t('oauth.maxScopes')">
+                  <UCheckboxGroup
+                    v-model="clientDraft.scopes"
+                    :items="scopeChoices"
+                    value-key="value"
+                    size="sm"
+                  />
+                </UFormField>
+
+                <UButton
+                  color="neutral"
+                  class="rounded-xl"
+                  :disabled="!clientDraft.name.trim() || !clientDraft.scopes.length"
+                  :loading="busy === 'client'"
+                  :label="t('oauth.register')"
+                  @click="createClient"
+                />
               </div>
             </template>
 
