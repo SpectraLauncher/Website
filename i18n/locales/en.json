@@ -3634,5 +3634,121 @@
     "tokenLife": "Token lifetime",
     "tokenLifeHint": "How long an access token stays valid before the person has to approve again.",
     "lasts": "Access lasts: {period}."
+  },
+  "docs": {
+    "title": "Documentation",
+    "intro": "How Spectra works, from finding a mod to publishing one and building against the API.",
+    "notFound": "There is no such page.",
+    "sections": {
+      "start": "Getting started",
+      "content": "Finding content",
+      "authors": "For authors",
+      "rules": "Rules and moderation",
+      "money": "Selling",
+      "developers": "For developers"
+    },
+    "sectionHints": {
+      "start": "What this is and how an account works.",
+      "content": "Browsing, filtering and keeping things.",
+      "authors": "Publishing, versions and working with other people.",
+      "rules": "How review works and how to report something.",
+      "money": "Charging for a project and getting paid.",
+      "developers": "Tokens, applications and limits."
+    },
+    "pages": {
+      "what-is-spectra": {
+        "title": "What Spectra is",
+        "summary": "The shape of the site in one page."
+      },
+      "account": {
+        "title": "Your account",
+        "summary": "Signing in, passkeys, sessions, notifications."
+      },
+      "launcher": {
+        "title": "The launcher",
+        "summary": "What the desktop application uses your account for."
+      },
+      "project-types": {
+        "title": "Types of project",
+        "summary": "Mods, plugins, packs, shaders, resource packs, schematics."
+      },
+      "finding-content": {
+        "title": "Finding things",
+        "summary": "Filters, sorting and layout."
+      },
+      "collections": {
+        "title": "Favourites and collections",
+        "summary": "Keeping things to hand and grouping them."
+      },
+      "publishing": {
+        "title": "Publishing a project",
+        "summary": "Draft, review, published, and what happens between."
+      },
+      "versions": {
+        "title": "Versions and files",
+        "summary": "Channels, hashes, metadata and scanning."
+      },
+      "organizations": {
+        "title": "Organizations",
+        "summary": "Owning projects as a group, with real permissions."
+      },
+      "disclosures": {
+        "title": "Declarations",
+        "summary": "What a project tells people about itself."
+      },
+      "moderation": {
+        "title": "How review works",
+        "summary": "The queue, decisions and appealing one."
+      },
+      "reporting": {
+        "title": "Reporting something",
+        "summary": "What to say and what happens next."
+      },
+      "selling": {
+        "title": "Selling a project",
+        "summary": "Stripe, commission and what a buyer gets."
+      },
+      "payouts": {
+        "title": "The ledger and payouts",
+        "summary": "How the money is tracked and paid out."
+      },
+      "api-tokens": {
+        "title": "API tokens",
+        "summary": "Letting a script act as you, narrowly."
+      },
+      "oauth": {
+        "title": "Building an application",
+        "summary": "Sign in with Spectra, end to end."
+      },
+      "rate-limits": {
+        "title": "Rate limits",
+        "summary": "What to expect and how to behave."
+      }
+    },
+    "api": {
+      "title": "API reference",
+      "intro": "Every endpoint the site publishes. This list is checked against the routes on every build, so it cannot drift away from what the server actually does.",
+      "search": "Search endpoints",
+      "nothing": "Nothing matches.",
+      "authTitle": "Authentication",
+      "authBody": "Send a personal access token or an OAuth token as a bearer token. A token can only do what its scopes allow.",
+      "limitsTitle": "Limits",
+      "limitsBody": "Requests are limited per address. A limit that has been reached answers 429 with a retry-after header; honour it rather than retrying at once.",
+      "auth": {
+        "none": "public",
+        "session": "signed in",
+        "token": "token",
+        "admin": "moderator"
+      },
+      "groups": {
+        "catalog": "Catalog",
+        "projects": "Projects",
+        "collections": "Collections",
+        "social": "Social and sharing",
+        "account": "Account",
+        "oauth": "Tokens and applications",
+        "compat": "Compatibility and helpers"
+      }
+    }
   }
 }

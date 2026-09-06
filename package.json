@@ -45,7 +45,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:ui": "node test/ui-props-check.mjs",
-    "check:responsive": "node test/responsive-check.mjs"
+    "check:responsive": "node test/responsive-check.mjs",
+    "check:apidocs": "node test/api-docs-check.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.2",

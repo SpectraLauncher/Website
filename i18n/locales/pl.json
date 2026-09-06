@@ -3634,5 +3634,121 @@
     "tokenLife": "Ważność tokenu",
     "tokenLifeHint": "Jak długo token dostępu działa, zanim trzeba będzie zgodzić się ponownie.",
     "lasts": "Dostęp na: {period}."
+  },
+  "docs": {
+    "title": "Dokumentacja",
+    "intro": "Jak działa Spectra — od znalezienia moda po opublikowanie własnego i pisanie pod API.",
+    "notFound": "Nie ma takiej strony.",
+    "sections": {
+      "start": "Na początek",
+      "content": "Szukanie treści",
+      "authors": "Dla autorów",
+      "rules": "Zasady i moderacja",
+      "money": "Sprzedaż",
+      "developers": "Dla programistów"
+    },
+    "sectionHints": {
+      "start": "Czym to jest i jak działa konto.",
+      "content": "Przeglądanie, filtrowanie i zapisywanie.",
+      "authors": "Publikowanie, wersje i praca z innymi.",
+      "rules": "Jak wygląda sprawdzanie i jak coś zgłosić.",
+      "money": "Pobieranie opłat za projekt i wypłaty.",
+      "developers": "Tokeny, aplikacje i limity."
+    },
+    "pages": {
+      "what-is-spectra": {
+        "title": "Czym jest Spectra",
+        "summary": "Kształt serwisu na jednej stronie."
+      },
+      "account": {
+        "title": "Twoje konto",
+        "summary": "Logowanie, klucze dostępu, sesje, powiadomienia."
+      },
+      "launcher": {
+        "title": "Launcher",
+        "summary": "Do czego aplikacja używa twojego konta."
+      },
+      "project-types": {
+        "title": "Rodzaje projektów",
+        "summary": "Mody, pluginy, paczki, shadery, resourcepacki, schematy."
+      },
+      "finding-content": {
+        "title": "Szukanie",
+        "summary": "Filtry, sortowanie i układ."
+      },
+      "collections": {
+        "title": "Ulubione i kolekcje",
+        "summary": "Trzymanie rzeczy pod ręką i grupowanie ich."
+      },
+      "publishing": {
+        "title": "Publikowanie projektu",
+        "summary": "Szkic, sprawdzenie, publikacja i co pomiędzy."
+      },
+      "versions": {
+        "title": "Wersje i pliki",
+        "summary": "Kanały, hashe, metadane i skanowanie."
+      },
+      "organizations": {
+        "title": "Organizacje",
+        "summary": "Wspólne posiadanie projektów i prawdziwe uprawnienia."
+      },
+      "disclosures": {
+        "title": "Deklaracje",
+        "summary": "Co projekt mówi o sobie."
+      },
+      "moderation": {
+        "title": "Jak działa sprawdzanie",
+        "summary": "Kolejka, decyzje i odwołanie."
+      },
+      "reporting": {
+        "title": "Zgłaszanie",
+        "summary": "Co napisać i co dzieje się dalej."
+      },
+      "selling": {
+        "title": "Sprzedaż projektu",
+        "summary": "Stripe, prowizja i co dostaje kupujący."
+      },
+      "payouts": {
+        "title": "Księga i wypłaty",
+        "summary": "Jak liczone są pieniądze i jak je wypłacić."
+      },
+      "api-tokens": {
+        "title": "Tokeny API",
+        "summary": "Wąski dostęp dla skryptu, bez hasła."
+      },
+      "oauth": {
+        "title": "Budowanie aplikacji",
+        "summary": "Logowanie przez Spectra, od początku do końca."
+      },
+      "rate-limits": {
+        "title": "Limity zapytań",
+        "summary": "Czego się spodziewać i jak się zachować."
+      }
+    },
+    "api": {
+      "title": "Opis API",
+      "intro": "Wszystkie endpointy, które serwis udostępnia. Lista jest sprawdzana z trasami przy każdym buildzie, więc nie rozjedzie się z tym, co robi serwer.",
+      "search": "Szukaj endpointu",
+      "nothing": "Nic nie pasuje.",
+      "authTitle": "Uwierzytelnianie",
+      "authBody": "Wyślij token osobisty albo token OAuth w nagłówku Bearer. Token może tylko to, na co pozwalają jego zakresy.",
+      "limitsTitle": "Limity",
+      "limitsBody": "Zapytania są limitowane na adres. Po przekroczeniu dostajesz 429 z nagłówkiem retry-after — poczekaj tyle, ile mówi, zamiast ponawiać od razu.",
+      "auth": {
+        "none": "publiczny",
+        "session": "zalogowany",
+        "token": "token",
+        "admin": "moderator"
+      },
+      "groups": {
+        "catalog": "Katalog",
+        "projects": "Projekty",
+        "collections": "Kolekcje",
+        "social": "Społeczność i udostępnianie",
+        "account": "Konto",
+        "oauth": "Tokeny i aplikacje",
+        "compat": "Zgodność i pomocnicze"
+      }
+    }
   }
 }

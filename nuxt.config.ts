@@ -33,6 +33,7 @@ const PRIVATE_PATHS = [
 
 const PRERENDER = [
   '/tools',
+  '/docs',
   ...TOOLS.filter(tool => tool.page).map(tool => `/tools/${tool.id}`),
   '/privacy',
   '/terms',
