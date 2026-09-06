@@ -14,8 +14,8 @@ const base = {
   footnote: 'f',
 }
 
-// Kazdy mail niesie tekst wpisany przez czlowieka — nazwe konta, nazwe
-// organizacji, tytul projektu — i sklada sie z niego HTML.
+// Every mail carries text a person typed — an account name, an organization
+// name, a project title — and HTML is built out of it.
 describe('mailTemplate escapuje tekst', () => {
   it('znaczniki nie staja sie znacznikami', () => {
     const html = mailTemplate({ ...base, title: '<script>alert(1)</script>' })

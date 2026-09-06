@@ -8,8 +8,8 @@ describe('safeUrl', () => {
     expect(safeUrl('http://example.com')).toBe('http://example.com/')
   })
 
-  // Adres trafia prosto do href na stronie projektu, a katalog ma docelowo
-  // przyjmowac wgrania od obcych ludzi.
+  // The address goes straight into an href on the project page, and the catalog
+  // is meant to take uploads from strangers.
   it('odrzuca schematy, ktore wykonuja kod', () => {
     for (const bad of [
       'javascript:alert(1)',
@@ -63,8 +63,8 @@ describe('safeAssetUrl', () => {
     expect(safeAssetUrl('https://cdn.example.com/a.webp')).toBe('https://cdn.example.com/a.webp')
   })
 
-  // Adres bez schematu bierze schemat strony i wskazuje na host, ktorego nikt
-  // nie sprawdzil — to nie jest sciezka wzgledna.
+  // A scheme-relative address borrows the scheme of the page and points at a
+  // host nobody checked, so it is not a relative path.
   it('odrzuca adres protokolo-wzgledny', () => {
     expect(safeAssetUrl('//evil.example.com/a.webp')).toBeNull()
   })

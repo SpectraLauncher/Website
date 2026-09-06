@@ -140,8 +140,6 @@ export function publicToken(row: TokenRow) {
   }
 }
 
-// Reads the token off a request without deciding anything. The route decides,
-// because only the route knows which scope it needs.
 export function tokenFromEvent(event: H3Event): string | null {
   const header = getHeader(event, 'authorization') ?? ''
   const [scheme, value] = header.split(' ')

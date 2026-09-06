@@ -36,15 +36,14 @@ describe('katalog nie wycieka, dopoki flaga jest wylaczona', () => {
 
   it('CATALOG_PATHS dolaczaja do PRIVATE_PATHS, gdy flaga jest wylaczona', () => {
     expect(nuxtConfig).toContain('...(CATALOG_PUBLIC ? [] : CATALOG_PATHS)')
-    // PRIVATE_PATHS zasila robots.disallow i sitemap.exclude — jesli ktos zerwie
-    // ktores z tych dwoch powiazan, katalog wycieknie mimo poprawnej listy.
+    // PRIVATE_PATHS feeds robots.disallow and sitemap.exclude. Break either
+    // link and the catalog leaks despite a correct list.
     expect(nuxtConfig).toContain('disallow: [...PRIVATE_PATHS')
     expect(nuxtConfig).toContain('exclude: PRIVATE_PATHS.map')
   })
 
-  // llms.txt i lustra .md, ktore pisze nuxt-ai-ready, obejmuja wylacznie strony
-  // prerenderowane. Trasa katalogu w PRERENDER wyladowalaby tam natychmiast, i to
-  // niezaleznie od robots.txt.
+  // llms.txt and the markdown mirrors cover prerendered pages only. A catalog
+  // route in PRERENDER lands there at once, whatever robots.txt says.
   it('zadna trasa katalogu nie jest prerenderowana', () => {
     const prerender = nuxtConfig.slice(nuxtConfig.indexOf('const PRERENDER'))
       .slice(0, nuxtConfig.slice(nuxtConfig.indexOf('const PRERENDER')).indexOf(']') + 1)
@@ -56,8 +55,8 @@ describe('katalog nie wycieka, dopoki flaga jest wylaczona', () => {
 
   it('sitemap pyta o flage, zanim doda cokolwiek z katalogu', () => {
     expect(sitemap).toContain('catalogIsIndexable()')
-    // Zwrot nastepuje przed zapytaniem o projekty, wiec przy wylaczonej fladze
-    // zapytanie w ogole nie leci.
+    // The return happens before the projects query, so with the flag off the
+    // query never runs.
     expect(sitemap.indexOf('catalogIsIndexable()')).toBeLessThan(sitemap.indexOf('FROM project'))
   })
 
@@ -66,8 +65,8 @@ describe('katalog nie wycieka, dopoki flaga jest wylaczona', () => {
   })
 })
 
-// To sa dwa rozne pytania i pomylenie ich jest dokladnie tym, jak projekt
-// oznaczony jako dostepny tylko z linku trafia do sitemapy.
+// Two different questions. Conflating them is how a project marked as
+// link-only ends up in the sitemap.
 describe('statusy: widoczny z linku to nie to samo co widoczny na liscie', () => {
   it('unlisted otwiera sie z linku, ale nigdzie sie nie pokazuje', () => {
     expect(isLinkable('unlisted')).toBe(true)
@@ -107,9 +106,9 @@ describe('statusy: widoczny z linku to nie to samo co widoczny na liscie', () =>
   })
 })
 
-// Strony jednego konta nie sa czescia katalogu i nie otwieraja sie razem z nim.
-// Wczesniej /settings siedzialo w CATALOG_PATHS, wiec zdjecie flagi wpusciloby
-// je do sitemapy.
+// One person's own pages are not part of the catalog and do not open with it.
+// /settings used to sit in CATALOG_PATHS, so lifting the flag would have let it
+// into the sitemap.
 describe('strony konta sa prywatne niezaleznie od flagi', () => {
   const accountPaths = arrayLiteral(nuxtConfig, 'ACCOUNT_PATHS')
 

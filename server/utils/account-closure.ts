@@ -55,7 +55,6 @@ export async function closeAccount(userId: string): Promise<void> {
 
   await exec('DELETE FROM "user" WHERE id = $1', [userId])
 
-  // Avatars and anything else that pointed at this account are now unreachable.
   queueSweep()
 }
 

@@ -47,7 +47,7 @@ describe('gwiazdka i pozycja w menu to jeden wiersz', () => {
     expect(c.holding.value).not.toContain('fav')
   })
 
-  // Zwykla kolekcja nie ma nic wspolnego z gwiazdka.
+  // An ordinary collection has nothing to do with the star.
   it('zwykla kolekcja nie rusza gwiazdki', async () => {
     const c = useProjectCollections(project)
     await c.load()

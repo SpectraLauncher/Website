@@ -8,8 +8,8 @@ const scan = (name: string) => scanArchive(readFileSync(`test/fixtures/${name}`)
 
 const codes = (name: string) => scan(name).findings.map(f => f.code)
 
-// Prawdziwe pliki, ktore juz mamy. Skaner, ktory oznacza czyste mody, jest
-// gorszy niz brak skanera: moderator przestaje mu wierzyc po tygodniu.
+// Real files we already have. A scanner that flags clean mods is worse than no
+// scanner: a moderator stops believing it within a week.
 describe('nie krzyczy na porzadne pliki', () => {
   it.each([
     'Jade-1.20.1-Forge-11.13.3.jar',
@@ -37,7 +37,7 @@ describe('lapie to, po co powstal', () => {
     expect(scan('scan-executable.jar').verdict).toBe('flagged')
   })
 
-  // Zmiana rozszerzenia to najtansza sztuczka, wiec sama nazwa nie wystarczy.
+  // Renaming is the cheapest trick, so the name alone is not enough.
   it('plik wykonywalny podszywajacy sie pod obrazek', () => {
     expect(codes('scan-disguised.jar')).toContain('disguised_executable')
   })
@@ -71,7 +71,7 @@ describe('werdykt', () => {
     expect(worstSeverity([])).toBeNull()
   })
 
-  // Sto kopii tej samej linii zasypuje pozostale znaleziska.
+  // A hundred copies of one line buries the other findings.
   it('nie powtarza tego samego znaleziska', () => {
     const result = scan('scan-executable.jar')
     const keys = result.findings.map(f => `${f.code}:${f.detail}`)

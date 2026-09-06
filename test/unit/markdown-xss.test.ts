@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 
 import { renderMarkdown } from '../../app/utils/markdown'
 
-// Opisy projektow, readme organizacji i tresci od obcych ludzi ida przez ten
-// renderer prosto do v-html. To jedyne miejsce, ktore stoi miedzy nimi a
-// wykonaniem kodu na stronie.
+// Project descriptions, organization readmes and text from strangers go through
+// this renderer straight into v-html. It is the only thing standing between them
+// and code running on the page.
 describe('renderMarkdown nie wpuszcza kodu', () => {
   it('surowy HTML jest escapowany, nie wykonywany', () => {
     const out = renderMarkdown('<script>alert(1)</script>')
@@ -12,8 +12,8 @@ describe('renderMarkdown nie wpuszcza kodu', () => {
     expect(out).toContain('&lt;script&gt;')
   })
 
-  // Slowo "onerror" zostaje w tekscie i to jest w porzadku — liczy sie to, ze
-  // nawias katowy jest zescapowany, wiec nigdy nie stanie sie atrybutem.
+  // The word "onerror" survives as text and that is fine: the angle bracket is
+  // escaped, so it never becomes an attribute.
   it('atrybuty zdarzen nie staja sie atrybutami', () => {
     const out = renderMarkdown('<img src=x onerror=alert(1)>')
     expect(out).toContain('&lt;img')

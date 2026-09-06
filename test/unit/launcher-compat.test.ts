@@ -5,9 +5,9 @@ import { describe, expect, it } from 'vitest'
 import { limitFor } from '../../server/utils/rateLimit'
 import { TOKEN_PREFIX } from '../../shared/utils/token-scopes'
 
-// Launcher jest osobnym programem, ktory nie aktualizuje sie razem ze strona.
-// Kazda zmiana w tych trasach musi byc wsteczna, bo w terenie chodzi stara
-// wersja i bedzie chodzic dlugo.
+// The launcher is a separate program that does not update with the site, so a
+// change to these routes has to stay backward compatible: an old build is in the
+// field and will be for a long time.
 const LAUNCHER_PATHS = [
   '/api/notifications',
   '/api/notifications/read',
@@ -19,9 +19,9 @@ const LAUNCHER_PATHS = [
 ]
 
 describe('launcher dalej dziala', () => {
-  // Launcher odpytuje co 30 sekund, wiec jedna osoba to dwa zadania na minute.
-  // Budzet jest na adres, a akademik albo operator z CGNAT przychodzi jako
-  // jeden adres.
+  // The launcher polls every thirty seconds, so one person costs two requests a
+  // minute. The budget is per address, and a dorm or an ISP doing carrier-grade
+  // NAT arrives as one address.
   it('limit powiadomien miesci setki osob za jednym adresem', () => {
     const rule = limitFor('/api/notifications', 'GET')
     expect(rule).not.toBeNull()
@@ -55,8 +55,8 @@ describe('launcher dalej dziala', () => {
     }
   })
 
-  // Odpowiedz dostala nowe pole `project`. Doklada sie, nie zmienia — stary
-  // launcher czyta swoje pola i ignoruje reszte.
+  // The response gained a `project` field. Adding is safe: an old launcher
+  // reads its own fields and ignores the rest.
   it('ksztalt powiadomienia zachowuje stare pola', () => {
     const source = readFileSync('server/api/notifications.get.ts', 'utf8')
     for (const field of ['id:', 'kind:', 'shareCode:', 'data:', 'read:', 'created:', 'actor:']) {
@@ -64,8 +64,8 @@ describe('launcher dalej dziala', () => {
     }
   })
 
-  // Launcher wysyla token sesji better-auth w naglowku Bearer. Gdyby czytnik
-  // tokenow API brał kazdy Bearer, przejalby jego uwierzytelnienie.
+  // The launcher sends a better-auth session token as Bearer. If the API token
+  // reader took every Bearer, it would hijack that.
   it('token API nie przechwytuje sesji launchera', () => {
     const source = readFileSync('server/utils/tokens.ts', 'utf8')
     expect(source).toContain('startsWith(TOKEN_PREFIX)')
@@ -74,7 +74,7 @@ describe('launcher dalej dziala', () => {
 
   it.each(LAUNCHER_PATHS)('%s ma regule limitu, ktora go nie dusi', (path) => {
     const rule = limitFor(path, 'GET')
-    // Brak reguly tez jest w porzadku — znaczy bez limitu na adres.
+    // No rule is fine too; it means no per-address budget.
     if (rule) expect(rule.limit).toBeGreaterThanOrEqual(30)
   })
 })

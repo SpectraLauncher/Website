@@ -26,8 +26,8 @@ describe('rejestr ksiegi', () => {
   })
 })
 
-// Saldo, ktorego nikt nie umie wytlumaczyc, to saldo, o ktore nie da sie
-// spierac — a kazdy spor o wyplate jest sporem o to, skad wzięła sie liczba.
+// A balance nobody can explain is one nobody can argue about, and every payout
+// dispute is an argument about how a number was reached.
 describe('ksiega jest zrodlem prawdy, nie kolumna z saldem', () => {
   const source = readFileSync('server/utils/payouts.ts', 'utf8')
 
@@ -67,7 +67,7 @@ describe('webhook moze przyjsc dwa razy', () => {
   const schema = readFileSync('server/utils/schema-catalog.ts', 'utf8')
   const payouts = readFileSync('server/utils/payouts.ts', 'utf8')
 
-  // Tylko ta dostawa, ktora naprawde ruszyla wiersz, dopisuje do ksiegi.
+  // Only the delivery that actually moved the row writes to the ledger.
   it('do ksiegi pisze tylko dostawa, ktora zmienila status', () => {
     expect(seller).toContain('if (!moved) return')
   })

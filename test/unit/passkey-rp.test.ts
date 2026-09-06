@@ -21,8 +21,8 @@ describe('relyingPartyId', () => {
     expect(relyingPartyId()).toBe('usespectra.app')
   })
 
-  // Klucz jest przypisany do domeny. Cichy fallback na inna wartosc uniewaznilby
-  // wszystkim klucze, wiec zle ustawienie ma zatrzymac start.
+  // A key is bound to the domain. Quietly falling back to another value would
+  // invalidate everyone's, so a bad setting has to stop the boot.
   it('krzyczy zamiast zgadywac, gdy adres nie jest adresem', () => {
     process.env.NUXT_PUBLIC_SITE_URL = 'usespectra.app'
     expect(() => relyingPartyId()).toThrow(/NUXT_PUBLIC_SITE_URL/)

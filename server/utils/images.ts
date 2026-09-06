@@ -49,9 +49,8 @@ export function forgetImage(key: string) {
   return exec('DELETE FROM stored_image WHERE object_key = $1', [key])
 }
 
-// An image whose subject is gone. Written as a left join against each table
-// rather than a foreign key, because one row points at five different things
-// and a polymorphic key is not a key.
+// One row points at five different things, so the subject cannot be a foreign
+// key and the check is a join per context instead.
 export async function orphanedImages(limit = 200): Promise<ImageRow[]> {
   return await q<ImageRow>(
     `SELECT i.id, i.object_key, i.context, i.owner_id, i.subject_id, i.size, i.created

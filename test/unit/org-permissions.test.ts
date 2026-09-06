@@ -36,8 +36,8 @@ describe('domyslne uprawnienia roli', () => {
     expect(ROLE_DEFAULT_PERMISSIONS.member).toBe(0)
   })
 
-  // Kasowanie organizacji zostaje przy wlascicielu, inaczej admin moglby
-  // skasowac cudza organizacje, do ktorej zostal zaproszony.
+  // Deleting stays with the owner; otherwise an invited admin could delete an
+  // organization that is not theirs.
   it('admin ma wszystko oprocz kasowania organizacji', () => {
     expect(has(ROLE_DEFAULT_PERMISSIONS.admin, 'remove_member')).toBe(true)
     expect(has(ROLE_DEFAULT_PERMISSIONS.admin, 'delete_organization')).toBe(false)
@@ -55,7 +55,7 @@ describe('permissionsOf', () => {
       .toBe(ORG_PERMISSIONS.edit_details)
   })
 
-  // Organizacja nie moze sie zamknac przed wlasnym wlascicielem.
+  // An organization must not lock its own owner out.
   it('wlasciciel ma wszystko nawet z pusta maska', () => {
     expect(permissionsOf('owner', 0)).toBe(ALL_ORG_PERMISSIONS)
   })
@@ -66,7 +66,7 @@ describe('permissionsOf', () => {
 })
 
 describe('canGrant', () => {
-  // Regula Modrintha: nie nadasz tego, czego sam nie masz.
+  // You cannot hand out a right you do not hold yourself.
   it('nie da sie nadac uprawnienia, ktorego sie nie ma', () => {
     const actor = ORG_PERMISSIONS.edit_details | ORG_PERMISSIONS.manage_invites
     expect(canGrant(actor, ORG_PERMISSIONS.edit_details)).toBe(true)
@@ -110,7 +110,7 @@ describe('trasy czlonkow pilnuja zasad', () => {
     expect(patch).toContain('canGrant(actor.mask, mask)')
   })
 
-  // Organizacja bez wlasciciela nie ma komu oddac projektow.
+  // An ownerless organization has nobody to hand its projects to.
   it('ostatni wlasciciel nie znika trzema roznymi drogami', () => {
     for (const [name, src] of [['patch', patch], ['delete', remove], ['leave', leave]] as const) {
       expect(src, name).toContain('ownerCount(org.id)')

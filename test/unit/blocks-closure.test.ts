@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-// Blokowanie, ktore nie zmienia tego, co widac i co da sie zrobic, jest tylko
-// lista. Te testy pilnuja, ze jest wpiete tam, gdzie ma dzialac.
+// Blocking that changes neither what is visible nor what is possible is just a
+// list. These pin that it is wired where it has to act.
 describe('blokowanie dziala, a nie tylko istnieje', () => {
   it('komentarze zablokowanych znikaja czytajacemu', () => {
     const route = readFileSync('server/api/catalog/project/[slug]/comments.get.ts', 'utf8')
@@ -25,8 +25,8 @@ describe('blokowanie dziala, a nie tylko istnieje', () => {
 
   const module = readFileSync('server/utils/blocks.ts', 'utf8')
 
-  // Zablokowana osoba nie dowiaduje sie o blokadzie, bo to zamienia ciche
-  // wyjscie w awanture.
+  // The blocked person is never told, because telling them turns a quiet exit
+  // into an argument.
   it('blokada odpowiada tak samo jak brak konta', () => {
     const route = readFileSync('server/api/friends.post.ts', 'utf8')
     expect(route).toContain(`statusMessage: 'no such user'`)
@@ -49,8 +49,7 @@ describe('zamkniecie konta', () => {
   const module = readFileSync('server/utils/account-closure.ts', 'utf8')
   const route = readFileSync('server/api/me/close.post.ts', 'utf8')
 
-  // Akcja bez cofniecia potrzebuje potwierdzenia, ktorego nie da sie kliknac
-  // odruchowo.
+  // An action with no undo needs a confirmation nobody clicks through by reflex.
   it('wymaga przepisania nazwy uzytkownika', () => {
     expect(route).toContain('type your username to confirm')
   })
@@ -64,7 +63,7 @@ describe('zamkniecie konta', () => {
     expect(module).toContain(`role = 'owner'`)
   })
 
-  // Pieniadze, ktore juz wplynely, musza dac sie przypisac do konca.
+  // Money already taken has to stay attributable.
   it('sprzedaz blokuje zamkniecie', () => {
     expect(module).toContain('has_sales')
   })
@@ -105,8 +104,7 @@ describe('obrazy wiedza, do czego naleza', () => {
     expect(readFileSync('server/api/me/avatar.post.ts', 'utf8')).toContain(`context: 'user'`)
   })
 
-  // Petla kasujaca, ktorej nikt nie zlecil, to sposob na wyczyszczenie kubelka
-  // zlym zapytaniem.
+  // A delete loop nobody asked for is how a bad query empties a bucket.
   it('sprzatanie jest uruchamiane recznie, nie z zegara', () => {
     const route = readFileSync('server/api/admin/catalog/images.post.ts', 'utf8')
     expect(route).toContain('requireCatalogWrite(event)')

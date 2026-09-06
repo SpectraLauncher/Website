@@ -10,8 +10,8 @@ const LOCALES = ['en', 'pl'] as const
 const load = (loc: string) =>
   JSON.parse(readFileSync(`i18n/locales/${loc}.json`, 'utf8')) as Record<string, any>
 
-// Rejestry rosna po stronie kodu, a tlumaczenia zostaja w tyle — wtedy interfejs
-// pokazuje goly klucz. Kazdy rejestr, po ktorym renderujemy petla, jest tu.
+// Registries grow in code while translations lag behind, and then the interface
+// shows a bare key. Every registry we render in a loop is listed here.
 describe.each(LOCALES)('%s', (loc) => {
   const dict = load(loc)
 

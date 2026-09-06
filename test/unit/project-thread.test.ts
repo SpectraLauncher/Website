@@ -49,8 +49,8 @@ describe('listComments', () => {
     expect(roots.find(r => r.id === 'a')!.replies.map(r => r.id)).toEqual(['b'])
   })
 
-  // Ukryty komentarz zostaje jako wiersz, zeby odpowiedzi pod nim nie zniknely,
-  // ale jego tresc nie wychodzi poza moderacje.
+  // A hidden comment keeps its row so the replies under it survive, but its
+  // text does not leave moderation.
   it('ukrywa tresc przed zwyklym czytelnikiem, pokazuje moderacji', async () => {
     const hidden = [row({ id: 'a', hidden: true, body: 'sekret' })] as never
 

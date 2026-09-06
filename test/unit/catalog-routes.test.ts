@@ -2,10 +2,10 @@ import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-// Ukrycie linku w nawigacji nie jest zabezpieczeniem, a test integracyjny na
-// kazda trase wymagalby bazy. To jest tansza wersja tej samej gwarancji i lapie
-// prawdziwy tryb awarii: ktos dodaje trase i zapomina o straznik. Skanuje pliki,
-// nie odpala niczego.
+// Hiding a link in the navigation is not a guard, and an integration test per
+// route would need a database. This is the cheap version of the same guarantee
+// and catches the real failure: somebody adds a route and forgets the guard. It
+// reads files and runs nothing.
 const GATED_DIRS = [
   'server/api/admin/catalog',
   'server/api/admin/verification',
@@ -64,10 +64,9 @@ describe('kazda trasa katalogu ma straznika', () => {
     expect(gates.some(gate => source.includes(gate))).toBe(true)
   })
 
-  // defineCachedEventHandler zapisuje odpowiedz i przy trafieniu w cache nie
-  // uruchamia handlera — czyli takze nie uruchamia straznika. Pierwsze wejscie
-  // admina zapelnia cache, a nastepny anonim dostaje z niego dane. Trasa za
-  // brama nie moze byc cachowana odpowiedzia.
+  // defineCachedEventHandler stores the response and skips the handler on a
+  // hit, which skips the guard with it: the first admin request fills the cache
+  // and the next anonymous one reads from it.
   it.each(files)('%s nie cachuje odpowiedzi przed straznikiem', (file) => {
     expect(readFileSync(file, 'utf8')).not.toContain('defineCachedEventHandler')
   })

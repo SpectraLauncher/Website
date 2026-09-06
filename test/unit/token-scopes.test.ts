@@ -34,8 +34,8 @@ describe('rejestr zakresow', () => {
 })
 
 describe('zapis implikuje odczyt', () => {
-  // Token, ktory moze zmienic projekt, oczywiscie moze go zobaczyc. Zmuszanie
-  // do zaznaczenia obu to pulapka, ktora konczy sie tokenem bez odczytu.
+  // A token that may change a project can obviously see it. Making people tick
+  // both is a trap that ends in a token which cannot read what it edits.
   it('write daje read tej samej rodziny', () => {
     const mask = expandImplied(TOKEN_SCOPES['projects:write'])
     expect(hasScope(mask, 'projects:read')).toBe(true)
@@ -60,7 +60,7 @@ describe('zapis implikuje odczyt', () => {
 describe('token jako poswiadczenie', () => {
   const source = readFileSync('server/utils/tokens.ts', 'utf8')
 
-  // Zrzut bazy nie moze byc lista dzialajacych hasel.
+  // A database dump must not be a list of working credentials.
   it('przechowywany jest hash, nie token', () => {
     expect(source).toContain("createHash('sha256')")
     expect(source).toContain('token_hash')
@@ -85,7 +85,7 @@ describe('token jako poswiadczenie', () => {
     expect(source).toContain('account suspended')
   })
 
-  // Waski wyciek nie moze sam sie poszerzyc.
+  // A narrow leak must not be able to widen itself.
   it('token nie moze utworzyc kolejnego tokenu', () => {
     const route = readFileSync('server/api/me/tokens.post.ts', 'utf8')
     expect(route).toContain('tokenFromEvent(event)')

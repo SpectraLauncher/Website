@@ -32,8 +32,8 @@ describe('rejestr zgloszen', () => {
   })
 })
 
-// Jedyne miejsce w calym katalogu, gdzie nazwa tabeli trafia do zapytania.
-// Musi pochodzic ze stalej mapy, nigdy z zadania.
+// The only place in the catalog where a table name reaches a query. It has to
+// come from a fixed map, never from the request.
 describe('nazwa tabeli nie pochodzi z zadania', () => {
   const source = readFileSync('server/utils/reports.ts', 'utf8')
 
@@ -61,7 +61,7 @@ describe('trasa zgloszenia', () => {
     expect(source).toContain('isReportItemType(body.itemType)')
   })
 
-  // Formularz nie moze sluzyc do sprawdzania, ktore id istnieja.
+  // The form must not double as a way to find out which ids are real.
   it('nieistniejacy obiekt daje 404, tak samo jak zle id', () => {
     expect(source).toContain('reportedItemExists(body.itemType, itemId)')
     expect(source).toContain(`statusCode: 404`)
@@ -82,8 +82,8 @@ describe('zalewanie kolejki', () => {
   const schema = readFileSync('server/utils/schema-catalog.ts', 'utf8')
   const module = readFileSync('server/utils/reports.ts', 'utf8')
 
-  // Bez tego jedna osoba wysyla to samo dziesiec razy i moderator nie odroznia
-  // dziesieciu ludzi od jednego uporczywego.
+  // Without this one person files the same thing ten times and a moderator
+  // cannot tell ten people from one persistent one.
   it('baza dopuszcza jedno otwarte zgloszenie na osobe i obiekt', () => {
     expect(schema).toContain('uniq_report_open')
     expect(schema).toContain(`WHERE status = 'open' AND reporter_id IS NOT NULL`)
@@ -106,14 +106,14 @@ describe('zamkniecie zgloszenia', () => {
     expect(source).toContain(`body.status === 'open'`)
   })
 
-  // Zgloszenie bez odpowiedzi uczy ludzi, ze zglaszanie nie ma sensu.
+  // A report that gets no answer teaches people not to bother reporting.
   it('zglaszajacy dostaje powiadomienie', () => {
     expect(source).toContain(`kind: 'report_closed'`)
   })
 })
 
-// Moderator, ktory nie moze zapytac "ktory dokladnie plik?", musi zgadywac,
-// a zgadywanie konczy sie odrzuceniem sluszengo zgloszenia.
+// A moderator who cannot ask which file exactly has to guess, and guessing is
+// how a correct report gets dismissed.
 describe('zgloszenie ma wlasny watek', () => {
   const thread = readFileSync('server/utils/project-thread.ts', 'utf8')
   const module = readFileSync('server/utils/reports.ts', 'utf8')

@@ -36,8 +36,8 @@ describe('atLimit', () => {
   })
 })
 
-// Limit czestotliwosci mowi, jak szybko cos powstaje. Ten mowi, ile moze
-// istniec. Bez drugiego konto tworzy w nieskonczonosc, tylko wolniej.
+// A rate limit says how fast something is created. This says how much may
+// exist. Without it an account creates forever, only slower.
 describe('limity sa egzekwowane tam, gdzie rzeczy powstaja', () => {
   it.each([
     ['server/api/catalog/collections.post.ts', "requireHeadroom(user.id, 'collections')"],
@@ -53,7 +53,8 @@ describe('limity sa egzekwowane tam, gdzie rzeczy powstaja', () => {
     expect(source).toContain('state.current < state.max')
   })
 
-  // Projekt organizacji obciaza organizacje, nie kazdego jej czlonka z osobna.
+  // A project owned through an organization counts against the organization,
+  // not against each of its members.
   it('projekt organizacji nie liczy sie do limitu osoby', () => {
     const source = readFileSync('server/api/admin/catalog/projects.post.ts', 'utf8')
     expect(source).toContain('if (!body.orgId)')

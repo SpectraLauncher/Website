@@ -168,7 +168,6 @@ export async function retryFailed(kind?: string): Promise<number> {
   )
 }
 
-// Tests drive the loop by hand rather than waiting on the poller.
 export async function drainForTests(): Promise<void> {
   for (let i = 0; i < 50; i++) {
     if (!await runJobs(20)) return

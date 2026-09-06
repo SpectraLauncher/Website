@@ -11,7 +11,7 @@ import {
 } from '../../shared/utils/notification-prefs'
 
 describe('grupy powiadomien', () => {
-  // Rodzaj bez grupy nie da sie ustawic, wiec nie da sie tez wylaczyc maila.
+  // A kind with no group cannot be configured, so its mail cannot be turned off.
   it('kazdy rodzaj powiadomienia nalezy do jakiejs grupy', () => {
     for (const kind of Object.keys(NOTIFICATION_ICONS)) {
       expect(groupOf(kind), kind).not.toBeNull()
@@ -34,8 +34,8 @@ describe('cleanPrefs', () => {
     expect(cleanPrefs('nie obiekt')).toEqual(DEFAULT_PREFS)
   })
 
-  // Dzwonek jest zapisem tego, co sie stalo. Wylaczenie go zostawiloby
-  // uzytkownika bez sladu po decyzji moderacji.
+  // The bell is the record of what happened. Turning it off would leave someone
+  // with no trace of a moderation decision.
   it('site zostaje nawet gdy ktos go wytnie', () => {
     expect(cleanPrefs({ social: [] }).social).toEqual(['site'])
     expect(cleanPrefs({ social: ['email'] }).social).toEqual(['site', 'email'])

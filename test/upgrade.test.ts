@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-// Odtwarza baze taka, jaka jest na produkcji dzisiaj — schemat sprzed tej sesji,
-// z danymi — i puszcza na nia nowa migracje. To jest wlasciwe pytanie: nie "czy
-// migracja przechodzi na pustym", tylko "czy stara strona dalej dziala".
+// Rebuilds the database as production has it today — the schema from before
+// this branch, with rows in it — and runs the new migration over that. The
+// question is not whether a migration passes on an empty database.
 //
 //   docker run -d --rm --name mig -e POSTGRES_PASSWORD=test -e POSTGRES_DB=spectra \
 //     -p 55433:5432 postgres:16-alpine
@@ -21,7 +21,6 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
     const { useAuth } = await import('../server/utils/auth')
     const { exec, one, q } = await import('../server/utils/db')
 
-    // --- stan sprzed tej sesji ---
     const { runMigrations } = await getMigrations(useAuth().options)
     await runMigrations()
 
@@ -30,7 +29,8 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
     await old.ensureSchema()
     await oldCatalog.ensureCatalogSchema()
 
-    // --- dane, ktore juz tam sa ---
+    // The catalog was never deployed, so production holds no projects and no
+    // files. What it does hold is accounts and modpacks shared from the launcher.
     const now = Date.now()
     await exec(
       `INSERT INTO "user" (id, name, email, "emailVerified", "createdAt", "updatedAt", username)
@@ -50,13 +50,16 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
       `INSERT INTO notification (user_id, kind, created)
        VALUES ('u-old', 'friend_request', $1)`, [now])
 
-    // --- migracja, ktora poszlaby przy wdrozeniu ---
+    await exec(
+      `INSERT INTO shares (code, created, expires, name, owner_id, object_key, size)
+       VALUES ('ABC123', $1, $2, 'Moja paczka', 'u-old', 'packs/ABC123.mrpack', 4242)
+       ON CONFLICT DO NOTHING`, [now, now + 86_400_000])
+
     const next = await import('../server/utils/schema')
     const nextCatalog = await import('../server/utils/schema-catalog')
     await next.ensureSchema()
     await nextCatalog.ensureCatalogSchema()
 
-    // --- czy stare dalej stoi ---
     const user = await one<{ username: string }>(
       `SELECT username FROM "user" WHERE id = 'u-old'`)
     expect(user?.username).toBe('stary')
@@ -73,13 +76,16 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
 
     const notifications = await q(`SELECT id FROM notification WHERE user_id = 'u-old'`)
     expect(notifications).toHaveLength(1)
+
+    const share = await one<{ name: string, object_key: string, size: string }>(
+      `SELECT name, object_key, size FROM shares WHERE code = 'ABC123'`)
+    expect(share?.name).toBe('Moja paczka')
+    expect(share?.object_key).toBe('packs/ABC123.mrpack')
   }, 120_000)
 
   it('nowe kolumny sa puste, nie wypelnione smieciami', async () => {
     const { one } = await import('../server/utils/db')
 
-    // Konto zalozone przed ta sesja nie ma bio ani preferencji powiadomien, i to
-    // jest w porzadku: kod czyta je z domyslnymi.
     const row = await one<{
       bio: string | null
       locale: string | null
@@ -101,10 +107,10 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
     const row = await one<{ links: unknown, notification_prefs: unknown }>(
       `SELECT links, notification_prefs FROM "user" WHERE id = 'u-old'`)
 
-    // links ma DEFAULT '{}', wiec nie jest NULL nawet dla starego wiersza.
+    // links carries a DEFAULT, so it is not null even on a row that predates it.
     expect(row?.links).toEqual({})
 
-    // A to, co jest NULL, ma dzialac po przepuszczeniu przez wlasny czytnik.
+    // What is null has to work once it goes through its own reader.
     expect(cleanPrefs(row?.notification_prefs).projects).toContain('site')
     expect(permissionsOf('admin', null)).toBeGreaterThan(0)
   })
@@ -120,7 +126,7 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
   it('istniejacy plik nie jest oflagowany tylko dlatego, ze go nie skanowano', async () => {
     const { one } = await import('../server/utils/db')
 
-    // scan_verdict NULL znaczy "nikt nie patrzyl", a nie "znalazlem cos".
+    // A null verdict means nobody looked, which is not the same as a finding.
     const row = await one<{ scan_verdict: string | null }>(
       `SELECT scan_verdict FROM version_file LIMIT 1`)
 

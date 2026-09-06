@@ -1,9 +1,9 @@
 // node test/ui-props-check.mjs
 //
-// Kazdy props podany komponentowi @nuxt/ui musi byc przez ten komponent
-// zadeklarowany. Vue nie protestuje na literowke — nadmiarowy atrybut spada na
-// element i cicho nic nie robi, wiec `:text` zamiast `:label` albo `color` na
-// ikonie wyglada w kodzie na dzialajace az do momentu, gdy ktos spojrzy.
+// Every prop given to a @nuxt/ui component must be one that component declares.
+// Vue does not complain about a typo: the extra attribute lands on the element
+// and quietly does nothing, so `:text` instead of `:label`, or `color` on an
+// icon, reads as working until somebody looks.
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -19,7 +19,7 @@ function propsOf(name) {
   const block = /defineProps\(\{([\s\S]*?)\n\}\)/.exec(src)
   if (block) for (const m of block[1].matchAll(/^\s{2}([A-Za-z][A-Za-z0-9]*)\s*:/gm)) out.add(m[1])
 
-  // v-model-y sa deklarowane przez defineModel, nie defineProps
+  // v-models are declared with defineModel, not defineProps
   for (const m of src.matchAll(/defineModel\(\s*["']([A-Za-z][A-Za-z0-9]*)["']/g)) out.add(m[1])
   if (/defineModel\(\s*\{/.test(src)) out.add('modelValue')
 
@@ -28,7 +28,7 @@ function propsOf(name) {
 
 const kebab = s => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
-// Atrybuty natywne komponenty przepuszczaja na element pod spodem.
+// Native attributes are forwarded to the element underneath.
 const NATIVE = new Set([
   'class', 'style', 'id', 'key', 'ref', 'type', 'name', 'value', 'placeholder',
   'maxlength', 'minlength', 'rows', 'cols', 'autocomplete', 'readonly', 'required',
@@ -56,8 +56,8 @@ for (const file of walk('app')) {
 
     const allowed = new Set([...declared, ...[...declared].map(kebab), ...NATIVE])
 
-    // Najpierw wycinamy wartosci atrybutow, zeby wyrazenie w @click nie zostalo
-    // odczytane jako nazwa atrybutu.
+    // Attribute values are stripped first, so an expression inside @click is not
+    // read as an attribute name.
     const names = tag[2].replace(/"[^"]*"|'[^']*'/g, '""')
 
     for (const attr of names.matchAll(/(?:^|\s)([:@]?[a-zA-Z][a-zA-Z0-9.-]*)(?==|\s|$)/g)) {

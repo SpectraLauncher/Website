@@ -20,9 +20,8 @@ describe('status oczekujacy', () => {
     expect(PROJECT_STATUSES).toContain('draft')
   })
 
-  // Zgloszenie do moderacji nie jest publikacja. Gdyby 'pending' wpadlo do
-  // ktorejkolwiek z tych list, projekt bylby widoczny zanim ktokolwiek go
-  // obejrzal — czyli moderacja nie mialaby sensu.
+  // Submitting is not publishing. If 'pending' reached either list the project
+  // would be visible before anyone looked at it, which is the whole point.
   it('nie jest ani listowany, ani otwieralny z linku', () => {
     expect(LISTED_STATUSES).not.toContain('pending')
     expect(LINKABLE_STATUSES).not.toContain('pending')
@@ -45,8 +44,8 @@ describe('co wolno zglosic', () => {
     expect(isSubmittable('rejected')).toBe(true)
   })
 
-  // Usuniety nie wraca sam z siebie, a juz opublikowany i oczekujacy nie maja po
-  // co — drugie zgloszenie tego samego projektu zdublowaloby wpis w kolejce.
+  // A removed project does not requeue itself, and one already published or
+  // waiting has no reason to: a second submission would duplicate the queue entry.
   it('reszta nie', () => {
     for (const status of ['pending', 'published', 'unlisted', 'archived', 'removed']) {
       expect(isSubmittable(status), status).toBe(false)
@@ -61,8 +60,8 @@ describe('co wolno zglosic', () => {
 describe('odwolanie wraca do kolejki', () => {
   const source = readFileSync('server/api/catalog/project/[slug]/thread.post.ts', 'utf8')
 
-  // Odwolanie, ktore nie zmienia statusu, jest wiadomoscia, ktorej nikt nie ma
-  // zaplanowanej do przeczytania — autor poprawia projekt i czeka w prozni.
+  // An appeal that changes no status is a message nobody is scheduled to read:
+  // the author fixes the project and waits in a vacuum.
   it('odpowiedz autora na odrzucenie ustawia pending', () => {
     expect(source).toContain(`project.status === 'rejected'`)
     expect(source).toContain(`updateProject(project.id, { status: 'pending' })`)

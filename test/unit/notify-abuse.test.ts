@@ -6,9 +6,9 @@ import { limitFor, resetRateLimits, take } from '../../server/utils/rateLimit'
 
 beforeEach(resetRateLimits)
 
-// Jedno zadanie moze wywolac powiadomienie u wielu osob — odwolanie idzie do
-// kazdego moderatora — wiec limit na trase nie jest ostatnim slowem o tym, ile
-// poczty wychodzi. To jest sufit na jedna skrzynke.
+// One request can notify many people — an appeal reaches every moderator — so
+// a per-route limit is not the last word on how much mail leaves. This is the
+// ceiling on a single inbox.
 describe('sufit na poczte do jednej osoby', () => {
   it('po dwudziestu listach w godzinie przestaje przepuszczac', () => {
     for (let i = 0; i < 20; i++) {
@@ -25,7 +25,7 @@ describe('sufit na poczte do jednej osoby', () => {
   it('wysylka faktycznie o niego pyta', () => {
     const source = readFileSync('server/utils/notify-mail.ts', 'utf8')
     expect(source).toContain('take(`mail:${userId}`')
-    // Sufit musi byc sprawdzony po preferencjach, ale przed wyslaniem.
+    // The ceiling is checked after preferences and before sending.
     expect(source.indexOf('take(`mail:')).toBeLessThan(source.indexOf('sendMail('))
   })
 })
@@ -50,7 +50,7 @@ describe('kazdy prefiks API ma sufit na IP', () => {
     expect(limitFor(path, 'POST')?.name).toBe(name)
   })
 
-  // Trasa uwierzytelniona bez limitu to nadal trasa bez limitu.
+  // An authenticated route with no limit is still a route with no limit.
   it('zaden z tych prefiksow nie zostaje bez reguly', () => {
     for (const path of ['/api/org/x', '/api/me/x', '/api/catalog/x']) {
       expect(limitFor(path, 'POST'), path).not.toBeNull()

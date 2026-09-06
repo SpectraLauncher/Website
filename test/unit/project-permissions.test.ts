@@ -34,8 +34,8 @@ describe('rejestr uprawnien projektu', () => {
   })
 })
 
-// Czlonek organizacji ma pracowac nad projektem, a nie moc go skasowac ani
-// zobaczyc cudzych pieniedzy.
+// Being in an organization is for working on a project, not for deleting it or
+// seeing money that belongs to someone else.
 describe('co daje sama przynaleznosc do organizacji', () => {
   it('pozwala pracowac nad projektem', () => {
     for (const key of ['upload_version', 'edit_details', 'edit_body', 'view_analytics'] as const) {
@@ -67,14 +67,14 @@ describe('skad biora sie prawa', () => {
     expect(source).toContain('mask |= standing.role')
   })
 
-  // Kasowanie projektu wynika z prawa usuwania projektow w organizacji,
-  // zamiast byc nadawane drugi raz osobno.
+  // Deleting a project follows from the organization right to remove projects,
+  // rather than being granted a second time.
   it('usuwanie projektow w organizacji daje kasowanie projektu', () => {
     expect(source).toContain('PROJECT_PERMISSIONS.delete_project')
     expect(source).not.toContain('ALL_PROJECT_PERMISSIONS & ~0')
   })
 
-  // Ktos bez zadnych praw nie ma sie dowiedziec, ze projekt istnieje.
+  // Somebody with no rights must not learn that the project exists.
   it('brak praw daje 404, brak jednego prawa daje 403', () => {
     expect(source).toContain('if (!standing.mask)')
     expect(source).toContain('statusCode: 404')

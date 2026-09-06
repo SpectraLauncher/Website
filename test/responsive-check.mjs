@@ -1,21 +1,21 @@
 // node test/responsive-check.mjs
 //
-// Klasy, ktore rozpychaja strone w poziomie na waskim ekranie. Nikt tego nie
-// zobaczy na monitorze, a telefon to wiekszosc ruchu.
+// Classes that push a page sideways on a narrow screen. Nobody sees this on a
+// monitor, and phones are most of the traffic.
 //
-// Celowo waskie. Sprawdzanie, ktore krzyczy na poprawny kod, przestaje byc
-// czytane po tygodniu, wiec sa tu tylko wzorce zawsze bedace bledem —
-// przepelnienie, a nie gust.
+// Deliberately narrow. A check that shouts at correct code stops being read
+// within a week, so only patterns that are always wrong live here: overflow,
+// not taste.
 //
-// Liczba kolumn siatki tu nie jest sprawdzana, bo statycznie nie widac, co w
-// nich siedzi: grid-cols-8 emoji po 24px miesci sie, grid-cols-3 kart nie.
-// Regula po samej liczbie dawala wylacznie falszywe trafienia.
+// Grid column counts are not checked. Statically there is no way to see what
+// sits in a cell — eight columns of 24px emoji fit, three columns of cards do
+// not — and a rule on the number alone produced nothing but false positives.
 import fs from 'node:fs'
 import path from 'node:path'
 
 const ROOTS = ['app/components', 'app/pages', 'app/layouts']
 
-// Renderowane przez satori do obrazka o stalej szerokosci, nie w przegladarce.
+// Rendered by satori into a fixed-width image, never in a browser.
 const SKIP = /app\/components\/OgImage\//
 
 function* walk(dir) {
@@ -46,7 +46,7 @@ for (const root of ROOTS) {
     if (SKIP.test(file)) continue
 
     const source = fs.readFileSync(file, 'utf8')
-    // Szerokosc w pikselach jest w porzadku, jesli cos nad nia przewija.
+    // A pixel width is fine when something above it scrolls.
     const scrolls = /overflow-x-auto|overflow-auto|overflow-x-scroll/.test(source)
 
     for (const attr of classAttributes(source)) {
@@ -57,9 +57,8 @@ for (const root of ROOTS) {
       }
     }
 
-    // Tekst wpisany przez czlowieka trafia tu w calosci. Jeden wklejony dlugi
-    // adres bez spacji rozpycha kontener, bo pre-wrap lamie na spacjach, a tam
-    // ich nie ma.
+    // Text people type arrives whole. Pre-wrap breaks on spaces and a pasted
+    // address has none, so one long link widens the container.
     for (const attr of classAttributes(source)) {
       if (/whitespace-pre-wrap/.test(attr) && !/break-words|break-all/.test(attr)) {
         problems.push(`${file} — whitespace-pre-wrap bez break-words, dlugi adres sie nie zlamie`)

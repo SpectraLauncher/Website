@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-// Uruchamia prawdziwa migracje na prawdziwej bazie, w tej samej kolejnosci co
-// server/plugins/auth.ts przy starcie. Bez MIG_URL test sie pomija, wiec
-// zwykly przebieg nie potrzebuje Postgresa:
+// Runs the real migration against a real database, in the order
+// server/plugins/auth.ts uses at boot. Without MIG_URL it skips, so an ordinary
+// run needs no Postgres:
 //
 //   docker run -d --rm --name mig -e POSTGRES_PASSWORD=test -e POSTGRES_DB=spectra \
 //     -p 55433:5432 postgres:16-alpine
@@ -27,8 +27,8 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
     await ensureSchema()
     await ensureCatalogSchema()
 
-    // Kazdy start serwera uruchamia to ponownie na bazie, ktora juz ma tabele.
-    // Drugi przebieg jest wlasciwym testem, nie pierwszy.
+    // Every boot runs this again against a database that already has the
+    // tables, so the second pass is the real test.
     await ensureSchema()
     await ensureCatalogSchema()
 
@@ -36,7 +36,7 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
       `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`)
     const names = tables.map(t => t.tablename)
 
-    // Kazda tabela, ktora ta sesja dolozyla, plus kregoslup katalogu.
+
     for (const table of [
       'project', 'version', 'version_file', 'collection', 'collection_project',
       'project_comment', 'project_message', 'project_member', 'report',

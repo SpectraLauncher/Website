@@ -35,7 +35,7 @@ describe('zadanie jest wierszem, nie domknieciem', () => {
     expect(insert!.params).toContain(JSON.stringify({ fileId: 'f1' }))
   })
 
-  // Domkniecie nie przezyje restartu, wiec payload musi dac sie zapisac.
+  // A closure does not survive a restart, so the payload has to be storable.
   it('payload przechodzi przez JSON', async () => {
     await enqueue('mail', { userId: 'u1', kind: 'project_approved', actorId: null })
 
@@ -100,7 +100,7 @@ describe('branie zadania z kolejki', () => {
   })
 })
 
-// Kilka replik dzieli jedna tabele, wiec dwie nie moga wziac tego samego wiersza.
+// Several replicas share one table, so two must never take the same row.
 describe('kilka procesow, jedna kolejka', () => {
   const source = readFileSync('server/utils/queue.ts', 'utf8')
 
@@ -113,7 +113,7 @@ describe('kilka procesow, jedna kolejka', () => {
     expect(source).toContain('RETURNING id, kind, payload, attempts')
   })
 
-  // Proces, ktory umarl w polowie, zostawil wiersz zajety na zawsze.
+  // A process that died mid-job left its row claimed forever.
   it('martwa blokada wraca do kolejki po czasie', () => {
     expect(source).toContain('recoverStaleJobs')
     expect(source).toContain('LOCK_TIMEOUT_MS')

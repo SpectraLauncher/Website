@@ -33,8 +33,8 @@ describe('widocznosc kolekcji', () => {
     expect(collectionVisible(row(), null)).toBe(false)
   })
 
-  // Niepubliczna otwiera sie z linku, ale nie trafia na profil — te same dwa
-  // pytania co przy projekcie.
+  // Unlisted opens from a link but stays off the profile: the same two
+  // questions a project answers.
   it('niepubliczna i publiczna otwieraja sie z linku', () => {
     for (const visibility of ['unlisted', 'listed'] as const) {
       expect(collectionVisible(row({ visibility }), null), visibility).toBe(true)
@@ -59,8 +59,8 @@ describe('polka ulubionych', () => {
     expect([...COLLECTION_KINDS]).toEqual(['favourites', 'custom'])
   })
 
-  // Dwa szybkie klikniecia gwiazdki nie moga zrobic dwoch polek, bo projekt
-  // wpadlby do jednej z nich i znikal z widoku przy nastepnym odczycie.
+  // Two quick stars must not make two shelves: the project would land in one
+  // and vanish from view on the next read.
   it('baza dopuszcza tylko jedna na konto', () => {
     expect(schema).toContain('uniq_collection_favourites')
     expect(schema).toContain(`ON collection (user_id) WHERE kind = 'favourites'`)
@@ -71,8 +71,8 @@ describe('polka ulubionych', () => {
     expect(source).toContain('DO NOTHING')
   })
 
-  // Polka jest miejscem, na ktore trafia gwiazdka. Skasowanie jej zostawiloby
-  // przycisk bez celu.
+  // The shelf is where the star puts things; deleting it leaves the button
+  // pointing at nothing.
   it('nie da sie jej skasowac', () => {
     expect(source).toContain(`DELETE FROM collection WHERE id = $1 AND kind <> 'favourites'`)
   })
@@ -83,9 +83,9 @@ describe('polka ulubionych', () => {
 })
 
 describe('ulubione a obserwowanie', () => {
-  // Dwa rozne pytania: "chce wiedziec o aktualizacjach" i "chce to miec pod
-  // reka". Gdyby gwiazdka ruszala licznik obserwujacych, publiczna popularnosc
-  // projektu mieszalaby sie z prywatna polka czytelnika.
+  // Two different questions: wanting to hear about changes, and wanting the
+  // thing to hand. If the star moved the follower count, a project's public
+  // popularity would mix with a reader's private shelf.
   it('gwiazdka nie dotyka tabeli obserwowania', () => {
     for (const route of ['favourite.post.ts', 'favourite.delete.ts']) {
       const source = readFileSync(`server/api/catalog/project/[slug]/${route}`, 'utf8')

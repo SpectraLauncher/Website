@@ -4,10 +4,6 @@ import { deliverNotificationMail } from './notification-copy'
 import { registerJob } from './queue'
 import { scanFile } from './scan-queue'
 
-// Where a job kind meets the code that does the work. Kept apart from the queue
-// itself so the queue does not import half the application, and apart from the
-// callers so nothing has to hold a function it wants to run later.
-//
 // To add a kind: one entry here, one in JobKind, and enqueue it with a payload
 // that survives JSON.
 let wired = false
