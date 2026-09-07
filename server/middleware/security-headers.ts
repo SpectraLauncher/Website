@@ -54,7 +54,11 @@ function policy(): string {
     // on the next OAuth provider, so images are allowed from any https origin.
     `img-src 'self' data: blob: https:`,
     `font-src 'self' data:`,
-    `connect-src 'self' ${TURNSTILE}${extra}`,
+    // Stripe documents script-src, frame-src, img-src and style-src for embedded
+    // components, but not this one. Connect.js still fetches its own source map
+    // from the top-level context, which connect-src governs — so without the
+    // origins here the page logs a CSP violation on every visit.
+    `connect-src 'self' ${TURNSTILE} ${STRIPE}${extra}`,
     `frame-src ${TURNSTILE} ${STRIPE}`,
     `worker-src 'self' blob:`,
     `manifest-src 'self'`,

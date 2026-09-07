@@ -24,9 +24,17 @@ describe('CSP dla komponentow Connect', () => {
     expect(directive('frame-src')).toContain('${STRIPE}')
   })
 
+  // Not in Stripe's documented list, and found only by loading the page:
+  // Connect.js fetches its own source map from the top-level context, which this
+  // directive governs, so leaving it out logs a violation on every visit.
+  it('pozwala Connect.js siegnac po wlasna source mape', () => {
+    expect(directive('connect-src')).toContain('${STRIPE}')
+  })
+
   it('nie gubi Turnstile przy okazji', () => {
     expect(directive('script-src')).toContain('${TURNSTILE}')
     expect(directive('frame-src')).toContain('${TURNSTILE}')
+    expect(directive('connect-src')).toContain('${TURNSTILE}')
   })
 
   // Stripe documents a style-src hash for an empty style element. Adding it
