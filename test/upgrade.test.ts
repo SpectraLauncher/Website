@@ -46,6 +46,12 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
       `INSERT INTO version (id, project_id, number, created)
        VALUES ('v-old', 'p-old', '1.0.0', $1) ON CONFLICT DO NOTHING`, [now])
 
+    // Every other row here has a fixed id and an ON CONFLICT, so a second run
+    // against the same database is a no-op. This one's id is generated, so
+    // without clearing first it piles up and the count below fails on the second
+    // run - a fresh database passing and a reused one failing looked like a
+    // regression more than once.
+    await exec(`DELETE FROM notification WHERE user_id = 'u-old'`)
     await exec(
       `INSERT INTO notification (user_id, kind, created)
        VALUES ('u-old', 'friend_request', $1)`, [now])
