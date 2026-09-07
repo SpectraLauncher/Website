@@ -72,8 +72,22 @@ const session = useAuthSession()
 const body = computed(() => renderMarkdown(props.project.description))
 const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 
-const isAdmin = computed(() =>
-  (session.value.data?.user as { role?: string } | undefined)?.role === 'admin')
+// The settings area answers 404 to anybody with no rights on the project, so
+// asking it is both the check and the answer.
+const { data: editor } = await useAsyncData(
+  `project-editable:${props.project.id}`,
+  async () => {
+    if (!session.value.data) return null
+    try {
+      return await $fetch<{ permissions: string[] }>(
+        `/api/catalog/project/${encodeURIComponent(props.project.slug)}/editor`)
+    }
+    catch { return null }
+  },
+  { watch: [() => props.project.id] },
+)
+
+const canEdit = computed(() => Boolean(editor.value?.permissions.length))
 
 // The one file somebody actually wants. A project whose newest version has no
 // primary file has nothing to offer behind a download button, so there is none.
@@ -87,10 +101,10 @@ const gallery = computed(() => props.gallery ?? [])
 // tab out of the row when it would open on nothing.
 const TABS = [
   { id: 'description', shown: true },
-  { id: 'gallery', shown: computed(() => gallery.value.length > 0 || isAdmin.value) },
+  { id: 'gallery', shown: computed(() => gallery.value.length > 0) },
   { id: 'changelog', shown: computed(() => props.project.versions.some(v => v.changelog)) },
-  { id: 'versions', shown: computed(() => props.project.versions.length > 0 || isAdmin.value) },
-  { id: 'moderation', shown: computed(() => isAdmin.value) },
+  { id: 'versions', shown: computed(() => props.project.versions.length > 0) },
+  { id: 'moderation', shown: computed(() => canEdit.value) },
 ]
 
 const tabs = computed(() => TABS
@@ -183,14 +197,14 @@ async function toggleFollow() {
           external
         />
         <UButton
-          v-if="isAdmin"
+          v-if="canEdit"
           size="lg"
           variant="subtle"
           color="neutral"
           class="rounded-xl"
           icon="i-pixelarticons-edit"
           :label="t('catalog.editProject')"
-          :to="localePath('/admin/catalog')"
+          :to="localePath(`/project/${project.id}/settings`)"
         />
       </div>
     </header>
@@ -235,20 +249,7 @@ async function toggleFollow() {
 
         <template v-else-if="current === 'moderation'">
           <ProjectMembers :slug="project.slug" />
-          <ProjectModeration
-            :slug="project.slug"
-            :project="{
-              summary: project.summary,
-              description: project.description,
-              icon: project.icon,
-              license: project.license,
-              categories: project.categories,
-              versions: project.versions,
-              links: project.links,
-              disclosures: project.disclosures,
-              gallery,
-            }"
-          />
+          <ProjectModeration :slug="project.slug" />
         </template>
 
         <ProjectComments v-if="current === 'description'" :slug="project.slug" />

@@ -3488,7 +3488,54 @@
       "changelog": "Zmiany",
       "versions": "Wersje",
       "moderation": "Moderacja"
-    }
+    },
+    "settings": "Ustawienia",
+    "write": "Pisz",
+    "preview": "Podgląd",
+    "addImage": "Dodaj obraz",
+    "imageTitle": "Podpis",
+    "featured": "Wyróżniony",
+    "confirmRemoveImage": "Usunąć ten obraz?",
+    "licenseUrl": "Adres licencji",
+    "disclosureNote": "Co czytelnik powinien wiedzieć",
+    "descriptionPlaceholder": "Co robi, czego wymaga i czego nie robi. Markdown.",
+    "projectTabs": {
+      "general": "Ogólne",
+      "tags": "Kategorie",
+      "description": "Opis",
+      "license": "Licencja",
+      "gallery": "Galeria",
+      "links": "Linki",
+      "versions": "Wersje",
+      "members": "Członkowie",
+      "analytics": "Statystyki",
+      "disclosures": "Deklaracje"
+    },
+    "settingsHint": {
+      "general": "Nazwa, adres i kto to widzi.",
+      "tags": "Po tym ludzie filtrują, szukając czegoś takiego jak twoje.",
+      "categories": "Zaznacz te, które są prawdziwe. Wszystkie to tyle samo co żadna.",
+      "description": "Strona, którą ludzie czytają, zanim cokolwiek zainstalują.",
+      "license": "Co inni mogą zrobić z twoją pracą.",
+      "licenseUrl": "Tylko wtedy, gdy licencja nie jest jedną ze standardowych.",
+      "gallery": "Jedno zdjęcie działającej rzeczy oszczędza akapit.",
+      "links": "Gdzie trafia błąd i gdzie leży kod, jeśli jest otwarty.",
+      "disclosures": "Co projekt mówi o sobie, zanim ktoś go pobierze.",
+      "versions": "To, co ludzie pobierają, i to, z czego czytają filtry kompatybilności.",
+      "analytics": "Ostatnie {n} dni dla tego projektu.",
+      "uploadElsewhere": "Pliki dopina się do wersji na razie z panelu admina. Wersji bez pliku nie da się wysłać do sprawdzenia."
+    },
+    "disclosureLock": {
+      "cannot_remove": "Potwierdzone",
+      "locked": "Zablokowane przez moderatora"
+    },
+    "addVersion": "Dodaj wersję",
+    "channel": "Kanał",
+    "versionName": "Nazwa",
+    "versionNumber": "Numer",
+    "confirmDeleteVersion": "Usunąć {name}?",
+    "fileCount": "brak plików | {n} plik | {n} pliki | {n} plików",
+    "noStats": "Nic jeszcze nie zapisano."
   },
   "verification": {
     "title": "Weryfikacja",
@@ -4349,7 +4396,9 @@
       "linksHint": "Gdzie trafia błąd i gdzie leży kod, jeśli jest otwarty.",
       "disclosures": "Sprawdź deklaracje",
       "disclosureHint": "Telemetria, reklamy, AI, płatne elementy — wszystko, o czym czytelnik chce wiedzieć najpierw."
-    }
+    },
+    "required": "Wymagane",
+    "blocked": "Najpierw uzupełnij to, co oznaczone jako wymagane."
   },
   "confirm": {
     "yes": "Tak, zrób to"

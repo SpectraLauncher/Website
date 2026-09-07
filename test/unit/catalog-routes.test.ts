@@ -16,14 +16,15 @@ const GATED_DIRS = [
   'server/api/v2',
 ]
 
-// memberContext is a guard of its own — it calls requireCatalogRead and then
-// resolves the actor's standing. It is accepted here only because the test
-// below pins that it really does call one.
+// memberContext and editableProject are guards of their own — each calls
+// requireCatalogRead and then resolves what the caller may do. They are accepted
+// here only because the tests below pin that they really do call one.
 const GATES = [
   'requireCatalogWrite(event)',
   'requireCatalogRead(event)',
   'requireAdmin(event)',
   'memberContext(event)',
+  'editableProject(event,',
 ]
 
 // A CORS preflight has no credentials to check, so it cannot call a user guard.
@@ -80,5 +81,15 @@ describe('opakowania straznikow same wolaja straznika', () => {
 
     const body = source.slice(start, start + 900)
     expect(body).toContain('requireCatalogRead(event)')
+  })
+
+  it('editableProject wola requireCatalogRead i sprawdza uprawnienie', () => {
+    const source = readFileSync('server/utils/project-rights.ts', 'utf8')
+    const start = source.indexOf('export async function editableProject')
+    expect(start).toBeGreaterThan(-1)
+
+    const body = source.slice(start, start + 900)
+    expect(body).toContain('requireCatalogRead(event)')
+    expect(body).toContain('requireProjectPermission(')
   })
 })

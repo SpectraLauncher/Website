@@ -1,3 +1,5 @@
+import type { H3Event } from 'h3'
+
 
 import type { ProjectRow } from './catalog'
 import { isAdmin } from './admin'
@@ -91,6 +93,20 @@ export async function requireProjectPermission(
   }
 
   return standing
+}
+
+// Every author-facing project route starts the same way: resolve the slug,
+// refuse it the way the guard refuses it, and hand back both. Written once so a
+// new route cannot forget half of it.
+export async function editableProject(event: H3Event, permission: ProjectPermission) {
+  await requireCatalogRead(event)
+  const user = await requireUser(event)
+
+  const project = await projectByIdOrSlug(String(getRouterParam(event, 'slug') ?? ''))
+  if (!project) throw createError({ statusCode: 404, statusMessage: 'no such project' })
+
+  const standing = await requireProjectPermission(project, user, permission)
+  return { project, user, standing }
 }
 
 export interface ProjectMember {

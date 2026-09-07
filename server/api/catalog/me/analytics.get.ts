@@ -16,9 +16,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such organization' })
   }
 
-  const mine = wanted
+  const all = wanted
     ? await orgProjects(scope[0]!.id, true)
     : await ownedProjects(user.id, orgs.map(org => org.id))
+
+  // One project's own tab. Narrowing what the caller already owns is what keeps
+  // this from reading somebody else's numbers.
+  const only = typeof query.project === 'string' ? query.project : ''
+  const mine = only ? all.filter(p => p.id === only || p.slug === only) : all
+
+  if (only && !mine.length) {
+    throw createError({ statusCode: 404, statusMessage: 'no such project' })
+  }
 
   const projects = await Promise.all(mine.map(async (project) => {
     const totals = await totalsForProject(project.id)

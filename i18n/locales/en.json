@@ -3488,7 +3488,54 @@
       "changelog": "Changelog",
       "versions": "Versions",
       "moderation": "Moderation"
-    }
+    },
+    "settings": "Settings",
+    "write": "Write",
+    "preview": "Preview",
+    "addImage": "Add an image",
+    "imageTitle": "Caption",
+    "featured": "Featured",
+    "confirmRemoveImage": "Remove this image?",
+    "licenseUrl": "Licence address",
+    "disclosureNote": "Anything a reader should know",
+    "descriptionPlaceholder": "What it does, what it needs, and what it does not do. Markdown.",
+    "projectTabs": {
+      "general": "General",
+      "tags": "Tags",
+      "description": "Description",
+      "license": "Licence",
+      "gallery": "Gallery",
+      "links": "Links",
+      "versions": "Versions",
+      "members": "Members",
+      "analytics": "Analytics",
+      "disclosures": "Declarations"
+    },
+    "settingsHint": {
+      "general": "The name, the address and who can see it.",
+      "tags": "How people filter to find something like yours.",
+      "categories": "Pick the ones that are actually true. All of them is the same as none.",
+      "description": "The page people read before they install anything.",
+      "license": "What other people may do with your work.",
+      "licenseUrl": "Only when the licence is not one of the standard ones.",
+      "gallery": "One picture of the thing working saves a paragraph.",
+      "links": "Where a bug goes, and where the code lives if it is open.",
+      "disclosures": "What the project tells people about itself before they download it.",
+      "versions": "What people download, and what the compatibility filters read.",
+      "analytics": "The last {n} days for this project.",
+      "uploadElsewhere": "Files are attached to a version from the admin catalog for now. A version without one cannot be submitted."
+    },
+    "disclosureLock": {
+      "cannot_remove": "Confirmed",
+      "locked": "Locked by a moderator"
+    },
+    "addVersion": "Add a version",
+    "channel": "Channel",
+    "versionName": "Name",
+    "versionNumber": "Number",
+    "confirmDeleteVersion": "Delete {name}?",
+    "fileCount": "no files | {n} file | {n} files",
+    "noStats": "Nothing recorded yet."
   },
   "verification": {
     "title": "Verification",
@@ -4349,7 +4396,9 @@
       "linksHint": "Where a bug goes, and where the code lives if it is open.",
       "disclosures": "Check the declarations",
       "disclosureHint": "Telemetry, advertisements, AI, paid parts — anything a reader would want to know first."
-    }
+    },
+    "required": "Required",
+    "blocked": "Fill in what is marked required first."
   },
   "confirm": {
     "yes": "Yes, do it"
