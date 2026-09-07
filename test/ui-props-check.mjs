@@ -73,12 +73,44 @@ for (const file of walk('app')) {
   }
 }
 
+
+// reka-ui reserves the empty string for "no selection": a select item that uses
+// it as its value throws the moment the list opens, and the page dies with the
+// dropdown half-built. Nothing catches it earlier, because the item is only
+// constructed when somebody opens the menu.
+//
+// An item is recognised by carrying both a value and a label, which is what
+// tells it apart from the key/value rows some tools let people edit.
+const PICKERS = ['<USelect', '<USelectMenu', '<UInputMenu', '<URadioGroup']
+
+const emptyItems = []
+
+for (const file of walk('app')) {
+  const src = fs.readFileSync(file, 'utf8')
+  if (!PICKERS.some(tag => src.includes(tag))) continue
+
+  for (const [literal] of src.matchAll(/\{[^{}]*\}/g)) {
+    if (!/\bvalue:\s*(''|"")/.test(literal)) continue
+    if (!/\blabel\s*:/.test(literal)) continue
+
+    emptyItems.push(`${file} — ${literal.trim()}`)
+  }
+}
+
 if (problems.length) {
   console.error('Propsy, ktorych komponent nie deklaruje:\n'
     + [...new Set(problems)].map(p => '  ' + p).join('\n'))
   console.error('\nSprawdz nazwe w https://ui.nuxt.com/docs/components — atrybut, ktorego')
   console.error('komponent nie zna, spada na element i nic nie robi.')
-  process.exit(1)
 }
 
-console.log('\u2713 kazdy props podany komponentowi @nuxt/ui jest przez niego zadeklarowany')
+if (emptyItems.length) {
+  console.error('\nPozycje listy z pustym value:\n'
+    + [...new Set(emptyItems)].map(p => '  ' + p).join('\n'))
+  console.error('\nreka-ui trzyma pusty string na "nic nie wybrano" i rzuca wyjatkiem przy')
+  console.error('otwarciu listy. Uzyj wlasnej wartosci i przetlumacz ja na brzegu.')
+}
+
+if (problems.length || emptyItems.length) process.exit(1)
+
+console.log('✓ kazdy props podany komponentowi @nuxt/ui jest przez niego zadeklarowany')

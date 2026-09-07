@@ -77,6 +77,12 @@ interface Analysis {
   warnings: Warning[]
 }
 
+// reka-ui reserves the empty string for "nothing is selected", so a select item
+// may not use it as a value. Both sentinels below stand for a real choice, and
+// are translated back at the edges: the wire format is unchanged.
+const OWN_ACCOUNT = 'me'
+const ANY_TYPE = 'all'
+
 const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'plugin', 'modpack'] as const
 const STATUS_IDS = PROJECT_STATUSES
 
@@ -153,7 +159,7 @@ const notice = ref('')
 const projects = ref<ShortProject[]>([])
 const total = ref(0)
 const search = ref('')
-const filterType = ref('')
+const filterType = ref(ANY_TYPE)
 
 const selected = ref<FullProject | null>(null)
 const gameVersions = ref<string[]>([])
@@ -170,15 +176,22 @@ const environmentOptions = computed(() =>
     label: t(`catalog.environments.${value}`),
   })))
 
-// An empty value means the project belongs to the signed-in account; the schema
-// allows exactly one of the two owners, never both and never neither.
+// The schema allows exactly one of the two owners, never both and never neither.
 const ownerOptions = computed(() => [
-  { value: '', label: t('catalog.admin.myAccount') },
+  { value: OWN_ACCOUNT, label: t('catalog.admin.myAccount') },
   ...organizations.value.map(org => ({ value: org.id, label: org.name })),
 ])
 
+// selected.orgId is null for the admin's own project; the select needs a value.
+const selectedOwner = computed({
+  get: () => selected.value?.orgId ?? OWN_ACCOUNT,
+  set: (value: string) => {
+    if (selected.value) selected.value.orgId = value === OWN_ACCOUNT ? null : value
+  },
+})
+
 const creating = ref(false)
-const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: '' })
+const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: OWN_ACCOUNT })
 const authorship = ref(false)
 
 const versionDraft = reactive({
@@ -225,7 +238,7 @@ async function loadProjects() {
   try {
     const res = await $fetch<{ hits: ShortProject[], total: number }>(
       '/api/admin/catalog/projects', {
-        query: { q: search.value || undefined, type: filterType.value || undefined, limit: 100 },
+        query: { q: search.value || undefined, type: filterType.value === ANY_TYPE ? undefined : filterType.value, limit: 100 },
       })
     projects.value = res.hits
     total.value = res.total
@@ -370,7 +383,7 @@ async function create() {
         title: draft.title,
         type: draft.type,
         slug: draft.slug || undefined,
-        orgId: draft.orgId || undefined,
+        orgId: draft.orgId === OWN_ACCOUNT ? undefined : draft.orgId,
         authorship: true,
       },
     })
@@ -849,7 +862,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             <USelect
               v-model="filterType"
               class="mt-2 w-full"
-              :items="[{ value: '', label: t('catalog.admin.allTypes') }, ...TYPES]"
+              :items="[{ value: ANY_TYPE, label: t('catalog.admin.allTypes') }, ...TYPES]"
               value-key="value"
               @update:model-value="loadProjects"
             />
@@ -965,7 +978,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 />
                 <USelect
                   v-if="organizations.length"
-                  v-model="selected.orgId"
+                  v-model="selectedOwner"
                   :items="ownerOptions"
                   value-key="value"
                   class="sm:col-span-2"
