@@ -20,6 +20,27 @@ export function requireStripe(): Stripe {
   return stripe
 }
 
+// Every route validates its input before it reaches Stripe, so an "invalid
+// request" coming back is about the platform account rather than about what
+// somebody typed: Connect not switched on, a key from the wrong mode, a
+// capability never requested. Left unhandled it surfaces as a bare 500, which
+// tells the person clicking nothing and hides the one line that says what to
+// go and enable.
+export async function stripeCall<T>(run: () => Promise<T>): Promise<T> {
+  try {
+    return await run()
+  }
+  catch (e) {
+    const failure = e as { type?: string, message?: string }
+    if (failure?.type !== 'StripeInvalidRequestError') throw e
+
+    throw createError({
+      statusCode: 501,
+      statusMessage: failure.message || 'payments are not set up',
+    })
+  }
+}
+
 export const CURRENCIES = ['eur', 'usd'] as const
 export type Currency = typeof CURRENCIES[number]
 

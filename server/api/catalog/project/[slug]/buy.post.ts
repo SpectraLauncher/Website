@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
   const site = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
   const currency = String(project!.currency ?? 'eur').toLowerCase()
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await stripeCall(() => stripe.checkout.sessions.create({
     mode: 'payment',
     customer_email: buyer.email,
     line_items: [{
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
     success_url: `${site}${projectPath(project!.type, project!.slug)}?bought=1`,
     cancel_url: `${site}${projectPath(project!.type, project!.slug)}`,
     metadata: { projectId: project!.id, buyerId: buyer.id },
-  })
+  }))
 
   await openPurchase({
     buyerId: buyer.id,

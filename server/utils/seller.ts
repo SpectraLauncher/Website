@@ -51,7 +51,7 @@ export async function ensureSellerAccount(input: {
   if (existing) return existing
 
   const stripe = requireStripe()
-  const account = await stripe.accounts.create({
+  const account = await stripeCall(() => stripe.accounts.create({
     type: 'express',
     email: input.email,
     ...(input.country ? { country: input.country } : {}),
@@ -66,7 +66,7 @@ export async function ensureSellerAccount(input: {
     // Two clicks race here otherwise: the second insert is refused by the unique
     // index, but Stripe already holds an account nothing points at.
     idempotencyKey: `seller:${input.orgId ?? input.userId}`,
-  })
+  }))
 
   const now = Date.now()
   // sql-safe: SELLER_COLUMNS is a constant column list
@@ -82,7 +82,7 @@ export async function ensureSellerAccount(input: {
 
 export async function refreshSellerStatus(seller: SellerRow): Promise<SellerRow> {
   const stripe = requireStripe()
-  const account = await stripe.accounts.retrieve(seller.stripe_account)
+  const account = await stripeCall(() => stripe.accounts.retrieve(seller.stripe_account))
 
   await exec(
     `UPDATE seller SET charges_enabled = $2, payouts_enabled = $3,

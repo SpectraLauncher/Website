@@ -26,12 +26,12 @@ export default defineEventHandler(async (event) => {
 
   // The link is single use and short lived, which is why it is minted per
   // request rather than stored.
-  const link = await stripe.accountLinks.create({
+  const link = await stripeCall(() => stripe.accountLinks.create({
     account: seller.stripe_account,
     type: 'account_onboarding',
     refresh_url: `${site}/seller`,
     return_url: `${site}/seller`,
-  })
+  }))
 
   return { url: link.url }
 })
