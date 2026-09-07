@@ -41,7 +41,8 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
       'project', 'version', 'version_file', 'collection', 'collection_project',
       'project_comment', 'project_message', 'project_member', 'report',
       'stored_image', 'access_token', 'user_block',
-      'job',
+      'job', 'platform_setting', 'connected_account', 'org_split', 'sale', 'sale_item',
+      'ledger_entry', 'entitlement', 'webhook_event', 'payout_request',
     ]) {
       expect(names, table).toContain(table)
     }
@@ -78,6 +79,105 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
        WHERE table_name = 'project_message' AND column_name = 'project_id'`)
 
     expect(rows[0]?.is_nullable).toBe('YES')
+  })
+
+  it('tabele platnosci maja kolumny, na ktorych stoi reszta', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ table_name: string, column_name: string }>(
+      `SELECT table_name, column_name FROM information_schema.columns
+       WHERE table_schema = 'public'`)
+
+    const has = (table: string, column: string) =>
+      rows.some(r => r.table_name === table && r.column_name === column)
+
+    for (const [table, column] of [
+      ['connected_account', 'user_id'], ['connected_account', 'stripe_account'],
+      ['connected_account', 'transfers_enabled'], ['connected_account', 'commission_override_bps'],
+      ['org_split', 'share_bps'],
+      ['sale', 'intent_id'], ['sale', 'charge_id'], ['sale', 'consent_at'],
+      ['sale_item', 'rate_bps'], ['sale_item', 'min_fee_minor'], ['sale_item', 'title'],
+      ['ledger_entry', 'state'], ['ledger_entry', 'share_bps'], ['ledger_entry', 'transfer_id'],
+      ['entitlement', 'sale_item_id'], ['entitlement', 'revoked'],
+      ['webhook_event', 'payload'], ['webhook_event', 'processed'],
+      ['payout_request', 'payout_id'],
+    ] as const) {
+      expect(has(table, column), `${table}.${column}`).toBe(true)
+    }
+  })
+
+  // An order with no recorded waiver is one we could not refuse to refund.
+  it('zgoda na natychmiastowa dostawe jest wymagana przy zamowieniu', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ column_name: string, is_nullable: string }>(
+      `SELECT column_name, is_nullable FROM information_schema.columns
+       WHERE table_name = 'sale' AND column_name IN ('consent_at', 'consent_terms')`)
+
+    expect(rows).toHaveLength(2)
+    for (const row of rows) expect(row.is_nullable, row.column_name).toBe('NO')
+  })
+
+  it('jedno uprawnienie na osobe i projekt', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ column_name: string }>(
+      `SELECT a.attname AS column_name
+       FROM pg_index i
+       JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+       WHERE i.indrelid = 'entitlement'::regclass AND i.indisprimary`)
+
+    expect(rows.map(r => r.column_name).sort()).toEqual(['project_id', 'user_id'])
+  })
+
+  it('konto sprzedawcy jest jedno na osobe i jedno na konto Stripe', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const defs = (await q<{ indexdef: string }>(
+      `SELECT indexdef FROM pg_indexes WHERE tablename = 'connected_account'`))
+      .map(r => r.indexdef).join('\n')
+
+    expect(defs).toMatch(/UNIQUE.*\(user_id\)/)
+    expect(defs).toMatch(/UNIQUE.*\(stripe_account\)/)
+  })
+
+  // Two deliveries of one event must not pay the same person twice for one item.
+  it('ta sama pozycja nie moze trafic do ksiegi dwa razy', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ indexdef: string }>(
+      `SELECT indexdef FROM pg_indexes
+       WHERE tablename = 'ledger_entry' AND indexname = 'uniq_ledger_sale'`)
+
+    expect(rows[0]?.indexdef).toMatch(/UNIQUE/)
+    expect(rows[0]?.indexdef).toMatch(/sale_item_id, user_id, kind/)
+  })
+
+  // 'n' is SET NULL: the row survives a removed project, the pointer does not.
+  it('usuniety projekt nie kasuje tego, za co ktos zaplacil', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ confdeltype: string }>(
+      `SELECT c.confdeltype FROM pg_constraint c
+       JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY(c.conkey)
+       WHERE c.conrelid = 'sale_item'::regclass AND c.contype = 'f'
+         AND a.attname = 'project_id'`)
+
+    expect(rows[0]?.confdeltype).toBe('n')
+  })
+
+  // Onboarding is deferred, so somebody can be owed money before they have a
+  // Stripe account at all. A ledger keyed on the connected account could not
+  // express that.
+  it('ksiega wisi na uzytkowniku, nie na koncie Stripe', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const names = (await q<{ column_name: string }>(
+      `SELECT column_name FROM information_schema.columns
+       WHERE table_name = 'ledger_entry'`)).map(r => r.column_name)
+
+    expect(names).toContain('user_id')
+    expect(names).not.toContain('seller_id')
   })
 
   // The baseline is additive and cannot express a DROP; these steps can, which
