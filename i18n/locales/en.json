@@ -3175,7 +3175,31 @@
       },
       "remove": "Remove",
       "confirmLeaveLast": "Leave and delete this organization?",
-      "confirmLeaveLastBody": "You are the only member. Leaving deletes the organization and every project it owns. This cannot be undone."
+      "confirmLeaveLastBody": "You are the only member. Leaving deletes the organization and every project it owns. This cannot be undone.",
+      "manage": "Manage",
+      "settings": "Organization settings",
+      "back": "Back to the organization",
+      "details": "Organization details",
+      "readme": "Page",
+      "readmeHint": "Markdown. It is the body of the organization page.",
+      "uploadLogo": "Upload a logo",
+      "uploading": "Uploading…",
+      "invite": "Invite somebody",
+      "sendInvite": "Send invite",
+      "projectsHint": "Everything this organization owns, drafts included.",
+      "analyticsHint": "The last {n} days across every project the organization owns.",
+      "downloads": "Downloads",
+      "delete": "Delete organization",
+      "deleteHint": "This removes the organization and every project it owns. Nothing here can be brought back.",
+      "confirmDelete": "Delete {name}?",
+      "confirmDeleteBody": "The organization and every project it owns go with it. This cannot be undone.",
+      "lastMemberHint": "You are the only member, so leaving deletes the organization.",
+      "tabs": {
+        "overview": "Overview",
+        "members": "Members",
+        "projects": "Projects",
+        "analytics": "Analytics"
+      }
     },
     "warn": {
       "datapack": "This looks like a datapack, which the catalog does not carry yet.",

@@ -97,6 +97,26 @@ for (const file of walk('app')) {
   }
 }
 
+// UAvatar takes its dimensions from a size class on its root, and a select item
+// binds its avatar object after the component's own :size. An object without one
+// therefore leaves the root with no size at all, and the image renders at
+// whatever pixels the file happens to be — which is how one profile picture
+// filled an entire dropdown.
+const unsizedAvatars = []
+
+for (const file of walk('app')) {
+  const src = fs.readFileSync(file, 'utf8')
+
+  // `avatar: x ? { src } : undefined` is the common shape, so the object is not
+  // always the next token after the colon.
+  for (const [, literal] of src.matchAll(/avatar:[^\n]*?(\{[^{}]*\})/g)) {
+    if (!/\bsrc\b/.test(literal)) continue
+    if (/\bsize\b/.test(literal)) continue
+
+    unsizedAvatars.push(`${file} — ${literal.trim()}`)
+  }
+}
+
 if (problems.length) {
   console.error('Propsy, ktorych komponent nie deklaruje:\n'
     + [...new Set(problems)].map(p => '  ' + p).join('\n'))
@@ -111,6 +131,13 @@ if (emptyItems.length) {
   console.error('otwarciu listy. Uzyj wlasnej wartosci i przetlumacz ja na brzegu.')
 }
 
-if (problems.length || emptyItems.length) process.exit(1)
+if (unsizedAvatars.length) {
+  console.error('\nAwatary bez rozmiaru:\n'
+    + [...new Set(unsizedAvatars)].map(p => '  ' + p).join('\n'))
+  console.error('\nDodaj size (np. 2xs). Bez niego UAvatar nie dostaje klasy rozmiaru,')
+  console.error('a obrazek renderuje sie w swojej wlasnej wielkosci.')
+}
+
+if (problems.length || emptyItems.length || unsizedAvatars.length) process.exit(1)
 
 console.log('✓ kazdy props podany komponentowi @nuxt/ui jest przez niego zadeklarowany')

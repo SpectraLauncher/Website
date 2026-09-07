@@ -3175,7 +3175,31 @@
       },
       "remove": "Usuń",
       "confirmLeaveLast": "Wyjść i usunąć tę organizację?",
-      "confirmLeaveLastBody": "Jesteś jedynym członkiem. Wyjście usuwa organizację i każdy projekt, który do niej należy. Tego nie da się cofnąć."
+      "confirmLeaveLastBody": "Jesteś jedynym członkiem. Wyjście usuwa organizację i każdy projekt, który do niej należy. Tego nie da się cofnąć.",
+      "manage": "Zarządzaj",
+      "settings": "Ustawienia organizacji",
+      "back": "Wróć do organizacji",
+      "details": "Dane organizacji",
+      "readme": "Strona",
+      "readmeHint": "Markdown. To jest treść strony organizacji.",
+      "uploadLogo": "Wgraj logo",
+      "uploading": "Wysyłanie…",
+      "invite": "Zaproś kogoś",
+      "sendInvite": "Wyślij zaproszenie",
+      "projectsHint": "Wszystko, co należy do tej organizacji, razem ze szkicami.",
+      "analyticsHint": "Ostatnie {n} dni ze wszystkich projektów organizacji.",
+      "downloads": "Pobrania",
+      "delete": "Usuń organizację",
+      "deleteHint": "To usuwa organizację i każdy projekt, który do niej należy. Nic z tego nie wróci.",
+      "confirmDelete": "Usunąć {name}?",
+      "confirmDeleteBody": "Organizacja i każdy jej projekt znikają razem z nią. Tego nie da się cofnąć.",
+      "lastMemberHint": "Jesteś jedynym członkiem, więc wyjście usuwa organizację.",
+      "tabs": {
+        "overview": "Przegląd",
+        "members": "Członkowie",
+        "projects": "Projekty",
+        "analytics": "Statystyki"
+      }
     },
     "warn": {
       "datapack": "To wygląda na datapack, którego katalog jeszcze nie obsługuje.",

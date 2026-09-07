@@ -58,6 +58,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'POST /api/catalog/reports/{id}/thread', group: 'catalog', auth: 'session', summary: 'Reply about a report' },
   { route: 'GET /api/org/{slug}', group: 'projects', auth: 'none', summary: 'An organization, its members and its projects' },
   { route: 'PATCH /api/org/{slug}', group: 'projects', auth: 'session', summary: 'Edit an organization' },
+  { route: 'DELETE /api/org/{slug}', group: 'projects', auth: 'session', summary: 'Delete an organization and everything it owns' },
   { route: 'POST /api/org/{slug}/logo', group: 'projects', auth: 'session', summary: 'Upload an organization logo' },
   { route: 'POST /api/org/{slug}/invite', group: 'projects', auth: 'session', summary: 'Invite somebody to an organization' },
   { route: 'POST /api/org/{slug}/leave', group: 'projects', auth: 'session', summary: 'Leave an organization' },

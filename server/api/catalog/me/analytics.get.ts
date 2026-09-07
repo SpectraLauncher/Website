@@ -2,9 +2,23 @@ export default defineEventHandler(async (event) => {
   await requireCatalogRead(event)
   const user = await requireUser(event)
 
-  const days = Math.min(Math.max(Number(getQuery(event).days) || 30, 1), 365)
+  const query = getQuery(event)
+  const days = Math.min(Math.max(Number(query.days) || 30, 1), 365)
   const orgs = await organizationsOf(user.id)
-  const mine = await ownedProjects(user.id, orgs.map(org => org.id))
+
+  // Narrowed to one organization for its own analytics tab. Filtering the list
+  // the caller already belongs to is what keeps this from becoming a way to
+  // read somebody else's numbers.
+  const wanted = typeof query.org === 'string' ? query.org : ''
+  const scope = wanted ? orgs.filter(org => org.slug === wanted) : orgs
+
+  if (wanted && !scope.length) {
+    throw createError({ statusCode: 404, statusMessage: 'no such organization' })
+  }
+
+  const mine = wanted
+    ? await orgProjects(scope[0]!.id, true)
+    : await ownedProjects(user.id, orgs.map(org => org.id))
 
   const projects = await Promise.all(mine.map(async (project) => {
     const totals = await totalsForProject(project.id)

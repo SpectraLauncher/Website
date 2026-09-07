@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join, sep } from 'node:path'
 
 import { expect, it } from 'vitest'
@@ -20,14 +20,42 @@ function* pages(dir: string): Generator<string> {
   }
 }
 
+// app/pages/org/[slug]/settings/members.vue is rendered inside
+// app/pages/org/[slug]/settings.vue, which is where the navigation lives. Nuxt
+// makes a route a child when a .vue file sits beside a directory of the same
+// name, so the same rule finds them here.
+function nested(path: string): boolean {
+  const parts = path.split('/')
+
+  for (let i = parts.length - 1; i > 2; i--) {
+    if (existsSync(`${parts.slice(0, i).join('/')}.vue`)) return true
+  }
+
+  return false
+}
+
 it('kazda strona renderuje nawigacje', () => {
   const found = [...pages('app/pages')]
   expect(found.length).toBeGreaterThan(20)
 
   for (const path of found) {
-    if (BARE.includes(path)) continue
+    if (BARE.includes(path) || nested(path)) continue
 
     const source = readFileSync(path, 'utf8')
     expect(CHROME.some(tag => source.includes(tag)), path).toBe(true)
+  }
+})
+
+// A parent that forgets <NuxtPage /> renders an empty frame: the tabs are there,
+// the tab does nothing, and nothing errors.
+it('kazda trasa nadrzedna renderuje swoje dzieci', () => {
+  for (const path of pages('app/pages')) {
+    if (!nested(path)) continue
+
+    const parts = path.split('/')
+    const parent = parts.slice(0, parts.length - 1).join('/') + '.vue'
+    if (!existsSync(parent)) continue
+
+    expect(readFileSync(parent, 'utf8').includes('<NuxtPage'), parent).toBe(true)
   }
 })

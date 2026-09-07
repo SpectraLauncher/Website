@@ -41,6 +41,7 @@ function exported(dirs, pattern) {
 // names. None of them is a reference, so they go before anything is matched.
 function code(source) {
   return source
+    .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/\/\*[\s\S]*?\*\//g, ' ')
     .replace(/\/\/[^\n]*/g, ' ')
     .replace(/'(?:[^'\\\n]|\\.)*'/g, "''")

@@ -25,20 +25,27 @@ const session = useAuthSession()
 const account = computed(() =>
   session.value.data?.user as { name?: string, username?: string, image?: string } | undefined)
 
+// USelect binds an item's avatar object after its own :size, so an object
+// without one leaves UAvatar with no size class at all and the image renders
+// at whatever pixels the file happens to be.
 const ownerOptions = computed(() => [
   {
     value: 'me',
     label: account.value?.username || account.value?.name || t('create.project.ownerSelf'),
-    avatar: account.value?.image ? { src: account.value.image } : undefined,
+    avatar: account.value?.image ? { src: account.value.image, size: '2xs' as const } : undefined,
     icon: account.value?.image ? undefined : 'i-pixelarticons-user',
   },
   ...organizations.value.map(org => ({
     value: org.id,
     label: org.name,
-    avatar: org.logo ? { src: org.logo } : undefined,
+    avatar: org.logo ? { src: org.logo, size: '2xs' as const } : undefined,
     icon: org.logo ? undefined : 'i-pixelarticons-users',
   })),
 ])
+
+// The trigger shows only the component's own avatar prop, never the selected
+// item's, so the choice would lose its face the moment the menu closed.
+const chosen = computed(() => ownerOptions.value.find(option => option.value === owner.value))
 
 const visibilityOptions = computed(() =>
   VISIBILITIES.map(value => ({ value, label: t(`create.visibility.${value}`) })))
@@ -122,7 +129,14 @@ async function create() {
         />
 
         <UFormField :label="t('create.project.owner')" :help="t('create.project.ownerHint')">
-          <USelect v-model="owner" :items="ownerOptions" value-key="value" class="w-full" />
+          <USelect
+            v-model="owner"
+            :items="ownerOptions"
+            value-key="value"
+            :avatar="chosen?.avatar"
+            :icon="chosen?.avatar ? undefined : chosen?.icon"
+            class="w-full"
+          />
         </UFormField>
 
         <UFormField :label="t('create.project.visibility')" :help="t(`create.visibilityHint.${visibility}`)">
