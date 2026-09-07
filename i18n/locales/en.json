@@ -3521,7 +3521,7 @@
       "gallery": "One picture of the thing working saves a paragraph.",
       "links": "Where a bug goes, and where the code lives if it is open.",
       "disclosures": "What the project tells people about itself before they download it.",
-      "versions": "What people download, and what the compatibility filters read.",
+      "versions": "The file is the first step: what it says about itself fills in the rest.",
       "analytics": "The last {n} days for this project.",
       "uploadElsewhere": "Files are attached to a version from the admin catalog for now. A version without one cannot be submitted.",
       "featuredTags": "The two or three shown before the rest. Pick the ones somebody would search for.",
@@ -3564,7 +3564,16 @@
     "dropHere": "Let go to upload.",
     "notAnImage": "That is not an image we can store.",
     "noRightsHere": "You do not have rights on this project, or it does not exist.",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "channels": {
+      "release": "Release",
+      "beta": "Beta",
+      "alpha": "Alpha"
+    },
+    "chooseFile": "Choose a file",
+    "reading": "Reading the file…",
+    "dropFileHint": "Drop the jar, zip or schematic here.",
+    "readFromFile": "Read out of the file. Change anything the reader got wrong."
   },
   "verification": {
     "title": "Verification",
@@ -3877,7 +3886,16 @@
     },
     "note": "Note",
     "manage": "Declarations",
-    "lockLabel": "Lock"
+    "lockLabel": "Lock",
+    "hints": {
+      "ai_content": "Any part of it generated rather than written or drawn by a person.",
+      "advertisements": "It shows adverts, or links out to something that pays you per click.",
+      "epilepsy_triggers": "Flashing, strobing or fast repeating imagery.",
+      "system_interactions": "It reads, writes or sends anything outside the game and its own files.",
+      "telemetry": "It reports back to a server, whether or not that is on by default.",
+      "derivative_work": "Built on somebody else's work — a fork, a port, a translation, a repack.",
+      "paid_features": "Part of what it does is behind a payment."
+    }
   },
   "oauth": {
     "title": "Authorize application",

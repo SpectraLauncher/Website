@@ -208,7 +208,7 @@ async function transfer() {
             </span>
             <span class="block text-xs text-dimmed">
               {{ member.permissions.length
-                ? member.permissions.map(p => t(`catalog.projectPermissions.${p}`)).join(', ')
+                ? member.permissions.map(p => t(`projectMembers.permissions.${p}`)).join(', ')
                 : t('catalog.noRights') }}
             </span>
           </span>

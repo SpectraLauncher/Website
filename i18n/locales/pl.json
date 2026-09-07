@@ -3521,7 +3521,7 @@
       "gallery": "Jedno zdjęcie działającej rzeczy oszczędza akapit.",
       "links": "Gdzie trafia błąd i gdzie leży kod, jeśli jest otwarty.",
       "disclosures": "Co projekt mówi o sobie, zanim ktoś go pobierze.",
-      "versions": "To, co ludzie pobierają, i to, z czego czytają filtry kompatybilności.",
+      "versions": "Plik jest pierwszym krokiem: to, co o sobie mówi, wypełnia resztę.",
       "analytics": "Ostatnie {n} dni dla tego projektu.",
       "uploadElsewhere": "Pliki dopina się do wersji na razie z panelu admina. Wersji bez pliku nie da się wysłać do sprawdzenia.",
       "featuredTags": "Te dwie albo trzy pokazywane przed resztą. Wybierz te, których ktoś by szukał.",
@@ -3564,7 +3564,16 @@
     "dropHere": "Puść, żeby wgrać.",
     "notAnImage": "To nie jest obraz, który umiemy zapisać.",
     "noRightsHere": "Nie masz praw do tego projektu albo on nie istnieje.",
-    "loading": "Wczytywanie…"
+    "loading": "Wczytywanie…",
+    "channels": {
+      "release": "Wydanie",
+      "beta": "Beta",
+      "alpha": "Alpha"
+    },
+    "chooseFile": "Wybierz plik",
+    "reading": "Czytam plik…",
+    "dropFileHint": "Upuść tu jara, zipa albo schemat.",
+    "readFromFile": "Odczytane z pliku. Popraw, jeśli czytnik się pomylił."
   },
   "verification": {
     "title": "Weryfikacja",
@@ -3877,7 +3886,16 @@
     },
     "note": "Notatka",
     "manage": "Deklaracje",
-    "lockLabel": "Blokada"
+    "lockLabel": "Blokada",
+    "hints": {
+      "ai_content": "Cokolwiek wygenerowane zamiast napisane albo narysowane przez człowieka.",
+      "advertisements": "Wyświetla reklamy albo linkuje do czegoś, co płaci ci za kliknięcie.",
+      "epilepsy_triggers": "Migające, stroboskopowe albo szybko powtarzające się obrazy.",
+      "system_interactions": "Czyta, zapisuje albo wysyła cokolwiek poza grą i własnymi plikami.",
+      "telemetry": "Raportuje na serwer, niezależnie od tego, czy jest to domyślnie włączone.",
+      "derivative_work": "Zbudowane na cudzej pracy — fork, port, tłumaczenie, przepakowanie.",
+      "paid_features": "Część tego, co robi, jest za opłatą."
+    }
   },
   "oauth": {
     "title": "Autoryzacja aplikacji",

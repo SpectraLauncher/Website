@@ -1,5 +1,5 @@
 
-import { createHash } from 'node:crypto'
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 
 import { type R2Config, r2Put, r2Size, useR2 } from './r2'
 
@@ -81,6 +81,36 @@ export function hashContent(body: Uint8Array, filename: string): StoredContent {
   const sha512 = createHash('sha512').update(body).digest('hex')
 
   return { filename: name, size: body.byteLength, sha1, sha512, key: contentKey(sha512, name) }
+}
+
+// A descriptor the client carries between the two requests. Signed rather than
+// trusted: sha512 is checked against the stored object, but sha1 cannot be
+// without reading the file back, and a client free to choose it can store a
+// file no launcher will ever match by hash.
+export function signUpload(stored: StoredContent): string {
+  const payload = [stored.filename, stored.size, stored.sha1, stored.sha512].join('|')
+  return createHmac('sha256', uploadSecret()).update(payload).digest('hex')
+}
+
+export function checkUpload(stored: {
+  filename: string
+  size: number
+  sha1: string
+  sha512: string
+}, token: string): boolean {
+  const expected = signUpload(stored as StoredContent)
+
+  // Constant time, because a comparison that stops at the first wrong character
+  // is a way to guess the rest of it.
+  const a = Buffer.from(expected, 'hex')
+  const b = Buffer.from(String(token ?? ''), 'hex')
+  return a.length === b.length && timingSafeEqual(a, b)
+}
+
+function uploadSecret(): string {
+  const secret = process.env.BETTER_AUTH_SECRET
+  if (!secret) throw createError({ statusCode: 500, statusMessage: 'no signing secret' })
+  return secret
 }
 
 export function tooLarge(size: number): boolean {

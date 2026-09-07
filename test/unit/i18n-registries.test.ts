@@ -7,6 +7,7 @@ import {
   ENVIRONMENTS,
   PROJECT_STATUSES,
   PROJECT_TYPES,
+  VERSION_CHANNELS,
 } from '../../shared/utils/catalog-types'
 import { NOTIFICATION_ICONS } from '../../app/composables/useNotifications'
 import { LINK_KINDS } from '../../shared/utils/links'
@@ -34,6 +35,12 @@ describe.each(LOCALES)('%s', (loc) => {
   it('ma nazwe kazdego rodzaju projektu', () => {
     for (const type of PROJECT_TYPES) {
       expect(dict.catalog?.admin?.types?.[type], type).toBeTruthy()
+    }
+  })
+
+  it('ma nazwe kazdego kanalu wersji', () => {
+    for (const channel of VERSION_CHANNELS) {
+      expect(dict.catalog?.channels?.[channel], channel).toBeTruthy()
     }
   })
 

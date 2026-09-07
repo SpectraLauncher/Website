@@ -57,6 +57,29 @@ for (const file of walk('app')) {
   }
 }
 
+// A key built at runtime — t(`catalog.channels.${channel}`) — cannot be looked
+// up from the source, but the object it indexes into can. A whole prefix that
+// does not exist is the common way this breaks, and it breaks silently: every
+// value under it prints as its own key.
+const PREFIX = /(?<![A-Za-z0-9_$])t\(\s*`([a-zA-Z][a-zA-Z0-9.]*)\.\$\{/g
+
+for (const file of walk('app')) {
+  const source = fs.readFileSync(file, 'utf8')
+
+  for (const [, prefix] of source.matchAll(PREFIX)) {
+    if (!prefix.includes('.')) continue
+
+    for (const loc of LOCALES) {
+      const node = prefix.split('.').reduce((at, part) =>
+        (at && typeof at === 'object' ? at[part] : undefined), dicts[loc])
+
+      if (!node || typeof node !== 'object' || !Object.keys(node).length) {
+        problems.push(`${file}: ${prefix}.* is missing from ${loc}`)
+      }
+    }
+  }
+}
+
 if (problems.length) {
   console.error([...new Set(problems)].join('\n'))
   console.error('\nAdd the key to i18n/locales/*.json. vue-i18n prints the key itself when it')
