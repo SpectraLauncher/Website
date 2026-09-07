@@ -22,6 +22,22 @@ function* walk(dir) {
 
 const problems = []
 
+// Dwa pliki eksportujace ta sama nazwe do jednego kontekstu to cichy wybor za
+// nas: unimport bierze jeden i ignoruje drugi, a ktory — zalezy od kolejnosci
+// skanowania. Kiedy obie wersje robia to samo, jest to tylko warning przy
+// starcie; kiedy sie roznia, wywolanie trafia w inna funkcje, niz ktokolwiek
+// pisal.
+//
+// Kontekst klienta i serwera sa osobne, wiec ta sama nazwa w app/utils i
+// server/utils nie koliduje. shared/utils wchodzi do obu, wiec liczy sie tu
+// dwa razy.
+const SCOPES = {
+  klient: ['app/utils', 'app/composables', 'shared/utils'],
+  serwer: ['server/utils', 'shared/utils'],
+}
+
+const exportsOf = new Map()
+
 for (const root of ROOTS) {
   for (const file of walk(root)) {
     const src = fs.readFileSync(file, 'utf8')
@@ -29,7 +45,36 @@ for (const root of ROOTS) {
     const seen = new Set((await scanExports(file)).map(e => e.name))
     const missing = declared.filter(name => !seen.has(name))
     if (missing.length) problems.push(`${file} — skaner nie widzi: ${missing.join(', ')}`)
+
+    exportsOf.set(file, seen)
   }
+}
+
+const clashes = []
+
+for (const [scope, roots] of Object.entries(SCOPES)) {
+  const owners = new Map()
+
+  for (const [file, names] of exportsOf) {
+    if (!roots.some(root => file.startsWith(root + '/'))) continue
+    for (const name of names) {
+      if (!owners.has(name)) owners.set(name, [])
+      owners.get(name).push(file)
+    }
+  }
+
+  for (const [name, files] of owners) {
+    if (files.length > 1) clashes.push(`  [${scope}] ${name} — ${files.join(', ')}`)
+  }
+}
+
+if (clashes.length) {
+  console.error('Ta sama nazwa w jednym kontekscie auto-importu — wybrany zostanie jeden plik:\n'
+    + clashes.join('\n'))
+  console.error('\nZwykle winny jest reeksport, ktory niczemu nie sluzy: skoro caly katalog jest')
+  console.error('auto-importowany, `export { x }` z drugiego pliku nic nie dodaje.')
+  console.error('Usun reeksport albo przemianuj jedna z funkcji.')
+  process.exit(1)
 }
 
 if (problems.length) {

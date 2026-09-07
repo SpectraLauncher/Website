@@ -1,5 +1,5 @@
 
-import { scanArchive, worstSeverity } from './file-scan'
+import { scanArchive } from './file-scan'
 import { exec, one, q } from './db'
 import { enqueue } from './queue'
 import { readContent } from './content-store'
@@ -101,8 +101,6 @@ export async function blockingScanIssues(projectId: string): Promise<number> {
   )
   return row?.n ?? 0
 }
-
-export { worstSeverity }
 
 // Files that predate scanning. Nothing enqueues them on its own, so without a
 // backfill an existing catalog sits at "never looked at" forever — and that
