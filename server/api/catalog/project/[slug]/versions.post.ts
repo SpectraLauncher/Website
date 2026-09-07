@@ -34,19 +34,25 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: 'upload the file again' })
     }
 
-    return { ...descriptor, primary: upload.primary !== false }
+    return {
+      ...descriptor,
+      primary: upload.primary !== false,
+      key: contentKey(descriptor.sha512, descriptor.filename),
+    }
   })
+
+  // Everything that can still say no says it before the version row exists.
+  for (const file of files) {
+    if (!await contentExists(file.key, file.size)) {
+      throw createError({ statusCode: 409, statusMessage: 'upload the file again' })
+    }
+  }
 
   const version = await createVersion(project.id, body)
 
   const attached = []
   for (const file of files) {
-    const key = contentKey(file.sha512, file.filename)
-    if (!await contentExists(key, file.size)) {
-      throw createError({ statusCode: 409, statusMessage: 'upload the file again' })
-    }
-
-    const row = await attachFile(version.id, { ...file, key })
+    const row = await attachFile(version.id, file)
     queueScan(row.id)
     attached.push(row)
   }
