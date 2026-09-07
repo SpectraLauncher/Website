@@ -194,6 +194,5 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
       </section>
     </div>
 
-    <SiteFooter />
   </div>
 </template>

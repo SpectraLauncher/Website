@@ -36,9 +36,18 @@ export function canReceiveTransfers(country: string | null | undefined): boolean
 // asserted without a Stripe account: this object is the entire agreement about
 // who verifies whom and who carries a loss.
 //
-// recipient, not merchant: nothing is ever charged on a connected account here.
-// The buyer pays the platform and the platform transfers onwards, so the only
-// capability wanted is the one that lets money arrive.
+// Both configurations, which is not what the documentation implies. It presents
+// recipient as the one for separate charges and transfers - "if the Account will
+// not be the Merchant of Record" - and nothing is ever charged on a connected
+// account here. The API disagrees:
+//
+//   The stripe_balance.stripe_transfers capability cannot be requested without
+//   the configuration.merchant.capabilities.card_payments capability.
+//
+// So card_payments is requested for a card payment that will never happen. The
+// cost is real - it pulls in the verification a merchant needs rather than the
+// lighter set a payee needs - but the capability that lets money arrive is not
+// available without it.
 //
 // dashboard has to be set when stripe_transfers is requested, and 'express'
 // rather than 'none' is what keeps requirement collection on Stripe's side.
@@ -69,6 +78,13 @@ export function recipientAccountParams(input: {
       country: input.country.toLowerCase(),
     },
     configuration: {
+      // Demanded by the API as a precondition for stripe_transfers, not because
+      // this account will ever take a card.
+      merchant: {
+        capabilities: {
+          card_payments: { requested: true },
+        },
+      },
       recipient: {
         capabilities: {
           stripe_balance: {

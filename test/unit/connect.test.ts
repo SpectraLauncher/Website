@@ -14,17 +14,25 @@ const params = recipientAccountParams({ email: 'a@example.com', country: 'PL' })
 // This object is the whole agreement about who verifies whom and who carries a
 // loss, so it is asserted as a value rather than trusted to a live call.
 describe('parametry konta odbiorcy', () => {
-  it('prosi o recipient, nigdy o merchant', () => {
+  it('prosi o recipient, bo to on przyjmuje transfery', () => {
     expect(params.configuration?.recipient).toBeTruthy()
-    expect(params.configuration).not.toHaveProperty('merchant')
   })
 
   // Nothing is ever charged on a connected account here: the buyer pays the
   // platform and the platform transfers onwards.
-  it('jedyna zamawiana zdolnosc to przyjmowanie transferow', () => {
+  it('jedyna zamawiana zdolnosc salda to przyjmowanie transferow', () => {
     const balance = params.configuration?.recipient?.capabilities?.stripe_balance
     expect(balance?.stripe_transfers).toEqual({ requested: true })
     expect(Object.keys(balance ?? {})).toEqual(['stripe_transfers'])
+  })
+
+  // Contradicts the documentation, which presents recipient as the configuration
+  // for separate charges and transfers. The API refuses stripe_transfers without
+  // it: "cannot be requested without the configuration.merchant.capabilities
+  // .card_payments capability". Found in production.
+  it('prosi tez o card_payments, bo bez tego nie ma transferow', () => {
+    expect(params.configuration?.merchant?.capabilities?.card_payments)
+      .toEqual({ requested: true })
   })
 
   // Required by Stripe whenever stripe_transfers is requested. It is also what
