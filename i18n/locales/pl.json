@@ -4258,22 +4258,24 @@
   },
   "monetization": {
     "title": "Sprzedaż i wypłaty",
-    "updated": "Ostatnia aktualizacja: 6 września 2026",
-    "intro": "Zasady pobierania opłat za projekt na Spectrze: kto może, co dostaje kupujący, ile bierzemy i jak pieniądze do ciebie trafiają.",
+    "updated": "Ostatnia aktualizacja: 8 września 2026",
+    "intro": "Zasady pobierania opłat za projekt na Spectrze: kto może sprzedawać, co dostaje kupujący, ile bierzemy i jak pieniądze do ciebie trafiają.",
     "sections": [
       {
         "title": "Kto może sprzedawać",
         "body": [
-          "Sprzedaż jest domyślnie wyłączona. Włącza się ją na koncie po weryfikacji i wymaga podpiętego konta Stripe, które może przyjmować wypłaty w twoim kraju.",
+          "Sprzedaż wymaga podpiętego konta Stripe. Możesz zacząć sprzedawać, zanim weryfikacja się zakończy — pieniądze czekają wtedy jako oczekujące i trafiają do ciebie, gdy tylko konto będzie gotowe.",
+          "Konto musi być w kraju, do którego umiemy przelać pieniądze: Europejski Obszar Gospodarczy, Wielka Brytania, Szwajcaria, Stany Zjednoczone albo Kanada. Poza tą listą nie da się przeprowadzić przelewu, więc onboarding jest odrzucany od razu, zamiast po weryfikacji.",
           "Musisz mieć prawo sprzedawać to, co sprzedajesz. Projekt pochodny od pracy na licencji zakazującej użycia komercyjnego nie może być tu sprzedawany, niezależnie od licencji wybranej na projekcie.",
-          "Organizacja sprzedaje przez konto, które ją posiada. Uprawnienia wewnątrz organizacji decydują, kto może zmienić cenę; nie zmieniają tego, komu płacimy."
+          "Organizacja nie ma własnego konta i niczego nie trzyma. Sprzedaż jej projektów dzieli się między członków według udziałów ustawionych przez właściciela lub administratora, a pieniądze idą wprost na ich konta. Bez ustawionego podziału całość trafia do właścicieli."
         ]
       },
       {
         "title": "Co dostaje kupujący",
         "body": [
           "Zakup daje kupującemu osobistą, nieprzenoszalną licencję na pobieranie i używanie każdej wersji tego projektu, także wydanej później, dopóki istnieje jego konto.",
-          "To nie jest abonament. Nie pobieramy opłaty drugi raz za ten sam projekt i nie da się odebrać licencji, za którą ktoś zapłacił.",
+          "Dostęp otwiera się natychmiast po udanej płatności. Okres karencji dotyczy przelewu do ciebie, nie dostawy do kupującego.",
+          "To nie jest abonament. Nie pobieramy opłaty drugi raz za ten sam projekt.",
           "Jeśli przestaniesz publikować projekt, ci, którzy go kupili, zachowują dostęp do tego, co kupili. Weź to pod uwagę, zanim za coś zaczniesz brać pieniądze.",
           "Kupujący nie mogą rozpowszechniać tego, co kupili. Dochodzenie tego wobec konkretnej osoby jest twoją sprawą; my reagujemy na zgłoszenia dotyczące treści trzymanych tutaj."
         ]
@@ -4281,7 +4283,8 @@
       {
         "title": "Ceny",
         "body": [
-          "Ceny ustawia się na projekcie w euro albo w dolarach amerykańskich. Kupujący płaci w jednej z tych walut, a kwota, którą widzi, jest kwotą, którą zostanie obciążony.",
+          "Ceny ustawia się w euro i tylko w euro. Kwota, którą kupujący widzi, jest kwotą, którą zostanie obciążony.",
+          "Minimalna cena to 3 €. Poniżej tej kwoty opłata za obsługę płatności zjada większość ceny.",
           "Cenę możesz zmienić kiedy chcesz. Zmiana działa na zakupy po niej, nigdy na te przed nią.",
           "Projekt może być darmowy z płatnymi elementami, ale wtedy musi mieć zaznaczoną deklarację płatnych funkcji. Odkrycie płatnej ściany po pobraniu to usunięcie."
         ]
@@ -4289,35 +4292,46 @@
       {
         "title": "Nasza prowizja",
         "body": [
-          "Bierzemy 1% z każdej sprzedaży. Dla partnerów i zweryfikowanych organizacji jest to 0,5%.",
+          "Bierzemy 8% z każdej sprzedaży, nie mniej niż 0,50 €. Partnerzy i zweryfikowane organizacje płacą 6%.",
+          "To jedna opłata i pokrywa również koszt obsługi płatności. Stripe nie dolicza ci nic osobno i nie zobaczysz drugiej pozycji za bramkę.",
+          "Kwota minimalna sprawia, że przy tanich pozycjach faktyczny procent jest wyższy niż stawka. Przy cenie 3 € opłata wynosi 0,50 €, czyli około 17%. Wyliczenie zobaczysz w panelu, zanim ustawisz cenę.",
+          "W koszyku z projektami kilku twórców opłata liczy się osobno dla każdej pozycji. Inaczej tanie projekty dopłacałyby do drogich.",
           "Prowizja jest potrącana ze sprzedaży, a nie doliczana do niej. Kupujący nigdy nie płaci więcej z jej powodu.",
-          "Opłaty za obsługę płatności należą do Stripe i są przez nich naliczane osobno. Nic do nich nie dokładamy i nic z nich nie dostajemy.",
-          "Jeśli zmienimy prowizję, będzie dotyczyła sprzedaży po zmianie, a dowiesz się o niej, zanim zacznie obowiązywać."
+          "Każde zamówienie zapisuje stawkę i kwotę minimalną, które zastosowano. Zmiana prowizji dotyczy sprzedaży po zmianie i nie przepisuje starych zamówień."
         ]
       },
       {
         "title": "Księga",
         "body": [
-          "Każdy ruch to linia w twojej księdze: kwota brutto sprzedaży, prowizja jako osobna ujemna linia, zwrot, wypłata. Twoje saldo to suma tych linii i nic poza tym.",
-          "Linii nigdy nie edytujemy ani nie usuwamy. Korekta to kolejna linia, dzięki czemu historia zostaje czytelna.",
-          "Księga jest tym, na podstawie czego płacimy, i tym, co pokazalibyśmy, gdyby jakakolwiek kwota była kiedyś sporna."
+          "Nie prowadzimy portfela i nie trzymamy twoich pieniędzy na własnym koncie. Księga zawiera wyłącznie dwa stany: oczekujące, czyli sprzedane i jeszcze nieprzelane, oraz przelane, czyli takie, które są już na twoim koncie w Stripe.",
+          "Po przelaniu środki są u Stripe i to Stripe je liczy. Kwota dostępna do wypłaty pochodzi stamtąd, nie z naszej księgi.",
+          "Wpisów nie edytujemy ani nie usuwamy. Korekta to kolejny wpis, dzięki czemu historia zostaje czytelna."
         ]
       },
       {
         "title": "Wypłaty",
         "body": [
-          "Wypłatę zamawiasz na swojej stronie sprzedawcy. Minimum to 10,00 w walucie salda, bo poniżej tego przelew kosztuje więcej, niż przenosi.",
-          "Wypłaty idą przez Stripe na podpięte konto. Ile potem trwa, zależy od Stripe i twojego banku.",
-          "Sprzedaż można wypłacić po upływie okna na obciążenie zwrotne. Z żadnego innego powodu nie trzymamy pieniędzy dłużej.",
-          "Wypłata, której nie da się zrealizować — zamknięte konto, nieudana weryfikacja, odrzucony przelew — wraca na saldo jako linia, a my mówimy dlaczego."
+          "Sprzedaż trafia na twoje konto po upływie okresu karencji, liczonego od zaksięgowania płatności. Karencja daje czas na ujawnienie się obciążenia zwrotnego albo zgłoszenia naruszenia licencji, zanim pieniądze opuszczą nasze konto.",
+          "Wypłatę z konta Stripe na konto bankowe zamawiasz sam, na stronie przychodów. Nie robimy tego automatycznie.",
+          "Obowiązuje próg minimalnej wypłaty. Poniżej niego przelew kosztuje więcej, niż przenosi.",
+          "Stripe wymaga, żeby środki leżące na koncie połączonym zostały wypłacone w ciągu 90 dni (w Stanach Zjednoczonych obowiązuje dłuższy termin). Nie zostawiaj ich tam bezterminowo."
         ]
       },
       {
-        "title": "Zwroty i obciążenia zwrotne",
+        "title": "Zwroty i prawo odstąpienia",
         "body": [
-          "Zwroty rozpatrujemy indywidualnie. Kupujący, który nie może użyć tego, co kupił, bo projekt przestał działać zgodnie z opisem, dostaje pieniądze z powrotem, a zwrot pojawia się jako linia obciążająca twoje saldo.",
-          "Obciążenie zwrotne cofa sprzedaż i jej prowizję. Opłata, którą operator za to nalicza, jest twoja, bo obciąża transakcję, a nie nas.",
-          "Seria obciążeń zwrotnych albo zwrotów przy jednym projekcie wstrzymuje jego sprzedaż na czas sprawdzenia dlaczego."
+          "Nie prowadzimy dobrowolnych zwrotów treści cyfrowych. Przed każdą płatnością kupujący musi osobno zaznaczyć zgodę na natychmiastowe udostępnienie plików i potwierdzić, że traci prawo odstąpienia od umowy. Bez tej zgody płatność się nie rozpoczyna, a fakt i moment jej udzielenia zapisujemy przy zamówieniu.",
+          "Zwrot może nastąpić, gdy wymaga tego prawo albo gdy sami uznamy, że sprzedaż nie powinna była dojść do skutku — na przykład przy treści sprzedanej bez prawa do niej."
+        ]
+      },
+      {
+        "title": "Obciążenia zwrotne",
+        "body": [
+          "Obciążenie zwrotne inicjuje bank albo operator płatności kupującego. Regulamin nie może tego wyłączyć.",
+          "Stratę ponosi sprzedawca. Kwota obciążenia zwrotnego pojawia się w twojej księdze jako pozycja ujemna i pomniejsza to, co jesteśmy ci winni. Kolejne sprzedaże pokrywają ją, zanim cokolwiek zostanie przelane.",
+          "Opłata, którą operator nalicza za samo rozpatrzenie sporu, obciąża sprzedaż, przy której powstała.",
+          "Kupujący traci dostęp do pobierania na czas sporu. Jeśli spór zostanie rozstrzygnięty na naszą korzyść, dostęp wraca, a wpis ujemny jest odwracany kolejnym wpisem.",
+          "Seria obciążeń zwrotnych przy jednym projekcie wstrzymuje jego sprzedaż na czas sprawdzenia dlaczego."
         ]
       },
       {
@@ -4331,8 +4345,8 @@
       {
         "title": "Zakończenie",
         "body": [
-          "Sprzedaż możesz wyłączyć w dowolnym momencie. Wydane licencje to przetrwają, a saldo dalej jest twoje do wypłaty.",
-          "Możemy zawiesić sprzedaż na koncie, co do którego mamy podstawy sądzić, że dopuszcza się oszustwa, prania pieniędzy albo sprzedaje coś, do czego nie ma praw. Wtedy saldo jest wstrzymane na czas sprawdzenia, a nie zabrane.",
+          "Sprzedaż możesz wyłączyć w dowolnym momencie, ustawiając projekty jako darmowe. Wydane licencje to przetrwają, a to, co już zarobiłeś, dalej jest twoje.",
+          "Możemy zawiesić sprzedaż na koncie, co do którego mamy podstawy sądzić, że dopuszcza się oszustwa, prania pieniędzy albo sprzedaje coś, do czego nie ma praw. Wtedy pozycje oczekujące są wstrzymane na czas sprawdzenia, a nie zabrane.",
           "Jeśli konto zostanie usunięte za łamanie zasad, to, co już zostało zarobione, i tak zostanie wypłacone. Nie używamy pieniędzy jako kary."
         ]
       }

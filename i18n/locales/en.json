@@ -4257,83 +4257,97 @@
     ]
   },
   "monetization": {
-    "title": "Selling and Payouts",
-    "updated": "Last updated: 6 September 2026",
-    "intro": "The terms for charging for a project on Spectra: who may, what a buyer gets, what we take, and how the money reaches you.",
+    "title": "Selling and payouts",
+    "updated": "Last updated: 8 September 2026",
+    "intro": "How charging for a project on Spectra works: who may sell, what the buyer gets, what we take and how the money reaches you.",
     "sections": [
       {
         "title": "Who may sell",
         "body": [
-          "Selling is off by default. It is enabled per account after verification, and it needs a connected Stripe account that can receive payouts in your country.",
-          "You must have the right to sell what you are selling. A project derived from work under a licence that forbids commercial use cannot be sold here, whatever the licence you picked on the project.",
-          "An organisation sells through the account that owns it. Permissions inside the organisation decide who may change a price; they do not change who is paid."
+          "Selling needs a connected Stripe account. You can start selling before verification finishes — the money waits as pending and reaches you as soon as the account is ready.",
+          "The account has to be in a country we can transfer to: the European Economic Area, the United Kingdom, Switzerland, the United States or Canada. Outside that list a transfer cannot be made, so onboarding is refused up front rather than after verification.",
+          "You must have the right to sell what you are selling. A project derived from work under a licence forbidding commercial use cannot be sold here, whatever licence you picked on the project.",
+          "An organization has no account of its own and holds nothing. Sales of its projects are divided between its members by the shares an owner or admin set, and the money goes straight to their own accounts. With no split set, the owners take everything."
         ]
       },
       {
         "title": "What the buyer gets",
         "body": [
-          "A purchase gives the buyer a personal, non-transferable licence to download and use every version of that project, including versions published later, for as long as the account exists.",
-          "It is not a subscription. We do not charge again for the same project, and you cannot revoke a licence somebody paid for.",
-          "If you stop publishing a project, people who bought it keep access to what they bought. Plan for that before you charge for something.",
-          "Buyers may not redistribute what they bought. Enforcing that against a specific person is your job; we act on reports about content hosted here."
+          "A purchase gives the buyer a personal, non-transferable licence to download and use every version of that project, including later ones, for as long as their account exists.",
+          "Access opens the moment the payment succeeds. The holding period is about the transfer to you, not about delivery to them.",
+          "It is not a subscription. We never charge twice for the same project.",
+          "If you stop publishing a project, the people who bought it keep access to what they bought. Bear that in mind before charging for anything.",
+          "Buyers may not redistribute what they bought. Pursuing that against a particular person is your business; we act on reports about content held here."
         ]
       },
       {
         "title": "Prices",
         "body": [
-          "Prices are set per project in euro or US dollars. The buyer pays in one of those, and the amount they see is the amount they are charged.",
-          "You may change a price at any time. The change applies to purchases after it, never to purchases before it.",
-          "A project may be free with paid parts, but if it is, the paid features declaration has to be ticked. Discovering the paywall after the download is a removal."
+          "Prices are set in euro and only in euro. What the buyer sees is what they are charged.",
+          "The minimum price is €3. Below that, payment processing eats most of the price.",
+          "You can change a price whenever you like. The change applies to purchases after it, never to those before.",
+          "A project may be free with paid parts, but then it has to carry the paid-features declaration. Discovering a paywall after downloading is grounds for removal."
         ]
       },
       {
         "title": "Our commission",
         "body": [
-          "We take 1% of each sale. For partners and verified organisations it is 0.5%.",
-          "The commission comes out of the sale, not on top of it. A buyer never pays more because of it.",
-          "Payment processing fees are Stripe’s and are charged separately by them. We do not add to them and we do not receive any part of them.",
-          "If we change the commission, it applies to sales after the change, and you will be told before it takes effect."
+          "We take 8% of each sale, and never less than €0.50. Partners and verified organizations pay 6%.",
+          "That is one fee and it covers payment processing as well. Stripe charges you nothing separately and you will not see a second line for the gateway.",
+          "The minimum means the effective percentage is higher on cheap items than the rate suggests. At €3 the fee is €0.50, around 17%. The panel shows the arithmetic before you set a price.",
+          "In a cart holding several creators’ projects the fee is worked out per item. Otherwise cheap projects would subsidise expensive ones.",
+          "The commission comes out of the sale rather than being added to it. A buyer never pays more because of it.",
+          "Every order stores the rate and the minimum that were applied. Changing the commission affects sales after the change and does not rewrite old orders."
         ]
       },
       {
         "title": "The ledger",
         "body": [
-          "Every movement is a line in your ledger: the gross amount of a sale, the commission as its own negative line, a refund, a payout. Your balance is the sum of those lines and nothing else.",
-          "Lines are never edited or deleted. A correction is another line, so the history stays readable.",
-          "The ledger is what we pay against, and what we would show if a figure were ever disputed."
+          "We do not run a wallet and we do not hold your money on our own account. The ledger has exactly two states: pending, meaning sold and not yet transferred, and transferred, meaning it is on your Stripe account.",
+          "Once transferred, the funds are at Stripe and Stripe is the one counting them. The amount available to pay out comes from there, not from our ledger.",
+          "Entries are never edited or deleted. A correction is another entry, which keeps the history readable."
         ]
       },
       {
         "title": "Payouts",
         "body": [
-          "You request a payout from your seller page. The minimum is 10.00 in your balance currency, because below that the transfer costs more than it moves.",
-          "Payouts go through Stripe to the account you connected. How long it then takes is between Stripe and your bank.",
-          "A sale is available to pay out after the window for a chargeback on it has passed. Money is not held longer than that for any other reason.",
-          "A payout we cannot complete — a closed account, failed verification, a rejected transfer — returns to your balance as a line, and we tell you why."
+          "A sale moves to your account once the holding period is up, counted from when the payment settled. The wait gives a chargeback or a licence complaint time to surface while the money is still on our account.",
+          "Paying out from your Stripe account to your bank is something you start yourself, on the revenue page. We do not do it automatically.",
+          "A minimum payout applies. Below it the transfer costs more than it moves.",
+          "Stripe requires funds sitting on a connected account to be paid out within 90 days (longer in the United States). Do not leave them there indefinitely."
         ]
       },
       {
-        "title": "Refunds and chargebacks",
+        "title": "Refunds and the right to withdraw",
         "body": [
-          "Refunds are handled case by case. A buyer who cannot use what they bought because the project no longer works as described gets their money back, and the refund appears as a line against your balance.",
-          "A chargeback reverses the sale and its commission. The fee the processor charges for it is yours, because it lands on the transaction, not on us.",
-          "A pattern of chargebacks or refunds against one project stops sales of it while we look at why."
+          "We do not offer discretionary refunds on digital content. Before every payment the buyer must separately tick a box agreeing to immediate delivery of the files and confirming that they lose their right to withdraw. Without it the payment does not start, and the fact and moment of that consent are stored with the order.",
+          "A refund may still happen where the law requires it, or where we decide a sale should not have gone through — content sold without the right to sell it, for example."
+        ]
+      },
+      {
+        "title": "Chargebacks",
+        "body": [
+          "A chargeback is started by the buyer’s bank or payment provider. No terms can switch that off.",
+          "The seller carries the loss. The amount appears in your ledger as a negative entry and reduces what we owe you. Later sales cover it before anything is transferred.",
+          "The fee the provider charges for handling the dispute is charged against the sale that caused it.",
+          "The buyer loses download access while the dispute is open. If it is resolved in our favour, access returns and the negative entry is reversed by another entry.",
+          "A run of chargebacks against one project suspends its sale while we find out why."
         ]
       },
       {
         "title": "Tax",
         "body": [
-          "You are responsible for the tax on what you earn. We do not withhold it, we do not advise on it, and we do not file anything on your behalf.",
-          "Stripe collects the identification your country requires before it will pay you, and it reports what it is obliged to report.",
-          "Where sales tax or VAT is due on a purchase, it is collected at checkout and never counted as your earnings."
+          "Tax on what you earn is yours to handle. We do not withhold it, advise on it, or file anything for you.",
+          "Stripe collects whatever your country requires before it pays you, and reports what it is obliged to report.",
+          "Where VAT or sales tax is due on a purchase, it is collected at payment and is never counted as your earnings."
         ]
       },
       {
         "title": "Ending it",
         "body": [
-          "You can turn selling off at any time. Existing licences survive it, and your balance is still yours to withdraw.",
-          "We can suspend selling for an account we believe is committing fraud, laundering money, or selling what it has no right to sell. If we do, the balance is held while it is looked at, not taken.",
-          "If your account is removed for breaking the rules, anything already earned is still paid out. We do not use money as a penalty."
+          "You can stop selling at any time by setting your projects back to free. Licences already issued survive that, and what you have already earned stays yours.",
+          "We may suspend selling on an account we have grounds to believe is committing fraud, laundering money, or selling something it has no rights to. Pending entries are held while we look, not taken.",
+          "If an account is removed for breaking the rules, what was already earned is still paid out. We do not use money as a punishment."
         ]
       }
     ]
