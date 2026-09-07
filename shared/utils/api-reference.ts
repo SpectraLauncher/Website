@@ -99,6 +99,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/library', group: 'projects', auth: 'session', summary: 'Projects you have bought' },
   { route: 'GET /api/seller/ledger', group: 'account', auth: 'session', summary: 'Your balance, ledger and payouts' },
   { route: 'POST /api/seller/payout', group: 'account', auth: 'session', summary: 'Pay out what Stripe holds for you' },
+  { route: 'GET /api/org/{slug}/split', group: 'account', auth: 'session', summary: 'How an organization divides its sales' },
+  { route: 'POST /api/org/{slug}/split', group: 'account', auth: 'session', summary: 'Set how an organization divides its sales' },
   { route: 'GET /api/seller/status', group: 'account', auth: 'session', summary: 'Whether your payout account is ready' },
   { route: 'POST /api/seller/onboard', group: 'account', auth: 'session', summary: 'Start or resume seller onboarding' },
   { route: 'GET /api/me/tokens', group: 'oauth', auth: 'session', summary: 'Your personal access tokens' },

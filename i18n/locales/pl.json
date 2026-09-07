@@ -3199,7 +3199,8 @@
         "overview": "Przegląd",
         "members": "Członkowie",
         "projects": "Projekty",
-        "analytics": "Statystyki"
+        "analytics": "Statystyki",
+        "split": "Podział"
       }
     },
     "warn": {
@@ -4498,6 +4499,15 @@
     "state": {
       "pending": "oczekuje",
       "transferred": "przelane"
+    }
+  },
+  "org": {
+    "split": {
+      "title": "Podział przychodu",
+      "hint": "Ustal, jaka część sprzedaży projektów organizacji trafia do kogo. Pieniądze idą wprost na konta członków — organizacja niczego nie trzyma.",
+      "total": "Razem: {total}%",
+      "fallback": "Bez podziału całość trafia do właścicieli.",
+      "noAccount": "Nie ma jeszcze konta do wypłat — udział poczeka jako oczekujący."
     }
   }
 }

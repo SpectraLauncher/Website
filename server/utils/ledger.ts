@@ -31,8 +31,29 @@ export async function payeesFor(item: {
     [item.seller_org_id],
   )
 
-  if (!rows.length) return []
-  return rows.map(row => ({ userId: row.user_id, shareBps: Number(row.share_bps) }))
+  if (rows.length) {
+    return rows.map(row => ({ userId: row.user_id, shareBps: Number(row.share_bps) }))
+  }
+
+  // No split set up. Returning nobody would be the dangerous answer: the ledger
+  // would record no payee, the money would sit on the platform account, and
+  // nothing would say it had gone missing. The owners are who the money belongs
+  // to until somebody divides it differently.
+  const owners = await q<{ user_id: string }>(
+    `SELECT "userId" AS user_id FROM member
+     WHERE "organizationId" = $1 AND role = 'owner' ORDER BY "userId"`,
+    [item.seller_org_id],
+  )
+
+  if (!owners.length) return []
+
+  const each = Math.floor(10_000 / owners.length)
+  return owners.map((owner, i) => ({
+    userId: owner.user_id,
+    // The remainder rides on the first owner. splitMinorUnits divides the money
+    // by these weights, so they only have to be proportional, not exact.
+    shareBps: i === 0 ? each + (10_000 - each * owners.length) : each,
+  }))
 }
 
 // Written when a payment succeeds. Nothing moves yet: these sit as pending until

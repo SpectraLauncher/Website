@@ -3199,7 +3199,8 @@
         "overview": "Overview",
         "members": "Members",
         "projects": "Projects",
-        "analytics": "Analytics"
+        "analytics": "Analytics",
+        "split": "Split"
       }
     },
     "warn": {
@@ -4498,6 +4499,15 @@
     "state": {
       "pending": "pending",
       "transferred": "transferred"
+    }
+  },
+  "org": {
+    "split": {
+      "title": "Revenue split",
+      "hint": "Decide who gets what share of sales of this organization’s projects. The money goes straight to members’ own accounts; the organization holds nothing.",
+      "total": "Total: {total}%",
+      "fallback": "With no split, the owners take everything.",
+      "noAccount": "No payout account yet — their share waits as pending."
     }
   }
 }
