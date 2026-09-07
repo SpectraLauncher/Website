@@ -35,7 +35,8 @@
       "analytics": "Analityka",
       "revenue": "Przychody",
       "library": "Biblioteka",
-      "signOut": "Wyloguj"
+      "signOut": "Wyloguj",
+      "admin": "Panel admina"
     }
   },
   "hero": {

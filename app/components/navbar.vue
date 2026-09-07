@@ -5,7 +5,7 @@ const localePath = useLocalePath()
 
 const auth = useAuthClient()
 const session = useAuthSession()
-const me = computed(() => session.value.data?.user as { username?: string, name?: string, image?: string } | undefined)
+const me = computed(() => session.value.data?.user as { username?: string, name?: string, image?: string, role?: string | null } | undefined)
 
 const { t, locale, locales, setLocale } = useI18n()
 
@@ -34,7 +34,13 @@ onMounted(() => {
     onUnmounted(() => window.removeEventListener('scroll', onScroll))
 })
 
-const catalogOpen = computed(() => useRuntimeConfig().public.catalogPublic === true)
+const isAdmin = computed(() => me.value?.role === 'admin')
+
+// While the catalog is closed it exists for the admin alone, and the server
+// serves it to them — so the navigation has to reach it too, or the only way in
+// is typing the address.
+const catalogVisible = computed(() =>
+    useRuntimeConfig().public.catalogPublic === true || isAdmin.value)
 
 const { unread, refresh: refreshNotifications } = useNotifications()
 
@@ -86,7 +92,7 @@ const accountMenu = computed(() => {
         { label: t('nav.account.settings'), icon: 'i-pixelarticons-gear', to: localePath('/settings') },
     ]
 
-    const creating = catalogOpen.value
+    const creating = catalogVisible.value
         ? [
             { label: t('nav.account.projects'), icon: 'i-pixelarticons-package', to: localePath('/projects') },
             { label: t('nav.account.collections'), icon: 'i-pixelarticons-bookmark', to: localePath('/collections') },
@@ -101,6 +107,7 @@ const accountMenu = computed(() => {
 
     const out = [account]
     if (creating.length) out.push(creating)
+    if (isAdmin.value) out.push([{ label: t('nav.account.admin'), icon: 'i-pixelarticons-shield', to: localePath('/admin') }])
     out.push([{ label: t('nav.account.signOut'), icon: 'i-pixelarticons-logout', onSelect: signOut }])
     return out
 })
@@ -111,7 +118,7 @@ async function signOut() {
 }
 
 const localized = computed(() =>
-    tr(catalogOpen.value ? [discover, ...items.value] : items.value))
+    tr(catalogVisible.value ? [discover, ...items.value] : items.value))
 
 const menuOpen = ref(false)
 watch(() => route.fullPath, () => { menuOpen.value = false })

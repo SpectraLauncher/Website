@@ -35,7 +35,8 @@
       "analytics": "Analytics",
       "revenue": "Revenue",
       "library": "Library",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "admin": "Admin"
     }
   },
   "hero": {
