@@ -27,12 +27,24 @@ describe('parametry konta odbiorcy', () => {
     expect(Object.keys(balance ?? {})).toEqual(['stripe_transfers'])
   })
 
-  // Required by Stripe whenever stripe_transfers is requested. 'none' would hand
-  // us the job of collecting identity documents, which is the thing Connect is
-  // being used to avoid.
-  it('dashboard jest ustawiony i nie zrzuca na nas KYC', () => {
+  // Required by Stripe whenever stripe_transfers is requested. It is also what
+  // keeps requirement collection on Stripe: the platform only inherits KYC when
+  // losses sit on the application AND the dashboard is 'none'. Since the losses
+  // half is forced below, this value is the only thing standing between us and
+  // collecting identity documents ourselves.
+  it('dashboard nie jest none, bo to on zostawia KYC po stronie Stripe', () => {
     expect(params.dashboard).toBe('express')
-    expect(params.defaults?.responsibilities?.losses_collector).toBe('stripe')
+    expect(params.dashboard).not.toBe('none')
+  })
+
+  // Stripe rejects the account outright otherwise: "Losses collector can only be
+  // 'application' for the set of configurations this account has." Found in
+  // production, not in the documentation.
+  it('obie odpowiedzialnosci sa na aplikacji, bo recipient nie przyjmuje innych', () => {
+    expect(params.defaults?.responsibilities).toEqual({
+      fees_collector: 'application',
+      losses_collector: 'application',
+    })
   })
 
   it('waluta konta to euro, kraj idzie malymi literami', () => {

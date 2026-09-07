@@ -40,11 +40,22 @@ export function canReceiveTransfers(country: string | null | undefined): boolean
 // The buyer pays the platform and the platform transfers onwards, so the only
 // capability wanted is the one that lets money arrive.
 //
-// dashboard has to be set when stripe_transfers is requested. 'express' rather
-// than 'none' deliberately - with 'none' and losses on the application, Stripe
-// hands requirement collection back to us, and collecting identity documents is
-// exactly what using Connect is meant to avoid. Embedded components still work
-// regardless of this setting, so onboarding stays inside our own UI.
+// dashboard has to be set when stripe_transfers is requested, and 'express'
+// rather than 'none' is what keeps requirement collection on Stripe's side.
+// Responsibility for KYC follows losses_collector *and* dashboard together, and
+// the platform only inherits it when losses sit on the application AND the
+// dashboard is 'none'. Embedded components work regardless of this setting, so
+// onboarding still lives inside our own UI.
+//
+// Both responsibilities are 'application' because Stripe refuses anything else
+// for an account holding only the recipient configuration:
+//
+//   Losses collector can only be "application" for the set of configurations
+//   this account has.
+//
+// So the platform carries negative balances on connected accounts. That is the
+// same direction the chargeback handling already assumes - a loss lands here
+// first and is recovered from the seller's later sales through the ledger.
 export function recipientAccountParams(input: {
   email: string
   country: string
@@ -72,8 +83,8 @@ export function recipientAccountParams(input: {
     defaults: {
       currency: 'eur',
       responsibilities: {
-        fees_collector: 'stripe',
-        losses_collector: 'stripe',
+        fees_collector: 'application',
+        losses_collector: 'application',
       },
     },
     include: ['configuration.recipient', 'identity', 'requirements'],
