@@ -3234,7 +3234,8 @@
         "resourcepack": "Resourcepack",
         "shader": "Shaderpack",
         "mod": "Mod",
-        "modpack": "Modpack"
+        "modpack": "Modpack",
+        "plugin": "Plugin"
       },
       "statuses": {
         "draft": "Szkic — tylko dla właściciela",

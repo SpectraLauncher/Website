@@ -3234,7 +3234,8 @@
         "resourcepack": "Resource pack",
         "shader": "Shader pack",
         "mod": "Mod",
-        "modpack": "Modpack"
+        "modpack": "Modpack",
+        "plugin": "Plugin"
       },
       "statuses": {
         "draft": "Draft — owner only",

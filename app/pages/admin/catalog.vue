@@ -158,17 +158,14 @@ const filterType = ref('')
 const selected = ref<FullProject | null>(null)
 const gameVersions = ref<string[]>([])
 const organizations = ref<Array<{ id: string, slug: string, name: string }>>([])
-const vocabulary = ref<{ categories: Record<string, string[]>, environments: string[] }>({
-  categories: {},
-  environments: [],
-})
-
+// The categories and environments are a registry in shared/utils, so both sides
+// already have them — there is nothing to fetch.
 const categoryOptions = computed(() =>
-  (vocabulary.value.categories[selected.value?.type ?? ''] ?? [])
+  (CATEGORIES[selected.value?.type as keyof typeof CATEGORIES] ?? [])
     .map(value => ({ value, label: t(`catalog.categoryNames.${value}`) })))
 
 const environmentOptions = computed(() =>
-  vocabulary.value.environments.map(value => ({
+  ENVIRONMENTS.map(value => ({
     value,
     label: t(`catalog.environments.${value}`),
   })))
@@ -240,12 +237,6 @@ async function loadOrganizations() {
     const res = await $fetch<{ organizations: typeof organizations.value }>('/api/org/mine')
     organizations.value = res.organizations
   } catch { organizations.value = [] }
-}
-
-async function loadVocabulary() {
-  try {
-    vocabulary.value = await $fetch('/api/admin/catalog/vocabulary')
-  } catch { vocabulary.value = { categories: {}, environments: [] } }
 }
 
 async function loadGameVersions() {
@@ -629,7 +620,6 @@ onMounted(() => {
   loadReports()
   loadGameVersions()
   loadOrganizations()
-  loadVocabulary()
 })
 
 useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })

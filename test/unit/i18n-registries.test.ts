@@ -2,7 +2,12 @@ import { existsSync, readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-import { PROJECT_STATUSES } from '../../shared/utils/catalog-types'
+import {
+  CATEGORIES,
+  ENVIRONMENTS,
+  PROJECT_STATUSES,
+  PROJECT_TYPES,
+} from '../../shared/utils/catalog-types'
 import { NOTIFICATION_ICONS } from '../../app/composables/useNotifications'
 import { LINK_KINDS } from '../../shared/utils/links'
 import { LEGAL_DOCUMENTS } from '../../shared/utils/legal'
@@ -23,6 +28,24 @@ describe.each(LOCALES)('%s', (loc) => {
   it('ma nazwe kazdego statusu projektu', () => {
     for (const status of PROJECT_STATUSES) {
       expect(dict.catalog?.status?.[status], status).toBeTruthy()
+    }
+  })
+
+  it('ma nazwe kazdego rodzaju projektu', () => {
+    for (const type of PROJECT_TYPES) {
+      expect(dict.catalog?.admin?.types?.[type], type).toBeTruthy()
+    }
+  })
+
+  it('ma nazwe kazdego srodowiska', () => {
+    for (const env of ENVIRONMENTS) {
+      expect(dict.catalog?.environments?.[env], env).toBeTruthy()
+    }
+  })
+
+  it('ma nazwe kazdej kategorii', () => {
+    for (const category of new Set(Object.values(CATEGORIES).flat())) {
+      expect(dict.catalog?.categoryNames?.[category], category).toBeTruthy()
     }
   })
 
