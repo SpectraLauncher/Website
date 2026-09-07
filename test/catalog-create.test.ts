@@ -98,4 +98,67 @@ describe.skipIf(!url)('tworzenie projektu na prawdziwej bazie', () => {
 
     await exec('DELETE FROM project WHERE id = $1', [project.id])
   })
+
+  // The version and file INSERTs had the same defect as the project one, and
+  // nothing ran them either: uploading a file failed on the statement itself.
+  it('zapisuje wersje wraz z plikiem', async () => {
+    process.env.DATABASE_URL = url
+
+    const { exec, one } = await import('../server/utils/db')
+    const { attachFile, createProject, createVersion } = await import('../server/utils/catalog')
+    const { AUTHORSHIP_TERMS } = await import('../server/utils/catalog-licensing')
+
+    const stamp = Date.now()
+    const project = await createProject({
+      title: 'Z wersja',
+      slug: `version-check-${stamp}`,
+      type: 'mod',
+      visibility: 'unlisted',
+      authorship: AUTHORSHIP_TERMS,
+    }, 'u-create')
+
+    const version = await createVersion(project.id, {
+      number: '1.2.3',
+      name: 'Z wersja 1.2.3',
+      channel: 'beta',
+      gameVersions: ['1.21.1', '1.21'],
+      loaders: ['fabric'],
+      meta: { modId: 'zwersja' },
+    })
+
+    expect(version.id).toBeTruthy()
+    expect(version.number).toBe('1.2.3')
+    expect(version.channel).toBe('beta')
+    expect(version.game_versions).toEqual(['1.21.1', '1.21'])
+
+    const file = await attachFile(version.id, {
+      filename: 'zwersja-1.2.3.jar',
+      size: 4096,
+      sha1: 'a'.repeat(40),
+      sha512: 'b'.repeat(128),
+      key: `content/${'b'.repeat(128)}/zwersja-1.2.3.jar`,
+      primary: true,
+    })
+
+    expect(file.id).toBeTruthy()
+    expect(file.sha512).toBe('b'.repeat(128))
+
+    // Re-attaching the same filename updates in place instead of duplicating.
+    const again = await attachFile(version.id, {
+      filename: 'zwersja-1.2.3.jar',
+      size: 8192,
+      sha1: 'c'.repeat(40),
+      sha512: 'd'.repeat(128),
+      key: `content/${'d'.repeat(128)}/zwersja-1.2.3.jar`,
+    })
+
+    expect(again.id).toBe(file.id)
+    expect(Number(again.size)).toBe(8192)
+
+    const count = await one<{ n: number }>(
+      'SELECT count(*)::int AS n FROM version_file WHERE version_id = $1', [version.id])
+    expect(count?.n).toBe(1)
+
+    await exec('DELETE FROM project WHERE id = $1', [project.id])
+  })
 })

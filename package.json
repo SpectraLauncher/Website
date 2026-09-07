@@ -51,6 +51,7 @@
     "check:serveronly": "node test/serveronly-check.mjs",
     "check:fetch": "node test/fetch-check.mjs",
     "check:i18n": "node test/i18n-keys-check.mjs",
+    "check:insert": "node test/insert-check.mjs",
     "fixtures": "python test/fixtures/make.py"
   },
   "dependencies": {

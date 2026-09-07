@@ -409,16 +409,15 @@ export async function createVersion(
 
   // sql-safe: VERSION_COLUMNS is a constant column list
   const row = await one<VersionRow>(
-    `INSERT INTO version (project_id, number, name, changelog, channel,
+    `INSERT INTO version (id, project_id, number, name, changelog, channel,
                           game_versions, loaders, meta, created)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
      RETURNING ${VERSION_COLUMNS}`,
     [
-      projectId, number, text(input.name, 160), text(input.changelog, 100_000), channel,
+      newId(), projectId, number, text(input.name, 160), text(input.changelog, 100_000), channel,
       stringList(input.gameVersions, 200), stringList(input.loaders, 20),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
       Date.now(),
-      newId(),
     ],
   )
 
@@ -491,16 +490,16 @@ export interface FileInput {
 export async function attachFile(versionId: string | number, file: FileInput): Promise<FileRow> {
   // sql-safe: FILE_COLUMNS is a constant column list
   const row = await one<FileRow>(
-    `INSERT INTO version_file (version_id, filename, size, sha1, sha512,
+    `INSERT INTO version_file (id, version_id, filename, size, sha1, sha512,
                                is_primary, object_key, created)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      ON CONFLICT (version_id, filename) DO UPDATE SET
        size = EXCLUDED.size, sha1 = EXCLUDED.sha1, sha512 = EXCLUDED.sha512,
        is_primary = EXCLUDED.is_primary, object_key = EXCLUDED.object_key
      RETURNING ${FILE_COLUMNS}`,
     [
-      versionId, file.filename, file.size, file.sha1, file.sha512,
-      file.primary ?? true, file.key, Date.now(), newId(),
+      newId(), versionId, file.filename, file.size, file.sha1, file.sha512,
+      file.primary ?? true, file.key, Date.now(),
     ],
   )
   return row!
