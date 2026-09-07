@@ -114,6 +114,29 @@ export const MIGRATIONS: readonly Migration[] = [
       CREATE INDEX IF NOT EXISTS idx_payout_seller ON payout (seller_id, requested DESC);
     `,
   },
+  {
+    id: '002-one-featured-image-per-project',
+    // The project page uses the featured image as its backdrop, so two of them
+    // means the backdrop depends on which row comes back first. Nothing stopped
+    // that until now, hence the cleanup before the index.
+    up: `
+      UPDATE project_gallery g SET featured = FALSE
+      WHERE g.featured AND g.id <> (
+        SELECT id FROM project_gallery
+        WHERE project_id = g.project_id AND featured
+        ORDER BY ordering, id
+        LIMIT 1
+      );
+
+      CREATE UNIQUE INDEX IF NOT EXISTS uniq_gallery_featured
+        ON project_gallery (project_id) WHERE featured;
+    `,
+    // Structure only. Which images were featured before the cleanup is not
+    // recorded anywhere, so dropping the index cannot bring them back.
+    down: `
+      DROP INDEX IF EXISTS uniq_gallery_featured;
+    `,
+  },
 ]
 
 // Chosen once and never changed: two instances booting together must queue on

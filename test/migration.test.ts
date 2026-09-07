@@ -209,6 +209,58 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
     expect(await tables()).not.toContain('purchase')
   }, 60_000)
 
+  // The project page reads the featured image as its backdrop, so two of them
+  // would make the backdrop depend on which row came back first.
+  it('tylko jedno zdjecie w galerii moze byc wyroznione', async () => {
+    const { exec, q } = await import('../server/utils/db')
+    const { updateGalleryImage } = await import('../server/utils/catalog')
+
+    const now = Date.now()
+    await exec(
+      `INSERT INTO "user" (id, name, email, "emailVerified", "createdAt", "updatedAt", username)
+       VALUES ('u-gal', 'Gal', 'gal@example.com', TRUE, now(), now(), 'gal')
+       ON CONFLICT DO NOTHING`)
+    await exec(
+      `INSERT INTO project (id, slug, type, owner_id, title, status, created, updated)
+       VALUES ('p-gal', 'gal-mod', 'mod', 'u-gal', 'Gal', 'published', $1, $1)
+       ON CONFLICT DO NOTHING`, [now])
+
+    for (const [id, ordering] of [['g1', 0], ['g2', 1], ['g3', 2]] as const) {
+      await exec(
+        `INSERT INTO project_gallery (id, project_id, url, ordering, created)
+         VALUES ($1, 'p-gal', $2, $3, $4) ON CONFLICT DO NOTHING`,
+        [id, `/g/${id}.webp`, ordering, now])
+    }
+
+    const featured = async () => (await q<{ id: string }>(
+      `SELECT id FROM project_gallery WHERE project_id = 'p-gal' AND featured ORDER BY id`))
+      .map(row => row.id)
+
+    await updateGalleryImage('g1', { featured: true })
+    expect(await featured()).toEqual(['g1'])
+
+    // The one that used to fail: marking a second left both set.
+    await updateGalleryImage('g2', { featured: true })
+    expect(await featured()).toEqual(['g2'])
+
+    // Editing something else must not disturb which one is featured.
+    await updateGalleryImage('g3', { title: 'trzecie' })
+    expect(await featured()).toEqual(['g2'])
+
+    await updateGalleryImage('g2', { featured: false })
+    expect(await featured()).toEqual([])
+  })
+
+  it('baza sama nie wpusci drugiego wyroznionego', async () => {
+    const { q } = await import('../server/utils/db')
+
+    const rows = await q<{ indexdef: string }>(
+      `SELECT indexdef FROM pg_indexes WHERE indexname = 'uniq_gallery_featured'`)
+
+    expect(rows[0]?.indexdef).toMatch(/UNIQUE/)
+    expect(rows[0]?.indexdef).toMatch(/WHERE featured/)
+  })
+
   it('drugie przejscie nie robi nic', async () => {
     const { usePool } = await import('../server/utils/db')
     const { runSchemaMigrations } = await import('../server/utils/migrations')

@@ -104,3 +104,14 @@ export function safeAssetUrl(value: unknown): string | null {
 
   return safeUrl(raw)
 }
+
+// An asset URL that is also safe to drop inside a CSS url(). safeAssetUrl
+// vouches for the scheme and the host and percent-encodes quotes, but it leaves
+// parentheses and apostrophes alone — and a bare ')' closes the url() early,
+// after which the rest of the value is read as more CSS.
+export function cssSafeAssetUrl(value: unknown): string | null {
+  const url = safeAssetUrl(value)
+  if (!url) return null
+
+  return /["'()\\\s]/.test(url) ? null : url
+}
