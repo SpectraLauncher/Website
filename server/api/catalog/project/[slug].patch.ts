@@ -3,9 +3,9 @@ import type { ProjectInput } from '../../../utils/catalog'
 // What an author may change about their own project. Deliberately a list rather
 // than the whole body: updateProject also takes `status`, and an author setting
 // that would be publishing without review.
-const DETAILS = [
+export const DETAILS = [
   'title', 'summary', 'slug', 'license', 'licenseUrl', 'links',
-  'categories', 'environment', 'visibility', 'price', 'currency',
+  'categories', 'featuredCategories', 'environment', 'visibility', 'price', 'currency',
 ] as const
 
 export default defineEventHandler(async (event) => {
