@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs'
-
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import { asCompound, asNumber, readNbt } from '../../server/utils/nbt'
 import {
@@ -20,8 +20,19 @@ import {
 // swamp_house is one and the same building exported to four formats. The three
 // modern ones have to produce an identical material list — the strongest test
 // available here: three independent encoders against our one decoder.
-const load = (name: string) => readFileSync(`test/fixtures/${name}`)
-const parse = (name: string) => parseSchematic(load(name))
+// Real builds by other people, so they are not in the repository; see
+// test/fixtures/README.md. Absent in a fresh clone, and then this file skips
+// rather than fails.
+const NEEDS = [
+  'swamp_house.litematic',
+  'swamp_house.schem',
+  'swamp_house.nbt',
+  'swamp_house.schematic',
+]
+const present = hasFixtures(...NEEDS)
+
+const load = (name: string) => fixture(name)
+const parse = (name: string) => (present ? parseSchematic(load(name)) : null!)
 
 const litematic = parse('swamp_house.litematic')
 const sponge = parse('swamp_house.schem')
@@ -31,7 +42,7 @@ const mcedit = parse('swamp_house.schematic')
 const materialMap = (info: SchematicInfo) =>
   Object.fromEntries(info.materials.map(m => [m.item, m.count]))
 
-describe('rozpoznawanie formatu', () => {
+describe.skipIf(!present)('rozpoznawanie formatu', () => {
   it('idzie po ksztalcie NBT, nie po rozszerzeniu', () => {
     expect(detectFormat(readNbt(load('swamp_house.litematic')).value)).toBe('litematic')
     expect(detectFormat(readNbt(load('swamp_house.schem')).value)).toBe('sponge')
@@ -47,7 +58,7 @@ describe('rozpoznawanie formatu', () => {
   })
 })
 
-describe('rozmiar i liczba blokow', () => {
+describe.skipIf(!present)('rozmiar i liczba blokow', () => {
   it('wszystkie cztery zgadzaja sie co do wymiarow', () => {
     for (const info of [litematic, sponge, structure, mcedit]) {
       expect(info.size, info.format).toEqual({ x: 15, y: 16, z: 15 })
@@ -78,7 +89,7 @@ describe('rozmiar i liczba blokow', () => {
   })
 })
 
-describe('lista materialow', () => {
+describe.skipIf(!present)('lista materialow', () => {
   it('trzy nowoczesne formaty daja identyczna liste', () => {
     expect(materialMap(sponge)).toEqual(materialMap(litematic))
     expect(materialMap(structure)).toEqual(materialMap(litematic))
@@ -134,7 +145,7 @@ describe('lista materialow', () => {
   })
 })
 
-describe('pulapki blokow wieloczesciowych', () => {
+describe.skipIf(!present)('pulapki blokow wieloczesciowych', () => {
   it('drzwi licza sie raz, nie dwa razy', () => {
     const doors = litematic.materials.find(m => m.item === 'minecraft:spruce_door')
     const raw = litematic.palette.filter(id => id === 'minecraft:spruce_door')
@@ -189,7 +200,7 @@ describe('pulapki blokow wieloczesciowych', () => {
   })
 })
 
-describe('rozpakowywanie tablicy stanow', () => {
+describe.skipIf(!present)('rozpakowywanie tablicy stanow', () => {
   it('szerokosc wpisu to co najmniej 2 bity', () => {
     expect(paletteBits(1)).toBe(2)
     expect(paletteBits(4)).toBe(2)
@@ -215,7 +226,7 @@ describe('rozpakowywanie tablicy stanow', () => {
   })
 })
 
-describe('legacy ID', () => {
+describe.skipIf(!present)('legacy ID', () => {
   it('rozklada warianty klody na typ i os', () => {
     expect(legacyState(17, 9)).toEqual({ id: 'minecraft:spruce_log', props: { axis: 'z' } })
     expect(legacyState(17, 4)).toEqual({ id: 'minecraft:oak_log', props: { axis: 'x' } })
@@ -238,7 +249,7 @@ describe('legacy ID', () => {
   })
 })
 
-describe('metadane', () => {
+describe.skipIf(!present)('metadane', () => {
   it('czyta nazwe i wersje danych, gdy format je ma', () => {
     expect(litematic.name).toBe('Main')
     expect(litematic.dataVersion).toBe(3955)
@@ -253,7 +264,7 @@ describe('metadane', () => {
   })
 })
 
-describe('parseStateString', () => {
+describe.skipIf(!present)('parseStateString', () => {
   it('rozdziela id od wlasciwosci', () => {
     expect(parseStateString('minecraft:moss_block')).toEqual({ id: 'minecraft:moss_block', props: {} })
     expect(parseStateString('minecraft:oak_log[axis=x]'))
@@ -263,7 +274,7 @@ describe('parseStateString', () => {
   })
 })
 
-describe('materialsOf', () => {
+describe.skipIf(!present)('materialsOf', () => {
   it('sumuje ten sam item z roznych stanow bloku', () => {
     expect(materialsOf([
       { state: parseStateString('minecraft:spruce_stairs[facing=north]'), count: 3 },
@@ -273,7 +284,7 @@ describe('materialsOf', () => {
   })
 })
 
-describe('limity twardosci', () => {
+describe.skipIf(!present)('limity twardosci', () => {
   it('przepuszcza normalny rozmiar', () => {
     expect(boundedVolume({ x: 15, y: 16, z: 15 })).toBe(3600)
   })

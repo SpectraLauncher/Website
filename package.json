@@ -47,7 +47,9 @@
     "check:ui": "node test/ui-props-check.mjs",
     "check:responsive": "node test/responsive-check.mjs",
     "check:apidocs": "node test/api-docs-check.mjs",
-    "check:icons": "node test/icons-check.mjs"
+    "check:icons": "node test/icons-check.mjs",
+    "check:serveronly": "node test/serveronly-check.mjs",
+    "fixtures": "python test/fixtures/make.py"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.2",

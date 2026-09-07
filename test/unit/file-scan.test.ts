@@ -1,33 +1,43 @@
-import { readFileSync } from 'node:fs'
-
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import { scanArchive, worstSeverity } from '../../server/utils/file-scan'
 
-const scan = (name: string) => scanArchive(readFileSync(`test/fixtures/${name}`))
+const scan = (name: string) => scanArchive(fixture(name))
 
 const codes = (name: string) => scan(name).findings.map(f => f.code)
 
-// Real files we already have. A scanner that flags clean mods is worse than no
-// scanner: a moderator stops believing it within a week.
+// Published builds by other people, so they are not in the repository; see
+// test/fixtures/README.md. This is the half of the suite a fresh clone cannot
+// run, and it is the half that matters most: a scanner that flags clean mods is
+// worse than no scanner, because a moderator stops believing it within a week.
+const CLEAN = [
+  'Jade-1.20.1-Forge-11.13.3.jar',
+  'Jade-1.21.1-NeoForge-15.10.6.jar',
+  'Jade-mc26.1-Fabric-26.1.9.jar',
+  'veinminer-paper-2.12.1.jar',
+  'worldedit-bukkit-7.4.5.jar',
+  'TAB v6.1.2.jar',
+  'Better-Leaves-9.5.zip',
+  'ComplementaryReimagined_r5.9.zip',
+]
+
 describe('nie krzyczy na porzadne pliki', () => {
-  it.each([
-    'Jade-1.20.1-Forge-11.13.3.jar',
-    'Jade-1.21.1-NeoForge-15.10.6.jar',
-    'Jade-mc26.1-Fabric-26.1.9.jar',
-    'veinminer-paper-2.12.1.jar',
-    'worldedit-bukkit-7.4.5.jar',
-    'TAB v6.1.2.jar',
-    'sample-fabric-mod.jar',
-    'Better-Leaves-9.5.zip',
-    'ComplementaryReimagined_r5.9.zip',
-  ])('%s przechodzi jako czysty', (name) => {
-    const result = scan(name)
+  it('wygenerowany mod przechodzi jako czysty', () => {
+    const result = scan('sample-fabric-mod.jar')
     expect(result.verdict, JSON.stringify(result.findings)).toBe('clean')
   })
 
-  it('naprawde czyta zawartosc, a nie tylko liste nazw', () => {
-    expect(scan('Jade-1.20.1-Forge-11.13.3.jar').scanned).toBeGreaterThan(0)
+  describe.skipIf(!hasFixtures(...CLEAN))('prawdziwe buildy', () => {
+    it.each(CLEAN)('%s przechodzi jako czysty', (name) => {
+      const result = scan(name)
+      expect(result.verdict, JSON.stringify(result.findings)).toBe('clean')
+    })
+
+    it('naprawde czyta zawartosc, a nie tylko liste nazw', () => {
+      expect(scan('Jade-1.20.1-Forge-11.13.3.jar').scanned).toBeGreaterThan(0)
+    })
   })
 })
 

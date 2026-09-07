@@ -1,18 +1,29 @@
-import { readFileSync } from 'node:fs'
-
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import { readArchiveInfo } from '../../server/utils/mod-manifest'
 import { stripComment } from '../../server/utils/yaml'
 
-const read = (name: string) => readArchiveInfo(readFileSync(`test/fixtures/${name}`))
+// Real builds by other people, so they are not in the repository; see
+// test/fixtures/README.md. Absent in a fresh clone, and then this file skips
+// rather than fails.
+const NEEDS = [
+  'veinminer-paper-2.12.1.jar',
+  'worldedit-bukkit-7.4.5.jar',
+  'TAB v6.1.2.jar',
+  'TAB v5.3.2.jar',
+]
+const present = hasFixtures(...NEEDS)
+
+const read = (name: string) => (present ? readArchiveInfo(fixture(name)) : null!)
 
 const veinminer = read('veinminer-paper-2.12.1.jar')
 const worldedit = read('worldedit-bukkit-7.4.5.jar')
 const tab = read('TAB v6.1.2.jar')
 const tabOld = read('TAB v5.3.2.jar')
 
-describe('paper-plugin.yml', () => {
+describe.skipIf(!present)('paper-plugin.yml', () => {
   it('czyta nazwe i wersje', () => {
     expect(veinminer.kind).toBe('plugin')
     expect(veinminer.name).toBe('Veinminer')
@@ -31,7 +42,7 @@ describe('paper-plugin.yml', () => {
   })
 })
 
-describe('plugin.yml', () => {
+describe.skipIf(!present)('plugin.yml', () => {
   it('czyta wersje w cudzyslowie', () => {
     expect(worldedit.name).toBe('WorldEdit')
     expect(worldedit.version).toBe('7.4.5+7590-b8dc4c1')
@@ -47,7 +58,7 @@ describe('plugin.yml', () => {
 // Jeden jar z deskryptorami kilku platform naraz. Zwracanie pierwszego
 // trafionego opisywalo taki plik jako jednoplatformowy, a poniewaz manifesty
 // modow sa sprawdzane wczesniej — jako moda fabricowego.
-describe('jar wieloplatformowy', () => {
+describe.skipIf(!present)('jar wieloplatformowy', () => {
   it('zbiera platformy ze wszystkich deskryptorow, nie z pierwszego', () => {
     for (const loader of ['bukkit', 'spigot', 'paper', 'purpur', 'folia',
       'bungeecord', 'waterfall', 'velocity']) {
@@ -73,7 +84,7 @@ describe('jar wieloplatformowy', () => {
   })
 })
 
-describe('komentarz po wartosci', () => {
+describe.skipIf(!present)('komentarz po wartosci', () => {
   // TAB zapisuje api-version z komentarzem w tej samej linii. Metadane jara
   // wieloplatformowego biora sie z deskryptora moda, wiec sprawdzamy sama
   // funkcje obcinajaca i deskryptory, ktore przez nia przechodza.

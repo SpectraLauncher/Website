@@ -1,11 +1,25 @@
-import { readFileSync } from 'node:fs'
-
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import { parseSchematic, schematicGrid } from '../../server/utils/schematic'
 import { blockColor, voxelize } from '../../server/utils/schematic-voxels'
 
-const load = (name: string) => readFileSync(`test/fixtures/${name}`)
+// Real builds by other people, so they are not in the repository; see
+// test/fixtures/README.md. Absent in a fresh clone, and then this file skips
+// rather than fails.
+const NEEDS = [
+  'swamp_house.litematic',
+  'swamp_house.schem',
+  'swamp_house.nbt',
+  'swamp_house.schematic',
+]
+const present = hasFixtures(...NEEDS)
+
+// A skipped describe still runs its own body, so anything built there has to be
+// inert too, not only the tests inside it.
+const load = (name: string) => fixture(name)
+const gridOf = (name: string) => (present ? schematicGrid(load(name)) : null!)
 
 const FORMATS = [
   'swamp_house.litematic',
@@ -16,7 +30,7 @@ const FORMATS = [
 
 const AIR = new Set(['minecraft:air', 'minecraft:cave_air', 'minecraft:void_air'])
 
-describe('schematicGrid', () => {
+describe.skipIf(!present)('schematicGrid', () => {
   it.each(FORMATS)('%s ma wymiary zgodne z parserem zliczajacym', (file) => {
     const grid = schematicGrid(load(file))
     const info = parseSchematic(load(file))
@@ -55,9 +69,9 @@ describe('schematicGrid', () => {
   })
 })
 
-describe('voxelize', () => {
-  const grid = schematicGrid(load('swamp_house.litematic'))
-  const payload = voxelize(grid)
+describe.skipIf(!present)('voxelize', () => {
+  const grid = gridOf('swamp_house.litematic')
+  const payload = present ? voxelize(grid) : null!
 
   it('liczy wszystkie bloki, ale pokazuje tylko widoczne', () => {
     expect(payload.total).toBe(993)
@@ -105,7 +119,7 @@ describe('voxelize', () => {
   })
 })
 
-describe('blockColor', () => {
+describe.skipIf(!present)('blockColor', () => {
   it('zna bloki z tablicy', () => {
     expect(blockColor('minecraft:stone')).toBe(0x7D7D7D)
   })

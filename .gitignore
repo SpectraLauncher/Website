@@ -28,3 +28,13 @@ logs
 
 # Local databases (telemetry, share packs, accounts) — never in git
 data
+
+# Test archives. The small ones are written by test/fixtures/make.py, the real
+# mods and schematics are other people's builds — neither belongs in git.
+test/fixtures/*.jar
+test/fixtures/*.zip
+test/fixtures/*.mrpack
+test/fixtures/*.nbt
+test/fixtures/*.litematic
+test/fixtures/*.schem
+test/fixtures/*.schematic

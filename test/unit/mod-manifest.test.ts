@@ -1,13 +1,25 @@
-import { readFileSync } from 'node:fs'
-
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import { readArchiveInfo } from '../../server/utils/mod-manifest'
 import { parseManifest, parseToml } from '../../server/utils/toml'
 
 // Jade in three releases is the same mod on three loaders — modId has to come
 // out identical while the loader and version differ.
-const read = (name: string) => readArchiveInfo(readFileSync(`test/fixtures/${name}`))
+// Real builds by other people, so they are not in the repository; see
+// test/fixtures/README.md. Absent in a fresh clone, and then this file skips
+// rather than fails.
+const NEEDS = [
+  'Jade-1.20.1-Forge-11.13.3.jar',
+  'Jade-1.21.1-NeoForge-15.10.6.jar',
+  'Jade-mc26.1-Fabric-26.1.9.jar',
+  'ComplementaryReimagined_r5.9.zip',
+  'Better-Leaves-9.5.zip',
+]
+const present = hasFixtures(...NEEDS)
+
+const read = (name: string) => (present ? readArchiveInfo(fixture(name)) : null!)
 
 const forge = read('Jade-1.20.1-Forge-11.13.3.jar')
 const neoforge = read('Jade-1.21.1-NeoForge-15.10.6.jar')
@@ -15,7 +27,7 @@ const fabric = read('Jade-mc26.1-Fabric-26.1.9.jar')
 const shader = read('ComplementaryReimagined_r5.9.zip')
 const resourcepack = read('Better-Leaves-9.5.zip')
 
-describe('rozpoznanie rodzaju archiwum', () => {
+describe.skipIf(!present)('rozpoznanie rodzaju archiwum', () => {
   it('odroznia moda, shaderpack i resourcepack', () => {
     expect(forge.kind).toBe('mod')
     expect(neoforge.kind).toBe('mod')
@@ -37,7 +49,7 @@ describe('rozpoznanie rodzaju archiwum', () => {
   })
 })
 
-describe('metadane moda', () => {
+describe.skipIf(!present)('metadane moda', () => {
   it('modId jest ten sam we wszystkich trzech wydaniach', () => {
     expect(forge.modId).toBe('jade')
     expect(neoforge.modId).toBe('jade')
@@ -65,7 +77,7 @@ describe('metadane moda', () => {
   })
 })
 
-describe('wersja', () => {
+describe.skipIf(!present)('wersja', () => {
   it('fabric podaje ja wprost', () => {
     expect(fabric.version).toBe('26.1.9+fabric')
   })
@@ -79,7 +91,7 @@ describe('wersja', () => {
   })
 })
 
-describe('wersje gry', () => {
+describe.skipIf(!present)('wersje gry', () => {
   // The manifest gives a range, not a list of releases. Expanding it would need
   // a list of every Minecraft version, so the range travels on as text.
   it('fabric niesie zakres z depends.minecraft', () => {
@@ -91,7 +103,7 @@ describe('wersje gry', () => {
   })
 })
 
-describe('paczki bez manifestu moda', () => {
+describe.skipIf(!present)('paczki bez manifestu moda', () => {
   it('resourcepack niesie pack_format', () => {
     expect(resourcepack.packFormat).toBeTypeOf('number')
     expect(resourcepack.packFormat).toBeGreaterThan(0)
@@ -109,7 +121,7 @@ describe('paczki bez manifestu moda', () => {
   })
 })
 
-describe('parseToml', () => {
+describe.skipIf(!present)('parseToml', () => {
   it('czyta tablice tabel', () => {
     const toml = parseToml(`
       modLoader = "javafml"
@@ -152,7 +164,7 @@ describe('parseToml', () => {
   })
 })
 
-describe('parseManifest', () => {
+describe.skipIf(!present)('parseManifest', () => {
   // The manifest wraps at 72 bytes anywhere, mid-word included, and a
   // continuation is appended with no space at all — the leading space is the
   // continuation marker, not part of the value.

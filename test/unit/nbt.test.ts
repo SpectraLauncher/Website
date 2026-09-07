@@ -1,7 +1,8 @@
-import { readFileSync } from 'node:fs'
 import { gzipSync } from 'node:zlib'
 
 import { describe, expect, it } from 'vitest'
+
+import { fixture, hasFixtures } from '../fixtures'
 
 import {
   NbtError,
@@ -14,7 +15,10 @@ import {
   readNbt,
 } from '../../server/utils/nbt'
 
-const load = (name: string) => readFileSync(`test/fixtures/${name}`)
+// Real saves; see test/fixtures/README.md. The suites that only build
+// buffers by hand run either way.
+const SCHEMATICS = ['swamp_house.nbt', 'swamp_house.litematic', 'swamp_house.schem']
+const present = hasFixtures(...SCHEMATICS)
 
 describe('rozpakowanie', () => {
   it('rozpoznaje gzip po naglowku', () => {
@@ -28,23 +32,23 @@ describe('rozpakowanie', () => {
   })
 })
 
-describe('odczyt prawdziwych plikow', () => {
+describe.skipIf(!present)('odczyt prawdziwych plikow', () => {
   it('czyta korzen bloku struktury', () => {
-    const { name, value } = readNbt(load('swamp_house.nbt'))
+    const { name, value } = readNbt(fixture('swamp_house.nbt'))
     expect(name).toBe('')
     expect(asList(value.size)?.map(v => asNumber(v))).toEqual([15, 16, 15])
     expect(asList(value.blocks)).toHaveLength(993)
   })
 
   it('czyta zagniezdzone zlozone tagi litematiki', () => {
-    const { value } = readNbt(load('swamp_house.litematic'))
+    const { value } = readNbt(fixture('swamp_house.litematic'))
     const region = asCompound(asCompound(value.Regions)?.Main)
     expect(asString(asCompound(asCompound(value.Metadata))?.Name)).toBe('Main')
     expect(asLongArray(region?.BlockStates)).toHaveLength(394)
   })
 
   it('zachowuje longi jako bigint, nie traci precyzji', () => {
-    const { value } = readNbt(load('swamp_house.litematic'))
+    const { value } = readNbt(fixture('swamp_house.litematic'))
     const states = asLongArray(asCompound(asCompound(value.Regions)?.Main)?.BlockStates)!
     expect(typeof states[0]).toBe('bigint')
     // Number could not hold this value — hence BigInt64Array.
@@ -52,12 +56,12 @@ describe('odczyt prawdziwych plikow', () => {
   })
 
   it('rozpoznaje puste listy zapisane jako TAG_End', () => {
-    const { value } = readNbt(load('swamp_house.nbt'))
+    const { value } = readNbt(fixture('swamp_house.nbt'))
     expect(asList(value.entities)).toEqual([])
   })
 })
 
-describe('wejscie od uzytkownika', () => {
+describe.skipIf(!present)('wejscie od uzytkownika', () => {
   it('odrzuca korzen, ktory nie jest zlozonym tagiem', () => {
     expect(() => readNbt(gzipSync(Buffer.from([8, 0, 0])))).toThrow(/compound tag/)
   })
@@ -69,7 +73,7 @@ describe('wejscie od uzytkownika', () => {
   })
 
   it('odrzuca plik urwany w polowie wartosci', () => {
-    const whole = load('swamp_house.schem')
+    const whole = fixture('swamp_house.schem')
     expect(() => readNbt(whole.subarray(0, 200))).toThrow()
   })
 
