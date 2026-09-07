@@ -420,23 +420,6 @@ const revokeOthers = () => run('sessions', async () => {
   notice.value = t('account.sessionRevoked')
 })
 
-// The string a browser sends is long and mostly noise; the pieces a person uses
-// to recognise their own device are the platform and the engine.
-function deviceLabel(agent?: string | null) {
-  if (!agent) return t('account.unknownDevice')
-  const os = /Windows/i.test(agent) ? 'Windows'
-    : /Android/i.test(agent) ? 'Android'
-      : /iPhone|iPad|iOS/i.test(agent) ? 'iOS'
-        : /Mac OS X|Macintosh/i.test(agent) ? 'macOS'
-          : /Linux/i.test(agent) ? 'Linux' : null
-  const browser = /Edg//i.test(agent) ? 'Edge'
-    : /OPR/|Opera/i.test(agent) ? 'Opera'
-      : /Firefox/i.test(agent) ? 'Firefox'
-        : /Chrome/i.test(agent) ? 'Chrome'
-          : /Safari/i.test(agent) ? 'Safari' : null
-  return [browser, os].filter(Boolean).join(' · ') || t('account.unknownDevice')
-}
-
 const FRIENDS_VISIBILITY = ['mutual', 'public'] as const
 type FriendsVisibility = (typeof FRIENDS_VISIBILITY)[number]
 
@@ -1384,7 +1367,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   <UIcon name="i-pixelarticons-devices" class="size-5 shrink-0 text-muted" />
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium">
-                      {{ deviceLabel(item.userAgent) }}
+                      {{ describeAgent(item.userAgent) || t('account.unknownDevice') }}
                       <UBadge
                         v-if="item.token === currentToken"
                         size="sm"
