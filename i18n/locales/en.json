@@ -37,7 +37,8 @@
       "library": "Library",
       "signOut": "Sign out",
       "admin": "Admin"
-    }
+    },
+    "publish": "Publish"
   },
   "hero": {
     "opensource": "open source",
@@ -3244,7 +3245,8 @@
         "archived": "Archived — visible, no longer developed",
         "rejected": "Rejected by moderation",
         "removed": "Removed",
-        "pending": "Pending review"
+        "pending": "Pending review",
+        "private": "Private"
       },
       "badges": {
         "draft": "draft",
@@ -3422,12 +3424,20 @@
       "archived": "Archived",
       "rejected": "Rejected",
       "removed": "Removed",
-      "pending": "Pending review"
+      "pending": "Pending review",
+      "private": "Private"
     },
     "submit": "Submit for review",
     "submitHint": "Send this project to moderation. It stays private until it is approved.",
     "pendingHint": "Waiting for a moderator. You will be notified when there is a decision.",
-    "license": "Licence"
+    "license": "Licence",
+    "slugProblem": {
+      "too-short": "Too short — three characters at least.",
+      "too-long": "Too long.",
+      "numeric": "A number on its own cannot be an address.",
+      "reserved": "That address is taken by the site itself.",
+      "id-shaped": "That looks like an internal identifier. Add a word to it."
+    }
   },
   "verification": {
     "title": "Verification",
@@ -4210,5 +4220,83 @@
         ]
       }
     ]
+  },
+  "create": {
+    "visibility": {
+      "public": "Public",
+      "unlisted": "Unlisted",
+      "private": "Private"
+    },
+    "visibilityHint": {
+      "public": "Listed in search and on the site once it has been approved.",
+      "unlisted": "Reachable by anyone holding the address, but listed nowhere. Still reviewed.",
+      "private": "Only you and the people on the project. Never reviewed, never visible."
+    },
+    "project": {
+      "title": "New project",
+      "type": "Type",
+      "name": "Name",
+      "namePlaceholder": "What is it called?",
+      "url": "Address",
+      "owner": "Owner",
+      "ownerSelf": "My account",
+      "ownerHint": "Yourself, or an organization you can publish for.",
+      "visibility": "Visibility",
+      "summary": "Summary",
+      "summaryPlaceholder": "This project adds…",
+      "summaryHint": "A sentence or two. It is what people read in the listing.",
+      "authorship": "This is my own work, or work I have the right to publish here.",
+      "submit": "Create project"
+    },
+    "organization": {
+      "title": "New organization",
+      "name": "Name",
+      "namePlaceholder": "What is the group called?",
+      "url": "Address",
+      "description": "What it does",
+      "descriptionPlaceholder": "We build…",
+      "submit": "Create organization",
+      "hint": "An organization owns projects as a group, and its members share the work."
+    },
+    "collection": {
+      "title": "New collection",
+      "name": "Name",
+      "namePlaceholder": "Name this collection",
+      "summary": "Description",
+      "summaryPlaceholder": "What goes in it?",
+      "submit": "Create collection",
+      "hint": "A collection is a shelf you fill from any project page."
+    }
+  },
+  "checklist": {
+    "title": "Before you submit",
+    "intro": "A moderator looks at all of this. Nothing here is a rule you can break — it is what a reader needs to decide whether to install your project.",
+    "done": "Ready to submit",
+    "doneHint": "Everything below is filled in. Send it whenever you like.",
+    "remaining": "{n} thing left | {n} things left",
+    "submit": "Submit for review",
+    "submitted": "Waiting for a moderator",
+    "submittedHint": "You can keep editing while it waits. We will write on the project when there is a decision.",
+    "privateNotice": "This project is private. Nobody else can open it, and it is not reviewed. Change the visibility when you want it seen.",
+    "items": {
+      "summary": "Write a summary",
+      "summaryHint": "The sentence under the name, in listings and in search.",
+      "description": "Write the description",
+      "descriptionHint": "What it does, what it needs, and what it does not do. This is the page people read.",
+      "icon": "Add an icon",
+      "iconHint": "A square image. It is what your project looks like in every listing.",
+      "gallery": "Add a screenshot",
+      "galleryHint": "One picture of the thing working saves a paragraph of description.",
+      "categories": "Pick categories",
+      "categoriesHint": "How people filter to find something like yours.",
+      "license": "Choose a licence",
+      "licenseHint": "What other people may do with your work. It has to be there before a version can be downloaded.",
+      "version": "Upload a version",
+      "versionHint": "A project without a file has nothing to review.",
+      "links": "Link the source or the issues (optional)",
+      "linksHint": "Where a bug goes, and where the code lives if it is open.",
+      "disclosures": "Check the declarations",
+      "disclosureHint": "Telemetry, advertisements, AI, paid parts — anything a reader would want to know first."
+    }
   }
 }

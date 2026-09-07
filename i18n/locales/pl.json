@@ -37,7 +37,8 @@
       "library": "Biblioteka",
       "signOut": "Wyloguj",
       "admin": "Panel admina"
-    }
+    },
+    "publish": "Opublikuj"
   },
   "hero": {
     "opensource": "open source",
@@ -3244,7 +3245,8 @@
         "archived": "Zarchiwizowany — widoczny, bez rozwoju",
         "rejected": "Odrzucony przez moderację",
         "removed": "Usunięty",
-        "pending": "Oczekuje"
+        "pending": "Oczekuje",
+        "private": "Prywatny"
       },
       "badges": {
         "draft": "szkic",
@@ -3422,12 +3424,20 @@
       "archived": "Zarchiwizowany",
       "rejected": "Odrzucony",
       "removed": "Usunięty",
-      "pending": "Oczekuje"
+      "pending": "Oczekuje",
+      "private": "Prywatny"
     },
     "submit": "Zgłoś do sprawdzenia",
     "submitHint": "Wyślij projekt do moderacji. Do czasu akceptacji pozostaje prywatny.",
     "pendingHint": "Czeka na moderatora. Dostaniesz powiadomienie, gdy zapadnie decyzja.",
-    "license": "Licencja"
+    "license": "Licencja",
+    "slugProblem": {
+      "too-short": "Za krótki — minimum trzy znaki.",
+      "too-long": "Za długi.",
+      "numeric": "Sama liczba nie może być adresem.",
+      "reserved": "Ten adres należy do samego serwisu.",
+      "id-shaped": "To wygląda jak wewnętrzny identyfikator. Dodaj jakieś słowo."
+    }
   },
   "verification": {
     "title": "Weryfikacja",
@@ -4210,5 +4220,83 @@
         ]
       }
     ]
+  },
+  "create": {
+    "visibility": {
+      "public": "Publiczny",
+      "unlisted": "Niepubliczny",
+      "private": "Prywatny"
+    },
+    "visibilityHint": {
+      "public": "Po akceptacji widoczny w wyszukiwarce i na stronie.",
+      "unlisted": "Otworzy go każdy, kto ma adres, ale nie pojawi się na żadnej liście. Dalej sprawdzany.",
+      "private": "Tylko ty i osoby przy projekcie. Nigdy nie sprawdzany, nigdy widoczny."
+    },
+    "project": {
+      "title": "Nowy projekt",
+      "type": "Rodzaj",
+      "name": "Nazwa",
+      "namePlaceholder": "Jak to się nazywa?",
+      "url": "Adres",
+      "owner": "Właściciel",
+      "ownerSelf": "Moje konto",
+      "ownerHint": "Ty albo organizacja, w której możesz publikować.",
+      "visibility": "Widoczność",
+      "summary": "Krótki opis",
+      "summaryPlaceholder": "Ten projekt dodaje…",
+      "summaryHint": "Zdanie albo dwa. To właśnie ludzie czytają na liście.",
+      "authorship": "To moja praca albo praca, którą mam prawo tutaj publikować.",
+      "submit": "Utwórz projekt"
+    },
+    "organization": {
+      "title": "Nowa organizacja",
+      "name": "Nazwa",
+      "namePlaceholder": "Jak nazywa się ta grupa?",
+      "url": "Adres",
+      "description": "Czym się zajmuje",
+      "descriptionPlaceholder": "Robimy…",
+      "submit": "Utwórz organizację",
+      "hint": "Organizacja jest właścicielem projektów wspólnie, a jej członkowie dzielą się pracą."
+    },
+    "collection": {
+      "title": "Nowa kolekcja",
+      "name": "Nazwa",
+      "namePlaceholder": "Nazwij tę kolekcję",
+      "summary": "Opis",
+      "summaryPlaceholder": "Co się w niej znajdzie?",
+      "submit": "Utwórz kolekcję",
+      "hint": "Kolekcja to półka, którą zapełniasz z dowolnej strony projektu."
+    }
+  },
+  "checklist": {
+    "title": "Zanim wyślesz",
+    "intro": "Moderator patrzy na to wszystko. Nic tu nie jest zakazem — to jest to, czego czytelnik potrzebuje, żeby zdecydować, czy zainstalować twój projekt.",
+    "done": "Gotowe do wysłania",
+    "doneHint": "Wszystko poniżej jest uzupełnione. Wyślij, kiedy chcesz.",
+    "remaining": "została {n} rzecz | zostały {n} rzeczy | zostało {n} rzeczy",
+    "submit": "Wyślij do sprawdzenia",
+    "submitted": "Czeka na moderatora",
+    "submittedHint": "W trakcie czekania możesz dalej edytować. Napiszemy przy projekcie, kiedy będzie decyzja.",
+    "privateNotice": "Ten projekt jest prywatny. Nikt inny go nie otworzy i nie jest sprawdzany. Zmień widoczność, kiedy ma być widziany.",
+    "items": {
+      "summary": "Napisz krótki opis",
+      "summaryHint": "Zdanie pod nazwą, na listach i w wyszukiwarce.",
+      "description": "Napisz opis",
+      "descriptionHint": "Co robi, czego wymaga i czego nie robi. To jest strona, którą ludzie czytają.",
+      "icon": "Dodaj ikonę",
+      "iconHint": "Kwadratowy obraz. Tak wygląda twój projekt na każdej liście.",
+      "gallery": "Dodaj zrzut ekranu",
+      "galleryHint": "Jedno zdjęcie działającej rzeczy oszczędza akapit opisu.",
+      "categories": "Wybierz kategorie",
+      "categoriesHint": "Po tym ludzie filtrują, szukając czegoś takiego jak twoje.",
+      "license": "Wybierz licencję",
+      "licenseHint": "Co inni mogą zrobić z twoją pracą. Musi być, zanim wersję da się pobrać.",
+      "version": "Wgraj wersję",
+      "versionHint": "Projekt bez pliku nie ma czego sprawdzać.",
+      "links": "Podlinkuj źródła albo zgłoszenia (opcjonalne)",
+      "linksHint": "Gdzie trafia błąd i gdzie leży kod, jeśli jest otwarty.",
+      "disclosures": "Sprawdź deklaracje",
+      "disclosureHint": "Telemetria, reklamy, AI, płatne elementy — wszystko, o czym czytelnik chce wiedzieć najpierw."
+    }
   }
 }

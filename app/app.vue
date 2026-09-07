@@ -63,6 +63,9 @@ useSeoMeta({
     <div class="overflow-x-clip relative min-h-screen">
       <NuxtPage />
       <SiteFooter />
+      <CreateProject />
+      <CreateOrganization />
+      <CreateCollection />
       <CookieNotice />
       <SiteAnalytics />
     </div>

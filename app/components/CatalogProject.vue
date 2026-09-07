@@ -445,7 +445,20 @@ const sizeLabel = (bytes: number) =>
     </div>
 
     <ProjectMembers :slug="project.slug" />
-    <ProjectModeration :slug="project.slug" />
+    <ProjectModeration
+      :slug="project.slug"
+      :project="{
+        summary: project.summary,
+        description: project.description,
+        icon: project.icon,
+        license: project.license,
+        categories: project.categories,
+        versions: project.versions,
+        links: project.links,
+        disclosures: project.disclosures,
+        gallery: props.gallery,
+      }"
+    />
     <ProjectComments :slug="project.slug" />
   </section>
 </template>

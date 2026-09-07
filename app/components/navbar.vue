@@ -7,13 +7,7 @@ const auth = useAuthClient()
 const session = useAuthSession()
 const me = computed(() => session.value.data?.user as { username?: string, name?: string, image?: string, role?: string | null } | undefined)
 
-const { t, locale, locales, setLocale } = useI18n()
-
-const langs = computed(() => locales.value.map(l => ({ label: l.name!, value: l.code })))
-const lang = computed({
-    get: () => locale.value,
-    set: (code: string) => setLocale(code as 'en' | 'pl')
-})
+const { t } = useI18n()
 
 const route = useRoute()
 
@@ -41,6 +35,30 @@ const isAdmin = computed(() => me.value?.role === 'admin')
 // is typing the address.
 const catalogVisible = computed(() =>
     useRuntimeConfig().public.catalogPublic === true || isAdmin.value)
+
+// Signing in is not enough: while the catalog is closed only the admin can put
+// anything into it, and a button that always answers 404 is worse than none.
+const canPublish = computed(() => Boolean(me.value) && catalogVisible.value)
+
+const creating = useCreateFlows()
+
+const publishMenu = computed(() => [
+    {
+        label: t('create.project.title'),
+        icon: 'i-pixelarticons-package',
+        onSelect: () => { creating.project.value = true },
+    },
+    {
+        label: t('create.organization.title'),
+        icon: 'i-pixelarticons-users',
+        onSelect: () => { creating.organization.value = true },
+    },
+    {
+        label: t('create.collection.title'),
+        icon: 'i-pixelarticons-bookmark',
+        onSelect: () => { creating.collection.value = true },
+    },
+])
 
 const { unread, refresh: refreshNotifications } = useNotifications()
 
@@ -152,16 +170,21 @@ defineExpose({ items })
                 </div>
 
                 <div class="hidden gap-3 items-center lg:flex">
-                    <USelect 
-                        v-model="lang"
-                        :items="langs"
-                        value-key="value"
-                        icon="i-pixelarticons-languages"
-                        variant="ghost"
-                        color="neutral"
-                        :ui="{ base: 'rounded-xl cursor-pointer' }"
-                        class="w-32"
-                    />
+                    <UDropdownMenu
+                        v-if="canPublish"
+                        :items="publishMenu"
+                        :content="{ align: 'end' }"
+                        :ui="{ content: 'w-56 rounded-2xl' }"
+                    >
+                        <UButton
+                            color="primary"
+                            variant="solid"
+                            class="rounded-xl"
+                            icon="i-pixelarticons-plus"
+                            trailing-icon="i-pixelarticons-chevron-down"
+                            :label="t('nav.publish')"
+                        />
+                    </UDropdownMenu>
                     <UChip
                         v-if="me"
                         :show="unread > 0"
@@ -230,15 +253,16 @@ defineExpose({ items })
                         />
 
                         <div class="flex flex-col gap-2">
-                            <USelect
-                                v-model="lang"
-                                :items="langs"
-                                value-key="value"
-                                icon="i-pixelarticons-languages"
+                            <UButton
+                                v-for="entry in (canPublish ? publishMenu : [])"
+                                :key="entry.label"
+                                :to="entry.to"
+                                :label="entry.label"
+                                :icon="entry.icon"
                                 variant="soft"
-                                color="neutral"
-                                class="w-full"
-                                :ui="{ base: 'rounded-xl cursor-pointer' }"
+                                color="primary"
+                                class="w-full rounded-xl"
+                                @click="entry.onSelect?.()"
                             />
                             <template v-if="me">
                                 <UButton

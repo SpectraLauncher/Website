@@ -17,7 +17,10 @@ interface ThreadMessage {
   author: ThreadAuthor | null
 }
 
-const props = defineProps<{ slug: string }>()
+const props = defineProps<{
+  slug: string
+  project?: ChecklistInput
+}>()
 
 const { t, locale } = useI18n()
 const session = useAuthSession()
@@ -81,6 +84,17 @@ const canSubmit = computed(() => isSubmittable(status.value))
 
 const submitting = ref(false)
 
+// What the project still needs. Shown while it is the author's to change, and
+// not once it is with a moderator — a list of chores under a decision that has
+// already been asked for reads as if something went wrong.
+const checklist = computed(() => checklistState(props.project ?? {}))
+const missing = computed(() => missingRequired(checklist.value))
+const ready = computed(() => missing.value.length === 0)
+
+const showChecklist = computed(() =>
+  Boolean(props.project) && !isStaff.value
+  && (canSubmit.value || status.value === 'private'))
+
 async function submit() {
   submitting.value = true
   error.value = ''
@@ -116,6 +130,57 @@ async function submit() {
         :label="t(`catalog.status.${status}`)"
       />
     </header>
+
+    <div v-if="status === 'private'" class="mb-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+      <p class="text-sm/relaxed text-muted">{{ t('checklist.privateNotice') }}</p>
+    </div>
+
+    <div v-if="showChecklist" class="mb-5 rounded-2xl border border-white/10 bg-black/20 p-5">
+      <header class="mb-1 flex flex-wrap items-center gap-2">
+        <UIcon
+          :name="ready ? 'i-pixelarticons-checkbox-on' : 'i-pixelarticons-list'"
+          class="size-4"
+          :class="ready ? 'text-primary' : 'text-dimmed'"
+        />
+        <h3 class="text-sm font-semibold">
+          {{ ready ? t('checklist.done') : t('checklist.title') }}
+        </h3>
+        <UBadge
+          v-if="!ready"
+          size="sm"
+          variant="subtle"
+          color="warning"
+          :label="t('checklist.remaining', missing.length, { n: missing.length })"
+        />
+      </header>
+
+      <p class="mb-4 text-xs/relaxed text-dimmed">
+        {{ ready ? t('checklist.doneHint') : t('checklist.intro') }}
+      </p>
+
+      <ul class="space-y-2.5">
+        <li
+          v-for="item in CHECKLIST_ITEMS"
+          :key="item"
+          class="flex gap-2.5"
+        >
+          <UIcon
+            :name="checklist[item] ? 'i-pixelarticons-check' : 'i-pixelarticons-circle'"
+            class="mt-0.5 size-4 shrink-0"
+            :class="checklist[item] ? 'text-primary' : 'text-dimmed'"
+          />
+          <span class="min-w-0">
+            <span
+              class="block text-sm"
+              :class="checklist[item] ? 'text-dimmed line-through' : 'font-medium'"
+            >{{ t(`checklist.items.${item}`) }}</span>
+            <span v-if="!checklist[item]" class="mt-0.5 block text-xs/relaxed text-dimmed">
+              {{ t(`checklist.items.${item}Hint`) }}
+            </span>
+          </span>
+        </li>
+      </ul>
+    </div>
 
     <p v-if="needsAppeal" class="mb-4 text-sm text-muted">{{ t('catalog.appealHint') }}</p>
     <p v-else-if="status === 'pending'" class="mb-4 text-sm text-muted">{{ t('catalog.pendingHint') }}</p>
