@@ -3508,7 +3508,8 @@
       "versions": "Versions",
       "members": "Members",
       "analytics": "Analytics",
-      "disclosures": "Declarations"
+      "disclosures": "Declarations",
+      "pricing": "Pricing"
     },
     "settingsHint": {
       "general": "The name, the address and who can see it.",
@@ -3527,7 +3528,8 @@
       "icon": "A square image, at least 256 pixels. It is what your project looks like in every listing.",
       "members": "Everybody who can work on this project, and where their rights come from.",
       "otherLinks": "Where to follow the project. None of these is required.",
-      "transfer": "Only an organization you belong to, and only one you may publish in."
+      "transfer": "Only an organization you belong to, and only one you may publish in.",
+      "pricing": "Decide whether the project is free or paid. A change applies to purchases after it, never to those before."
     },
     "disclosureLock": {
       "cannot_remove": "Confirmed",
@@ -3579,7 +3581,20 @@
     "selectedVersions": "Selected:",
     "clearAll": "Clear all",
     "gameVersionsManual": "Type them instead",
-    "gameVersionsManualHint": "The version list could not be loaded. Separate them with commas."
+    "gameVersionsManualHint": "The version list could not be loaded. Separate them with commas.",
+    "pricing": {
+      "paid": "This project is paid",
+      "price": "Price",
+      "minimum": "The minimum price is {amount}.",
+      "tooCheap": "Too low — the minimum is {amount}.",
+      "breakdown": "At this price",
+      "buyerPays": "The buyer pays",
+      "fee": "Platform fee ({rate}%)",
+      "youGet": "You get",
+      "feeNote": "The fee covers payment processing too — Stripe adds nothing separately. A minimum applies on cheap items, so the effective percentage can be higher than the rate.",
+      "payoutNote": "Money reaches your payout account after a holding period. You can sell before verification finishes.",
+      "freeNote": "This project is free. Anyone can download the files without paying."
+    }
   },
   "verification": {
     "title": "Verification",

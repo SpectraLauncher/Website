@@ -3508,7 +3508,8 @@
       "versions": "Wersje",
       "members": "Członkowie",
       "analytics": "Statystyki",
-      "disclosures": "Deklaracje"
+      "disclosures": "Deklaracje",
+      "pricing": "Cena"
     },
     "settingsHint": {
       "general": "Nazwa, adres i kto to widzi.",
@@ -3527,7 +3528,8 @@
       "icon": "Kwadratowy obraz, minimum 256 pikseli. Tak wygląda twój projekt na każdej liście.",
       "members": "Wszyscy, którzy mogą pracować przy tym projekcie, i skąd biorą się ich prawa.",
       "otherLinks": "Gdzie śledzić projekt. Żadne z tych nie jest wymagane.",
-      "transfer": "Tylko organizacja, do której należysz, i tylko taka, w której możesz publikować."
+      "transfer": "Tylko organizacja, do której należysz, i tylko taka, w której możesz publikować.",
+      "pricing": "Ustal, czy projekt jest darmowy, czy płatny. Zmiana działa na zakupy po niej, nigdy na te przed nią."
     },
     "disclosureLock": {
       "cannot_remove": "Potwierdzone",
@@ -3579,7 +3581,20 @@
     "selectedVersions": "Wybrane:",
     "clearAll": "Wyczyść",
     "gameVersionsManual": "Wpisz je ręcznie",
-    "gameVersionsManualHint": "Nie udało się wczytać listy wersji. Oddziel je przecinkami."
+    "gameVersionsManualHint": "Nie udało się wczytać listy wersji. Oddziel je przecinkami.",
+    "pricing": {
+      "paid": "Projekt jest płatny",
+      "price": "Cena",
+      "minimum": "Minimalna cena to {amount}.",
+      "tooCheap": "Za nisko — minimum to {amount}.",
+      "breakdown": "Przy tej cenie",
+      "buyerPays": "Kupujący płaci",
+      "fee": "Prowizja platformy ({rate}%)",
+      "youGet": "Dostajesz",
+      "feeNote": "Prowizja pokrywa też koszt obsługi płatności — Stripe nie dolicza nic osobno. Przy niskich cenach obowiązuje kwota minimalna, więc procent bywa wyższy, niż wynika ze stawki.",
+      "payoutNote": "Pieniądze trafiają na twoje konto do wypłat po okresie karencji. Sprzedawać możesz, zanim weryfikacja się skończy.",
+      "freeNote": "Projekt jest darmowy. Każdy może pobrać pliki bez płacenia."
+    }
   },
   "verification": {
     "title": "Weryfikacja",

@@ -1,27 +1,13 @@
 
+// Where the numbers come from. The arithmetic they feed is in
+// shared/utils/commission.ts, so the author's pricing form works a fee out
+// exactly the way the checkout will.
 import { one } from './db'
-
-// The platform takes one cut per sale and it covers the payment processor too:
-// the seller never sees a separate Stripe line, so the rate has to be wide
-// enough to swallow Stripe's own fee and still leave something. What Stripe
-// actually charges is a fixed part plus a percentage, which is why a flat
-// percentage alone goes negative on cheap items and why there is a floor.
-//
-// Rates are basis points, not floats. 8% is 800, half a percent is 50, and
-// nothing here ever multiplies money by a fraction.
-export interface CommissionSettings {
-  rateBps: number
-  partnerRateBps: number
-  minFeeMinor: number
-  minPriceMinor: number
-}
-
-export const COMMISSION_DEFAULTS: CommissionSettings = {
-  rateBps: 800,
-  partnerRateBps: 600,
-  minFeeMinor: 50,
-  minPriceMinor: 300,
-}
+import {
+  type CommissionSettings,
+  rateBpsFor,
+  sanitizeSettings,
+} from '../../shared/utils/commission'
 
 export const SETTING_KEY = 'commission'
 
@@ -35,106 +21,46 @@ export async function commissionSettings(): Promise<CommissionSettings> {
   return sanitizeSettings(row?.value)
 }
 
-// A bad row must not take payments down, and must never silently make the
-// platform work for free: anything missing or nonsensical falls back to the
-// default for that field alone.
-export function sanitizeSettings(input: unknown): CommissionSettings {
-  const raw = (input ?? {}) as Partial<Record<keyof CommissionSettings, unknown>>
-  // Number(null), Number('') and Number(false) are all 0, so coercing first
-  // would read a missing floor as "charge nothing" instead of as missing.
-  const whole = (value: unknown, fallback: number, min: number) => {
-    if (typeof value !== 'number' && typeof value !== 'string') return fallback
-    if (typeof value === 'string' && value.trim() === '') return fallback
+// The rate a given project's sale would be charged at, resolved from whoever
+// gets paid for it. An organization's projects follow the organization's own
+// standing rather than any one member's: the fee comes off the sale before the
+// split, so there is no single member it could belong to.
+export async function termsForProject(project: {
+  owner_id: string | null
+  org_id: string | null
+}): Promise<{ rateBps: number, minFeeMinor: number, minPriceMinor: number }> {
+  const settings = await commissionSettings()
 
-    const n = Math.floor(Number(value))
-    return Number.isFinite(n) && n >= min ? n : fallback
-  }
+  const rateBps = project.org_id
+    ? await orgRateBps(project.org_id, settings)
+    : await userRateBps(project.owner_id, settings)
 
-  return {
-    rateBps: whole(raw.rateBps, COMMISSION_DEFAULTS.rateBps, 0),
-    partnerRateBps: whole(raw.partnerRateBps, COMMISSION_DEFAULTS.partnerRateBps, 0),
-    minFeeMinor: whole(raw.minFeeMinor, COMMISSION_DEFAULTS.minFeeMinor, 0),
-    minPriceMinor: whole(raw.minPriceMinor, COMMISSION_DEFAULTS.minPriceMinor, 1),
-  }
+  return { rateBps, minFeeMinor: settings.minFeeMinor, minPriceMinor: settings.minPriceMinor }
 }
 
-export interface SellerTerms {
-  partner: boolean
-  overrideBps: number | null
+async function orgRateBps(orgId: string, settings: CommissionSettings): Promise<number> {
+  const org = await one<{ verified: boolean }>(
+    'SELECT COALESCE(verified, FALSE) AS verified FROM organization WHERE id = $1', [orgId])
+
+  return org?.verified ? settings.partnerRateBps : settings.rateBps
 }
 
-// An override on the seller wins over everything, which is how an individual
-// arrangement is expressed without a second rate table. Null means "no
-// arrangement", and zero is a real rate meaning the platform takes nothing —
-// so the check is for null, never for falsiness.
-export function rateBpsFor(settings: CommissionSettings, terms: SellerTerms): number {
-  if (terms.overrideBps !== null && terms.overrideBps >= 0) return terms.overrideBps
-  return terms.partner ? settings.partnerRateBps : settings.rateBps
-}
+async function userRateBps(
+  userId: string | null,
+  settings: CommissionSettings,
+): Promise<number> {
+  if (!userId) return settings.rateBps
 
-// Rounded up, so the platform is never the one eating a fraction of a cent, and
-// capped at the price, because a fee larger than what the buyer paid would put
-// the seller in debt for making a sale.
-export function feeFor(priceMinor: number, rateBps: number, minFeeMinor: number): number {
-  if (priceMinor <= 0) return 0
+  const row = await one<{ partner: boolean, override: number | null }>(
+    `SELECT COALESCE(u.partner, FALSE) AS partner, a.commission_override_bps AS override
+     FROM "user" u LEFT JOIN connected_account a ON a.user_id = u.id
+     WHERE u.id = $1`,
+    [userId],
+  )
 
-  const percentage = Math.ceil((priceMinor * rateBps) / 10_000)
-  return Math.min(Math.max(percentage, minFeeMinor), priceMinor)
-}
-
-export interface PricedItem {
-  priceMinor: number
-  seller: SellerTerms
-}
-
-export interface ChargedItem {
-  priceMinor: number
-  feeMinor: number
-  netMinor: number
-  rateBps: number
-  minFeeMinor: number
-}
-
-// Per item, never over the cart total. A basket of one 30 EUR pack and one 3 EUR
-// schematic charged as a lump would let the cheap item ride on the expensive
-// one's fee, and the floor exists precisely so cheap items carry their own cost.
-//
-// The rate and the floor are returned with each line so the order can store what
-// was applied. A historical order that reads today's configuration is a
-// historical order that changes after the fact.
-export function chargeItems(items: PricedItem[], settings: CommissionSettings): ChargedItem[] {
-  return items.map((item) => {
-    const rateBps = rateBpsFor(settings, item.seller)
-    const feeMinor = feeFor(item.priceMinor, rateBps, settings.minFeeMinor)
-
-    return {
-      priceMinor: item.priceMinor,
-      feeMinor,
-      netMinor: item.priceMinor - feeMinor,
-      rateBps,
-      minFeeMinor: settings.minFeeMinor,
-    }
+  return rateBpsFor(settings, {
+    partner: Boolean(row?.partner),
+    overrideBps: row?.override ?? null,
   })
 }
 
-// Splitting whole cents between people whose shares are percentages leaves a
-// remainder that has to land somewhere. Largest remainder: hand everyone their
-// floor, then give the leftover cents one each to whoever was rounded down
-// hardest. The result always sums to exactly the amount that came in.
-export function splitMinorUnits(amountMinor: number, sharesBps: number[]): number[] {
-  const total = sharesBps.reduce((sum, bps) => sum + bps, 0)
-  if (!sharesBps.length || total <= 0 || amountMinor <= 0) return sharesBps.map(() => 0)
-
-  const exact = sharesBps.map(bps => (amountMinor * bps) / total)
-  const out = exact.map(value => Math.floor(value))
-
-  let left = amountMinor - out.reduce((sum, value) => sum + value, 0)
-
-  const order = exact
-    .map((value, index) => ({ index, remainder: value - Math.floor(value) }))
-    .sort((a, b) => b.remainder - a.remainder || a.index - b.index)
-
-  for (let i = 0; left > 0; i++, left--) out[order[i % order.length]!.index]! += 1
-
-  return out
-}

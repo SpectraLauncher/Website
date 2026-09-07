@@ -25,5 +25,8 @@ export default defineEventHandler(async (event) => {
     },
     gallery: await galleryOf(project.id),
     permissions: projectMaskToList(standing.mask),
+    // What a sale of this project would be charged, so the pricing tab can show
+    // the author the arithmetic instead of asking them to trust a percentage.
+    pricing: await termsForProject(project),
   }
 })

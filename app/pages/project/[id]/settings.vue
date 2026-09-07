@@ -21,6 +21,7 @@ const TABS = [
   { id: 'tags', to: '/tags', icon: 'i-pixelarticons-label', need: 'edit_details' },
   { id: 'description', to: '/description', icon: 'i-pixelarticons-align-left', need: 'edit_body' },
   { id: 'license', to: '/license', icon: 'i-pixelarticons-book-open', need: 'edit_details' },
+  { id: 'pricing', to: '/pricing', icon: 'i-pixelarticons-coin', need: 'edit_details' },
   { id: 'gallery', to: '/gallery', icon: 'i-pixelarticons-image', need: 'edit_details' },
   { id: 'links', to: '/links', icon: 'i-pixelarticons-link', need: 'edit_details' },
   { id: 'versions', to: '/versions', icon: 'i-pixelarticons-archive', need: 'upload_version' },

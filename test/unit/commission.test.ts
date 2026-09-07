@@ -7,7 +7,7 @@ import {
   rateBpsFor,
   sanitizeSettings,
   splitMinorUnits,
-} from '../../server/utils/commission'
+} from '../../shared/utils/commission'
 
 const settings = COMMISSION_DEFAULTS
 const plain = { partner: false, overrideBps: null }
