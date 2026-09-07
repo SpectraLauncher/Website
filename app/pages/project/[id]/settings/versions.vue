@@ -10,6 +10,7 @@ interface Upload {
 
 interface Analysis {
   version: string | null
+  channel: string
   loaders: string[]
   gameVersions: string[]
   gameVersionRange: string | null
@@ -83,9 +84,10 @@ async function take(file: File) {
     // Read out of the archive, and still editable: the reader is right almost
     // always, and "almost" is why the fields are not locked.
     draft.number = res.analysis.version ?? draft.number
-    draft.name = res.analysis.version ?? draft.name
+    draft.channel = res.analysis.channel || draft.channel
     draft.loaders = [...res.analysis.loaders]
     draft.gameVersions = [...res.analysis.gameVersions]
+    draft.name = [project.value?.title, draft.number].filter(Boolean).join(' ') || draft.name
   }
   catch (e: any) {
     problem.value = e?.data?.statusMessage || t('auth.genericError')

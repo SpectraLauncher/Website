@@ -1,6 +1,7 @@
 
 import { normalizeSlug } from '../../shared/utils/catalog-slug'
-import type { ProjectType } from '../../shared/utils/catalog-types'
+import type { ProjectType, VersionChannel } from '../../shared/utils/catalog-types'
+import { channelFromVersion, versionFromFilename } from '../../shared/utils/version-from-filename'
 import { expandRange, minecraftVersions, releaseIds } from './game-versions'
 import { type ModInfo, type PackFile, readArchiveInfo } from './mod-manifest'
 import { type SchematicInfo, parseSchematic, schematicGrid } from './schematic'
@@ -13,6 +14,7 @@ export interface UploadAnalysis {
   slug: string | null
   summary: string | null
   version: string | null
+  channel: VersionChannel
   license: string | null
   links: Record<string, string>
   loaders: string[]
@@ -33,6 +35,7 @@ function blank(): UploadAnalysis {
     slug: null,
     summary: null,
     version: null,
+    channel: 'release',
     license: null,
     links: {},
     loaders: [],
@@ -163,6 +166,24 @@ function fromSchematic(info: SchematicInfo): UploadAnalysis {
 // Content decides what a file is, never the extension. A .zip holding a
 // fabric.mod.json is a mod; a .nbt is only a schematic if it parses as one.
 export async function analyzeUpload(
+  body: Uint8Array,
+  filename: string,
+  sha512?: string,
+): Promise<UploadAnalysis> {
+  const out = await read(body, filename, sha512)
+
+  // A jar built without the gradle substitution carries the placeholder itself,
+  // and a resourcepack has nowhere to put a version at all. The filename is the
+  // fallback in both cases, and it is right far more often than a blank field.
+  if (!out.version || out.version.includes('${')) {
+    out.version = versionFromFilename(filename)
+  }
+  out.channel = channelFromVersion(out.version)
+
+  return out
+}
+
+async function read(
   body: Uint8Array,
   filename: string,
   sha512?: string,
