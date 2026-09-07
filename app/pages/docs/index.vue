@@ -50,6 +50,21 @@ useSeoMeta({
             </ul>
           </div>
         </div>
+
+        <NuxtLink
+          :to="localePath('/docs/api')"
+          class="group mt-4 flex items-start gap-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm transition-colors hover:border-zinc-500"
+        >
+          <UIcon name="i-pixelarticons-brackets-angle" class="mt-0.5 size-5 shrink-0 text-primary" />
+          <span class="min-w-0 flex-1">
+            <span class="block text-lg font-semibold">{{ t('docs.api.title') }}</span>
+            <span class="mt-1 block text-sm text-muted">{{ t('docs.api.intro') }}</span>
+          </span>
+          <UIcon
+            name="i-pixelarticons-chevron-right"
+            class="mt-1 size-4 shrink-0 text-dimmed transition-transform group-hover:translate-x-0.5"
+          />
+        </NuxtLink>
       </section>
     </div>
   </div>

@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { TOOLS } from './app/utils/tools'
 import { LEGAL_DOCUMENTS } from './shared/utils/legal'
+import { DOC_PAGES } from './shared/utils/docs'
 
 const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
 
@@ -37,6 +38,8 @@ const PRIVATE_PATHS = [
 const PRERENDER = [
   '/tools',
   '/docs',
+  '/docs/api',
+  ...DOC_PAGES.map(slug => `/docs/${slug}`),
   ...TOOLS.filter(tool => tool.page).map(tool => `/tools/${tool.id}`),
   '/privacy',
   '/terms',

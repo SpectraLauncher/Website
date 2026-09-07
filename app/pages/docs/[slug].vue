@@ -59,6 +59,14 @@ useSeoMeta({
                 </li>
               </ul>
             </div>
+
+            <NuxtLink
+              :to="localePath('/docs/api')"
+              class="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-white/5 hover:text-default"
+            >
+              <UIcon name="i-pixelarticons-brackets-angle" class="size-3.5" />
+              {{ t('docs.api.title') }}
+            </NuxtLink>
           </nav>
 
           <article class="min-w-0">
