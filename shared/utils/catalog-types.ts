@@ -23,6 +23,7 @@ export const PROJECT_STATUSES = [
   'pending',
   'published',
   'unlisted',
+  'private',
   'archived',
   'rejected',
   'removed',
@@ -41,6 +42,73 @@ export const LINKABLE_STATUSES: readonly ProjectStatus[] = ['published', 'archiv
 
 export function isProjectStatus(value: unknown): value is ProjectStatus {
   return PROJECT_STATUSES.includes(value as ProjectStatus)
+}
+
+// What the author asks for. The status is where the project actually is, which
+// is not the same thing until a moderator agrees — a project can sit in `draft`
+// for a week while its author intends it to end up public.
+export const VISIBILITIES = ['public', 'unlisted', 'private'] as const
+export type Visibility = typeof VISIBILITIES[number]
+
+// Where each choice lands once it is approved. Private is the exception: it is
+// never visible to anybody else, so there is nothing for a moderator to look at
+// and it goes straight there.
+export const VISIBILITY_STATUS: Record<Visibility, ProjectStatus> = {
+  public: 'published',
+  unlisted: 'unlisted',
+  private: 'private',
+}
+
+export function isVisibility(value: unknown): value is Visibility {
+  return VISIBILITIES.includes(value as Visibility)
+}
+
+export function needsReview(visibility: Visibility): boolean {
+  return visibility !== 'private'
+}
+
+// The status a new project starts in. Anything heading for other people's eyes
+// starts as a draft its author still has to submit.
+export function initialStatus(visibility: Visibility): ProjectStatus {
+  return visibility === 'private' ? 'private' : 'draft'
+}
+
+// Statuses a moderator has already said yes to.
+const APPROVED: readonly string[] = ['published', 'unlisted']
+
+// What changing the visibility does to a project that already exists. Split out
+// because the interesting part is not the SQL: an approved project may move
+// between listed and unlisted on its own — unlisting is narrower, and putting
+// back something already reviewed is not a new decision — while anything else
+// goes back to being a draft and waits its turn.
+export function applyVisibility(
+  status: string,
+  requested: string,
+  visibility: Visibility,
+): { status: string, requested: string } {
+  const kept = requested === 'unlisted' ? 'unlisted' : 'published'
+  if (visibility === 'private') return { status: 'private', requested: kept }
+
+  const target = VISIBILITY_STATUS[visibility]
+
+  if (APPROVED.includes(status)) return { status: target, requested: target }
+
+  // A submission already in the queue keeps its place; a removed or archived
+  // project is not somewhere its author can leave by editing a form.
+  if (status === 'pending' || status === 'removed' || status === 'archived') {
+    return { status, requested: target }
+  }
+
+  return { status: 'draft', requested: target }
+}
+
+// Reading it back the other way, for a form that has to show what was chosen.
+export function visibilityOf(status: string, requested: string): Visibility {
+  if (status === 'private') return 'private'
+  if (status === 'unlisted') return 'unlisted'
+  if (status === 'published' || status === 'archived') return 'public'
+
+  return isVisibility(requested) ? requested : 'public'
 }
 
 // The moderation queue. A draft is somebody still working; only a submission

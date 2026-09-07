@@ -1,6 +1,7 @@
 
 import { exec, one, q } from './db'
-import { isPublicId, newId } from './ids'
+import { newId } from './ids'
+import { isPublicId } from '../../shared/utils/ids'
 import {
   LISTED_STATUSES,
   categoriesFor,
@@ -12,7 +13,7 @@ import {
   isVersionChannel,
   type ProjectType,
 } from '../../shared/utils/catalog-types'
-import { normalizeSlug, slugProblem } from './catalog-slug'
+import { normalizeSlug, slugProblem } from '../../shared/utils/catalog-slug'
 
 export interface ProjectRow {
   id: string
@@ -24,6 +25,7 @@ export interface ProjectRow {
   summary: string
   description: string
   status: string
+  requested_status: string
   license: string | null
   license_url: string | null
   icon: string | null
@@ -77,8 +79,9 @@ export function num(value: string | number | null | undefined): number {
 }
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
-  status, license, license_url, icon, categories, game_versions, loaders, environment,
-  links, disclosures, meta, price, currency, downloads, follows, created, updated, published`
+  status, requested_status, license, license_url, icon, categories, game_versions, loaders,
+  environment, links, disclosures, meta, price, currency, downloads, follows, created,
+  updated, published`
 
 // The column list spans lines, so a join that needs it aliased cannot just glue
 // a prefix onto a split on ", ".
@@ -179,6 +182,7 @@ export interface ProjectInput {
   disclosures?: unknown
   meta?: unknown
   orgId?: unknown
+  visibility?: unknown
   environment?: unknown
   authorship?: unknown
   price?: unknown
@@ -224,25 +228,35 @@ export async function createProject(input: ProjectInput, ownerId: string): Promi
   const orgId = text(input.orgId, 64) || null
   const now = Date.now()
 
+  // A project heading for other people starts as a draft its author still has
+  // to submit; a private one is already where it is going.
+  const visibility = isVisibility(input.visibility) ? input.visibility : 'public'
+  const status = initialStatus(visibility)
+  const requested = visibility === 'private' ? 'published' : VISIBILITY_STATUS[visibility]
+
   // sql-safe: PROJECT_COLUMNS is a constant column list
   const row = await one<ProjectRow>(
-    `INSERT INTO project (slug, type, owner_id, org_id, title, summary, description,
-                          status, license, license_url, categories, links, meta,
+    `INSERT INTO project (id, slug, type, owner_id, org_id, title, summary, description,
+                          status, requested_status, license, license_url, categories,
+                          links, meta, authorship_by, authorship_at, authorship_terms,
                           created, updated)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, 'draft', $8, $9, $10, $11, $12, $13, $13)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
+             $16, $18, $17, $18, $18)
      RETURNING ${PROJECT_COLUMNS}`,
     [
+      newId(),
       slug, input.type, orgId ? null : ownerId, orgId, title,
       text(input.summary, 400), text(input.description, 100_000),
+      status,
+      requested,
       isLicense(input.license) ? input.license : null,
       text(input.licenseUrl, 500) || null,
       stringList(input.categories, 20),
       JSON.stringify(cleanLinks(input.links)),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
-      now,
       ownerId,
       AUTHORSHIP_TERMS,
-      newId(),
+      now,
     ],
   )
 
@@ -287,7 +301,13 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     throw createError({ statusCode: 400, statusMessage: 'unsupported currency' })
   }
 
-  const status = typeof input.status === 'string' ? input.status : current.status
+  // A moderator sets the status directly; an author sets a visibility and the
+  // rule decides what that means for a project in this state.
+  const moved = isVisibility(input.visibility)
+    ? applyVisibility(current.status, current.requested_status, input.visibility)
+    : { status: current.status, requested: current.requested_status }
+
+  const status = typeof input.status === 'string' ? input.status : moved.status
   if (!isProjectStatus(status)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown status' })
   }
@@ -300,7 +320,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, disclosures = $12, meta = $13, published = $14, updated = $15,
        owner_id = $16, org_id = $17, price = $18, currency = $19,
-       environment = $20
+       environment = $20, requested_status = $21
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -334,6 +354,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
       input.environment === undefined
         ? current.environment
         : stringList(input.environment, 4).filter(isEnvironment),
+      moved.requested,
     ],
   )
 

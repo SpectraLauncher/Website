@@ -1,15 +1,14 @@
 
-const DECISIONS: Record<string, 'published' | 'rejected' | 'removed'> = {
-  approve: 'published',
-  reject: 'rejected',
-  remove: 'removed',
-}
+// Approval sends the project where its author asked it to go, which is not
+// always public — an unlisted project is reviewed the same way and then stays
+// off the listings.
+const DECISIONS = ['approve', 'reject', 'remove'] as const
 
-const NOTIFICATION: Record<string, 'project_approved' | 'project_rejected' | 'project_removed'> = {
-  published: 'project_approved',
-  rejected: 'project_rejected',
-  removed: 'project_removed',
-}
+const NOTIFICATION = {
+  approve: 'project_approved',
+  reject: 'project_rejected',
+  remove: 'project_removed',
+} as const
 
 export default defineEventHandler(async (event) => {
   const moderator = await requireCatalogWrite(event)
@@ -18,16 +17,21 @@ export default defineEventHandler(async (event) => {
   if (!project) throw createError({ statusCode: 404, statusMessage: 'no such project' })
 
   const body = await readBody<{ decision?: unknown, body?: unknown, force?: unknown }>(event) ?? {}
-  const status = DECISIONS[String(body.decision ?? '')]
-  if (!status) throw createError({ statusCode: 400, statusMessage: 'unknown decision' })
+  const decision = String(body.decision ?? '')
+  if (!(DECISIONS as readonly string[]).includes(decision)) {
+    throw createError({ statusCode: 400, statusMessage: 'unknown decision' })
+  }
+
+  const approved = project.requested_status === 'unlisted' ? 'unlisted' : 'published'
+  const status = decision === 'approve' ? approved : decision === 'reject' ? 'rejected' : 'removed'
 
   // A rejection the author cannot read is a dead end — they have nothing to fix
   // and nothing to appeal against.
-  const message = status === 'published'
+  const message = decision === 'approve'
     ? String(body.body ?? '').trim().slice(0, MAX_BODY)
     : cleanBody(body.body)
 
-  if (status === 'published' && body.force !== true) {
+  if (decision === 'approve' && body.force !== true) {
     const blocking = await blockingScanIssues(project.id)
     if (blocking) {
       throw createError({
@@ -50,7 +54,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await notifyOwners(project, {
-    kind: NOTIFICATION[status]!,
+    kind: NOTIFICATION[decision as keyof typeof NOTIFICATION],
     actorId: moderator.id,
     projectId: project.id,
   })

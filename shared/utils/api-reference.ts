@@ -44,6 +44,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/me/analytics', group: 'projects', auth: 'session', summary: 'Views and downloads for your projects' },
   { route: 'GET /api/catalog/me/revenue', group: 'projects', auth: 'session', summary: 'Sales of your projects' },
   { route: 'GET /api/catalog/library', group: 'projects', auth: 'session', summary: 'Projects you have bought' },
+  { route: 'POST /api/catalog/projects', group: 'projects', auth: 'session', summary: 'Start a project' },
   { route: 'GET /api/catalog/collections', group: 'collections', auth: 'session', summary: 'Your collections, and which hold a given project' },
   { route: 'POST /api/catalog/collections', group: 'collections', auth: 'session', summary: 'Create a collection' },
   { route: 'GET /api/catalog/collections/{id}', group: 'collections', auth: 'none', summary: 'One collection and its projects' },

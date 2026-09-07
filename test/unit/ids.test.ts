@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { ID_LENGTH, isPublicId, looksLikeId, newId } from '../../server/utils/ids'
-import { slugProblem } from '../../server/utils/catalog-slug'
+import { ID_LENGTH, isPublicId, looksLikeId } from '../../shared/utils/ids'
+import { newId } from '../../server/utils/ids'
+import { slugProblem } from '../../shared/utils/catalog-slug'
 
 describe('newId', () => {
   it('ma stala dlugosc i tylko znaki base62', () => {

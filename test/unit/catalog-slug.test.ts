@@ -8,7 +8,7 @@ import {
   isUsableSlug,
   normalizeSlug,
   slugProblem,
-} from '../../server/utils/catalog-slug'
+} from '../../shared/utils/catalog-slug'
 import { PROJECT_TYPES, TYPE_PREFIX } from '../../shared/utils/catalog-types'
 
 describe('normalizeSlug', () => {

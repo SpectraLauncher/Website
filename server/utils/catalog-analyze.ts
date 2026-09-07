@@ -1,5 +1,5 @@
 
-import { normalizeSlug } from './catalog-slug'
+import { normalizeSlug } from '../../shared/utils/catalog-slug'
 import type { ProjectType } from '../../shared/utils/catalog-types'
 import { expandRange, minecraftVersions, releaseIds } from './game-versions'
 import { type ModInfo, type PackFile, readArchiveInfo } from './mod-manifest'

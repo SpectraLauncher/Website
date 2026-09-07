@@ -422,6 +422,13 @@ export async function ensureCatalogSchema() {
   `)
 
   await pool.query(`
+    -- Where the project goes once a moderator approves it. The author picks it
+    -- when the project is created and can change it while it waits, so it has
+    -- to live somewhere other than status, which says where the project is now.
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS requested_status TEXT NOT NULL DEFAULT 'published'
+  `)
+
+  await pool.query(`
     -- Rights granted on one project, to somebody who is not its owner. The
     -- organization grants a working set already; this is for the rest.
     CREATE TABLE IF NOT EXISTS project_member (
