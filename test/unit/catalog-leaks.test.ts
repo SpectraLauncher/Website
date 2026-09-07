@@ -10,7 +10,7 @@ import {
   TYPE_PREFIX,
   isLinkable,
   isListed,
-} from '../../server/utils/catalog-types'
+} from '../../shared/utils/catalog-types'
 
 const nuxtConfig = readFileSync('nuxt.config.ts', 'utf8')
 const sitemap = readFileSync('server/api/__sitemap__/urls.ts', 'utf8')

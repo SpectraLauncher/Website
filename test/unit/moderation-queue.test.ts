@@ -12,7 +12,7 @@ import {
   isListed,
   isQueued,
   isSubmittable,
-} from '../../server/utils/catalog-types'
+} from '../../shared/utils/catalog-types'
 
 describe('status oczekujacy', () => {
   it('istnieje i jest odrebny od szkicu', () => {

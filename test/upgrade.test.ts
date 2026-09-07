@@ -117,7 +117,7 @@ describe.skipIf(!url)('istniejaca baza po migracji', () => {
 
   it('stary projekt jest dalej publiczny, nie zostal przestawiony na pending', async () => {
     const { one } = await import('../server/utils/db')
-    const { isListed } = await import('../server/utils/catalog-types')
+    const { isListed } = await import('../shared/utils/catalog-types')
 
     const row = await one<{ status: string }>(`SELECT status FROM project WHERE id = 'p-old'`)
     expect(isListed(row!.status)).toBe(true)

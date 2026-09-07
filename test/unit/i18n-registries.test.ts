@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-import { PROJECT_STATUSES } from '../../server/utils/catalog-types'
+import { PROJECT_STATUSES } from '../../shared/utils/catalog-types'
 import { NOTIFICATION_ICONS } from '../../app/composables/useNotifications'
 import { LINK_KINDS } from '../../shared/utils/links'
 import { LEGAL_DOCUMENTS } from '../../shared/utils/legal'

@@ -11,7 +11,7 @@ import {
   isProjectType,
   isVersionChannel,
   type ProjectType,
-} from './catalog-types'
+} from '../../shared/utils/catalog-types'
 import { normalizeSlug, slugProblem } from './catalog-slug'
 
 export interface ProjectRow {

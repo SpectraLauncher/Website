@@ -2,7 +2,7 @@
 import type { H3Event } from 'h3'
 import type { ProjectRow } from './catalog'
 import { projectColumns } from './catalog'
-import { LINKABLE_STATUSES, LISTED_STATUSES } from './catalog-types'
+import { LINKABLE_STATUSES, LISTED_STATUSES } from '../../shared/utils/catalog-types'
 import { exec, one, q } from './db'
 import { newId } from './ids'
 import { requireUser } from './auth'

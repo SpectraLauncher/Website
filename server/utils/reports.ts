@@ -1,7 +1,7 @@
 
 import type { H3Event } from 'h3'
 import { isAdmin } from './admin'
-import { projectPath } from './catalog-types'
+import { projectPath } from '../../shared/utils/catalog-types'
 import { exec, one, q } from './db'
 import { newId } from './ids'
 

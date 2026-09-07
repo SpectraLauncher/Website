@@ -1,5 +1,5 @@
 
-import { LICENSES, type License } from './catalog-types'
+import { LICENSES, type License } from '../../shared/utils/catalog-types'
 
 // Selling is never blocked here — the seller declares authorship and carries the
 // consequences. What this does is tell them, before they set a price, what the

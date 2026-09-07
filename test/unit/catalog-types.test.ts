@@ -9,7 +9,7 @@ import {
   isVersionChannel,
   loadersForType,
   projectPath,
-} from '../../server/utils/catalog-types'
+} from '../../shared/utils/catalog-types'
 
 describe('typy projektow', () => {
   it('kazdy typ ma prefiks URL i kazdy prefiks jest unikalny', () => {

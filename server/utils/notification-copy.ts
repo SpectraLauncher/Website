@@ -1,5 +1,5 @@
 
-import { projectPath } from './catalog-types'
+import { projectPath } from '../../shared/utils/catalog-types'
 import { one } from './db'
 import { localeOrDefault, translate } from './i18n-server'
 import { mailNotification } from './notify-mail'

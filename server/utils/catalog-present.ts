@@ -1,7 +1,7 @@
 
 import type { FileRow, ProjectRow, VersionRow } from './catalog'
 import { num } from './catalog'
-import { projectPath } from './catalog-types'
+import { projectPath } from '../../shared/utils/catalog-types'
 import { publicContentUrl } from './content-store'
 
 export interface PublicFile {

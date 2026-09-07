@@ -1,6 +1,6 @@
 
 import { type ProjectRow, num } from './catalog'
-import { LISTED_STATUSES, projectPath } from './catalog-types'
+import { LISTED_STATUSES, projectPath } from '../../shared/utils/catalog-types'
 import type { H3Event } from 'h3'
 import { isAdmin } from './admin'
 import { exec, one, q } from './db'

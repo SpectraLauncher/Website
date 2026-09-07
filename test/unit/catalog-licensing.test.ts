@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { AUTHORSHIP_TERMS, allowsCommercialUse, saleNote } from '../../server/utils/catalog-licensing'
-import { LICENSES } from '../../server/utils/catalog-types'
+import { LICENSES } from '../../shared/utils/catalog-types'
 
 describe('sprzedaz a licencja', () => {
   it('licencja niekomercyjna jest konfliktem, ale nie blokada', () => {
