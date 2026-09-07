@@ -34,7 +34,8 @@
       "organizations": "Organizacje",
       "analytics": "Analityka",
       "signOut": "Wyloguj",
-      "admin": "Panel admina"
+      "admin": "Panel admina",
+      "seller": "Sprzedaż"
     },
     "publish": "Opublikuj"
   },
@@ -4416,5 +4417,29 @@
     "video": "Wstaw film",
     "insert": "Wstaw",
     "notYoutube": "To nie jest adres z YouTube."
+  },
+  "seller": {
+    "title": "Sprzedaż",
+    "intro": "Podłącz konto, na które mamy przelewać pieniądze ze sprzedaży twoich projektów.",
+    "account": "Konto do wypłat",
+    "failed": "Nie udało się. Spróbuj jeszcze raz.",
+    "notConfigured": "Płatności nie są jeszcze skonfigurowane na tym serwerze.",
+    "country": "Kraj",
+    "countryHint": "Kraju nie da się później zmienić. Wybierz ten, w którym masz konto bankowe.",
+    "start": "Podłącz konto",
+    "resume": "Dokończ weryfikację",
+    "deferred": "Możesz sprzedawać, zanim weryfikacja się skończy. Pieniądze czekają wtedy jako oczekujące i trafiają na konto, gdy tylko będzie gotowe.",
+    "state": {
+      "none": "Jeszcze nie podłączyłeś konta.",
+      "started": "Weryfikacja zaczęta, Stripe czeka na dane.",
+      "review": "Dane wysłane, Stripe je sprawdza.",
+      "ready": "Konto gotowe, przelewy będą przechodzić."
+    },
+    "badge": {
+      "none": "brak",
+      "started": "w trakcie",
+      "review": "w sprawdzaniu",
+      "ready": "gotowe"
+    }
   }
 }

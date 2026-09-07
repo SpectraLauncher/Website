@@ -12,6 +12,19 @@
 
 const TURNSTILE = 'https://challenges.cloudflare.com'
 
+// Connect embedded components load Connect.js and render themselves inside
+// Stripe-owned iframes, so both origins are needed as script and frame sources.
+//
+// Stripe also documents a style-src hash for an empty style element. It is
+// deliberately not added: style-src here carries 'unsafe-inline', and a browser
+// ignores 'unsafe-inline' for any directive that also lists a hash, so adding it
+// would switch off every inline style on the site to permit one.
+//
+// Cross-Origin-Opener-Policy must stay at its default of unsafe-none. Setting it
+// to same-origin breaks the sign-in popup onboarding needs, which is why this
+// file does not set it at all.
+const STRIPE = 'https://connect-js.stripe.com https://js.stripe.com'
+
 function originOf(url: string): string | null {
   try {
     return url ? new URL(url).origin : null
@@ -34,7 +47,7 @@ function policy(): string {
     `object-src 'none'`,
     `frame-ancestors 'self'`,
     `form-action 'self'`,
-    `script-src 'self' 'unsafe-inline' ${TURNSTILE}${extra}`,
+    `script-src 'self' 'unsafe-inline' ${TURNSTILE} ${STRIPE}${extra}`,
     `style-src 'self' 'unsafe-inline'`,
     // Avatars come from R2, Discord, Google, GitHub and Mojang; skins and heads
     // from textures.minecraft.net and mc-heads.net. Enumerating them would break
@@ -42,7 +55,7 @@ function policy(): string {
     `img-src 'self' data: blob: https:`,
     `font-src 'self' data:`,
     `connect-src 'self' ${TURNSTILE}${extra}`,
-    `frame-src ${TURNSTILE}`,
+    `frame-src ${TURNSTILE} ${STRIPE}`,
     `worker-src 'self' blob:`,
     `manifest-src 'self'`,
   ].join('; ')

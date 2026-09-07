@@ -94,6 +94,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'POST /api/me/close', group: 'account', auth: 'session', summary: 'Delete your account' },
   { route: 'POST /api/me/minecraft', group: 'account', auth: 'session', summary: 'Link a Minecraft account' },
   { route: 'POST /api/me/activity', group: 'account', auth: 'session', summary: 'Record play time from the launcher' },
+  { route: 'GET /api/seller/status', group: 'account', auth: 'session', summary: 'Whether your payout account is ready' },
+  { route: 'POST /api/seller/onboard', group: 'account', auth: 'session', summary: 'Start or resume seller onboarding' },
   { route: 'GET /api/me/tokens', group: 'oauth', auth: 'session', summary: 'Your personal access tokens' },
   { route: 'POST /api/me/tokens', group: 'oauth', auth: 'session', summary: 'Create a token; the secret is shown once' },
   { route: 'DELETE /api/me/tokens/{id}', group: 'oauth', auth: 'session', summary: 'Revoke a token' },

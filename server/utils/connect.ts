@@ -213,7 +213,33 @@ export async function refreshAccount(
     accountsOptions(),
   ))
 
-  return await saveAccountState(row.user_id, row.stripe_account, readAccountState(account))
+  const state = readAccountState(account)
+
+  // The moment Stripe turns payouts on it also starts paying the account out on
+  // a schedule of its own. Catching the transition here is the earliest chance
+  // to say otherwise; the account.updated webhook covers the case where nobody
+  // is looking at the page when it flips.
+  if (state.payoutsEnabled && !row.payouts_enabled) {
+    await setManualPayouts(row.stripe_account).catch(e =>
+      console.error('[connect] could not set manual payouts', row.stripe_account, e))
+  }
+
+  return await saveAccountState(row.user_id, row.stripe_account, state)
+}
+
+// What the seller is allowed to know about their own account. Deliberately not
+// the raw row: commission_override_bps is an arrangement between us and them
+// that the UI does not show.
+export function publicAccount(row: ConnectedAccountRow | undefined) {
+  if (!row) return null
+
+  return {
+    country: row.country,
+    transfersEnabled: row.transfers_enabled,
+    payoutsEnabled: row.payouts_enabled,
+    detailsSubmitted: row.details_submitted,
+    due: row.requirements?.due ?? [],
+  }
 }
 
 // Stripe would otherwise pay the account out on a daily schedule of its own.

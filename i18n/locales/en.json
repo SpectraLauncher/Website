@@ -34,7 +34,8 @@
       "organizations": "Organizations",
       "analytics": "Analytics",
       "signOut": "Sign out",
-      "admin": "Admin"
+      "admin": "Admin",
+      "seller": "Selling"
     },
     "publish": "Publish"
   },
@@ -4416,5 +4417,29 @@
     "video": "Insert a video",
     "insert": "Insert",
     "notYoutube": "That is not a YouTube address."
+  },
+  "seller": {
+    "title": "Selling",
+    "intro": "Connect the account we should send your sales money to.",
+    "account": "Payout account",
+    "failed": "That did not work. Try again.",
+    "notConfigured": "Payments are not configured on this server yet.",
+    "country": "Country",
+    "countryHint": "The country cannot be changed later. Pick the one your bank account is in.",
+    "start": "Connect an account",
+    "resume": "Finish verification",
+    "deferred": "You can sell before verification finishes. Money waits as pending and moves across as soon as the account is ready.",
+    "state": {
+      "none": "No account connected yet.",
+      "started": "Verification started, Stripe is waiting on details.",
+      "review": "Details submitted, Stripe is reviewing them.",
+      "ready": "Account ready, transfers will go through."
+    },
+    "badge": {
+      "none": "none",
+      "started": "in progress",
+      "review": "in review",
+      "ready": "ready"
+    }
   }
 }

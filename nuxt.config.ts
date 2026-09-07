@@ -64,6 +64,10 @@ export default defineNuxtConfig({
       // secret: what protects the catalog is the server guard, not the absence
       // of a link. See server/utils/catalog-gate.ts.
       catalogPublic: CATALOG_PUBLIC,
+      // Publishable by name and by design: Connect.js needs it in the browser,
+      // and it can only start flows the server has already authorised with an
+      // account session.
+      stripeKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
       umamiSrc: process.env.NUXT_PUBLIC_UMAMI_SRC || '',
       umamiId: process.env.NUXT_PUBLIC_UMAMI_ID || '',
       controller: process.env.NUXT_PUBLIC_CONTROLLER || '',

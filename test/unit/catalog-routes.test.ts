@@ -10,6 +10,7 @@ const GATED_DIRS = [
   'server/api/admin/catalog',
   'server/api/admin/verification',
   'server/api/catalog',
+  'server/api/seller',
   'server/api/verification',
   'server/api/org',
   'server/api/v2',
