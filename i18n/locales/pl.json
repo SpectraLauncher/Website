@@ -3426,7 +3426,8 @@
     },
     "submit": "Zgłoś do sprawdzenia",
     "submitHint": "Wyślij projekt do moderacji. Do czasu akceptacji pozostaje prywatny.",
-    "pendingHint": "Czeka na moderatora. Dostaniesz powiadomienie, gdy zapadnie decyzja."
+    "pendingHint": "Czeka na moderatora. Dostaniesz powiadomienie, gdy zapadnie decyzja.",
+    "license": "Licencja"
   },
   "verification": {
     "title": "Weryfikacja",

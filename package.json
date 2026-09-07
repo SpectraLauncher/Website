@@ -50,6 +50,7 @@
     "check:icons": "node test/icons-check.mjs",
     "check:serveronly": "node test/serveronly-check.mjs",
     "check:fetch": "node test/fetch-check.mjs",
+    "check:i18n": "node test/i18n-keys-check.mjs",
     "fixtures": "python test/fixtures/make.py"
   },
   "dependencies": {

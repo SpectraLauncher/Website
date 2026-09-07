@@ -3426,7 +3426,8 @@
     },
     "submit": "Submit for review",
     "submitHint": "Send this project to moderation. It stays private until it is approved.",
-    "pendingHint": "Waiting for a moderator. You will be notified when there is a decision."
+    "pendingHint": "Waiting for a moderator. You will be notified when there is a decision.",
+    "license": "Licence"
   },
   "verification": {
     "title": "Verification",
