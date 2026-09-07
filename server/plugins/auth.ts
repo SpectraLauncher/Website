@@ -1,4 +1,6 @@
 import { getMigrations } from 'better-auth/db/migration'
+import { usePool } from '../utils/db'
+import { runSchemaMigrations } from '../utils/migrations'
 import { ensureAccountIssuer, ensureAdminRole, ensureSchema } from '../utils/schema'
 import { ensureCatalogSchema } from '../utils/schema-catalog'
 import { backfillUsernames } from '../utils/username'
@@ -25,6 +27,11 @@ export default defineNitroPlugin(async () => {
     await runMigrations()
     await ensureSchema()
     await ensureCatalogSchema()
+
+    // After the baseline, never before: a step that alters a table needs the
+    // table to be there.
+    const applied = await runSchemaMigrations(usePool())
+    if (applied.length) console.info(`[db] applied migration(s): ${applied.join(', ')}`)
 
     const promoted = await ensureAdminRole()
     if (promoted) console.info(`[db] promoted ${promoted} account(s) to admin from ADMIN_EMAILS`)

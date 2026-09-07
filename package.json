@@ -42,6 +42,7 @@
     "check:startfile": "node --experimental-strip-types test/start-file-check.mjs",
     "check:admingate": "node --experimental-strip-types test/admin-gate-check.mjs",
     "check:cfproxy": "node --experimental-strip-types test/curseforge-proxy-check.mjs",
+    "db:rollback": "node --experimental-strip-types test/db-rollback.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "check:ui": "node test/ui-props-check.mjs",

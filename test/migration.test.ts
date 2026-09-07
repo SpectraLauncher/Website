@@ -79,4 +79,40 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
 
     expect(rows[0]?.is_nullable).toBe('YES')
   })
+
+  // The baseline is additive and cannot express a DROP; these steps can, which
+  // is the whole reason they exist. Up, down and up again, because a down that
+  // is never run is a down nobody knows is broken.
+  it('krok destrukcyjny idzie w obie strony', async () => {
+    const { usePool } = await import('../server/utils/db')
+    const { appliedMigrations, rollbackMigration, runSchemaMigrations }
+      = await import('../server/utils/migrations')
+
+    const pool = usePool()
+    const tables = async () => {
+      const res = await pool.query<{ tablename: string }>(
+        `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`)
+      return res.rows.map(r => r.tablename)
+    }
+
+    await runSchemaMigrations(pool)
+    expect(await appliedMigrations(pool)).toContain('001-drop-express-payment-tables')
+    expect(await tables()).not.toContain('seller')
+
+    await rollbackMigration(pool, '001-drop-express-payment-tables')
+    expect(await appliedMigrations(pool)).not.toContain('001-drop-express-payment-tables')
+    for (const table of ['seller', 'purchase', 'payout_ledger', 'payout']) {
+      expect(await tables(), table).toContain(table)
+    }
+
+    await runSchemaMigrations(pool)
+    expect(await tables()).not.toContain('purchase')
+  }, 60_000)
+
+  it('drugie przejscie nie robi nic', async () => {
+    const { usePool } = await import('../server/utils/db')
+    const { runSchemaMigrations } = await import('../server/utils/migrations')
+
+    expect(await runSchemaMigrations(usePool())).toEqual([])
+  })
 })
