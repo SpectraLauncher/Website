@@ -16,6 +16,7 @@ export interface CatalogVersion {
   loaders: string[]
   downloads: number
   created: number
+  changelog?: string
   meta: Record<string, any>
   files: CatalogVersionFile[]
 }
@@ -36,6 +37,7 @@ export interface CatalogProjectData {
   categories: string[]
   loaders: string[]
   gameVersions: string[]
+  environment?: string[]
   downloads: number
   created: number
   updated: number
@@ -59,144 +61,76 @@ const props = defineProps<{
   backTo: string
   backLabel: string
   icon: string
+  tab?: string
   gallery?: Array<{ id: string, url: string, title: string, featured: boolean }>
 }>()
 
-const shown = ref(0)
-
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+const session = useAuthSession()
 
 const body = computed(() => renderMarkdown(props.project.description))
+const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 
-const session = useAuthSession()
-const signedIn = computed(() => Boolean(session.value.data))
+const isAdmin = computed(() =>
+  (session.value.data?.user as { role?: string } | undefined)?.role === 'admin')
 
-const {
-  collections,
-  holding,
-  loaded: collectionsLoaded,
-  favourited,
-  busy: favouriteBusy,
-  load: loadCollections,
-  setMembership,
-  toggleFavourite,
-  createAndAdd,
-} = useProjectCollections(computed(() => props.project))
+// The one file somebody actually wants. A project whose newest version has no
+// primary file has nothing to offer behind a download button, so there is none.
+const latest = computed(() => props.project.versions[0] ?? null)
+const primaryFile = computed(() =>
+  latest.value?.files.find(file => file.primary) ?? latest.value?.files[0] ?? null)
 
-watch(() => props.project.favourited, value => (favourited.value = value === true), { immediate: true })
+const gallery = computed(() => props.gallery ?? [])
 
-const menuOpen = ref(false)
-const naming = ref(false)
-const newName = ref('')
-const creating = ref(false)
+// To add a tab: one entry here and one branch in the body below. `shown` keeps a
+// tab out of the row when it would open on nothing.
+const TABS = [
+  { id: 'description', shown: true },
+  { id: 'gallery', shown: computed(() => gallery.value.length > 0 || isAdmin.value) },
+  { id: 'changelog', shown: computed(() => props.project.versions.some(v => v.changelog)) },
+  { id: 'versions', shown: computed(() => props.project.versions.length > 0 || isAdmin.value) },
+  { id: 'moderation', shown: computed(() => isAdmin.value) },
+]
 
-watch(menuOpen, (open) => {
-  if (open && !collectionsLoaded.value) loadCollections()
-  if (!open) naming.value = false
+const tabs = computed(() => TABS
+  .filter(tab => (typeof tab.shown === 'boolean' ? tab.shown : tab.shown.value))
+  .map(tab => ({
+    id: tab.id,
+    path: localePath(tab.id === 'description'
+      ? props.project.path
+      : `${props.project.path}/${tab.id}`),
+  })))
+
+const current = computed(() => {
+  const wanted = props.tab || 'description'
+  return tabs.value.some(tab => tab.id === wanted) ? wanted : 'description'
 })
 
-async function submitName() {
-  creating.value = true
-  try {
-    if (await createAndAdd(newName.value)) {
-      newName.value = ''
-      naming.value = false
-    }
-  }
-  finally {
-    creating.value = false
-  }
-}
-
-const collectionLabel = (collection: CollectionSummary) =>
-  collection.kind === 'favourites' ? t('collections.favourites') : collection.title
-
-const collectionMenu = computed(() => {
-  const rows = collections.value.map(collection => ({
-    label: collectionLabel(collection),
-    type: 'checkbox' as const,
-    checked: holding.value.includes(collection.id),
-    // Keeping the menu open lets one project be filed in several collections
-    // without reopening it each time.
-    onSelect: (event: Event) => event.preventDefault(),
-    onUpdateChecked: (checked: boolean) => setMembership(collection.id, checked),
-  }))
-
-  return [
-    rows.length ? rows : [{ label: t('collections.none'), disabled: true }],
-    [{
-      label: t('collections.createInline'),
-      icon: 'i-pixelarticons-plus',
-      onSelect: (event: Event) => {
-        event.preventDefault()
-        naming.value = true
-      },
-    }],
-    [{
-      label: t('collections.manage'),
-      icon: 'i-pixelarticons-gear',
-      to: localePath('/collections'),
-    }],
-  ]
-})
-
-const linkIcon = (name: string) => LINK_ICONS[name as LinkKind] ?? 'i-pixelarticons-external-link'
-const linkLabel = (name: string) => (isLinkKind(name) ? t(`links.${name}`) : name)
-
-const buying = ref(false)
-const buyProblem = ref('')
-
-const following = ref(props.project.following === true)
-const followCount = ref(props.project.follows ?? 0)
+const followCount = ref(props.project.follows)
+const following = ref(Boolean(props.project.following))
 const followBusy = ref(false)
 
 watch(() => props.project.id, () => {
-  following.value = props.project.following === true
-  followCount.value = props.project.follows ?? 0
+  followCount.value = props.project.follows
+  following.value = Boolean(props.project.following)
 })
 
 async function toggleFollow() {
-  followBusy.value = true
+  if (!session.value.data) return await navigateTo(localePath('/login'))
+
   const next = !following.value
+  followBusy.value = true
   try {
     await $fetch(`/api/catalog/project/${encodeURIComponent(props.project.slug)}/follow`, {
       method: next ? 'POST' : 'DELETE',
     })
     following.value = next
     followCount.value += next ? 1 : -1
-  } catch {
-    // A failed follow leaves the button where it was rather than lying about it.
-  } finally { followBusy.value = false }
-}
-
-const priceLabel = computed(() => {
-  const price = props.project.price ?? 0
-  if (!price) return null
-  return new Intl.NumberFormat(locale.value, {
-    style: 'currency',
-    currency: (props.project.currency ?? 'eur').toUpperCase(),
-  }).format(price / 100)
-})
-
-async function buy() {
-  buying.value = true
-  buyProblem.value = ''
-  try {
-    const res = await $fetch<{ url: string }>(
-      `/api/catalog/project/${encodeURIComponent(props.project.slug)}/buy`, { method: 'POST' })
-    await navigateTo(res.url, { external: true })
-  } catch (e: any) {
-    buyProblem.value = e?.data?.statusMessage || e?.message || t('catalog.buyFailed')
-    buying.value = false
   }
+  catch { /* the count is cosmetic; a failure leaves it as it was */ }
+  finally { followBusy.value = false }
 }
-
-const when = (ms: number) =>
-  new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(new Date(ms))
-const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
-const sizeLabel = (bytes: number) =>
-  bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} kB`
 </script>
 
 <template>
@@ -209,7 +143,7 @@ const sizeLabel = (bytes: number) =>
       {{ backLabel }}
     </NuxtLink>
 
-    <div class="mt-6 flex flex-wrap gap-6">
+    <header class="mt-6 flex flex-wrap items-start gap-6">
       <span class="grid size-24 shrink-0 place-items-center overflow-hidden rounded-3xl border border-white/10 bg-white/5">
         <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
         <UIcon v-else :name="icon" class="size-10 text-dimmed" />
@@ -220,30 +154,9 @@ const sizeLabel = (bytes: number) =>
         <p class="mt-2 max-w-2xl text-base/relaxed text-muted">{{ project.summary }}</p>
 
         <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-dimmed">
-          <NuxtLink
-            v-if="project.owner?.slug"
-            :to="localePath(project.owner.kind === 'organization'
-              ? `/org/${project.owner.slug}`
-              : `/u/${project.owner.slug}`)"
-            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
-          >
-            <span class="grid size-5 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
-              <img v-if="project.owner.image" :src="project.owner.image" alt="" class="size-full object-cover">
-              <UIcon
-                v-else
-                :name="project.owner.kind === 'organization' ? 'i-pixelarticons-users' : 'i-pixelarticons-user'"
-                class="size-3"
-              />
-            </span>
-            {{ project.owner.name || project.owner.slug }}
-          </NuxtLink>
           <span class="inline-flex items-center gap-1.5">
             <UIcon name="i-pixelarticons-download" class="size-4" />
             {{ t('catalog.downloads', { n: count(project.downloads) }) }}
-          </span>
-          <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-pixelarticons-calendar" class="size-4" />
-            {{ when(project.updated) }}
           </span>
           <button
             class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
@@ -251,214 +164,100 @@ const sizeLabel = (bytes: number) =>
             :aria-pressed="following"
             @click="toggleFollow"
           >
-            <UIcon
-              :name="following ? 'i-pixelarticons-heart' : 'i-pixelarticons-heart'"
-              class="size-4"
-              :class="following ? 'text-primary' : ''"
-            />
+            <UIcon name="i-pixelarticons-heart" class="size-4" :class="following ? 'text-primary' : ''" />
             {{ t('catalog.follows', { n: count(followCount) }) }}
           </button>
-          <UFieldGroup v-if="signedIn" size="xs">
-            <UButton
-              :icon="favourited ? 'i-pixelarticons-star' : 'i-pixelarticons-star'"
-              :variant="favourited ? 'solid' : 'outline'"
-              :color="favourited ? 'primary' : 'neutral'"
-              :loading="favouriteBusy"
-              :aria-pressed="favourited"
-              :label="favourited ? t('collections.favourited') : t('collections.favourite')"
-              @click="toggleFavourite"
-            />
-            <UDropdownMenu
-              v-model:open="menuOpen"
-              :items="collectionMenu"
-              :content="{ align: 'end' }"
-              :ui="{ content: 'w-64' }"
-            >
-              <UButton
-                icon="i-pixelarticons-chevron-down"
-                variant="outline"
-                color="neutral"
-                :aria-label="t('collections.save')"
-              />
-
-              <template #content-bottom>
-                <div v-if="naming" class="border-t border-default p-1.5">
-                  <UInput
-                    v-model="newName"
-                    autofocus
-                    size="xs"
-                    class="w-full"
-                    :placeholder="t('collections.titlePlaceholder')"
-                    :loading="creating"
-                    @keydown.enter.prevent="submitName"
-                    @keydown.esc.prevent="naming = false"
-                  />
-                </div>
-              </template>
-            </UDropdownMenu>
-          </UFieldGroup>
-          <ReportButton item-type="project" :item-id="project.id" :label="t('reports.report')" />
-          <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
-            <UIcon name="i-pixelarticons-label" class="size-4" />
-            {{ priceLabel }}
-          </span>
-          <span v-if="project.license" class="inline-flex items-center gap-1.5">
-            <UIcon name="i-pixelarticons-scale" class="size-4" />
-            <a
-              v-if="project.licenseUrl"
-              :href="project.licenseUrl"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-              class="hover:underline"
-            >{{ project.license }}</a>
-            <template v-else>{{ project.license }}</template>
-          </span>
+          <ReportButton item-type="project" :item-id="project.id" size="xs" />
         </div>
       </div>
-    </div>
 
-    <div v-if="priceLabel" class="mt-6">
-      <UButton
-        v-if="!project.owned"
-        size="lg"
-        class="rounded-xl"
-        icon="i-pixelarticons-shopping-cart"
-        :loading="buying"
-        :label="t('catalog.buyFor', { price: priceLabel })"
-        @click="buy"
-      />
-      <UBadge
-        v-else
-        variant="subtle"
-        color="success"
-        size="lg"
-        icon="i-pixelarticons-check"
-        :label="t('catalog.owned')"
-      />
-      <p v-if="buyProblem" class="mt-2 text-sm text-error">{{ buyProblem }}</p>
-    </div>
-
-    <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
-      <div class="min-w-0 space-y-6">
-        <slot name="lead" />
-
-        <figure
-          v-if="gallery?.length"
-          class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm"
-        >
-          <img
-            :src="gallery[shown]!.url"
-            :alt="gallery[shown]!.title"
-            class="max-h-[520px] w-full object-contain"
-          >
-          <figcaption
-            v-if="gallery[shown]!.title"
-            class="border-t border-white/10 px-5 py-3 text-sm text-muted"
-          >{{ gallery[shown]!.title }}</figcaption>
-
-          <div v-if="gallery.length > 1" class="flex gap-2 overflow-x-auto border-t border-white/10 p-3">
-            <button
-              v-for="(image, index) in gallery"
-              :key="image.id"
-              class="shrink-0 overflow-hidden rounded-lg border transition-colors"
-              :class="index === shown ? 'border-primary' : 'border-white/10 hover:border-white/30'"
-              @click="shown = index"
-            >
-              <img :src="image.url" alt="" class="h-14 w-20 object-cover">
-            </button>
-          </div>
-        </figure>
-
-        <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
-        <article
-          v-if="project.description"
-          class="prose prose-invert max-w-none rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm prose-a:text-primary"
-          v-html="body"
+      <div class="flex flex-wrap gap-2">
+        <UButton
+          v-if="primaryFile"
+          size="lg"
+          color="primary"
+          class="rounded-xl"
+          icon="i-pixelarticons-download"
+          :label="t('catalog.download')"
+          :to="`/api/catalog/download/${primaryFile.id}`"
+          external
         />
+        <UButton
+          v-if="isAdmin"
+          size="lg"
+          variant="subtle"
+          color="neutral"
+          class="rounded-xl"
+          icon="i-pixelarticons-edit"
+          :label="t('catalog.editProject')"
+          :to="localePath('/admin/catalog')"
+        />
+      </div>
+    </header>
 
-        <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-          <h2 class="text-lg font-semibold">{{ t('catalog.versions') }}</h2>
+    <nav class="mt-8 border-b border-white/10">
+      <ul class="-mb-px flex gap-1 overflow-x-auto">
+        <li v-for="entry in tabs" :key="entry.id" class="shrink-0">
+          <NuxtLink
+            :to="entry.path"
+            class="block whitespace-nowrap border-b-2 px-4 py-2.5 text-sm transition-colors"
+            :class="current === entry.id
+              ? 'border-primary font-medium text-default'
+              : 'border-transparent text-muted hover:text-default'"
+          >
+            {{ t(`catalog.tabs.${entry.id}`) }}
+          </NuxtLink>
+        </li>
+      </ul>
+    </nav>
 
-          <ul v-if="project.versions.length" class="mt-4 space-y-2">
-            <li
-              v-for="version in project.versions"
-              :key="version.id"
-              class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-            >
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="font-mono text-sm">{{ version.number }}</span>
-                <UBadge
-                  variant="subtle"
-                  size="sm"
-                  :color="version.channel === 'release' ? 'success' : 'neutral'"
-                  :label="version.channel"
-                />
-                <span class="text-xs text-dimmed">
-                  {{ version.gameVersions.join(', ') }}
-                  <template v-if="version.loaders.length"> · {{ version.loaders.join(', ') }}</template>
-                </span>
-                <span class="flex-1"></span>
-                <UButton
-                  v-for="file in version.files"
-                  :key="file.id"
-                  size="xs"
-                  variant="subtle"
-                  color="neutral"
-                  icon="i-pixelarticons-download"
-                  :label="sizeLabel(file.size)"
-                  :to="`/api/catalog/download/${file.id}`"
-                  external
-                />
-              </div>
-            </li>
-          </ul>
+    <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_300px] lg:items-start">
+      <div class="min-w-0 space-y-6">
+        <template v-if="current === 'description'">
+          <slot name="lead" />
 
-          <p v-else class="mt-4 text-sm text-dimmed">{{ t('catalog.noVersions') }}</p>
-        </div>
+          <ProjectDisclosures :disclosures="project.disclosures" />
+
+          <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
+          <article
+            v-if="project.description"
+            class="prose prose-invert max-w-none rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm prose-a:text-primary"
+            v-html="body"
+          />
+          <p v-else class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 text-sm text-dimmed backdrop-blur-sm">
+            {{ t('catalog.noDescription') }}
+          </p>
+        </template>
+
+        <ProjectGallery v-else-if="current === 'gallery'" :gallery="gallery" />
+        <ProjectChangelog v-else-if="current === 'changelog'" :versions="project.versions" />
+        <ProjectVersions v-else-if="current === 'versions'" :versions="project.versions" />
+
+        <template v-else-if="current === 'moderation'">
+          <ProjectMembers :slug="project.slug" />
+          <ProjectModeration
+            :slug="project.slug"
+            :project="{
+              summary: project.summary,
+              description: project.description,
+              icon: project.icon,
+              license: project.license,
+              categories: project.categories,
+              versions: project.versions,
+              links: project.links,
+              disclosures: project.disclosures,
+              gallery,
+            }"
+          />
+        </template>
+
+        <ProjectComments v-if="current === 'description'" :slug="project.slug" />
       </div>
 
-      <aside class="space-y-6">
+      <div class="space-y-4">
         <slot name="sidebar" />
-
-        <ProjectDisclosures :disclosures="project.disclosures ?? {}" />
-
-        <div
-          v-if="Object.keys(project.links).length"
-          class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-        >
-          <h2 class="text-lg font-semibold">{{ t('catalog.links') }}</h2>
-          <ul class="mt-4 space-y-2 text-sm">
-            <li v-for="(url, name) in project.links" :key="name">
-              <a
-                :href="url"
-                target="_blank"
-                rel="nofollow ugc noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-primary hover:underline"
-              >
-                <UIcon :name="linkIcon(name)" class="size-3.5" />
-                {{ linkLabel(name) }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+        <ProjectSidebar :project="project" />
+      </div>
     </div>
-
-    <ProjectMembers :slug="project.slug" />
-    <ProjectModeration
-      :slug="project.slug"
-      :project="{
-        summary: project.summary,
-        description: project.description,
-        icon: project.icon,
-        license: project.license,
-        categories: project.categories,
-        versions: project.versions,
-        links: project.links,
-        disclosures: project.disclosures,
-        gallery: props.gallery,
-      }"
-    />
-    <ProjectComments :slug="project.slug" />
   </section>
 </template>

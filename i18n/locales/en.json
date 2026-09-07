@@ -3465,6 +3465,29 @@
       "numeric": "A number on its own cannot be an address.",
       "reserved": "That address is taken by the site itself.",
       "id-shaped": "That looks like an internal identifier. Add a word to it."
+    },
+    "changelog": "Changelog",
+    "created": "Published",
+    "creators": "Creators",
+    "details": "Details",
+    "download": "Download",
+    "downloadsLabel": "Downloads",
+    "editProject": "Edit project",
+    "followers": "Followers",
+    "noChangelog": "No version has a changelog yet.",
+    "noDescription": "This project has no description yet.",
+    "noGallery": "No screenshots yet.",
+    "organization": "Organization",
+    "owner": "Owner",
+    "primary": "Primary",
+    "projectId": "Project ID",
+    "updated": "Updated",
+    "tabs": {
+      "description": "Description",
+      "gallery": "Gallery",
+      "changelog": "Changelog",
+      "versions": "Versions",
+      "moderation": "Moderation"
     }
   },
   "verification": {

@@ -85,6 +85,8 @@ export function fullProject(row: ProjectRow, versions: VersionRow[], files: File
     ownerId: row.owner_id,
     orgId: row.org_id,
     published: row.published === null ? null : num(row.published),
-    versions: versions.map(v => shortVersion(v, byVersion.get(v.id) ?? [])),
+    // fullVersion rather than shortVersion: the project page has a changelog
+    // tab, and a changelog nobody sends is a tab with nothing in it.
+    versions: versions.map(v => fullVersion(v, byVersion.get(v.id) ?? [])),
   }
 }

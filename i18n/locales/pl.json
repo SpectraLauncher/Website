@@ -3465,6 +3465,29 @@
       "numeric": "Sama liczba nie może być adresem.",
       "reserved": "Ten adres należy do samego serwisu.",
       "id-shaped": "To wygląda jak wewnętrzny identyfikator. Dodaj jakieś słowo."
+    },
+    "changelog": "Zmiany",
+    "created": "Opublikowano",
+    "creators": "Twórcy",
+    "details": "Szczegóły",
+    "download": "Pobierz",
+    "downloadsLabel": "Pobrania",
+    "editProject": "Edytuj projekt",
+    "followers": "Obserwujący",
+    "noChangelog": "Żadna wersja nie ma jeszcze opisu zmian.",
+    "noDescription": "Ten projekt nie ma jeszcze opisu.",
+    "noGallery": "Nie ma jeszcze zrzutów ekranu.",
+    "organization": "Organizacja",
+    "owner": "Właściciel",
+    "primary": "Główny",
+    "projectId": "ID projektu",
+    "updated": "Aktualizacja",
+    "tabs": {
+      "description": "Opis",
+      "gallery": "Galeria",
+      "changelog": "Zmiany",
+      "versions": "Wersje",
+      "moderation": "Moderacja"
     }
   },
   "verification": {
