@@ -35,7 +35,9 @@
       "analytics": "Analityka",
       "signOut": "Wyloguj",
       "admin": "Panel admina",
-      "seller": "Sprzedaż"
+      "seller": "Sprzedaż",
+      "library": "Biblioteka",
+      "revenue": "Przychody"
     },
     "publish": "Opublikuj"
   },
@@ -4455,6 +4457,47 @@
       "started": "w trakcie",
       "review": "w sprawdzaniu",
       "ready": "gotowe"
+    }
+  },
+  "cart": {
+    "title": "Koszyk",
+    "empty": "Koszyk jest pusty.",
+    "total": "Razem",
+    "buy": "Kup za {amount}",
+    "inCart": "W koszyku",
+    "pay": "Zapłać {amount}",
+    "confirm": "Potwierdź płatność",
+    "done": "Zapłacone. Pliki są już w twojej bibliotece.",
+    "toLibrary": "Przejdź do biblioteki",
+    "failed": "Płatność się nie powiodła. Spróbuj jeszcze raz.",
+    "consent": "Zgadzam się na natychmiastowe udostępnienie plików i przyjmuję do wiadomości, że tracę prawo odstąpienia od umowy."
+  },
+  "library": {
+    "title": "Biblioteka",
+    "intro": "Wszystko, co kupiłeś. Dostęp jest bezterminowy i przypisany do tego konta.",
+    "empty": "Nic tu jeszcze nie ma."
+  },
+  "revenue": {
+    "title": "Przychody",
+    "pending": "Oczekujące",
+    "pendingHint": "Sprzedane, czeka na przelew po okresie karencji.",
+    "owing": "Obciążenie zwrotne pomniejsza saldo. Kolejne sprzedaże je pokryją.",
+    "available": "Dostępne u Stripe",
+    "minimum": "Minimalna wypłata to {amount}.",
+    "payout": "Wypłać",
+    "failed": "Nie udało się. Spróbuj jeszcze raz.",
+    "ledger": "Księga",
+    "noEntries": "Brak wpisów.",
+    "sellerHint": "Konto do wypłat ustawisz na stronie",
+    "sellerLink": "sprzedaży",
+    "kind": {
+      "sale": "Sprzedaż",
+      "chargeback": "Obciążenie zwrotne",
+      "adjustment": "Korekta"
+    },
+    "state": {
+      "pending": "oczekuje",
+      "transferred": "przelane"
     }
   }
 }

@@ -116,6 +116,8 @@ const accountMenu = computed(() => {
             { label: t('nav.account.collections'), icon: 'i-pixelarticons-bookmark', to: localePath('/collections') },
             { label: t('nav.account.organizations'), icon: 'i-pixelarticons-users', to: localePath('/organizations') },
                 { label: t('nav.account.analytics'), icon: 'i-pixelarticons-chart-line', to: localePath('/analytics') },
+            { label: t('nav.account.library'), icon: 'i-pixelarticons-library', to: localePath('/library') },
+            { label: t('nav.account.revenue'), icon: 'i-pixelarticons-chart', to: localePath('/revenue') },
             { label: t('nav.account.seller'), icon: 'i-pixelarticons-wallet', to: localePath('/seller') },
             { label: t('reports.mine'), icon: 'i-pixelarticons-flag', to: localePath('/reports') },
         ]

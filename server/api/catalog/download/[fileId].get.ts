@@ -9,11 +9,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'no such file' })
   }
 
-  // Entitlements are being rebuilt on the new order model. Until they land there
-  // is nothing that can prove a purchase, so a priced file is refused to
-  // everyone but its owner rather than handed out for free.
+  // A price turns the download into an entitlement check. The owner and an admin
+  // never have to buy their own project.
   if (Number(found.project.price ?? 0) > 0) {
-    const owns = viewer && (isAdmin(viewer) || found.project.owner_id === viewer.id)
+    const owns = viewer && (isAdmin(viewer)
+      || found.project.owner_id === viewer.id
+      || await ownsProject(viewer.id, found.project.id))
+
     if (!owns) throw createError({ statusCode: 402, statusMessage: 'this download has to be bought' })
   }
 

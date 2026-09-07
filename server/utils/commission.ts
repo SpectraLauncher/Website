@@ -64,3 +64,36 @@ async function userRateBps(
   })
 }
 
+
+export const TRANSFER_KEY = 'transfers'
+
+export interface TransferSettings {
+  graceDays: number
+  minPayoutMinor: number
+}
+
+// The wait between a sale and moving the money on. It is not a Stripe deadline -
+// the API documents none for a transfer against a charge - it is our own window
+// for a dispute or a licence complaint to surface while the funds are still
+// somewhere we control.
+export const TRANSFER_DEFAULTS: TransferSettings = {
+  graceDays: 7,
+  minPayoutMinor: 1000,
+}
+
+export async function transferSettings(): Promise<TransferSettings> {
+  const row = await one<{ value: Partial<TransferSettings> }>(
+    'SELECT value FROM platform_setting WHERE key = $1', [TRANSFER_KEY])
+
+  const raw = (row?.value ?? {}) as Record<string, unknown>
+  const whole = (value: unknown, fallback: number, min: number) => {
+    if (typeof value !== 'number' && typeof value !== 'string') return fallback
+    const n = Math.floor(Number(value))
+    return Number.isFinite(n) && n >= min ? n : fallback
+  }
+
+  return {
+    graceDays: whole(raw.graceDays, TRANSFER_DEFAULTS.graceDays, 0),
+    minPayoutMinor: whole(raw.minPayoutMinor, TRANSFER_DEFAULTS.minPayoutMinor, 1),
+  }
+}

@@ -33,7 +33,7 @@ const CATALOG_PATHS = [
 // One person's own pages. These never belong in a sitemap, whatever the catalog
 // flag says, so they are listed apart from the paths that open with it.
 const ACCOUNT_PATHS = [
-  '/account', '/settings', '/notifications', '/library', '/collections', '/billing',
+  '/account', '/settings', '/notifications', '/library', '/collections', '/cart',
   '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller',
   '/reports', '/oauth'
 ]
@@ -194,7 +194,7 @@ export default defineNuxtConfig({
   },
 
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       templateParams: { titleSeparator: '—' },
       htmlAttrs: { class: 'dark' },
