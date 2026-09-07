@@ -3573,7 +3573,14 @@
     "chooseFile": "Wybierz plik",
     "reading": "Czytam plik…",
     "dropFileHint": "Upuść tu jara, zipa albo schemat.",
-    "readFromFile": "Odczytane z pliku. Popraw, jeśli czytnik się pomylił."
+    "readFromFile": "Odczytane z pliku. Popraw, jeśli czytnik się pomylił.",
+    "searchVersions": "Szukaj wersji",
+    "showSnapshots": "Pokaż migawki",
+    "noVersionsFound": "Nic nie pasuje.",
+    "selectedVersions": "Wybrane:",
+    "clearAll": "Wyczyść",
+    "gameVersionsManual": "Wpisz je ręcznie",
+    "gameVersionsManualHint": "Nie udało się wczytać listy wersji. Oddziel je przecinkami."
   },
   "verification": {
     "title": "Weryfikacja",

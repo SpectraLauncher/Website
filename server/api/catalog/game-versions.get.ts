@@ -1,10 +1,13 @@
-// The list the version form offers. Behind the catalog gate rather than open,
-// because it is only useful to somebody who can publish, and the upstream call
-// it wraps is cached anyway.
+// The whole manifest, not just the release ids: the picker groups snapshots
+// under the release they lead to, and it cannot do that without the type and
+// the date. Behind the catalog gate because only somebody publishing needs it.
 export default defineEventHandler(async (event) => {
   await requireCatalogRead(event)
 
   const versions = await minecraftVersions().catch(() => [])
 
-  return { releases: releaseIds(versions) }
+  return {
+    versions,
+    releases: releaseIds(versions),
+  }
 })

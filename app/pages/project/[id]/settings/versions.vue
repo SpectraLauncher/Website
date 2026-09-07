@@ -54,14 +54,16 @@ const draft = reactive({
   loaders: [] as string[],
 })
 
-const gameVersions = ref<string[]>([])
+const gameVersions = ref<PickableVersion[]>([])
+const versionsFailed = ref(false)
 
 onMounted(async () => {
   try {
-    const res = await $fetch<{ releases: string[] }>('/api/catalog/game-versions')
-    gameVersions.value = res.releases
+    const res = await $fetch<{ versions: PickableVersion[] }>('/api/catalog/game-versions')
+    gameVersions.value = res.versions
+    versionsFailed.value = !res.versions.length
   }
-  catch { gameVersions.value = [] }
+  catch { versionsFailed.value = true }
 })
 
 const dropping = ref(0)
@@ -160,7 +162,6 @@ async function remove(version: { id: string, name: string }) {
 const channelOptions = computed(() =>
   VERSION_CHANNELS.map(value => ({ value, label: t(`catalog.channels.${value}`) })))
 
-const versionOptions = computed(() => gameVersions.value.map(value => ({ value, label: value })))
 // Only the loaders that make sense for this kind of project — offering Iris on
 // a plugin is offering a wrong answer.
 const loaderOptions = computed(() =>
@@ -253,16 +254,28 @@ const loaderOptions = computed(() =>
               class="w-full"
             />
           </UFormField>
-          <UFormField :label="t('catalog.gameVersions')" class="sm:col-span-2">
-            <USelectMenu
-              v-model="draft.gameVersions"
-              multiple
-              :items="versionOptions"
-              value-key="value"
-              :placeholder="t('catalog.gameVersions')"
-              class="w-full"
-            />
-          </UFormField>
+          <div class="sm:col-span-2">
+            <UFormField :label="t('catalog.gameVersions')">
+              <GameVersionPicker v-model="draft.gameVersions" :versions="gameVersions" />
+            </UFormField>
+
+            <!-- The manifest comes from Mojang, so it can be unreachable. Typing
+                 them in is worse than picking, and better than not publishing. -->
+            <UFormField
+              v-if="versionsFailed"
+              class="mt-2"
+              :label="t('catalog.gameVersionsManual')"
+              :help="t('catalog.gameVersionsManualHint')"
+            >
+              <UInput
+                :model-value="draft.gameVersions.join(', ')"
+                class="w-full"
+                placeholder="1.20.1, 1.21"
+                @update:model-value="(v: string) => draft.gameVersions = String(v)
+                  .split(/[\s,]+/).map(s => s.trim()).filter(Boolean)"
+              />
+            </UFormField>
+          </div>
         </div>
 
         <UFormField :label="t('catalog.changelog')" class="mt-3">

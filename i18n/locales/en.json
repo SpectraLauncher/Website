@@ -3573,7 +3573,14 @@
     "chooseFile": "Choose a file",
     "reading": "Reading the file…",
     "dropFileHint": "Drop the jar, zip or schematic here.",
-    "readFromFile": "Read out of the file. Change anything the reader got wrong."
+    "readFromFile": "Read out of the file. Change anything the reader got wrong.",
+    "searchVersions": "Search versions",
+    "showSnapshots": "Show snapshots",
+    "noVersionsFound": "Nothing matches.",
+    "selectedVersions": "Selected:",
+    "clearAll": "Clear all",
+    "gameVersionsManual": "Type them instead",
+    "gameVersionsManualHint": "The version list could not be loaded. Separate them with commas."
   },
   "verification": {
     "title": "Verification",
