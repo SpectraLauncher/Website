@@ -13,8 +13,9 @@ export const SLUG_MAX = 64
 // test/unit/catalog-slug.test.ts reads app/pages and will not let a new page
 // through if it is missing from this list.
 const ROUTES = [
-  'account', 'admin', 'badges', 'cookies', 'launcher', 'login', 'privacy',
-  'reset-password', 's', 'secret', 'seller', 'terms', 'tools', 'u', 'verification',
+  'account', 'admin', 'badges', 'cart', 'cookies', 'launcher', 'library', 'login',
+  'privacy', 'reset-password', 'revenue', 's', 'secret', 'seller', 'terms', 'tools',
+  'u', 'verification',
 ]
 
 const TYPE_PREFIXES = [

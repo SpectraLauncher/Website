@@ -35,7 +35,9 @@
       "analytics": "Analytics",
       "signOut": "Sign out",
       "admin": "Admin",
-      "seller": "Selling"
+      "seller": "Selling",
+      "library": "Library",
+      "revenue": "Revenue"
     },
     "publish": "Publish"
   },
@@ -4455,6 +4457,47 @@
       "started": "in progress",
       "review": "in review",
       "ready": "ready"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "total": "Total",
+    "buy": "Buy for {amount}",
+    "inCart": "In cart",
+    "pay": "Pay {amount}",
+    "confirm": "Confirm payment",
+    "done": "Paid. The files are in your library.",
+    "toLibrary": "Go to the library",
+    "failed": "The payment did not go through. Try again.",
+    "consent": "I agree to the files being made available immediately and accept that I lose my right to withdraw."
+  },
+  "library": {
+    "title": "Library",
+    "intro": "Everything you have bought. Access is permanent and tied to this account.",
+    "empty": "Nothing here yet."
+  },
+  "revenue": {
+    "title": "Revenue",
+    "pending": "Pending",
+    "pendingHint": "Sold, waiting to be transferred once the holding period is up.",
+    "owing": "A chargeback is reducing this balance. Later sales will cover it.",
+    "available": "Available at Stripe",
+    "minimum": "The minimum payout is {amount}.",
+    "payout": "Pay out",
+    "failed": "That did not work. Try again.",
+    "ledger": "Ledger",
+    "noEntries": "No entries.",
+    "sellerHint": "Set up the payout account on the",
+    "sellerLink": "selling page",
+    "kind": {
+      "sale": "Sale",
+      "chargeback": "Chargeback",
+      "adjustment": "Adjustment"
+    },
+    "state": {
+      "pending": "pending",
+      "transferred": "transferred"
     }
   }
 }

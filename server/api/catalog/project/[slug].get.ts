@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const owned = price > 0 && viewer
     ? isAdmin(viewer) || project!.owner_id === viewer.id
+      || await ownsProject(viewer.id, project!.id)
     : false
 
   const following = viewer ? await isFollowing(viewer.id, project!.id) : false

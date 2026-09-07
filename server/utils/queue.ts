@@ -8,7 +8,7 @@ import { newId } from './ids'
 //
 // Claiming uses FOR UPDATE SKIP LOCKED, which is what makes several replicas
 // safe to run against one table: each worker takes a row nobody else holds.
-export type JobKind = 'mail' | 'scan' | 'cleanup'
+export type JobKind = 'mail' | 'scan' | 'cleanup' | 'transfer'
 
 type Handler = (payload: Record<string, unknown>) => Promise<void>
 

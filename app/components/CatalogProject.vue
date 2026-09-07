@@ -107,6 +107,18 @@ const primaryFile = computed(() =>
 
 const gallery = computed(() => props.gallery ?? [])
 
+// Priced, and not already owned by whoever is looking. The server decides
+// `owned` - it knows about entitlements, the project's owner and admins - so
+// this only has to read it.
+const cart = useCart()
+const needsBuying = computed(() =>
+  Number(props.project.price ?? 0) > 0 && props.project.owned !== true)
+const inCart = computed(() => cart.has(props.project.id))
+const price = computed(() => new Intl.NumberFormat(locale.value, {
+  style: 'currency',
+  currency: 'EUR',
+}).format(Number(props.project.price ?? 0) / 100))
+
 // To add a tab: one entry here and one branch in the body below. `shown` keeps a
 // tab out of the row when it would open on nothing.
 const TABS = [
@@ -196,8 +208,10 @@ async function toggleFollow() {
       </div>
 
       <div class="flex flex-wrap gap-2">
+        <!-- A paid project somebody does not own has nothing to download yet, and
+             offering the button anyway only produces a 402. -->
         <UButton
-          v-if="primaryFile"
+          v-if="primaryFile && !needsBuying"
           size="lg"
           color="primary"
           class="rounded-xl"
@@ -205,6 +219,16 @@ async function toggleFollow() {
           :label="t('catalog.download')"
           :to="`/api/catalog/download/${primaryFile.id}`"
           external
+        />
+        <UButton
+          v-else-if="needsBuying"
+          size="lg"
+          color="primary"
+          class="rounded-xl"
+          :icon="inCart ? 'i-pixelarticons-check' : 'i-pixelarticons-cart'"
+          :label="inCart ? t('cart.inCart') : t('cart.buy', { amount: price })"
+          :to="inCart ? localePath('/cart') : undefined"
+          @click="inCart ? undefined : cart.add(project.id)"
         />
         <UButton
           v-if="canEdit"
