@@ -108,6 +108,19 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    // Nitro compiles the server down to es2019 by default, which predates
+    // BigInt. Schematic unpacking is built on 64-bit literals (1n, 63n) because
+    // that is the shape Minecraft stores block states in, and esbuild cannot
+    // lower those - it passes them through and warns on every build that they
+    // "may crash at run-time".
+    //
+    // They do not: the Dockerfile runs node:22, which has had BigInt since 10.4.
+    // The target was simply older than the runtime. This affects the server
+    // bundle only - the browser build is Vite's and keeps its own target.
+    esbuild: {
+      options: { target: 'es2022' },
+    },
+
     hooks: {
       async compiled(nitro) {
         const { copyFile, mkdir } = await import('node:fs/promises')
