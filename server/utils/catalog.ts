@@ -1,22 +1,32 @@
 
+import { AUTHORSHIP_TERMS } from './catalog-licensing'
 import { exec, one, q } from './db'
+import { replaceDependencies } from './dependencies'
 import { newId } from './ids'
+import { dropStoredImage } from './images'
 import { isPublicId } from '../../shared/utils/ids'
 import {
   CURRENCY,
   LISTED_STATUSES,
+  MAX_FEATURED_CATEGORIES,
   MAX_PRICE_MINOR,
   MIN_PRICE_MINOR,
+  VISIBILITY_STATUS,
+  applyVisibility,
   categoriesFor,
+  initialStatus,
   loadersForType,
   isEnvironment,
   isLicense,
   isProjectStatus,
   isProjectType,
   isVersionChannel,
+  isVisibility,
   type ProjectType,
 } from '../../shared/utils/catalog-types'
 import { normalizeSlug, slugProblem } from '../../shared/utils/catalog-slug'
+import { cleanDisclosures, mergeAuthorEdit } from '../../shared/utils/disclosures'
+import { cleanLinks, safeAssetUrl } from '../../shared/utils/links'
 
 export interface ProjectRow {
   id: string
