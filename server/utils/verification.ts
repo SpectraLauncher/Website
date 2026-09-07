@@ -22,24 +22,6 @@ export interface VerificationRow {
   created: string | number
 }
 
-export const COMMISSION_STANDARD = 0.01
-export const COMMISSION_REDUCED = 0.005
-
-export interface SellerStanding {
-  partner: boolean
-  verifiedOrg: boolean
-}
-
-// The rate a sale is charged at. Partner accounts and verified organizations pay
-// half, and both of those are moderator decisions rather than self-service.
-export function commissionRate(standing: SellerStanding): number {
-  return standing.partner || standing.verifiedOrg ? COMMISSION_REDUCED : COMMISSION_STANDARD
-}
-
-export function commissionMinorUnits(price: number, standing: SellerStanding): number {
-  return Math.round(price * commissionRate(standing))
-}
-
 export function isVerificationKind(value: unknown): value is VerificationKind {
   return VERIFICATION_KINDS.includes(value as VerificationKind)
 }
@@ -188,19 +170,3 @@ export async function describeRequest(row: VerificationRow): Promise<DescribedRe
   }
 }
 
-export async function sellerStanding(
-  ownerId: string | null,
-  orgId: string | null,
-): Promise<SellerStanding> {
-  if (orgId) {
-    const org = await one<{ verified: boolean }>(
-      'SELECT COALESCE(verified, FALSE) AS verified FROM organization WHERE id = $1', [orgId])
-    return { partner: false, verifiedOrg: Boolean(org?.verified) }
-  }
-
-  if (!ownerId) return { partner: false, verifiedOrg: false }
-
-  const user = await one<{ partner: boolean }>(
-    'SELECT COALESCE(partner, FALSE) AS partner FROM "user" WHERE id = $1', [ownerId])
-  return { partner: Boolean(user?.partner), verifiedOrg: false }
-}

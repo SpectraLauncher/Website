@@ -40,15 +40,3 @@ export async function stripeCall<T>(run: () => Promise<T>): Promise<T> {
     })
   }
 }
-
-export const CURRENCIES = ['eur', 'usd'] as const
-export type Currency = typeof CURRENCIES[number]
-
-export function isCurrency(value: unknown): value is Currency {
-  return CURRENCIES.includes(String(value).toLowerCase() as Currency)
-}
-
-// Stripe rejects a charge under its own floor, and the fee on anything at that
-// end is rounding noise anyway. Both currencies use the same figure.
-export const MIN_PRICE_MINOR = 100
-export const MAX_PRICE_MINOR = 100_000

@@ -18,6 +18,16 @@ export const TYPE_PREFIX: Record<ProjectType, string> = {
 export const VERSION_CHANNELS = ['release', 'beta', 'alpha'] as const
 export type VersionChannel = typeof VERSION_CHANNELS[number]
 
+// Everything on the platform is priced in euro cents. One currency, integers
+// only — a price that has to be divided between several sellers and a platform
+// fee cannot survive a float.
+export const CURRENCY = 'eur'
+
+// Below the floor the platform fee is most of the price and the payment costs
+// more to process than it moves. Zero is always allowed and means free.
+export const MIN_PRICE_MINOR = 300
+export const MAX_PRICE_MINOR = 100_000
+
 export const PROJECT_STATUSES = [
   'draft',
   'pending',

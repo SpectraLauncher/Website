@@ -33,8 +33,6 @@
       "projects": "Projects",
       "organizations": "Organizations",
       "analytics": "Analytics",
-      "revenue": "Revenue",
-      "library": "Library",
       "signOut": "Sign out",
       "admin": "Admin"
     },
@@ -3617,33 +3615,6 @@
     },
     "verifiedOrg": "Verified organization"
   },
-  "seller": {
-    "title": "Selling",
-    "intro": "Set a price on a project and the money goes straight to your account. Payouts and identity checks run on Stripe, so this site never sees a bank account or a document.",
-    "ownAccount": "Your account",
-    "start": "Set up",
-    "continue": "Continue setup",
-    "failed": "That did not go through.",
-    "rateStandard": "Commission on a sale: 1%.",
-    "ratePartner": "Commission on a sale: 0.5%, because this account has partner standing.",
-    "applyReduced": "Apply for partner standing or organization verification",
-    "howTitle": "How it works",
-    "howStripe": "Stripe handles the payment, the identity check and the payout. Card details never touch this site.",
-    "howDirect": "A sale lands on your connected account and only the commission stays here.",
-    "howLicence": "You decide the price and you answer for having the right to sell what you publish.",
-    "states": {
-      "none": "Not set up",
-      "started": "Unfinished",
-      "review": "Under review",
-      "ready": "Ready"
-    }
-  },
-  "library": {
-    "title": "Your library",
-    "intro": "Everything you have bought. A purchase stays yours even if the project later changes price or leaves the listings.",
-    "empty": "Nothing bought yet.",
-    "gone": "This project is no longer available"
-  },
   "links": {
     "website": "Website",
     "source": "Source code",
@@ -3701,22 +3672,6 @@
     "favourite": "Favourite",
     "favourited": "Favourited",
     "createInline": "New collection…"
-  },
-  "billing": {
-    "title": "Billing",
-    "intro": "What you have earned, what you have spent, and where the money goes.",
-    "earned": "Earned",
-    "spent": "Spent",
-    "commission": "We take {rate}% of each sale.",
-    "ofGross": "of {gross} gross",
-    "nothingYet": "Nothing yet.",
-    "purchases": "No purchases | 1 purchase | {n} purchases",
-    "payouts": "Payouts",
-    "payoutsReady": "Ready",
-    "payoutsPending": "Setup needed",
-    "payoutsHint": "Payouts run through Stripe. Selling needs a connected account that has finished onboarding.",
-    "partner": "Partner rate",
-    "manage": "Manage payout accounts"
   },
   "reports": {
     "title": "Report",
@@ -3939,7 +3894,6 @@
       "content": "Finding content",
       "authors": "For authors",
       "rules": "Rules and moderation",
-      "money": "Selling",
       "developers": "For developers"
     },
     "sectionHints": {
@@ -3998,14 +3952,6 @@
       "reporting": {
         "title": "Reporting something",
         "summary": "What to say and what happens next."
-      },
-      "selling": {
-        "title": "Selling a project",
-        "summary": "Stripe, commission and what a buyer gets."
-      },
-      "payouts": {
-        "title": "The ledger and payouts",
-        "summary": "How the money is tracked and paid out."
       },
       "api-tokens": {
         "title": "API tokens",

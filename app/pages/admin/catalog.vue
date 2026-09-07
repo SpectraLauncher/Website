@@ -144,7 +144,6 @@ const CHANNELS = [
 
 const CURRENCIES = [
   { value: 'eur', label: 'EUR' },
-  { value: 'usd', label: 'USD' },
 ]
 
 const LICENSES = [

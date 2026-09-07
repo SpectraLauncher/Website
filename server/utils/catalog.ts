@@ -3,7 +3,10 @@ import { exec, one, q } from './db'
 import { newId } from './ids'
 import { isPublicId } from '../../shared/utils/ids'
 import {
+  CURRENCY,
   LISTED_STATUSES,
+  MAX_PRICE_MINOR,
+  MIN_PRICE_MINOR,
   categoriesFor,
   loadersForType,
   isEnvironment,
@@ -296,12 +299,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     throw createError({ statusCode: 400, statusMessage: 'price is outside the allowed range' })
   }
 
-  const currency = input.currency === undefined
-    ? current.currency
-    : String(input.currency).toLowerCase()
-  if (!isCurrency(currency)) {
-    throw createError({ statusCode: 400, statusMessage: 'unsupported currency' })
-  }
+  const currency = CURRENCY
 
   // A moderator sets the status directly; an author sets a visibility and the
   // rule decides what that means for a project in this state.

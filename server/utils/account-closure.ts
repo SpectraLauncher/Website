@@ -27,17 +27,8 @@ export async function closureBlockers(userId: string): Promise<ClosureBlocker[]>
     blockers.push({ code: 'sole_owner', detail: org.name })
   }
 
-  // Money that has been taken has to stay attributable for refunds and books.
-  const sales = await one<{ n: number }>(
-    `SELECT count(*)::int AS n FROM purchase pu
-     JOIN seller s ON s.id = pu.seller_id
-     WHERE s.user_id = $1 AND pu.status = 'paid'`,
-    [userId],
-  )
-
-  if ((sales?.n ?? 0) > 0) {
-    blockers.push({ code: 'has_sales', detail: String(sales!.n) })
-  }
+  // A sales blocker belongs here too — money taken has to stay attributable for
+  // refunds and books — and comes back with the order model.
 
   return blockers
 }

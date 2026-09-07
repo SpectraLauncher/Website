@@ -40,8 +40,8 @@ describe.skipIf(!url)('migracja na czystej bazie', () => {
     for (const table of [
       'project', 'version', 'version_file', 'collection', 'collection_project',
       'project_comment', 'project_message', 'project_member', 'report',
-      'payout_ledger', 'payout', 'stored_image', 'access_token', 'user_block',
-      'job', 'seller', 'purchase',
+      'stored_image', 'access_token', 'user_block',
+      'job',
     ]) {
       expect(names, table).toContain(table)
     }

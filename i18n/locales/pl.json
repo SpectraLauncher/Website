@@ -33,8 +33,6 @@
       "projects": "Projekty",
       "organizations": "Organizacje",
       "analytics": "Analityka",
-      "revenue": "Przychody",
-      "library": "Biblioteka",
       "signOut": "Wyloguj",
       "admin": "Panel admina"
     },
@@ -3617,33 +3615,6 @@
     },
     "verifiedOrg": "Zweryfikowana organizacja"
   },
-  "seller": {
-    "title": "Sprzedaż",
-    "intro": "Ustaw cenę projektu, a pieniądze trafiają wprost na Twoje konto. Wypłaty i weryfikacja tożsamości idą przez Stripe, więc ta strona nigdy nie widzi numeru konta ani dokumentu.",
-    "ownAccount": "Twoje konto",
-    "start": "Skonfiguruj",
-    "continue": "Dokończ konfigurację",
-    "failed": "Nie udało się.",
-    "rateStandard": "Prowizja od sprzedaży: 1%.",
-    "ratePartner": "Prowizja od sprzedaży: 0,5%, bo to konto ma status partnera.",
-    "applyReduced": "Złóż wniosek o status partnera albo weryfikację organizacji",
-    "howTitle": "Jak to działa",
-    "howStripe": "Stripe obsługuje płatność, weryfikację tożsamości i wypłatę. Dane karty nigdy nie trafiają na tę stronę.",
-    "howDirect": "Sprzedaż ląduje na Twoim koncie, a u nas zostaje tylko prowizja.",
-    "howLicence": "Cenę ustalasz Ty i Ty odpowiadasz za to, że masz prawo sprzedawać to, co publikujesz.",
-    "states": {
-      "none": "Nieskonfigurowane",
-      "started": "Niedokończone",
-      "review": "W weryfikacji",
-      "ready": "Gotowe"
-    }
-  },
-  "library": {
-    "title": "Twoja biblioteka",
-    "intro": "Wszystko, co kupiłeś. Zakup zostaje Twój, nawet jeśli projekt później zmieni cenę albo zniknie z list.",
-    "empty": "Nic jeszcze nie kupiono.",
-    "gone": "Ten projekt nie jest już dostępny"
-  },
   "links": {
     "website": "Strona",
     "source": "Kod źródłowy",
@@ -3701,22 +3672,6 @@
     "favourite": "Do ulubionych",
     "favourited": "W ulubionych",
     "createInline": "Nowa kolekcja…"
-  },
-  "billing": {
-    "title": "Płatności",
-    "intro": "Ile zarobiłeś, ile wydałeś i gdzie idą pieniądze.",
-    "earned": "Zarobione",
-    "spent": "Wydane",
-    "commission": "Pobieramy {rate}% od każdej sprzedaży.",
-    "ofGross": "z {gross} brutto",
-    "nothingYet": "Jeszcze nic.",
-    "purchases": "Brak zakupów | 1 zakup | {n} zakupy | {n} zakupów",
-    "payouts": "Wypłaty",
-    "payoutsReady": "Gotowe",
-    "payoutsPending": "Wymaga konfiguracji",
-    "payoutsHint": "Wypłaty idą przez Stripe. Sprzedaż wymaga podpiętego konta z ukończoną weryfikacją.",
-    "partner": "Stawka partnerska",
-    "manage": "Zarządzaj kontami wypłat"
   },
   "reports": {
     "title": "Zgłoszenie",
@@ -3939,7 +3894,6 @@
       "content": "Szukanie treści",
       "authors": "Dla autorów",
       "rules": "Zasady i moderacja",
-      "money": "Sprzedaż",
       "developers": "Dla programistów"
     },
     "sectionHints": {
@@ -3998,14 +3952,6 @@
       "reporting": {
         "title": "Zgłaszanie",
         "summary": "Co napisać i co dzieje się dalej."
-      },
-      "selling": {
-        "title": "Sprzedaż projektu",
-        "summary": "Stripe, prowizja i co dostaje kupujący."
-      },
-      "payouts": {
-        "title": "Księga i wypłaty",
-        "summary": "Jak liczone są pieniądze i jak je wypłacić."
       },
       "api-tokens": {
         "title": "Tokeny API",

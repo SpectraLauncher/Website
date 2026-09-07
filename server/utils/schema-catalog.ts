@@ -206,69 +206,8 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_view_seen_day ON project_view_seen (day);
   `)
 
-  // One Stripe Connect account per seller, which is an account or an
-  // organization. Payouts and identity checks live on Stripe's side; what is
-  // kept here is only the pointer and enough state to know whether a sale may
-  // go through at all.
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS seller (
-      id            TEXT PRIMARY KEY,
-      user_id       TEXT REFERENCES "user"(id) ON DELETE CASCADE,
-      org_id        TEXT,
-      stripe_account TEXT NOT NULL,
-      charges_enabled BOOLEAN NOT NULL DEFAULT FALSE,
-      payouts_enabled BOOLEAN NOT NULL DEFAULT FALSE,
-      details_submitted BOOLEAN NOT NULL DEFAULT FALSE,
-      country       TEXT,
-      created       BIGINT NOT NULL,
-      updated       BIGINT NOT NULL,
-      CONSTRAINT seller_one_subject CHECK (num_nonnulls(user_id, org_id) = 1)
-    );
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_user ON seller (user_id) WHERE user_id IS NOT NULL;
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_org ON seller (org_id) WHERE org_id IS NOT NULL;
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_seller_account ON seller (stripe_account);
-  `)
-
-  // What someone bought, and for how much. The buyer keeps access to the version
-  // they paid for even if the project later changes price or disappears from the
-  // listings, which is why this stores the amounts rather than reading them back
-  // off the project.
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS purchase (
-      id           TEXT PRIMARY KEY,
-      buyer_id     TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-      project_id   TEXT NOT NULL REFERENCES project(id) ON DELETE CASCADE,
-      seller_id    TEXT REFERENCES seller(id) ON DELETE SET NULL,
-      amount       INTEGER NOT NULL,
-      currency     TEXT NOT NULL,
-      fee          INTEGER NOT NULL,
-      status       TEXT NOT NULL DEFAULT 'pending',
-      session_id   TEXT,
-      intent_id    TEXT,
-      created      BIGINT NOT NULL,
-      completed    BIGINT
-    );
-    CREATE INDEX IF NOT EXISTS idx_purchase_buyer ON purchase (buyer_id, project_id);
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_session ON purchase (session_id)
-      WHERE session_id IS NOT NULL;
-    CREATE INDEX IF NOT EXISTS idx_purchase_status ON purchase (status, created);
-  `)
-
-  await pool.query(`
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_owned
-      ON purchase (buyer_id, project_id) WHERE status = 'paid'
-  `)
-
-  // Without this a buyer can open two checkout sessions for one project, pay
-  // both, and have the second webhook rejected by the index above — money taken
-  // with no entitlement written.
-  await pool.query(`
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_purchase_open
-      ON purchase (buyer_id, project_id) WHERE status = 'pending'
-  `)
-
-  // Applications for partner status and organization verification. Both lower
-  // the commission, so neither is a switch someone can flip on themselves.
+  // Applications for partner status and organization verification. Both are
+  // moderator decisions rather than switches someone can flip on themselves.
   await pool.query(`
     CREATE TABLE IF NOT EXISTS verification_request (
       id          TEXT PRIMARY KEY,
@@ -379,42 +318,6 @@ export async function ensureCatalogSchema() {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_version_file_flagged
       ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
-  `)
-
-  await pool.query(`
-    -- An append-only ledger. Amounts are signed: earned is positive, what left
-    -- is negative, so a balance is the sum and never a stored column somebody
-    -- has to keep correct.
-    CREATE TABLE IF NOT EXISTS payout_ledger (
-      id        TEXT PRIMARY KEY,
-      seller_id TEXT NOT NULL REFERENCES seller(id) ON DELETE CASCADE,
-      kind      TEXT NOT NULL,
-      amount    BIGINT NOT NULL,
-      currency  TEXT NOT NULL,
-      reference TEXT,
-      note      TEXT NOT NULL DEFAULT '',
-      created   BIGINT NOT NULL
-    );
-    CREATE INDEX IF NOT EXISTS idx_ledger_seller ON payout_ledger (seller_id, created DESC);
-
-    CREATE TABLE IF NOT EXISTS payout (
-      id        TEXT PRIMARY KEY,
-      seller_id TEXT NOT NULL REFERENCES seller(id) ON DELETE CASCADE,
-      amount    BIGINT NOT NULL,
-      currency  TEXT NOT NULL,
-      status    TEXT NOT NULL DEFAULT 'requested',
-      note      TEXT NOT NULL DEFAULT '',
-      requested BIGINT NOT NULL,
-      settled   BIGINT
-    );
-    CREATE INDEX IF NOT EXISTS idx_payout_seller ON payout (seller_id, requested DESC);
-  `)
-
-  // A webhook can arrive twice, so the same sale must not be able to credit the
-  // ledger twice.
-  await pool.query(`
-    CREATE UNIQUE INDEX IF NOT EXISTS uniq_ledger_reference
-      ON payout_ledger (seller_id, kind, reference) WHERE reference IS NOT NULL
   `)
 
   await pool.query(`
