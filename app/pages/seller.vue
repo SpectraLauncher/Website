@@ -2,7 +2,6 @@
 definePageMeta({ middleware: 'catalog' })
 
 const { t } = useI18n()
-const config = useRuntimeConfig()
 
 interface Account {
   country: string | null
@@ -15,7 +14,7 @@ interface Account {
 interface Status {
   account: Account | null
   countries: string[]
-  configured: boolean
+  publishableKey: string
 }
 
 const { data, refresh } = await useFetch<Status>('/api/seller/status')
@@ -95,7 +94,7 @@ async function startOnboarding() {
     const connect = await whenConnectReady()
 
     const instance = connect.init({
-      publishableKey: config.public.stripeKey,
+      publishableKey: data.value?.publishableKey ?? '',
       fetchClientSecret,
     })
 
@@ -140,7 +139,7 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
         />
 
         <UAlert
-          v-if="data && !data.configured"
+          v-if="data && !data.publishableKey"
           color="warning"
           variant="subtle"
           class="mt-6 rounded-2xl"

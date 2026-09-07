@@ -14,6 +14,15 @@ export default defineEventHandler(async (event) => {
   return {
     account: publicAccount(synced),
     countries: TRANSFER_COUNTRIES,
-    configured: Boolean(useStripe() && useRuntimeConfig().public.stripeKey),
+    // Read here rather than carried in runtimeConfig.public. That hash is
+    // resolved when the bundle is built, and the image is built without any of
+    // the deployment's environment, so the value would bake as empty and could
+    // only be overridden by an env var named NUXT_PUBLIC_*. Reading it per
+    // request keeps the name free and takes the build out of the question.
+    //
+    // Empty unless both halves are present: the browser needs this key to mount
+    // the component, and the server needs the secret one to mint its session, so
+    // one without the other is not a working setup.
+    publishableKey: useStripe() ? (process.env.STRIPE_PUBLISHABLE_KEY || '') : '',
   }
 })
