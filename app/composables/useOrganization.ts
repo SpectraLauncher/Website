@@ -48,9 +48,15 @@ export interface OrgPayload {
 export function useOrganization(slug: MaybeRefOrGetter<string>) {
   const key = computed(() => `org:${toValue(slug)}`)
 
+  // During SSR a plain $fetch sends no cookies, so the session is missing and the
+  // author's own page comes back 401 — which the payload then carries into the
+  // browser. useRequestFetch forwards the incoming request's headers; on the
+  // client it is $fetch unchanged.
+  const request = useRequestFetch()
+
   const { data, error, refresh } = useAsyncData(
     key.value,
-    () => $fetch<OrgPayload>(`/api/org/${encodeURIComponent(toValue(slug))}`),
+    () => request<OrgPayload>(`/api/org/${encodeURIComponent(toValue(slug))}`),
     { watch: [key] },
   )
 

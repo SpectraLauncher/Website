@@ -16,9 +16,15 @@ export interface ProjectEditorPayload {
 export function useProjectEditor(id: MaybeRefOrGetter<string>) {
   const key = computed(() => `project-editor:${toValue(id)}`)
 
+  // During SSR a plain $fetch sends no cookies, so the session is missing and the
+  // author's own page comes back 401 — which the payload then carries into the
+  // browser. useRequestFetch forwards the incoming request's headers; on the
+  // client it is $fetch unchanged.
+  const request = useRequestFetch()
+
   const { data, error, refresh, status } = useAsyncData(
     key.value,
-    () => $fetch<ProjectEditorPayload>(
+    () => request<ProjectEditorPayload>(
       `/api/catalog/project/${encodeURIComponent(toValue(id))}/editor`),
     { watch: [key] },
   )

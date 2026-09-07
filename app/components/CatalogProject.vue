@@ -81,13 +81,15 @@ const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 // never saw the button.
 const account = computed(() => (session.value.data?.user as { id?: string } | undefined)?.id ?? '')
 
+const request = useRequestFetch()
+
 const { data: editor } = await useAsyncData(
   `project-editable:${props.project.id}`,
   async () => {
     if (session.value.isPending || !account.value) return null
 
     try {
-      return await $fetch<{ permissions: string[] }>(
+      return await request<{ permissions: string[] }>(
         `/api/catalog/project/${encodeURIComponent(props.project.slug)}/editor`)
     }
     catch { return null }

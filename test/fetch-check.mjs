@@ -91,6 +91,38 @@ for (const file of walk('app', ['.vue', '.ts'])) {
   }
 }
 
+// A plain $fetch inside useAsyncData runs on the server with none of the
+// browser's cookies, so anything behind a login answers 401 during SSR and the
+// payload carries that failure into the browser: the page reads as "no rights"
+// on a direct visit and works when reached by a link. useRequestFetch passes
+// the incoming request's headers through, and is $fetch on the client.
+let handlers = 0
+
+for (const file of walk('app', ['.vue', '.ts'])) {
+  const source = fs.readFileSync(file, 'utf8')
+
+  for (const call of source.matchAll(/useAsyncData\(/g)) {
+    let depth = 0
+    let end = source.length
+
+    for (let i = call.index + call[0].length - 1; i < source.length; i++) {
+      if (source[i] === '(') depth++
+      else if (source[i] === ')') {
+        depth--
+        if (!depth) { end = i; break }
+      }
+    }
+
+    handlers++
+
+    if (/[^.\w]\$fetch[<(]/.test(source.slice(call.index, end))) {
+      const line = source.slice(0, call.index).split('\n').length
+      problems.push(`${file}:${line} — useAsyncData calls $fetch; use useRequestFetch() `
+        + 'so the session survives server rendering')
+    }
+  }
+}
+
 if (problems.length) {
   console.error([...new Set(problems)].join('\n'))
   console.error('\nWrite the handler, or fix the path. A missing one answers 404 and the')
@@ -98,4 +130,5 @@ if (problems.length) {
   process.exit(1)
 }
 
-console.log(`✓ all ${checked} API calls in the app reach a route that exists`)
+console.log(`✓ all ${checked} API calls in the app reach a route that exists,`)
+console.log(`  and all ${handlers} useAsyncData handlers keep their cookies through SSR`)

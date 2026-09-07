@@ -29,9 +29,11 @@ const problem = ref('')
 
 const path = computed(() => `/api/catalog/project/${encodeURIComponent(project.value?.slug ?? '')}`)
 
+const request = useRequestFetch()
+
 const { data, refresh } = await useAsyncData(
   `project-members:${id.value}`,
-  () => $fetch<{
+  () => request<{
     members: Member[]
     owner: { kind: 'user' | 'organization', slug: string | null, name: string | null, image: string | null } | null
     inherited: Inherited[]
