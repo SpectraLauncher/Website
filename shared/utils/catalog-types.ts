@@ -177,6 +177,10 @@ export function projectPath(type: ProjectType, slug: string): string {
   return `/${TYPE_PREFIX[type]}/${slug}`
 }
 
+// The front row of a project's categories. Three is what fits on a card without
+// the list becoming the card.
+export const MAX_FEATURED_CATEGORIES = 3
+
 export const ENVIRONMENTS = ['client', 'server'] as const
 export type Environment = typeof ENVIRONMENTS[number]
 

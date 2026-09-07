@@ -30,6 +30,7 @@ export interface ProjectRow {
   license_url: string | null
   icon: string | null
   categories: string[]
+  featured_categories: string[]
   game_versions: string[]
   loaders: string[]
   environment: string[]
@@ -79,9 +80,9 @@ export function num(value: string | number | null | undefined): number {
 }
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
-  status, requested_status, license, license_url, icon, categories, game_versions, loaders,
-  environment, links, disclosures, meta, price, currency, downloads, follows, created,
-  updated, published`
+  status, requested_status, license, license_url, icon, categories, featured_categories,
+  game_versions, loaders, environment, links, disclosures, meta, price, currency, downloads,
+  follows, created, updated, published`
 
 // The column list spans lines, so a join that needs it aliased cannot just glue
 // a prefix onto a split on ", ".
@@ -178,6 +179,7 @@ export interface ProjectInput {
   licenseUrl?: unknown
   icon?: unknown
   categories?: unknown
+  featuredCategories?: unknown
   links?: unknown
   disclosures?: unknown
   meta?: unknown
@@ -314,13 +316,25 @@ export async function updateProject(id: string | number, input: ProjectInput): P
 
   const published = status === 'published' && !current.published ? Date.now() : current.published
 
+  const categories = input.categories === undefined
+    ? current.categories
+    : stringList(input.categories, 20).filter(c => categoriesFor(current.type).includes(c))
+
+  // Featured is a subset of what the project actually claims, so dropping a
+  // category drops it from the front row too rather than leaving a stale one.
+  const featured = (input.featuredCategories === undefined
+    ? current.featured_categories
+    : stringList(input.featuredCategories, MAX_FEATURED_CATEGORIES))
+    .filter(c => categories.includes(c))
+    .slice(0, MAX_FEATURED_CATEGORIES)
+
   // sql-safe: PROJECT_COLUMNS is a constant column list
   const row = await one<ProjectRow>(
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, disclosures = $12, meta = $13, published = $14, updated = $15,
        owner_id = $16, org_id = $17, price = $18, currency = $19,
-       environment = $20, requested_status = $21
+       environment = $20, requested_status = $21, featured_categories = $22
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -334,10 +348,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         : (isLicense(input.license) ? input.license : null),
       input.licenseUrl === undefined ? current.license_url : (text(input.licenseUrl, 500) || null),
       input.icon === undefined ? current.icon : safeAssetUrl(input.icon),
-      input.categories === undefined
-        ? current.categories
-        : stringList(input.categories, 20)
-          .filter(c => categoriesFor(current.type).includes(c)),
+      categories,
       JSON.stringify(input.links === undefined ? current.links : cleanLinks(input.links)),
       JSON.stringify(input.disclosures === undefined
         ? current.disclosures
@@ -355,6 +366,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         ? current.environment
         : stringList(input.environment, 4).filter(isEnvironment),
       moved.requested,
+      featured,
     ],
   )
 
@@ -710,7 +722,15 @@ export async function updateGalleryImage(id: string, patch: {
 }
 
 export async function removeGalleryImage(id: string) {
+  // The row is what the page reads and the object is what costs money, so both
+  // go. The object first: a leftover object is a wasted byte, a leftover row
+  // pointing at nothing is a broken image on a page.
+  const row = await one<{ url: string }>(
+    'SELECT url FROM project_gallery WHERE id = $1', [id])
+
   await exec('DELETE FROM project_gallery WHERE id = $1', [id])
+
+  if (row?.url) await dropStoredImage(row.url)
 }
 
 export async function projectsByIds(ids: string[]): Promise<Map<string, ProjectRow>> {

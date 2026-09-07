@@ -7,13 +7,6 @@ const { t } = useI18n()
 
 const shown = ref<number | null>(null)
 
-// UModal takes a boolean; which image is a separate question from whether one
-// is open at all.
-const open = computed({
-  get: () => shown.value !== null,
-  set: (value: boolean) => { if (!value) shown.value = null },
-})
-
 // Featured first, because that is the one the author chose to represent it.
 const images = computed(() =>
   [...props.gallery].sort((a, b) => Number(b.featured) - Number(a.featured)))
@@ -25,13 +18,15 @@ const images = computed(() =>
 
     <ul v-if="images.length" class="grid gap-3 sm:grid-cols-2">
       <li v-for="(image, index) in images" :key="image.id">
-        <button class="block w-full text-left" @click="shown = index">
-          <img
-            :src="image.url"
-            :alt="image.title"
-            loading="lazy"
-            class="aspect-video w-full rounded-2xl border border-white/10 object-cover transition-colors hover:border-zinc-500"
-          >
+        <button class="group block w-full text-left" @click="shown = index">
+          <span class="block overflow-hidden rounded-2xl border border-white/10 transition-colors group-hover:border-zinc-500">
+            <img
+              :src="image.url"
+              :alt="image.title"
+              loading="lazy"
+              class="aspect-video w-full object-cover"
+            >
+          </span>
           <span v-if="image.title" class="mt-2 block text-sm text-muted">{{ image.title }}</span>
         </button>
       </li>
@@ -39,15 +34,6 @@ const images = computed(() =>
 
     <p v-else class="text-sm text-dimmed">{{ t('catalog.noGallery') }}</p>
 
-    <UModal v-model:open="open" :title="images[shown ?? 0]?.title || t('catalog.gallery')">
-      <template #body>
-        <img
-          v-if="shown !== null"
-          :src="images[shown]!.url"
-          :alt="images[shown]!.title"
-          class="w-full rounded-2xl"
-        >
-      </template>
-    </UModal>
+    <ImageLightbox v-model="shown" :images="images" />
   </div>
 </template>

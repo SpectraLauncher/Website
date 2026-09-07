@@ -422,6 +422,13 @@ export async function ensureCatalogSchema() {
   `)
 
   await pool.query(`
+    -- The two or three categories shown before the rest. A subset of categories
+    -- rather than a separate vocabulary, so nothing can be featured that the
+    -- project does not actually claim.
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS featured_categories TEXT[] NOT NULL DEFAULT '{}'
+  `)
+
+  await pool.query(`
     -- Where the project goes once a moderator approves it. The author picks it
     -- when the project is created and can change it while it waits, so it has
     -- to live somewhere other than status, which says where the project is now.

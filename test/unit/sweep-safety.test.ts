@@ -52,3 +52,29 @@ describe('sprzatanie nie moze dotknac paczek z launchera', () => {
     expect(plugin).not.toContain('sweepOrphans')
   })
 })
+
+// The sweep used to look only at whether the project still existed, so a gallery
+// image deleted on its own stayed in the bucket for good — the project was still
+// there, so nothing ever called it an orphan.
+describe('sprzatanie widzi tez obrazy bez wiersza', () => {
+  const images = readFileSync('server/utils/images.ts', 'utf8')
+
+  it('sprawdza galerie, opis i ikone, nie tylko istnienie projektu', () => {
+    expect(images).toContain('FROM project_gallery g')
+    expect(images).toContain('p.description LIKE')
+    expect(images).toContain("COALESCE(p.icon, '') LIKE")
+  })
+
+  // An image is uploaded before the description that mentions it is saved.
+  it('daje obrazowi czas, zanim uzna go za nieuzywany', () => {
+    expect(images).toContain('UNREFERENCED_GRACE_MS')
+    expect(images).toContain('i.created < $2')
+  })
+
+  it('kasowanie z galerii samo usuwa obiekt, bez czekania na sprzatanie', () => {
+    const catalog = readFileSync('server/utils/catalog.ts', 'utf8')
+    const start = catalog.indexOf('export async function removeGalleryImage')
+    expect(start).toBeGreaterThan(-1)
+    expect(catalog.slice(start, start + 600)).toContain('dropStoredImage(')
+  })
+})

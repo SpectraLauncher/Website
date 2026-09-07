@@ -55,6 +55,7 @@ export function shortProject(row: ProjectRow) {
     status: row.status,
     icon: row.icon,
     categories: row.categories,
+    featuredCategories: row.featured_categories ?? [],
     gameVersions: row.game_versions,
     loaders: row.loaders,
     downloads: num(row.downloads),

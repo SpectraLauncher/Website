@@ -3523,7 +3523,12 @@
       "disclosures": "Co projekt mówi o sobie, zanim ktoś go pobierze.",
       "versions": "To, co ludzie pobierają, i to, z czego czytają filtry kompatybilności.",
       "analytics": "Ostatnie {n} dni dla tego projektu.",
-      "uploadElsewhere": "Pliki dopina się do wersji na razie z panelu admina. Wersji bez pliku nie da się wysłać do sprawdzenia."
+      "uploadElsewhere": "Pliki dopina się do wersji na razie z panelu admina. Wersji bez pliku nie da się wysłać do sprawdzenia.",
+      "featuredTags": "Te dwie albo trzy pokazywane przed resztą. Wybierz te, których ktoś by szukał.",
+      "icon": "Kwadratowy obraz, minimum 256 pikseli. Tak wygląda twój projekt na każdej liście.",
+      "members": "Wszyscy, którzy mogą pracować przy tym projekcie, i skąd biorą się ich prawa.",
+      "otherLinks": "Gdzie śledzić projekt. Żadne z tych nie jest wymagane.",
+      "transfer": "Tylko organizacja, do której należysz, i tylko taka, w której możesz publikować."
     },
     "disclosureLock": {
       "cannot_remove": "Potwierdzone",
@@ -3535,7 +3540,31 @@
     "versionNumber": "Numer",
     "confirmDeleteVersion": "Usunąć {name}?",
     "fileCount": "brak plików | {n} plik | {n} pliki | {n} plików",
-    "noStats": "Nic jeszcze nie zapisano."
+    "noStats": "Nic jeszcze nie zapisano.",
+    "addMember": "Dodaj",
+    "addMemberHint": "Nadaj komuś prawa do tego projektu po nazwie użytkownika.",
+    "allRights": "Wszystkie prawa",
+    "close": "Zamknij",
+    "next": "Następne",
+    "previous": "Poprzednie",
+    "confirmRemoveMember": "Odebrać {name} dostęp do tego projektu?",
+    "confirmTransfer": "Przekazać ten projekt do {name}?",
+    "confirmTransferBody": "Organizacja staje się właścicielem. Jej członkowie dostają prawa, które masz teraz, a ty zachowujesz swoje tylko przez nią.",
+    "dragToOrder": "Przeciągnij obraz, żeby zmienić kolejność, w jakiej je widać.",
+    "featuredTags": "Wyróżnione kategorie",
+    "noRights": "Bez własnych praw",
+    "otherLinks": "Gdzie indziej",
+    "pickCategoryFirst": "Najpierw wybierz kategorię, żeby ją wyróżnić.",
+    "pickOrganization": "Wybierz organizację",
+    "transfer": "Przekaż",
+    "transferTitle": "Przekazanie własności",
+    "uploadIcon": "Wgraj ikonę",
+    "viaOrganization": "Przez organizację",
+    "dropHint": "Albo upuść tu zdjęcia.",
+    "dropHere": "Puść, żeby wgrać.",
+    "notAnImage": "To nie jest obraz, który umiemy zapisać.",
+    "noRightsHere": "Nie masz praw do tego projektu albo on nie istnieje.",
+    "loading": "Wczytywanie…"
   },
   "verification": {
     "title": "Weryfikacja",
@@ -4402,5 +4431,19 @@
   },
   "confirm": {
     "yes": "Tak, zrób to"
+  },
+  "editor": {
+    "bold": "Pogrubienie",
+    "italic": "Kursywa",
+    "strike": "Przekreślenie",
+    "heading": "Nagłówek",
+    "quote": "Cytat",
+    "list": "Lista",
+    "code": "Kod",
+    "link": "Link",
+    "image": "Wstaw obraz",
+    "video": "Wstaw film",
+    "insert": "Wstaw",
+    "notYoutube": "To nie jest adres z YouTube."
   }
 }

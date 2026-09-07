@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { renderMarkdown } from '../../app/utils/markdown'
+import { renderMarkdown, youtubeId } from '../../app/utils/markdown'
 
 // Project descriptions, organization readmes and text from strangers go through
 // this renderer straight into v-html. It is the only thing standing between them
@@ -83,5 +83,39 @@ describe('a link reads as the place it goes', () => {
   it('an ordinary address still reads normally', () => {
     const out = renderMarkdown('https://example.com/a')
     expect(out).toContain('>https://example.com/a<')
+  })
+})
+
+describe('osadzony film', () => {
+  it('sam link w linijce staje sie odtwarzaczem', () => {
+    const html = renderMarkdown('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+    expect(html).toContain('youtube-nocookie.com/embed/dQw4w9WgXcQ')
+    expect(html).toContain('<iframe')
+  })
+
+  it('rozpoznaje skrocony adres i shorts', () => {
+    expect(youtubeId('https://youtu.be/dQw4w9WgXcQ')).toBe('dQw4w9WgXcQ')
+    expect(youtubeId('https://youtube.com/shorts/dQw4w9WgXcQ')).toBe('dQw4w9WgXcQ')
+    expect(youtubeId('https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30')).toBe('dQw4w9WgXcQ')
+  })
+
+  // The whole safety of this is that nothing from the source reaches an
+  // attribute: only an eleven-character id gets through, and the URL is built
+  // from it here.
+  it('nie przepuszcza niczego, co nie jest identyfikatorem', () => {
+    expect(youtubeId('https://youtube.com/watch?v=../../evil')).toBeNull()
+    expect(youtubeId('https://youtube.com/watch?v="onload=alert(1)')).toBeNull()
+    expect(youtubeId('https://evil.com/watch?v=dQw4w9WgXcQ')).toBeNull()
+    expect(youtubeId('https://youtube.com/watch?v=short')).toBeNull()
+  })
+
+  it('link w srodku zdania zostaje linkiem', () => {
+    const html = renderMarkdown('zobacz https://youtu.be/dQw4w9WgXcQ tutaj')
+    expect(html).not.toContain('<iframe')
+    expect(html).toContain('<a href')
+  })
+
+  it('wlasny iframe autora dalej jest escapowany', () => {
+    expect(renderMarkdown('<iframe src="evil"></iframe>')).not.toContain('<iframe')
   })
 })

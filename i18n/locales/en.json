@@ -3523,7 +3523,12 @@
       "disclosures": "What the project tells people about itself before they download it.",
       "versions": "What people download, and what the compatibility filters read.",
       "analytics": "The last {n} days for this project.",
-      "uploadElsewhere": "Files are attached to a version from the admin catalog for now. A version without one cannot be submitted."
+      "uploadElsewhere": "Files are attached to a version from the admin catalog for now. A version without one cannot be submitted.",
+      "featuredTags": "The two or three shown before the rest. Pick the ones somebody would search for.",
+      "icon": "A square image, at least 256 pixels. It is what your project looks like in every listing.",
+      "members": "Everybody who can work on this project, and where their rights come from.",
+      "otherLinks": "Where to follow the project. None of these is required.",
+      "transfer": "Only an organization you belong to, and only one you may publish in."
     },
     "disclosureLock": {
       "cannot_remove": "Confirmed",
@@ -3535,7 +3540,31 @@
     "versionNumber": "Number",
     "confirmDeleteVersion": "Delete {name}?",
     "fileCount": "no files | {n} file | {n} files",
-    "noStats": "Nothing recorded yet."
+    "noStats": "Nothing recorded yet.",
+    "addMember": "Add",
+    "addMemberHint": "Give somebody rights on this project by username.",
+    "allRights": "All rights",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "confirmRemoveMember": "Take {name} off this project?",
+    "confirmTransfer": "Hand this project to {name}?",
+    "confirmTransferBody": "The organization becomes the owner. Its members get the rights you have now, and you keep yours only through it.",
+    "dragToOrder": "Drag an image to change the order people see them in.",
+    "featuredTags": "Featured tags",
+    "noRights": "No rights of their own",
+    "otherLinks": "Elsewhere",
+    "pickCategoryFirst": "Pick a category before featuring one.",
+    "pickOrganization": "Choose an organization",
+    "transfer": "Transfer",
+    "transferTitle": "Transfer ownership",
+    "uploadIcon": "Upload an icon",
+    "viaOrganization": "Through the organization",
+    "dropHint": "Or drop images here.",
+    "dropHere": "Let go to upload.",
+    "notAnImage": "That is not an image we can store.",
+    "noRightsHere": "You do not have rights on this project, or it does not exist.",
+    "loading": "Loading…"
   },
   "verification": {
     "title": "Verification",
@@ -4402,5 +4431,19 @@
   },
   "confirm": {
     "yes": "Yes, do it"
+  },
+  "editor": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "strike": "Strikethrough",
+    "heading": "Heading",
+    "quote": "Quote",
+    "list": "List",
+    "code": "Code",
+    "link": "Link",
+    "image": "Insert an image",
+    "video": "Insert a video",
+    "insert": "Insert",
+    "notYoutube": "That is not a YouTube address."
   }
 }

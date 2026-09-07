@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   if (!body?.length) throw createError({ statusCode: 400, statusMessage: 'pusty plik' })
   if (body.length > MAX_BYTES) throw createError({ statusCode: 413, statusMessage: 'obrazek jest za duzy' })
 
-  const image = await reencodeWebp(body, { size: SIZE, fit: 'contain' })
+  const image = await reencodeWebp(body, { size: SIZE, fit: 'inside' })
   const key = `badges/${slug}.webp`
 
   try {

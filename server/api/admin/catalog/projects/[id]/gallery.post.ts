@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const url = await storeProjectImage(event, {
     key: `catalog/gallery/${project.id}/${id}.webp`,
     size: 1280,
-    fit: 'contain',
+    fit: 'inside',
     accepted: ACCEPTED,
     maxBytes: MAX_BYTES,
     context: 'project',

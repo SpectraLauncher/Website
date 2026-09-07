@@ -49,24 +49,70 @@ export function forgetImage(key: string) {
   return exec('DELETE FROM stored_image WHERE object_key = $1', [key])
 }
 
+// Stored URLs carry a cache-busting query, so the key has to be recovered from
+// the path rather than compared whole.
+export function keyFromUrl(url: string): string | null {
+  const r2 = useR2()
+  if (!r2 || !url.startsWith(`${r2.publicUrl}/`)) return null
+
+  const key = url.slice(r2.publicUrl.length + 1).split('?')[0]
+  return key || null
+}
+
+// Delete the object and forget the row. Used wherever the caller already knows
+// which image is going, so nothing has to wait for a sweep to notice.
+export async function dropStoredImage(url: string): Promise<boolean> {
+  const r2 = useR2()
+  const key = keyFromUrl(url)
+  if (!r2 || !key) return false
+
+  const gone = await r2Delete(r2, key)
+  await forgetImage(key)
+  return gone
+}
+
 // One row points at five different things, so the subject cannot be a foreign
 // key and the check is a join per context instead.
+// How long an image gets to be pointed at by something before the sweep counts
+// it as unreferenced.
+const UNREFERENCED_GRACE_MS = 60 * 60 * 1000
+
 export async function orphanedImages(limit = 200): Promise<ImageRow[]> {
   return await q<ImageRow>(
     `SELECT i.id, i.object_key, i.context, i.owner_id, i.subject_id, i.size, i.created
      FROM stored_image i
      WHERE i.subject_id IS NOT NULL
-       AND CASE i.context
-         WHEN 'project'      THEN NOT EXISTS (SELECT 1 FROM project p WHERE p.id = i.subject_id)
-         WHEN 'version'      THEN NOT EXISTS (SELECT 1 FROM version v WHERE v.id = i.subject_id)
-         WHEN 'organization' THEN NOT EXISTS (SELECT 1 FROM organization o WHERE o.id = i.subject_id)
-         WHEN 'user'         THEN NOT EXISTS (SELECT 1 FROM "user" u WHERE u.id = i.subject_id)
-         WHEN 'report'       THEN NOT EXISTS (SELECT 1 FROM report r WHERE r.id = i.subject_id)
-         ELSE FALSE
-       END
+       AND (
+         -- the thing the image belonged to is gone
+         CASE i.context
+           WHEN 'project'      THEN NOT EXISTS (SELECT 1 FROM project p WHERE p.id = i.subject_id)
+           WHEN 'version'      THEN NOT EXISTS (SELECT 1 FROM version v WHERE v.id = i.subject_id)
+           WHEN 'organization' THEN NOT EXISTS (SELECT 1 FROM organization o WHERE o.id = i.subject_id)
+           WHEN 'user'         THEN NOT EXISTS (SELECT 1 FROM "user" u WHERE u.id = i.subject_id)
+           WHEN 'report'       THEN NOT EXISTS (SELECT 1 FROM report r WHERE r.id = i.subject_id)
+           ELSE FALSE
+         END
+         -- or the project is still there and nothing in it points at the image
+         -- any more: a gallery entry deleted, a picture cut out of a
+         -- description, an icon replaced by one under a different key.
+         --
+         -- Only once it has had an hour to be referenced. An image is uploaded
+         -- before the description that mentions it is saved, and a sweep in
+         -- between would delete the picture out from under the author.
+         OR (i.context = 'project' AND i.created < $2
+             AND EXISTS (SELECT 1 FROM project p WHERE p.id = i.subject_id)
+             AND NOT EXISTS (
+               SELECT 1 FROM project_gallery g
+               WHERE g.project_id = i.subject_id AND g.url LIKE '%' || i.object_key || '%')
+             AND NOT EXISTS (
+               SELECT 1 FROM project p
+               WHERE p.id = i.subject_id
+                 AND (p.description LIKE '%' || i.object_key || '%'
+                      OR COALESCE(p.icon, '') LIKE '%' || i.object_key || '%')))
+       )
      ORDER BY i.created ASC
      LIMIT $1`,
-    [limit],
+    [limit, Date.now() - UNREFERENCED_GRACE_MS],
   )
 }
 

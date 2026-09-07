@@ -74,17 +74,25 @@ const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 
 // The settings area answers 404 to anybody with no rights on the project, so
 // asking it is both the check and the answer.
+//
+// The session resolves after the first render, so this has to watch the account
+// as well as the project: asked once while the session was still loading, it
+// answered "not signed in" and never asked again, and the owner of the project
+// never saw the button.
+const account = computed(() => (session.value.data?.user as { id?: string } | undefined)?.id ?? '')
+
 const { data: editor } = await useAsyncData(
   `project-editable:${props.project.id}`,
   async () => {
-    if (!session.value.data) return null
+    if (session.value.isPending || !account.value) return null
+
     try {
       return await $fetch<{ permissions: string[] }>(
         `/api/catalog/project/${encodeURIComponent(props.project.slug)}/editor`)
     }
     catch { return null }
   },
-  { watch: [() => props.project.id] },
+  { watch: [() => props.project.id, account, () => session.value.isPending] },
 )
 
 const canEdit = computed(() => Boolean(editor.value?.permissions.length))

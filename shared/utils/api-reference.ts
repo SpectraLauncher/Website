@@ -48,6 +48,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/project/{slug}/editor', group: 'projects', auth: 'session', summary: 'A project as its author sees it, with what they may change' },
   { route: 'PATCH /api/catalog/project/{slug}', group: 'projects', auth: 'session', summary: 'Edit a project you can edit' },
   { route: 'POST /api/catalog/project/{slug}/icon', group: 'projects', auth: 'session', summary: 'Replace the project icon' },
+  { route: 'POST /api/catalog/project/{slug}/image', group: 'projects', auth: 'session', summary: 'Upload an image for the description' },
+  { route: 'POST /api/catalog/project/{slug}/transfer', group: 'projects', auth: 'session', summary: 'Hand a project to an organization' },
   { route: 'PATCH /api/catalog/project/{slug}/disclosures', group: 'projects', auth: 'session', summary: 'Answer the project declarations' },
   { route: 'POST /api/catalog/project/{slug}/gallery', group: 'projects', auth: 'session', summary: 'Add a gallery image' },
   { route: 'PATCH /api/catalog/project/{slug}/gallery/{image}', group: 'projects', auth: 'session', summary: 'Caption or feature a gallery image' },

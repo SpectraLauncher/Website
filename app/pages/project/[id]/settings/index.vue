@@ -39,6 +39,32 @@ watchEffect(() => {
 
 const visibilityOptions = computed(() =>
   VISIBILITIES.map(value => ({ value, label: t(`create.visibility.${value}`) })))
+
+const uploading = ref(false)
+
+async function uploadIcon(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  uploading.value = true
+  problem.value = ''
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(project.value!.slug)}/icon`, {
+      method: 'POST',
+      body: await file.arrayBuffer(),
+      headers: { 'content-type': file.type },
+    })
+    await refresh()
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    uploading.value = false
+    input.value = ''
+  }
+}
 </script>
 
 <template>
@@ -54,6 +80,23 @@ const visibilityOptions = computed(() =>
       icon="i-pixelarticons-warning-box"
       :description="problem"
     />
+
+    <div class="mb-5 flex flex-wrap items-center gap-4">
+      <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+        <img v-if="project?.icon" :src="project.icon" alt="" class="size-full object-cover">
+        <UIcon v-else name="i-pixelarticons-package" class="size-8 text-dimmed" />
+      </span>
+      <div>
+        <label
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-600/50 bg-black/30 px-3 py-2 text-sm transition-colors hover:border-zinc-500"
+        >
+          <UIcon name="i-pixelarticons-camera" class="size-4" />
+          {{ uploading ? t('catalog.org.uploading') : t('catalog.uploadIcon') }}
+          <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadIcon">
+        </label>
+        <p class="mt-1.5 text-xs text-dimmed">{{ t('catalog.settingsHint.icon') }}</p>
+      </div>
+    </div>
 
     <div class="space-y-4">
       <UFormField :label="t('create.project.name')">

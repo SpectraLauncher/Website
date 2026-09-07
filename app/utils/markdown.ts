@@ -41,6 +41,40 @@ md.renderer.rules.image = (tokens, i, options, env, self) => {
   return defaultImage(tokens, i, options, env, self)
 }
 
+// A YouTube link alone on a line becomes a player. html:false means an <iframe>
+// written by an author is escaped like any other tag, so this is the only way to
+// have one — and it is safe because nothing from the source reaches an
+// attribute: the id is matched against [A-Za-z0-9_-]{11} and the URL is built
+// here, out of the id alone.
+//
+// To support another host: one pattern and one embed URL. Keep the id strict.
+const YOUTUBE = /^https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{11})(?:[?&#]\S*)?$/
+
+export function youtubeId(url: string): string | null {
+  return YOUTUBE.exec(url.trim())?.[1] ?? null
+}
+
+md.core.ruler.push('youtube', (state) => {
+  const tokens = state.tokens
+
+  for (let i = 0; i + 2 < tokens.length; i++) {
+    if (tokens[i]!.type !== 'paragraph_open') continue
+    if (tokens[i + 1]!.type !== 'inline') continue
+    if (tokens[i + 2]!.type !== 'paragraph_close') continue
+
+    const id = youtubeId(tokens[i + 1]!.content)
+    if (!id) continue
+
+    const embed = new state.Token('html_block', '', 0)
+    embed.content = '<div class="aspect-video overflow-hidden rounded-xl border border-white/10">'
+      + `<iframe src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube"`
+      + ' loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"'
+      + ' frameborder="0" class="size-full"></iframe></div>'
+
+    tokens.splice(i, 3, embed)
+  }
+})
+
 export function renderMarkdown(source: string): string {
   return md.render(source || '')
 }

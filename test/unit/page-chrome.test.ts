@@ -46,6 +46,46 @@ it('kazda strona renderuje nawigacje', () => {
   }
 })
 
+// A <NuxtPage /> inside a v-if is worse than a missing one: the child route
+// cannot mount until the condition turns true, so a hard refresh of a nested
+// tab renders nothing and Nuxt reports E4016. The condition is almost always
+// "the data arrived", which is exactly when it is still false.
+function conditionalNuxtPage(source: string): string | null {
+  // A comment explaining why this rule exists is not a violation of it.
+  const lines = source.replace(/<!--[\s\S]*?-->/g, '').split(/\r?\n/)
+  const at = lines.findIndex(line => line.includes('<NuxtPage'))
+  if (at < 0) return null
+
+  const indent = (line: string) => line.length - line.trimStart().length
+  const own = indent(lines[at]!)
+
+  // Walk out to the template root, and for each ancestor read the whole opening
+  // tag — attributes often sit on their own lines.
+  let depth = own
+  for (let i = at - 1; i >= 0; i--) {
+    const line = lines[i]!
+    if (!line.trim() || !line.trimStart().startsWith('<')) continue
+    if (indent(line) >= depth) continue
+
+    depth = indent(line)
+
+    let tag = line
+    for (let j = i + 1; j < at && !/\/?>\s*$/.test(tag.trim()); j++) tag += lines[j]
+
+    if (/\sv-if=/.test(tag)) return tag.trim().slice(0, 80)
+    if (depth === 0) break
+  }
+
+  return null
+}
+
+it('zaden NuxtPage nie siedzi w v-if', () => {
+  for (const path of pages('app/pages')) {
+    const found = conditionalNuxtPage(readFileSync(path, 'utf8'))
+    expect(found, `${path}: ${found}`).toBeNull()
+  }
+})
+
 // A parent that forgets <NuxtPage /> renders an empty frame: the tabs are there,
 // the tab does nothing, and nothing errors.
 it('kazda trasa nadrzedna renderuje swoje dzieci', () => {

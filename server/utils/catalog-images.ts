@@ -11,7 +11,7 @@ export async function storeProjectImage(event: H3Event, options: {
   size: number
   accepted: string[]
   maxBytes: number
-  fit?: 'cover' | 'contain'
+  fit?: 'cover' | 'contain' | 'inside'
   // Recorded so the sweep can find this object again once its subject is gone.
   context?: ImageContext
   subjectId?: string | null

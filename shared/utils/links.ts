@@ -21,6 +21,14 @@ export const LINK_KINDS = [
 
 export type LinkKind = typeof LINK_KINDS[number]
 
+// The four a reader looks for before installing anything, and the ones a
+// moderator checks. Everything else is where to follow the author, which is a
+// different question and belongs below them.
+export const PRIMARY_LINKS: readonly LinkKind[] = ['issues', 'source', 'wiki', 'discord']
+
+export const SECONDARY_LINKS: readonly LinkKind[] =
+  LINK_KINDS.filter(kind => !PRIMARY_LINKS.includes(kind))
+
 export const LINK_ICONS: Record<LinkKind, string> = {
   website: 'i-pixelarticons-globe',
   source: 'i-pixelarticons-code',

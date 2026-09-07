@@ -50,8 +50,25 @@ watchEffect(() => {
     />
 
     <div class="space-y-4">
-      <UFormField v-for="kind in LINK_KINDS" :key="kind" :label="t(`links.${kind}`)">
-        <UInput v-model="links[kind]" class="w-full" placeholder="https://" />
+      <UFormField v-for="kind in PRIMARY_LINKS" :key="kind" :label="t(`links.${kind}`)">
+        <UInput v-model="links[kind]" class="w-full" placeholder="https://">
+          <template #leading>
+            <UIcon :name="LINK_ICONS[kind]" class="size-4 text-dimmed" />
+          </template>
+        </UInput>
+      </UFormField>
+    </div>
+
+    <h3 class="mb-3 mt-8 text-sm font-semibold">{{ t('catalog.otherLinks') }}</h3>
+    <p class="mb-4 text-sm text-muted">{{ t('catalog.settingsHint.otherLinks') }}</p>
+
+    <div class="space-y-4">
+      <UFormField v-for="kind in SECONDARY_LINKS" :key="kind" :label="t(`links.${kind}`)">
+        <UInput v-model="links[kind]" class="w-full" placeholder="https://">
+          <template #leading>
+            <UIcon :name="LINK_ICONS[kind]" class="size-4 text-dimmed" />
+          </template>
+        </UInput>
       </UFormField>
     </div>
 

@@ -6,7 +6,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const id = computed(() => String(route.params.id ?? ''))
-const { data, project, refresh, may } = useProjectEditor(id)
+const { data, error, status, project, refresh, may } = useProjectEditor(id)
 
 const base = computed(() => `/project/${id.value}/settings`)
 
@@ -14,6 +14,9 @@ const base = computed(() => `/project/${id.value}/settings`)
 // says about itself, then what it ships, then who works on it. Moderation-facing
 // things sit at the end because they are answered once.
 const TABS = [
+  // Declarations first: it is the one thing a moderator will not accept a guess
+  // at, and the one an author is most likely to skip.
+  { id: 'disclosures', to: '/disclosures', icon: 'i-pixelarticons-alert', need: 'edit_details' },
   { id: 'general', to: '', icon: 'i-pixelarticons-circle-info', need: 'edit_details' },
   { id: 'tags', to: '/tags', icon: 'i-pixelarticons-label', need: 'edit_details' },
   { id: 'description', to: '/description', icon: 'i-pixelarticons-align-left', need: 'edit_body' },
@@ -23,7 +26,6 @@ const TABS = [
   { id: 'versions', to: '/versions', icon: 'i-pixelarticons-archive', need: 'upload_version' },
   { id: 'members', to: '/members', icon: 'i-pixelarticons-users', need: 'edit_member' },
   { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line', need: 'view_analytics' },
-  { id: 'disclosures', to: '/disclosures', icon: 'i-pixelarticons-alert', need: 'edit_details' },
 ] as const
 
 const tabs = computed(() => TABS
@@ -65,7 +67,29 @@ useSeoMeta({
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 
-      <section v-if="project" class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
+      <!-- Not v-if="project": a child route cannot mount into a parent that has
+           not rendered <NuxtPage /> yet, so on a hard refresh of a tab the whole
+           page came up empty. The shell is always here; the parts that need the
+           project wait for it. -->
+      <!-- Without this the page is a background and nothing else: no data, no
+           tabs, no message, and nothing in the console either, because a
+           refused fetch is an error state rather than a thrown one. -->
+      <section
+        v-if="error"
+        class="container mx-auto max-w-2xl px-4 py-40 text-center"
+      >
+        <h1 class="text-2xl font-semibold">{{ t('catalog.notFound') }}</h1>
+        <p class="mt-2 text-sm text-muted">{{ t('catalog.noRightsHere') }}</p>
+        <UButton
+          class="mt-6 rounded-xl"
+          variant="subtle"
+          color="neutral"
+          :to="localePath('/projects')"
+          :label="t('nav.account.projects')"
+        />
+      </section>
+
+      <section v-else class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
         <UAlert
           v-if="problem"
           color="error"
@@ -78,7 +102,7 @@ useSeoMeta({
         <!-- The list of what is still missing goes above everything, because it
              is the reason most people opened this area at all. -->
         <ProjectChecklist
-          v-if="project.status !== 'published' && project.status !== 'archived'"
+          v-if="project && project.status !== 'published' && project.status !== 'archived'"
           class="mb-6"
           :status="project.status"
           :slug="project.slug"
@@ -101,6 +125,7 @@ useSeoMeta({
         <div class="grid gap-8 lg:grid-cols-[240px_1fr] lg:items-start">
           <aside class="space-y-4 lg:sticky lg:top-28">
             <NuxtLink
+              v-if="project"
               :to="localePath(project.path)"
               class="flex items-center gap-3 rounded-2xl border border-zinc-600/50 bg-black/30 p-4 backdrop-blur-sm transition-colors hover:border-zinc-500"
             >
@@ -138,6 +163,9 @@ useSeoMeta({
           </aside>
 
           <div class="min-w-0">
+            <p v-if="status === 'pending' && !project" class="text-sm text-dimmed">
+              {{ t('catalog.loading') }}
+            </p>
             <NuxtPage />
           </div>
         </div>

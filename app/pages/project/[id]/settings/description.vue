@@ -33,7 +33,6 @@ watchEffect(() => {
   if (project.value) description.value = project.value.description
 })
 
-const preview = ref(false)
 </script>
 
 <template>
@@ -50,38 +49,11 @@ const preview = ref(false)
       :description="problem"
     />
 
-    <div class="mb-3 flex gap-2">
-      <UButton
-        size="xs"
-        :variant="preview ? 'ghost' : 'subtle'"
-        color="neutral"
-        class="rounded-xl"
-        :label="t('catalog.write')"
-        @click="preview = false"
-      />
-      <UButton
-        size="xs"
-        :variant="preview ? 'subtle' : 'ghost'"
-        color="neutral"
-        class="rounded-xl"
-        :label="t('catalog.preview')"
-        @click="preview = true"
-      />
-    </div>
-
-    <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
-    <div
-      v-if="preview"
-      class="prose prose-invert min-h-64 max-w-none rounded-2xl border border-white/10 p-4"
-      v-html="renderMarkdown(description)"
-    />
-    <UTextarea
-      v-else
+    <MarkdownEditor
       v-model="description"
       :rows="24"
-      :maxlength="100000"
+      :upload-to="`/api/catalog/project/${encodeURIComponent(project?.slug ?? '')}/image`"
       :placeholder="t('catalog.descriptionPlaceholder')"
-      class="w-full font-mono text-sm"
     />
 
     <div class="mt-5 flex items-center gap-3">

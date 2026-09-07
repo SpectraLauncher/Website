@@ -16,7 +16,7 @@ export interface ProjectEditorPayload {
 export function useProjectEditor(id: MaybeRefOrGetter<string>) {
   const key = computed(() => `project-editor:${toValue(id)}`)
 
-  const { data, error, refresh } = useAsyncData(
+  const { data, error, refresh, status } = useAsyncData(
     key.value,
     () => $fetch<ProjectEditorPayload>(
       `/api/catalog/project/${encodeURIComponent(toValue(id))}/editor`),
@@ -28,5 +28,5 @@ export function useProjectEditor(id: MaybeRefOrGetter<string>) {
 
   const may = (permission: ProjectPermission) => permissions.value.includes(permission)
 
-  return { data, error, refresh, project, permissions, may }
+  return { data, error, refresh, status, project, permissions, may }
 }
