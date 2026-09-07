@@ -74,14 +74,14 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
           color="error"
           variant="subtle"
           class="mt-6 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="problem"
         />
 
         <div class="mt-8 space-y-4">
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
             <div class="flex flex-wrap items-center gap-3">
-              <UIcon name="i-lucide-user" class="size-5 shrink-0 text-dimmed" />
+              <UIcon name="i-pixelarticons-user" class="size-5 shrink-0 text-dimmed" />
               <span class="min-w-0 flex-1 font-medium">{{ t('seller.ownAccount') }}</span>
               <UBadge
                 variant="subtle"
@@ -108,7 +108,7 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
             class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
           >
             <div class="flex flex-wrap items-center gap-3">
-              <UIcon name="i-lucide-users" class="size-5 shrink-0 text-dimmed" />
+              <UIcon name="i-pixelarticons-users" class="size-5 shrink-0 text-dimmed" />
               <NuxtLink
                 :to="localePath(`/org/${org.slug}`)"
                 class="min-w-0 flex-1 truncate font-medium hover:underline"
@@ -134,15 +134,15 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
           <h2 class="text-lg font-semibold">{{ t('seller.howTitle') }}</h2>
           <ul class="mt-3 space-y-2 text-sm text-muted">
             <li class="flex gap-2">
-              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
+              <UIcon name="i-pixelarticons-check" class="mt-0.5 size-4 shrink-0 text-primary" />
               {{ t('seller.howStripe') }}
             </li>
             <li class="flex gap-2">
-              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
+              <UIcon name="i-pixelarticons-check" class="mt-0.5 size-4 shrink-0 text-primary" />
               {{ t('seller.howDirect') }}
             </li>
             <li class="flex gap-2">
-              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
+              <UIcon name="i-pixelarticons-check" class="mt-0.5 size-4 shrink-0 text-primary" />
               {{ t('seller.howLicence') }}
             </li>
           </ul>
@@ -150,7 +150,7 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
             :to="localePath('/verification')"
             class="mt-4 inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
           >
-            <UIcon name="i-lucide-badge-check" class="size-4" />
+            <UIcon name="i-pixelarticons-check-double" class="size-4" />
             {{ t('seller.applyReduced') }}
           </NuxtLink>
         </div>

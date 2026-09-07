@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="plugin"
     prefix="plugin"
-    icon="i-lucide-plug"
+    icon="i-pixelarticons-plug"
     :title="t('catalog.plugins.title')"
     :sub="t('catalog.plugins.sub')"
   />

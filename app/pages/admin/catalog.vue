@@ -646,7 +646,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="flex flex-wrap items-center gap-5">
             <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-lucide-package" class="size-6 text-primary" />
+              <UIcon name="i-pixelarticons-package" class="size-6 text-primary" />
             </span>
 
             <div class="min-w-0 flex-1">
@@ -659,14 +659,14 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-arrow-left"
+              icon="i-pixelarticons-arrow-left"
               :label="t('catalog.admin.backToPanel')"
               :to="localePath('/admin')"
             />
             <UButton
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-plus"
+              icon="i-pixelarticons-plus"
               :label="t('catalog.admin.newProject')"
               @click="creating = true; selected = null"
             />
@@ -678,7 +678,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           color="error"
           variant="subtle"
           class="mb-4 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="error"
         />
         <UAlert
@@ -686,7 +686,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           color="success"
           variant="subtle"
           class="mb-4 rounded-2xl"
-          icon="i-lucide-check"
+          icon="i-pixelarticons-check"
           :description="notice"
         />
 
@@ -695,7 +695,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           class="mb-4 rounded-3xl border border-error/40 bg-error/5 p-6 backdrop-blur-sm"
         >
           <div class="mb-4 flex flex-wrap items-center gap-3">
-            <UIcon name="i-lucide-flag" class="size-5 text-error" />
+            <UIcon name="i-pixelarticons-flag" class="size-5 text-error" />
             <h2 class="text-lg font-semibold">{{ t('reports.queue') }}</h2>
             <UBadge size="sm" color="error" variant="subtle" :label="String(openReports)" />
             <span class="flex-1"></span>
@@ -703,7 +703,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               size="xs"
               variant="ghost"
               color="neutral"
-              icon="i-lucide-refresh-cw"
+              icon="i-pixelarticons-refresh"
               :loading="busy === 'reports'"
               :aria-label="t('catalog.admin.refresh')"
               @click="loadReports"
@@ -771,7 +771,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
 
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="mb-4 flex flex-wrap items-center gap-3">
-            <UIcon name="i-lucide-inbox" class="size-5 text-muted" />
+            <UIcon name="i-pixelarticons-inbox" class="size-5 text-muted" />
             <h2 class="text-lg font-semibold">{{ t('catalog.admin.queue') }}</h2>
             <span class="flex-1"></span>
             <UButton
@@ -792,7 +792,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               size="xs"
               variant="ghost"
               color="neutral"
-              icon="i-lucide-refresh-cw"
+              icon="i-pixelarticons-refresh"
               :loading="busy === 'queue'"
               :aria-label="t('catalog.admin.refresh')"
               @click="loadQueue"
@@ -843,14 +843,14 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <UInput
                 v-model="search"
                 :placeholder="t('catalog.admin.searchPlaceholder')"
-                icon="i-lucide-search"
+                icon="i-pixelarticons-search"
                 class="flex-1"
                 @keyup.enter="loadProjects"
               />
               <UButton
                 variant="subtle"
                 color="neutral"
-                icon="i-lucide-refresh-cw"
+                icon="i-pixelarticons-refresh"
                 :loading="busy === 'list'"
                 @click="loadProjects"
               />
@@ -932,7 +932,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <div class="mb-4 flex flex-wrap items-center gap-3">
                 <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
                   <img v-if="selected.icon" :src="selected.icon" alt="" class="size-full object-cover">
-                  <UIcon v-else name="i-lucide-image-plus" class="size-5 text-dimmed" />
+                  <UIcon v-else name="i-pixelarticons-image-plus" class="size-5 text-dimmed" />
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
@@ -945,7 +945,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 <UButton
                   variant="ghost"
                   color="error"
-                  icon="i-lucide-trash-2"
+                  icon="i-pixelarticons-trash"
                   :loading="busy === 'delete'"
                   @click="remove"
                 />
@@ -1012,7 +1012,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 color="warning"
                 variant="subtle"
                 class="mt-3 rounded-2xl"
-                icon="i-lucide-scale"
+                icon="i-pixelarticons-scale"
                 :description="saleNote"
               />
 
@@ -1114,7 +1114,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                   color="success"
                   variant="soft"
                   class="rounded-xl"
-                  icon="i-lucide-badge-check"
+                  icon="i-pixelarticons-check-double"
                   :loading="busy === 'approve'"
                   :label="t('catalog.admin.approve')"
                   @click="moderate('approve')"
@@ -1123,7 +1123,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                   color="error"
                   variant="soft"
                   class="rounded-xl"
-                  icon="i-lucide-circle-x"
+                  icon="i-pixelarticons-close-box"
                   :disabled="!decisionNote.trim()"
                   :loading="busy === 'reject'"
                   :label="t('catalog.admin.reject')"
@@ -1133,7 +1133,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                   color="error"
                   variant="soft"
                   class="rounded-xl"
-                  icon="i-lucide-trash-2"
+                  icon="i-pixelarticons-trash"
                   :disabled="!decisionNote.trim()"
                   :loading="busy === 'remove'"
                   :label="t('catalog.admin.remove')"
@@ -1168,7 +1168,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                     size="xs"
                     :variant="image.featured ? 'solid' : 'ghost'"
                     color="neutral"
-                    icon="i-lucide-star"
+                    icon="i-pixelarticons-star"
                     :aria-label="t('catalog.admin.featured')"
                     @click="image.featured = !image.featured; saveImage(image)"
                   />
@@ -1176,7 +1176,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                     size="xs"
                     variant="ghost"
                     color="error"
-                    icon="i-lucide-trash-2"
+                    icon="i-pixelarticons-trash"
                     :loading="busy === image.id"
                     @click="removeImage(image.id)"
                   />
@@ -1184,7 +1184,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               </ul>
 
               <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-white/15 p-4">
-                <UIcon name="i-lucide-image-plus" class="size-5 text-primary" />
+                <UIcon name="i-pixelarticons-image-plus" class="size-5 text-primary" />
                 <span class="text-sm">{{ t('catalog.admin.addImage') }}</span>
                 <input
                   type="file"
@@ -1219,14 +1219,14 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                       variant="ghost"
                       color="neutral"
                       size="xs"
-                      icon="i-lucide-pencil"
+                      icon="i-pixelarticons-pencil"
                       @click="startVersionEdit(version)"
                     />
                     <UButton
                       variant="ghost"
                       color="error"
                       size="xs"
-                      icon="i-lucide-trash-2"
+                      icon="i-pixelarticons-trash"
                       @click="removeVersion(version.id)"
                     />
                   </div>
@@ -1274,7 +1274,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                     :key="file.id"
                     class="mt-2 flex items-center gap-2 text-xs text-muted"
                   >
-                    <UIcon name="i-lucide-file" class="size-3.5" />
+                    <UIcon name="i-pixelarticons-file" class="size-3.5" />
                     <span class="truncate">{{ file.filename }}</span>
                     <span class="text-dimmed">{{ sizeLabel(file.size) }}</span>
                     <code class="truncate text-dimmed">{{ file.hashes.sha1.slice(0, 12) }}…</code>
@@ -1284,7 +1284,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
 
               <div class="rounded-2xl border border-dashed border-white/15 p-4">
                 <label class="flex cursor-pointer items-center gap-3">
-                  <UIcon name="i-lucide-upload" class="size-5 text-primary" />
+                  <UIcon name="i-pixelarticons-upload" class="size-5 text-primary" />
                   <span class="text-sm">
                     {{ pendingFile ? pendingFile.filename : t('catalog.admin.pickFile') }}
                   </span>
@@ -1340,7 +1340,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <UButton
                 class="mt-4"
                 :label="t('catalog.admin.addVersion')"
-                icon="i-lucide-plus"
+                icon="i-pixelarticons-plus"
                 :loading="busy === 'version'"
                 :disabled="!versionDraft.number.trim()"
                 @click="addVersion"
@@ -1351,7 +1351,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               v-if="!selected && !creating"
               class="rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm"
             >
-              <UIcon name="i-lucide-package-open" class="mx-auto size-10 text-dimmed" />
+              <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
               <p class="mt-3 text-sm text-muted">{{ t('catalog.admin.pickOne') }}</p>
             </div>
           </main>

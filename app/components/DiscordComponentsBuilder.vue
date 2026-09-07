@@ -88,11 +88,11 @@ const unhandled = computed(() => {
   <div class="space-y-2">
     <div v-for="(row, ri) in rows" :key="ri" class="rounded-lg border border-white/8">
       <div class="flex items-center gap-2 bg-white/[0.03] px-3 py-2">
-        <UIcon name="i-lucide-rows-3" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-layout-rows" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Row {{ ri + 1 }}</span>
         <span class="text-[11px] text-white/35">{{ describe(row) }}</span>
         <UButton
-          class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-trash-2"
+          class="ms-auto" size="xs" color="error" variant="ghost" icon="i-pixelarticons-trash"
           @click="rows.splice(ri, 1)"
         />
       </div>
@@ -108,7 +108,7 @@ const unhandled = computed(() => {
                 @click="setStyle(component, style.value)"
               >{{ style.label }}</button>
               <UButton
-                class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-x"
+                class="ms-auto" size="xs" color="error" variant="ghost" icon="i-pixelarticons-close"
                 @click="row.components.splice(ci, 1)"
               />
             </div>
@@ -155,7 +155,7 @@ const unhandled = computed(() => {
                 {{ component.type === 6 ? 'Role dropdown' : 'Dropdown' }}
               </span>
               <UButton
-                class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-x"
+                class="ms-auto" size="xs" color="error" variant="ghost" icon="i-pixelarticons-close"
                 @click="row.components.splice(ci, 1)"
               />
             </div>
@@ -166,10 +166,10 @@ const unhandled = computed(() => {
               <div v-for="(option, oi) in component.options" :key="oi" class="flex gap-1.5">
                 <UInput v-model="option.label" size="sm" class="flex-1" placeholder="Option label" />
                 <UInput v-model="option.value" size="sm" class="flex-1" placeholder="value" />
-                <UButton size="xs" color="error" variant="ghost" icon="i-lucide-x" @click="component.options!.splice(oi, 1)" />
+                <UButton size="xs" color="error" variant="ghost" icon="i-pixelarticons-close" @click="component.options!.splice(oi, 1)" />
               </div>
               <UButton
-                size="xs" color="neutral" variant="soft" icon="i-lucide-plus" label="Add option"
+                size="xs" color="neutral" variant="soft" icon="i-pixelarticons-plus" label="Add option"
                 :disabled="(component.options?.length ?? 0) >= 25"
                 @click="component.options!.push({ label: '', value: '' })"
               />
@@ -180,22 +180,22 @@ const unhandled = computed(() => {
         <div class="flex flex-wrap gap-1.5">
           <UButton
             v-if="canAddButton(row)"
-            size="xs" color="neutral" variant="soft" icon="i-lucide-plus" label="Button"
+            size="xs" color="neutral" variant="soft" icon="i-pixelarticons-plus" label="Button"
             @click="addButton(row, 1)"
           />
           <UButton
             v-if="canAddButton(row)"
-            size="xs" color="neutral" variant="soft" icon="i-lucide-external-link" label="Link button"
+            size="xs" color="neutral" variant="soft" icon="i-pixelarticons-external-link" label="Link button"
             @click="addButton(row, 5)"
           />
           <UButton
             v-if="canAddSelect(row)"
-            size="xs" color="neutral" variant="soft" icon="i-lucide-list" label="Dropdown"
+            size="xs" color="neutral" variant="soft" icon="i-pixelarticons-list" label="Dropdown"
             @click="addSelect(row, 3)"
           />
           <UButton
             v-if="canAddSelect(row)"
-            size="xs" color="neutral" variant="soft" icon="i-lucide-shield" label="Role dropdown"
+            size="xs" color="neutral" variant="soft" icon="i-pixelarticons-shield" label="Role dropdown"
             @click="addSelect(row, 6)"
           />
           <span v-if="rowHasSelect(row)" class="self-center text-[11px] text-white/30">
@@ -206,14 +206,14 @@ const unhandled = computed(() => {
     </div>
 
     <UButton
-      size="xs" color="neutral" variant="soft" icon="i-lucide-plus"
+      size="xs" color="neutral" variant="soft" icon="i-pixelarticons-plus"
       :label="`Add a row (${rows.length}/${MAX_ROWS})`"
       :disabled="rows.length >= MAX_ROWS"
       @click="addRow"
     />
 
     <p v-if="unhandled.length" class="flex items-start gap-2 rounded-lg bg-amber-500/10 px-3 py-2 text-[12px] text-amber-200/90">
-      <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 shrink-0" />
+      <UIcon name="i-pixelarticons-warning-box" class="mt-0.5 size-4 shrink-0" />
       <span>
         The bot does not listen for
         <code v-for="id in unhandled" :key="id" class="mx-0.5 rounded bg-black/25 px-1 font-mono">{{ id }}</code>.

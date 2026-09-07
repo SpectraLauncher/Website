@@ -127,7 +127,7 @@ const collectionMenu = computed(() => {
     rows.length ? rows : [{ label: t('collections.none'), disabled: true }],
     [{
       label: t('collections.createInline'),
-      icon: 'i-lucide-plus',
+      icon: 'i-pixelarticons-plus',
       onSelect: (event: Event) => {
         event.preventDefault()
         naming.value = true
@@ -135,13 +135,13 @@ const collectionMenu = computed(() => {
     }],
     [{
       label: t('collections.manage'),
-      icon: 'i-lucide-settings',
+      icon: 'i-pixelarticons-gear',
       to: localePath('/collections'),
     }],
   ]
 })
 
-const linkIcon = (name: string) => LINK_ICONS[name as LinkKind] ?? 'i-lucide-external-link'
+const linkIcon = (name: string) => LINK_ICONS[name as LinkKind] ?? 'i-pixelarticons-external-link'
 const linkLabel = (name: string) => (isLinkKind(name) ? t(`links.${name}`) : name)
 
 const buying = ref(false)
@@ -205,7 +205,7 @@ const sizeLabel = (bytes: number) =>
       :to="localePath(backTo)"
       class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-highlighted"
     >
-      <UIcon name="i-lucide-arrow-left" class="size-4" />
+      <UIcon name="i-pixelarticons-arrow-left" class="size-4" />
       {{ backLabel }}
     </NuxtLink>
 
@@ -231,18 +231,18 @@ const sizeLabel = (bytes: number) =>
               <img v-if="project.owner.image" :src="project.owner.image" alt="" class="size-full object-cover">
               <UIcon
                 v-else
-                :name="project.owner.kind === 'organization' ? 'i-lucide-users' : 'i-lucide-user'"
+                :name="project.owner.kind === 'organization' ? 'i-pixelarticons-users' : 'i-pixelarticons-user'"
                 class="size-3"
               />
             </span>
             {{ project.owner.name || project.owner.slug }}
           </NuxtLink>
           <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-lucide-download" class="size-4" />
+            <UIcon name="i-pixelarticons-download" class="size-4" />
             {{ t('catalog.downloads', { n: count(project.downloads) }) }}
           </span>
           <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-lucide-calendar" class="size-4" />
+            <UIcon name="i-pixelarticons-calendar" class="size-4" />
             {{ when(project.updated) }}
           </span>
           <button
@@ -252,7 +252,7 @@ const sizeLabel = (bytes: number) =>
             @click="toggleFollow"
           >
             <UIcon
-              :name="following ? 'i-lucide-heart' : 'i-lucide-heart'"
+              :name="following ? 'i-pixelarticons-heart' : 'i-pixelarticons-heart'"
               class="size-4"
               :class="following ? 'text-primary' : ''"
             />
@@ -260,7 +260,7 @@ const sizeLabel = (bytes: number) =>
           </button>
           <UFieldGroup v-if="signedIn" size="xs">
             <UButton
-              :icon="favourited ? 'i-lucide-star' : 'i-lucide-star'"
+              :icon="favourited ? 'i-pixelarticons-star' : 'i-pixelarticons-star'"
               :variant="favourited ? 'solid' : 'outline'"
               :color="favourited ? 'primary' : 'neutral'"
               :loading="favouriteBusy"
@@ -275,7 +275,7 @@ const sizeLabel = (bytes: number) =>
               :ui="{ content: 'w-64' }"
             >
               <UButton
-                icon="i-lucide-chevron-down"
+                icon="i-pixelarticons-chevron-down"
                 variant="outline"
                 color="neutral"
                 :aria-label="t('collections.save')"
@@ -299,11 +299,11 @@ const sizeLabel = (bytes: number) =>
           </UFieldGroup>
           <ReportButton item-type="project" :item-id="project.id" :label="t('reports.report')" />
           <span v-if="priceLabel" class="inline-flex items-center gap-1.5 font-medium text-highlighted">
-            <UIcon name="i-lucide-tag" class="size-4" />
+            <UIcon name="i-pixelarticons-label" class="size-4" />
             {{ priceLabel }}
           </span>
           <span v-if="project.license" class="inline-flex items-center gap-1.5">
-            <UIcon name="i-lucide-scale" class="size-4" />
+            <UIcon name="i-pixelarticons-scale" class="size-4" />
             <a
               v-if="project.licenseUrl"
               :href="project.licenseUrl"
@@ -322,7 +322,7 @@ const sizeLabel = (bytes: number) =>
         v-if="!project.owned"
         size="lg"
         class="rounded-xl"
-        icon="i-lucide-shopping-cart"
+        icon="i-pixelarticons-shopping-cart"
         :loading="buying"
         :label="t('catalog.buyFor', { price: priceLabel })"
         @click="buy"
@@ -332,7 +332,7 @@ const sizeLabel = (bytes: number) =>
         variant="subtle"
         color="success"
         size="lg"
-        icon="i-lucide-check"
+        icon="i-pixelarticons-check"
         :label="t('catalog.owned')"
       />
       <p v-if="buyProblem" class="mt-2 text-sm text-error">{{ buyProblem }}</p>
@@ -404,7 +404,7 @@ const sizeLabel = (bytes: number) =>
                   size="xs"
                   variant="subtle"
                   color="neutral"
-                  icon="i-lucide-download"
+                  icon="i-pixelarticons-download"
                   :label="sizeLabel(file.size)"
                   :to="`/api/catalog/download/${file.id}`"
                   external

@@ -37,17 +37,17 @@ async function run(key: string, fn: () => Promise<any>) {
 }
 
 const TABS = [
-  { id: 'profile', icon: 'i-lucide-user-round', label: 'account.profile' },
-  { id: 'security', icon: 'i-lucide-shield-check', label: 'account.security' },
-  { id: 'privacy', icon: 'i-lucide-eye-off', label: 'account.privacy' },
-  { id: 'blocks', icon: 'i-lucide-user-x', label: 'account.blocks' },
-  { id: 'connected', icon: 'i-lucide-link', label: 'account.connected' },
-  { id: 'notifications', icon: 'i-lucide-bell', label: 'nav.account.notifications' },
-  { id: 'sessions', icon: 'i-lucide-monitor-smartphone', label: 'account.sessions' },
-  { id: 'tokens', icon: 'i-lucide-key', label: 'tokens.title' },
-  { id: 'apps', icon: 'i-lucide-boxes', label: 'oauth.apps' },
-  { id: 'language', icon: 'i-lucide-languages', label: 'account.language' },
-  { id: 'friends', icon: 'i-lucide-users', label: 'friends.title' }
+  { id: 'profile', icon: 'i-pixelarticons-avatar-circle', label: 'account.profile' },
+  { id: 'security', icon: 'i-pixelarticons-shield', label: 'account.security' },
+  { id: 'privacy', icon: 'i-pixelarticons-eye-closed', label: 'account.privacy' },
+  { id: 'blocks', icon: 'i-pixelarticons-user-x', label: 'account.blocks' },
+  { id: 'connected', icon: 'i-pixelarticons-link', label: 'account.connected' },
+  { id: 'notifications', icon: 'i-pixelarticons-bell', label: 'nav.account.notifications' },
+  { id: 'sessions', icon: 'i-pixelarticons-devices', label: 'account.sessions' },
+  { id: 'tokens', icon: 'i-pixelarticons-key', label: 'tokens.title' },
+  { id: 'apps', icon: 'i-pixelarticons-archive', label: 'oauth.apps' },
+  { id: 'language', icon: 'i-pixelarticons-languages', label: 'account.language' },
+  { id: 'friends', icon: 'i-pixelarticons-users', label: 'friends.title' }
 ] as const
 
 const route = useRoute()
@@ -597,7 +597,7 @@ const PROVIDER_META: Record<string, { icon: string, label: string }> = {
   microsoft: { icon: 'i-simple-icons-microsoft', label: 'Microsoft' }
 }
 
-const providerMeta = (id: string) => PROVIDER_META[id] ?? { icon: 'i-lucide-key-round', label: id }
+const providerMeta = (id: string) => PROVIDER_META[id] ?? { icon: 'i-pixelarticons-key', label: id }
 
 useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
 useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' })
@@ -627,7 +627,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               >{{ avatar.letter }}</span>
 
               <span class="absolute inset-0 grid place-items-center rounded-2xl bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <UIcon :name="busy === 'avatar' ? 'i-lucide-loader-circle' : 'i-lucide-camera'" class="size-5" :class="busy === 'avatar' && 'animate-spin'" />
+                <UIcon :name="busy === 'avatar' ? 'i-pixelarticons-loader' : 'i-pixelarticons-camera'" class="size-5" :class="busy === 'avatar' && 'animate-spin'" />
               </span>
             </button>
 
@@ -644,7 +644,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   size="sm"
                   variant="subtle"
                   :color="user.emailVerified ? 'success' : 'warning'"
-                  :icon="user.emailVerified ? 'i-lucide-badge-check' : 'i-lucide-mail-warning'"
+                  :icon="user.emailVerified ? 'i-pixelarticons-check-double' : 'i-pixelarticons-mail-flash'"
                   :label="user.emailVerified ? t('account.verified') : t('account.unverifiedBadge')"
                 />
               </div>
@@ -657,7 +657,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-external-link"
+              icon="i-pixelarticons-external-link"
               :label="t('account.viewProfile')"
             />
 
@@ -666,7 +666,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-log-out"
+              icon="i-pixelarticons-logout"
               :label="t('account.signOut')"
               @click="signOut"
             />
@@ -679,13 +679,13 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           variant="subtle"
           orientation="vertical"
           class="mb-4 rounded-3xl"
-          icon="i-lucide-mail-warning"
+          icon="i-pixelarticons-mail-flash"
           :title="t('auth.verifyTitle')"
           :description="`${t('account.unverified')} ${t('account.verifyWhy')}`"
         >
           <template #actions>
             <p v-if="verifySent" class="inline-flex items-center gap-1.5 text-sm font-medium">
-              <UIcon name="i-lucide-check" class="size-4 shrink-0" />{{ t('auth.verifyResent') }}
+              <UIcon name="i-pixelarticons-check" class="size-4 shrink-0" />{{ t('auth.verifyResent') }}
             </p>
             <UButton
               v-else
@@ -733,10 +733,10 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 </UFormField>
 
                 <UFormField :label="t('auth.username')" :error="usernameBlocked ? usernameMessage : undefined">
-                  <UInput v-model="profile.username" size="lg" class="w-full" icon="i-lucide-at-sign">
+                  <UInput v-model="profile.username" size="lg" class="w-full" icon="i-pixelarticons-at-sign">
                     <template #trailing>
-                      <UIcon v-if="usernameState === 'checking'" name="i-lucide-loader-circle" class="size-4 animate-spin text-muted" />
-                      <UIcon v-else-if="usernameState === 'available'" name="i-lucide-check" class="size-4 text-primary" />
+                      <UIcon v-if="usernameState === 'checking'" name="i-pixelarticons-loader" class="size-4 animate-spin text-muted" />
+                      <UIcon v-else-if="usernameState === 'available'" name="i-pixelarticons-check" class="size-4 text-primary" />
                     </template>
                   </UInput>
                   <p v-if="usernameState === 'available'" class="mt-1.5 text-xs text-primary">{{ usernameMessage }}</p>
@@ -783,7 +783,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     color="neutral"
                     size="lg"
                     class="rounded-xl"
-                    icon="i-lucide-upload"
+                    icon="i-pixelarticons-upload"
                     :loading="busy === 'avatar'"
                     :label="t('account.upload')"
                     @click="pickAvatar"
@@ -822,7 +822,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       :key="key.id"
                       class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
                     >
-                      <UIcon name="i-lucide-key-round" class="size-4 shrink-0 text-muted" />
+                      <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
                       <div class="min-w-0 flex-1">
                         <p class="truncate text-sm">{{ key.name || t('account.passkeyUnnamed') }}</p>
                         <p class="text-xs text-dimmed">{{ new Date(key.createdAt).toLocaleDateString(locale) }}</p>
@@ -831,7 +831,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                         size="xs"
                         variant="ghost"
                         color="error"
-                        icon="i-lucide-trash-2"
+                        icon="i-pixelarticons-trash"
                         :loading="busy === 'passkey:' + key.id"
                         :aria-label="t('account.passkeyRemove')"
                         @click="removePasskey(key.id)"
@@ -850,7 +850,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       color="neutral"
                       size="lg"
                       class="rounded-xl"
-                      icon="i-lucide-plus"
+                      icon="i-pixelarticons-plus"
                       :loading="busy === 'passkey'"
                       :label="t('account.passkeyAdd')"
                       @click="addPasskey"
@@ -952,7 +952,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     @click="savePrivacy(value)"
                   >
                     <UIcon
-                      :name="friendsVisibility === value ? 'i-lucide-circle-check' : 'i-lucide-circle'"
+                      :name="friendsVisibility === value ? 'i-pixelarticons-checkbox-on' : 'i-pixelarticons-circle'"
                       class="mt-0.5 size-4 shrink-0"
                       :class="friendsVisibility === value ? 'text-primary' : 'text-dimmed'"
                     />
@@ -1004,7 +1004,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       color="error"
                       size="lg"
                       class="rounded-xl"
-                      icon="i-lucide-trash-2"
+                      icon="i-pixelarticons-trash"
                       :disabled="closeConfirm.trim().toLowerCase() !== (user?.username ?? '').toLowerCase()"
                       :loading="busy === 'close'"
                       :label="t('account.close')"
@@ -1024,7 +1024,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 color="warning"
                 variant="subtle"
                 class="mb-5 rounded-2xl"
-                icon="i-lucide-mail-x"
+                icon="i-pixelarticons-mail-delete"
                 :description="t('account.mailUnavailable')"
               />
 
@@ -1067,7 +1067,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :items="localeChoices"
                   value-key="value"
                   size="lg"
-                  icon="i-lucide-languages"
+                  icon="i-pixelarticons-languages"
                   class="w-full"
                 />
                 <UButton
@@ -1091,7 +1091,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     v-model="blockName"
                     size="lg"
                     class="min-w-0 flex-1"
-                    icon="i-lucide-at-sign"
+                    icon="i-pixelarticons-at-sign"
                     :placeholder="t('auth.username')"
                     @keyup.enter="addBlock"
                   />
@@ -1114,7 +1114,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   >
                     <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
                       <img v-if="person.image" :src="person.image" alt="" class="size-full object-cover">
-                      <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
+                      <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
                     </span>
                     <span class="min-w-0 flex-1 truncate text-sm">
                       {{ person.username || person.name }}
@@ -1143,7 +1143,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 color="success"
                 variant="subtle"
                 class="mb-5 rounded-2xl"
-                icon="i-lucide-key"
+                icon="i-pixelarticons-key"
                 :title="t('tokens.copyNow')"
               >
                 <template #description>
@@ -1169,7 +1169,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :key="app.id"
                   class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
                 >
-                  <UIcon name="i-lucide-boxes" class="size-4 shrink-0 text-muted" />
+                  <UIcon name="i-pixelarticons-archive" class="size-4 shrink-0 text-muted" />
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium">{{ app.name }}</p>
                     <p class="truncate text-xs text-dimmed">
@@ -1206,7 +1206,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       size="xs"
                       variant="ghost"
                       color="neutral"
-                      icon="i-lucide-refresh-cw"
+                      icon="i-pixelarticons-refresh"
                       :loading="busy === 'rotate:' + client.id"
                       :label="t('oauth.rotate')"
                       @click="rotateClient(client.id)"
@@ -1215,7 +1215,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                       size="xs"
                       variant="ghost"
                       color="error"
-                      icon="i-lucide-trash-2"
+                      icon="i-pixelarticons-trash"
                       :loading="busy === 'client:' + client.id"
                       :aria-label="t('oauth.deleteClient')"
                       @click="deleteClient(client.id)"
@@ -1284,7 +1284,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 color="success"
                 variant="subtle"
                 class="mb-5 rounded-2xl"
-                icon="i-lucide-key"
+                icon="i-pixelarticons-key"
                 :title="t('tokens.copyNow')"
               >
                 <template #description>
@@ -1308,7 +1308,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :key="token.id"
                   class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
                 >
-                  <UIcon name="i-lucide-key" class="size-4 shrink-0 text-muted" />
+                  <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium">
                       {{ token.name }}
@@ -1325,7 +1325,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                     size="xs"
                     variant="ghost"
                     color="error"
-                    icon="i-lucide-trash-2"
+                    icon="i-pixelarticons-trash"
                     :loading="busy === 'token:' + token.id"
                     :aria-label="t('tokens.revoke')"
                     @click="revokeAccessToken(token.id)"
@@ -1381,7 +1381,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   :key="item.token"
                   class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
                 >
-                  <UIcon name="i-lucide-monitor-smartphone" class="size-5 shrink-0 text-muted" />
+                  <UIcon name="i-pixelarticons-devices" class="size-5 shrink-0 text-muted" />
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium">
                       {{ deviceLabel(item.userAgent) }}
@@ -1417,7 +1417,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                   variant="soft"
                   color="error"
                   class="rounded-xl"
-                  icon="i-lucide-log-out"
+                  icon="i-pixelarticons-logout"
                   :loading="busy === 'sessions'"
                   :label="t('account.revokeOthers')"
                   @click="revokeOthers"
@@ -1526,7 +1526,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                         size="sm"
                         variant="ghost"
                         color="neutral"
-                        icon="i-lucide-user-round-minus"
+                        icon="i-pixelarticons-avatar-circle-minus"
                         :aria-label="t('friends.remove')"
                         @click="removeFriend(friend.friendshipId)"
                       />
@@ -1544,7 +1544,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           color="error"
           variant="subtle"
           class="my-4"
-          icon="i-lucide-circle-alert"
+          icon="i-pixelarticons-alert"
           :description="error"
         />
         <UAlert
@@ -1552,7 +1552,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           color="success"
           variant="subtle"
           class="my-4"
-          icon="i-lucide-check"
+          icon="i-pixelarticons-check"
           :description="notice"
         />
 

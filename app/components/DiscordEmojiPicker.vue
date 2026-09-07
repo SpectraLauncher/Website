@@ -36,7 +36,7 @@ function choose(emoji: GuildEmoji) {
 <template>
   <div class="relative">
     <UButton
-      size="xs" color="neutral" variant="soft" icon="i-lucide-smile"
+      size="xs" color="neutral" variant="soft" icon="i-pixelarticons-smile"
       :title="emojis.length ? 'Server emoji' : 'This server has no custom emoji'"
       :disabled="!emojis.length"
       @mousedown.prevent
@@ -50,7 +50,7 @@ function choose(emoji: GuildEmoji) {
     >
       <div class="mb-2 flex items-center gap-1.5">
         <UInput v-model="search" size="xs" placeholder="Search…" class="flex-1" autofocus />
-        <UButton size="xs" color="neutral" variant="ghost" icon="i-lucide-x" @click="open = false" />
+        <UButton size="xs" color="neutral" variant="ghost" icon="i-pixelarticons-close" @click="open = false" />
       </div>
 
       <p v-if="!filtered.length" class="px-1 py-3 text-center text-xs text-white/40">

@@ -49,7 +49,7 @@ const isActive = (key: McFormat['key']) =>
 
 const copy = async (value: string, label: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: label }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: label }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const runStyle = (run: McRun) => ({
@@ -138,7 +138,7 @@ const renderText = (run: McRun) => {
         <div class="mb-3 flex items-center justify-between gap-4">
           <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ out.label }}</div>
           <UButton
-            icon="i-lucide-copy"
+            icon="i-pixelarticons-copy"
             size="xs"
             variant="ghost"
             color="neutral"

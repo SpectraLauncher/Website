@@ -42,7 +42,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
           <template v-if="done">
             <div class="text-center">
               <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                <UIcon name="i-lucide-check" class="size-6 text-primary" />
+                <UIcon name="i-pixelarticons-check" class="size-6 text-primary" />
               </span>
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.resetDoneTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t('auth.resetDone') }}</p>
@@ -60,7 +60,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
           <template v-else-if="!token">
             <div class="text-center">
               <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                <UIcon name="i-lucide-link-2-off" class="size-6 text-muted" />
+                <UIcon name="i-pixelarticons-unlink" class="size-6 text-muted" />
               </span>
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.resetTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t('auth.resetNoToken') }}</p>
@@ -85,7 +85,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
               color="error"
               variant="subtle"
               class="mt-5"
-              icon="i-lucide-circle-alert"
+              icon="i-pixelarticons-alert"
               :description="error"
             />
 
@@ -94,7 +94,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="new-password"
-                icon="i-lucide-lock"
+                icon="i-pixelarticons-lock"
                 size="lg"
                 :placeholder="t('auth.password')"
                 class="w-full"
@@ -104,7 +104,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
                     variant="link"
                     color="neutral"
                     size="xs"
-                    :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                    :icon="showPassword ? 'i-pixelarticons-eye-closed' : 'i-pixelarticons-eye'"
                     :aria-label="t('auth.togglePassword')"
                     @click="showPassword = !showPassword"
                   />

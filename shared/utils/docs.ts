@@ -8,32 +8,32 @@
 export const DOC_SECTIONS = [
   {
     id: 'start',
-    icon: 'i-lucide-compass',
+    icon: 'i-pixelarticons-compass',
     pages: ['what-is-spectra', 'account', 'launcher'],
   },
   {
     id: 'content',
-    icon: 'i-lucide-package',
+    icon: 'i-pixelarticons-package',
     pages: ['project-types', 'finding-content', 'collections'],
   },
   {
     id: 'authors',
-    icon: 'i-lucide-pen-line',
+    icon: 'i-pixelarticons-edit',
     pages: ['publishing', 'versions', 'organizations', 'disclosures'],
   },
   {
     id: 'rules',
-    icon: 'i-lucide-scale',
+    icon: 'i-pixelarticons-scale',
     pages: ['moderation', 'reporting'],
   },
   {
     id: 'money',
-    icon: 'i-lucide-wallet',
+    icon: 'i-pixelarticons-wallet',
     pages: ['selling', 'payouts'],
   },
   {
     id: 'developers',
-    icon: 'i-lucide-code',
+    icon: 'i-pixelarticons-code',
     pages: ['api-tokens', 'oauth', 'rate-limits'],
   },
 ] as const

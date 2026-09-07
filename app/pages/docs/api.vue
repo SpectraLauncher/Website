@@ -57,7 +57,7 @@ const split = (route: string) => {
           :to="localePath('/docs')"
           class="mb-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default"
         >
-          <UIcon name="i-lucide-arrow-left" class="size-4" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4" />
           {{ t('docs.title') }}
         </NuxtLink>
 
@@ -79,7 +79,7 @@ const split = (route: string) => {
           v-model="search"
           class="mt-8 w-full"
           size="lg"
-          icon="i-lucide-search"
+          icon="i-pixelarticons-search"
           :placeholder="t('docs.api.search')"
         />
 

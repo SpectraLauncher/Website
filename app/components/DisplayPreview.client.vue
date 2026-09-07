@@ -452,7 +452,7 @@ defineExpose({ resetView })
   <div class="relative">
     <div ref="host" class="h-[440px] w-full rounded-2xl bg-[#0b0b0e]" />
     <UButton
-      icon="i-lucide-focus"
+      icon="i-pixelarticons-target"
       size="xs"
       variant="ghost"
       color="neutral"

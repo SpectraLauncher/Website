@@ -225,13 +225,13 @@ useSeoMeta({
           <div class="relative">
             <span class="grid size-24 shrink-0 place-items-center overflow-hidden rounded-3xl border border-white/10 bg-white/5">
               <img v-if="org.logo" :src="org.logo" alt="" class="size-full object-cover">
-              <UIcon v-else name="i-lucide-users" class="size-10 text-dimmed" />
+              <UIcon v-else name="i-pixelarticons-users" class="size-10 text-dimmed" />
             </span>
             <label
               v-if="canEdit"
               class="absolute -bottom-2 -right-2 grid size-9 cursor-pointer place-items-center rounded-xl border border-white/10 bg-black/70 backdrop-blur-sm transition-colors hover:bg-black/90"
             >
-              <UIcon name="i-lucide-camera" class="size-4" />
+              <UIcon name="i-pixelarticons-camera" class="size-4" />
               <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadLogo">
             </label>
           </div>
@@ -241,7 +241,7 @@ useSeoMeta({
               {{ org.name }}
               <UIcon
                 v-if="org.verified"
-                name="i-lucide-badge-check"
+                name="i-pixelarticons-check-double"
                 class="size-6 shrink-0 text-primary"
                 :title="t('verification.verifiedOrg')"
               />
@@ -261,7 +261,7 @@ useSeoMeta({
               variant="subtle"
               color="neutral"
               class="rounded-xl"
-              icon="i-lucide-pencil"
+              icon="i-pixelarticons-pencil"
               :label="t('catalog.org.edit')"
               @click="startEditing"
             />
@@ -270,7 +270,7 @@ useSeoMeta({
               variant="ghost"
               color="neutral"
               class="rounded-xl"
-              icon="i-lucide-badge-check"
+              icon="i-pixelarticons-check-double"
               :label="t('verification.apply')"
               :to="localePath('/verification')"
             />
@@ -282,7 +282,7 @@ useSeoMeta({
           color="error"
           variant="subtle"
           class="mt-4 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="problem"
         />
 
@@ -332,7 +332,7 @@ useSeoMeta({
                   >
                     <span class="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
                       <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
-                      <UIcon v-else name="i-lucide-package" class="size-5 text-dimmed" />
+                      <UIcon v-else name="i-pixelarticons-package" class="size-5 text-dimmed" />
                     </span>
                     <span class="min-w-0 flex-1">
                       <span class="flex items-center gap-2">
@@ -369,7 +369,7 @@ useSeoMeta({
                     >
                       <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
                         <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
-                        <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
+                        <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
                       </span>
                       <span class="min-w-0 flex-1 truncate text-sm">
                         {{ member.username || member.name || '—' }}
@@ -385,7 +385,7 @@ useSeoMeta({
                       size="xs"
                       variant="ghost"
                       color="neutral"
-                      icon="i-lucide-settings-2"
+                      icon="i-pixelarticons-settings-2"
                       :aria-label="t('catalog.org.editMember')"
                       @click="editingMember === member.userId ? editingMember = null : openMember(member)"
                     />
@@ -394,7 +394,7 @@ useSeoMeta({
                       size="xs"
                       variant="ghost"
                       color="error"
-                      icon="i-lucide-user-minus"
+                      icon="i-pixelarticons-user-minus"
                       :loading="busy === member.userId"
                       :aria-label="t('catalog.org.removeMember')"
                       @click="removeMember(member)"
@@ -452,7 +452,7 @@ useSeoMeta({
                   size="xs"
                   variant="ghost"
                   color="error"
-                  icon="i-lucide-log-out"
+                  icon="i-pixelarticons-logout"
                   :loading="busy === 'leave'"
                   :label="t('catalog.org.leave')"
                   @click="leave"
@@ -471,7 +471,7 @@ useSeoMeta({
                   />
                   <UButton
                     size="sm"
-                    icon="i-lucide-user-plus"
+                    icon="i-pixelarticons-user-plus"
                     :loading="busy === 'invite'"
                     @click="invite"
                   />
@@ -495,7 +495,7 @@ useSeoMeta({
                     rel="nofollow ugc noopener noreferrer"
                     class="inline-flex items-center gap-1.5 text-primary hover:underline"
                   >
-                    <UIcon name="i-lucide-external-link" class="size-3.5" />
+                    <UIcon name="i-pixelarticons-external-link" class="size-3.5" />
                     {{ name }}
                   </a>
                 </li>

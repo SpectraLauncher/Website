@@ -72,7 +72,7 @@ useSeoMeta({ title: () => t('billing.title'), robots: 'noindex' })
               size="sm"
               variant="ghost"
               color="neutral"
-              trailing-icon="i-lucide-arrow-right"
+              trailing-icon="i-pixelarticons-arrow-right"
               :to="localePath('/revenue')"
               :label="t('nav.account.revenue')"
             />
@@ -96,7 +96,7 @@ useSeoMeta({ title: () => t('billing.title'), robots: 'noindex' })
               size="sm"
               variant="ghost"
               color="neutral"
-              trailing-icon="i-lucide-arrow-right"
+              trailing-icon="i-pixelarticons-arrow-right"
               :to="localePath('/library')"
               :label="t('nav.account.library')"
             />
@@ -143,7 +143,7 @@ useSeoMeta({ title: () => t('billing.title'), robots: 'noindex' })
             size="sm"
             variant="ghost"
             color="neutral"
-            trailing-icon="i-lucide-arrow-right"
+            trailing-icon="i-pixelarticons-arrow-right"
             :to="localePath('/seller')"
             :label="t('billing.manage')"
           />

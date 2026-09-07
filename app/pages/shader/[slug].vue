@@ -39,7 +39,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-sun"
+        icon="i-pixelarticons-sun"
         :gallery="data?.gallery ?? []"
         :back-to="'/shader'"
         :back-label="t('catalog.shaders.title')"

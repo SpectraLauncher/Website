@@ -267,7 +267,7 @@ async function importPlayer() {
     markHistory()
     await loadUrl(profile.skin)
     model.value = profile.model
-    toast.add({ title: profile.name, icon: 'i-lucide-check' })
+    toast.add({ title: profile.name, icon: 'i-pixelarticons-check' })
   }
   catch {
     toast.add({ title: t('skinEditor.notFound', { q: typed }), color: 'error' })
@@ -309,12 +309,12 @@ function download() {
 }
 
 const TOOLS_LIST: Array<{ id: EditorTool, icon: string }> = [
-  { id: 'pencil', icon: 'i-lucide-pencil' },
-  { id: 'fill', icon: 'i-lucide-paint-bucket' },
-  { id: 'eraser', icon: 'i-lucide-eraser' },
-  { id: 'shade', icon: 'i-lucide-sun-medium' },
-  { id: 'dither', icon: 'i-lucide-grip' },
-  { id: 'picker', icon: 'i-lucide-pipette' }
+  { id: 'pencil', icon: 'i-pixelarticons-pencil' },
+  { id: 'fill', icon: 'i-pixelarticons-paint-bucket' },
+  { id: 'eraser', icon: 'i-pixelarticons-eraser' },
+  { id: 'shade', icon: 'i-pixelarticons-sun-alt' },
+  { id: 'dither', icon: 'i-pixelarticons-drag-and-drop' },
+  { id: 'picker', icon: 'i-pixelarticons-pipette' }
 ]
 
 function shortcut(event: KeyboardEvent) {
@@ -371,7 +371,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -456,13 +456,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
         </UButtonGroup>
 
         <UButtonGroup v-if="brush === 'shade'" size="sm">
-          <UButton :variant="lighten ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-sun" :label="t('skinEditor.lighten')" @click="lighten = true" />
-          <UButton :variant="lighten ? 'ghost' : 'subtle'" color="neutral" icon="i-lucide-moon" :label="t('skinEditor.darken')" @click="lighten = false" />
+          <UButton :variant="lighten ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-sun" :label="t('skinEditor.lighten')" @click="lighten = true" />
+          <UButton :variant="lighten ? 'ghost' : 'subtle'" color="neutral" icon="i-pixelarticons-moon" :label="t('skinEditor.darken')" @click="lighten = false" />
         </UButtonGroup>
 
         <UTooltip :text="t('skinEditor.symmetry')">
           <UButton
-            icon="i-lucide-flip-horizontal-2"
+            icon="i-pixelarticons-flip-horizontal-2"
             size="sm"
             color="neutral"
             :variant="symmetry ? 'subtle' : 'ghost'"
@@ -473,10 +473,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
         <div class="h-6 w-px bg-white/10"></div>
 
         <UTooltip :text="t('skinEditor.undo')">
-          <UButton icon="i-lucide-undo-2" size="sm" color="neutral" variant="ghost" :disabled="!canUndo" @click="undo" />
+          <UButton icon="i-pixelarticons-undo" size="sm" color="neutral" variant="ghost" :disabled="!canUndo" @click="undo" />
         </UTooltip>
         <UTooltip :text="t('skinEditor.redo')">
-          <UButton icon="i-lucide-redo-2" size="sm" color="neutral" variant="ghost" :disabled="!canRedo" @click="redo" />
+          <UButton icon="i-pixelarticons-redo" size="sm" color="neutral" variant="ghost" :disabled="!canRedo" @click="redo" />
         </UTooltip>
 
         <div class="h-6 w-px bg-white/10"></div>
@@ -489,19 +489,19 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
         <div class="ms-auto flex flex-wrap items-center gap-2">
           <form class="flex gap-1" @submit.prevent="importPlayer">
             <UInput v-model="query" size="sm" :placeholder="t('skinEditor.searchPh')" :maxlength="36" class="w-40 font-mono" />
-            <UButton type="submit" size="sm" color="neutral" variant="subtle" icon="i-lucide-user-round-search" :loading="loading" />
+            <UButton type="submit" size="sm" color="neutral" variant="subtle" icon="i-pixelarticons-search" :loading="loading" />
           </form>
 
           <UTooltip :text="t('skinEditor.upload')">
-            <UButton icon="i-lucide-upload" size="sm" color="neutral" variant="ghost" @click="fileInput?.click()" />
+            <UButton icon="i-pixelarticons-upload" size="sm" color="neutral" variant="ghost" @click="fileInput?.click()" />
           </UTooltip>
           <input ref="fileInput" type="file" accept="image/png" class="hidden" @change="importFile">
 
           <UTooltip :text="t('skinEditor.reset')">
-            <UButton icon="i-lucide-rotate-ccw" size="sm" color="neutral" variant="ghost" @click="reset" />
+            <UButton icon="i-pixelarticons-reload" size="sm" color="neutral" variant="ghost" @click="reset" />
           </UTooltip>
 
-          <UButton icon="i-lucide-download" size="sm" color="neutral" :label="t('skinEditor.download')" @click="download" />
+          <UButton icon="i-pixelarticons-download" size="sm" color="neutral" :label="t('skinEditor.download')" @click="download" />
         </div>
       </div>
 

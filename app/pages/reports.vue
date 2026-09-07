@@ -144,7 +144,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
               variant="ghost"
               color="neutral"
               class="mt-2"
-              :icon="open === report.id ? 'i-lucide-chevron-up' : 'i-lucide-message-square'"
+              :icon="open === report.id ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-message'"
               :label="t('reports.conversation')"
               @click="openThread(report)"
             />

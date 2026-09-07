@@ -5,13 +5,13 @@
 // To add one: an entry here, a `disclosures.<key>` string per locale, and an
 // icon. A disclosure with extra choices names them in `options`.
 export const DISCLOSURES = {
-  ai_content: { icon: 'i-lucide-sparkles', options: ['code', 'assets', 'text', 'functionality'] },
-  advertisements: { icon: 'i-lucide-megaphone', options: [] },
-  epilepsy_triggers: { icon: 'i-lucide-zap', options: [] },
-  system_interactions: { icon: 'i-lucide-terminal', options: [] },
-  telemetry: { icon: 'i-lucide-radio', options: ['opt_in', 'opt_out'] },
-  derivative_work: { icon: 'i-lucide-copy', options: [] },
-  paid_features: { icon: 'i-lucide-badge-dollar-sign', options: [] },
+  ai_content: { icon: 'i-pixelarticons-sparkles', options: ['code', 'assets', 'text', 'functionality'] },
+  advertisements: { icon: 'i-pixelarticons-megaphone', options: [] },
+  epilepsy_triggers: { icon: 'i-pixelarticons-zap', options: [] },
+  system_interactions: { icon: 'i-pixelarticons-terminal', options: [] },
+  telemetry: { icon: 'i-pixelarticons-radio', options: ['opt_in', 'opt_out'] },
+  derivative_work: { icon: 'i-pixelarticons-copy', options: [] },
+  paid_features: { icon: 'i-pixelarticons-dollar', options: [] },
 } as const
 
 export type DisclosureKey = keyof typeof DISCLOSURES

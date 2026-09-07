@@ -141,9 +141,9 @@ const onUp = (e: KeyboardEvent) => bind(e, false)
 const onBlur = () => { held.value = new Set() }
 
 const ANIMATIONS: Array<{ id: SkinAnimation, icon: string, label: string }> = [
-  { id: 'none', icon: 'i-lucide-user-round', label: 'profile.animIdle' },
-  { id: 'walk', icon: 'i-lucide-footprints', label: 'profile.animWalk' },
-  { id: 'crouch', icon: 'i-lucide-arrow-down-to-line', label: 'profile.animCrouch' }
+  { id: 'none', icon: 'i-pixelarticons-avatar-circle', label: 'profile.animIdle' },
+  { id: 'walk', icon: 'i-pixelarticons-human-run', label: 'profile.animWalk' },
+  { id: 'crouch', icon: 'i-pixelarticons-arrow-bar-down', label: 'profile.animCrouch' }
 ]
 
 async function loadMinecraft() {
@@ -218,7 +218,7 @@ const embedCode = computed(() => (mc.value ? `<img src="${renderUrl.value}" alt=
 async function copy(value: string) {
   if (!value) return
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('profile.copied'), icon: 'i-lucide-check' })
+  toast.add({ title: t('profile.copied'), icon: 'i-pixelarticons-check' })
 }
 
 const seoTitle = computed(() =>
@@ -272,7 +272,7 @@ useSchemaOrg(computed(() => (data.value
         <section class="container mx-auto max-w-lg px-4 pb-24 pt-40">
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-10 text-center backdrop-blur-sm">
             <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-lucide-user-round-x" class="size-6 text-muted" />
+              <UIcon name="i-pixelarticons-avatar-circle-x" class="size-6 text-muted" />
             </span>
             <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('profile.notFound') }}</h1>
             <p class="mt-2 font-mono text-sm text-dimmed">@{{ username }}</p>
@@ -361,7 +361,7 @@ useSchemaOrg(computed(() => (data.value
                   size="sm"
                   variant="ghost"
                   color="neutral"
-                  icon="i-lucide-copy"
+                  icon="i-pixelarticons-copy"
                   class="min-w-0 max-w-full font-mono"
                   @click="copy(data.user.mcUuid)"
                 >
@@ -380,15 +380,15 @@ useSchemaOrg(computed(() => (data.value
                 </UTooltip>
               </div>
               <div class="flex flex-wrap items-center gap-2">
-                <UBadge v-if="joined" size="lg" variant="subtle" color="neutral" icon="i-lucide-calendar" :label="t('profile.joined', { date: joined })" />
-                <UBadge v-if="mc" size="lg" variant="subtle" color="neutral" icon="i-lucide-box" :label="mc" />
+                <UBadge v-if="joined" size="lg" variant="subtle" color="neutral" icon="i-pixelarticons-calendar" :label="t('profile.joined', { date: joined })" />
+                <UBadge v-if="mc" size="lg" variant="subtle" color="neutral" icon="i-pixelarticons-box" :label="mc" />
                 <UButton
                   v-if="mc"
                   size="sm"
                   variant="subtle"
                   color="neutral"
                   class="rounded-xl"
-                  :icon="expanded ? 'i-lucide-minimize-2' : 'i-lucide-maximize-2'"
+                  :icon="expanded ? 'i-pixelarticons-collapse' : 'i-pixelarticons-expand'"
                   :label="t(expanded ? 'profile.shrink' : 'profile.expand')"
                   @click="expanded = !expanded"
                 />
@@ -403,7 +403,7 @@ useSchemaOrg(computed(() => (data.value
           <div class="flex flex-col gap-4">
             <div v-if="data.projects?.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-package" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-package" class="size-4 text-primary" />
                 {{ t('catalog.org.projects') }}
                 <span class="text-dimmed">({{ data.projects.length }})</span>
               </h2>
@@ -416,7 +416,7 @@ useSchemaOrg(computed(() => (data.value
                   >
                     <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-white/5">
                       <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
-                      <UIcon v-else name="i-lucide-package" class="size-4 text-dimmed" />
+                      <UIcon v-else name="i-pixelarticons-package" class="size-4 text-dimmed" />
                     </span>
                     <span class="min-w-0 flex-1">
                       <span class="block truncate text-sm font-medium">{{ project.title }}</span>
@@ -431,7 +431,7 @@ useSchemaOrg(computed(() => (data.value
 
             <div v-if="data.badges.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-award" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-trophy" class="size-4 text-primary" />
                 {{ t('badges.title') }}
                 <span class="text-dimmed">({{ data.badges.length }})</span>
               </h2>
@@ -445,14 +445,14 @@ useSchemaOrg(computed(() => (data.value
                   :title="`${badge.name}${badge.description ? ' — ' + badge.description : ''}`"
                 >
                   <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-9 object-contain">
-                  <UIcon v-else name="i-lucide-award" class="size-5 text-primary" />
+                  <UIcon v-else name="i-pixelarticons-trophy" class="size-5 text-primary" />
                 </NuxtLink>
               </div>
             </div>
 
             <div v-if="capes.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-flag" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-flag" class="size-4 text-primary" />
                 {{ t('profile.capes') }}
                 <span class="text-dimmed">({{ capes.length }})</span>
               </h2>
@@ -474,7 +474,7 @@ useSchemaOrg(computed(() => (data.value
 
             <div v-if="mc" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-terminal" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-terminal" class="size-4 text-primary" />
                 {{ t('profile.commands') }}
               </h2>
 
@@ -496,7 +496,7 @@ useSchemaOrg(computed(() => (data.value
                 @click="copy(give)"
               >
                 <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ give }}</code>
-                <UIcon name="i-lucide-copy" class="size-3.5 shrink-0 text-dimmed" />
+                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
               </button>
 
               <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.renderApi') }}</p>
@@ -506,17 +506,17 @@ useSchemaOrg(computed(() => (data.value
                 @click="copy(renderUrl)"
               >
                 <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ renderUrl }}</code>
-                <UIcon name="i-lucide-copy" class="size-3.5 shrink-0 text-dimmed" />
+                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
               </button>
               <NuxtLink :to="localePath('/tools/skin-poses')" class="mt-2 inline-flex items-center gap-1 text-xs text-dimmed transition-colors hover:text-default">
                 {{ t('profile.morePoses') }}
-                <UIcon name="i-lucide-arrow-right" class="size-3" />
+                <UIcon name="i-pixelarticons-arrow-right" class="size-3" />
               </NuxtLink>
             </div>
 
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
               <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-share-2" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-share" class="size-4 text-primary" />
                 {{ t('profile.share') }}
               </h2>
 
@@ -526,7 +526,7 @@ useSchemaOrg(computed(() => (data.value
                 @click="copy(profileUrl)"
               >
                 <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ profileUrl }}</code>
-                <UIcon name="i-lucide-copy" class="size-3.5 shrink-0 text-dimmed" />
+                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
               </button>
 
               <UButton
@@ -535,7 +535,7 @@ useSchemaOrg(computed(() => (data.value
                 size="sm"
                 variant="outline"
                 color="neutral"
-                icon="i-lucide-code-xml"
+                icon="i-pixelarticons-brackets-angle"
                 :label="t('profile.embed')"
                 @click="copy(embedCode)"
               />
@@ -545,7 +545,7 @@ useSchemaOrg(computed(() => (data.value
           <div class="flex flex-col gap-4">
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-chart-no-axes-column" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-chart-bar" class="size-4 text-primary" />
                 {{ t('profile.stats') }}
               </h2>
 
@@ -570,10 +570,10 @@ useSchemaOrg(computed(() => (data.value
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <div class="mb-4 flex flex-wrap items-center gap-3">
                 <h2 class="flex items-center gap-2 text-sm font-semibold">
-                  <UIcon name="i-lucide-users" class="size-4 text-primary" />
+                  <UIcon name="i-pixelarticons-users" class="size-4 text-primary" />
                   {{ friendsHeading }}
                 </h2>
-                <UIcon v-if="!openList" name="i-lucide-eye-off" class="size-3.5 text-dimmed" :title="t('profile.friendsPrivate')" />
+                <UIcon v-if="!openList" name="i-pixelarticons-eye-closed" class="size-3.5 text-dimmed" :title="t('profile.friendsPrivate')" />
               </div>
 
               <div v-if="data.friends.length" class="grid gap-2 sm:grid-cols-2">
@@ -613,7 +613,7 @@ useSchemaOrg(computed(() => (data.value
 
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <h2 class="mb-5 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-gauge" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-speed-fast" class="size-4 text-primary" />
                 {{ t('activity.statsTitle') }}
               </h2>
 
@@ -631,7 +631,7 @@ useSchemaOrg(computed(() => (data.value
 
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <h2 class="mb-5 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-lucide-calendar-days" class="size-4 text-primary" />
+                <UIcon name="i-pixelarticons-calendar-month" class="size-4 text-primary" />
                 {{ t('activity.title') }}
               </h2>
 

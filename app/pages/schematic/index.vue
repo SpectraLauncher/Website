@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="schematic"
     prefix="schematic"
-    icon="i-lucide-blocks"
+    icon="i-pixelarticons-blocks"
     :title="t('catalog.schematics.title')"
     :sub="t('catalog.schematics.sub')"
   />

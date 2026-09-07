@@ -57,7 +57,7 @@ useSeoMeta({ title: () => t('catalog.org.inviteTitle'), robots: 'noindex' })
 
       <section class="container mx-auto flex max-w-lg flex-col items-center px-4 py-40 text-center">
         <span class="grid size-16 place-items-center rounded-2xl border border-white/10 bg-white/5">
-          <UIcon name="i-lucide-mail-open" class="size-7 text-primary" />
+          <UIcon name="i-pixelarticons-mail-open" class="size-7 text-primary" />
         </span>
 
         <h1 class="mt-6 text-2xl font-semibold tracking-tight">
@@ -93,7 +93,7 @@ useSeoMeta({ title: () => t('catalog.org.inviteTitle'), robots: 'noindex' })
             color="error"
             variant="subtle"
             class="mt-5 rounded-2xl text-left"
-            icon="i-lucide-triangle-alert"
+            icon="i-pixelarticons-warning-box"
             :description="problem"
           />
 

@@ -72,7 +72,7 @@ const charStyle = (hex: string) => ({
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('anim.theConfig') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('anim.theConfig') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const resetTemplate = () => { template.value = DEFAULT_TEMPLATE }
@@ -102,7 +102,7 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -142,7 +142,7 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
                   role="button"
                   @click.stop="removeStop(i)"
                 >
-                  <UIcon name="i-lucide-x" class="size-3" />
+                  <UIcon name="i-pixelarticons-close" class="size-3" />
                 </span>
               </button>
               <template #content>
@@ -155,7 +155,7 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
 
             <UButton
               v-if="stops.length < MAX_STOPS"
-              icon="i-lucide-plus"
+              icon="i-pixelarticons-plus"
               variant="ghost"
               color="neutral"
               class="size-12 justify-center rounded-xl border border-dashed border-zinc-600/60"
@@ -202,11 +202,11 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
               <div class="flex flex-wrap gap-1.5">
                 <UButton
                   v-for="f in [
-                    { key: 'bold', icon: 'i-lucide-bold' },
-                    { key: 'italic', icon: 'i-lucide-italic' },
-                    { key: 'underlined', icon: 'i-lucide-underline' },
-                    { key: 'strikethrough', icon: 'i-lucide-strikethrough' },
-                    { key: 'obfuscated', icon: 'i-lucide-shuffle' }
+                    { key: 'bold', icon: 'i-pixelarticons-letter-b' },
+                    { key: 'italic', icon: 'i-pixelarticons-letter-i' },
+                    { key: 'underlined', icon: 'i-pixelarticons-letter-u' },
+                    { key: 'strikethrough', icon: 'i-pixelarticons-letter-s' },
+                    { key: 'obfuscated', icon: 'i-pixelarticons-shuffle' }
                   ]"
                   :key="f.key"
                   :icon="f.icon"
@@ -241,7 +241,7 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
             <div class="mb-2 flex items-center justify-between gap-4">
               <label class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('anim.template') }}</label>
               <UButton
-                icon="i-lucide-rotate-ccw"
+                icon="i-pixelarticons-reload"
                 size="xs"
                 variant="ghost"
                 color="neutral"
@@ -270,7 +270,7 @@ const faq = computed(() => (tm('anim.faq') as unknown[]).map((x, i) => ({
             <div class="text-sm font-medium">{{ t('anim.output') }}</div>
             <div class="flex items-center gap-4">
               <span class="text-xs text-dimmed">{{ t('anim.frames', { n: frames.length }) }}</span>
-              <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(output)" />
+              <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(output)" />
             </div>
           </div>
           <pre class="max-h-96 overflow-auto whitespace-pre rounded-2xl bg-black/40 p-4 font-mono text-xs text-muted">{{ output }}</pre>

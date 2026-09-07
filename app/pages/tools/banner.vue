@@ -20,7 +20,7 @@ const target = ref('@p')
 
 const addLayer = (pattern: string) => {
   if (layers.value.length >= MAX_LAYERS) {
-    toast.add({ title: t('banner.maxLayers', { n: MAX_LAYERS }), icon: 'i-lucide-info', color: 'warning' })
+    toast.add({ title: t('banner.maxLayers', { n: MAX_LAYERS }), icon: 'i-pixelarticons-circle-info', color: 'warning' })
     return
   }
   layers.value.push({ pattern, color: activeColor.value })
@@ -62,7 +62,7 @@ const commands = computed(() => ([
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('banner.features') as unknown[]).map(x => ({
@@ -90,7 +90,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -105,7 +105,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
               <div class="mb-4 flex items-center justify-between">
                 <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('colorCodes.previewLabel') }}</div>
                 <UButton
-                  icon="i-lucide-rotate-ccw"
+                  icon="i-pixelarticons-reload"
                   size="xs"
                   variant="ghost"
                   color="neutral"
@@ -135,9 +135,9 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
                     {{ t(`banner.patterns.${layer.pattern}`) }}
                   </span>
                   <div class="size-4 shrink-0 rounded border border-white/10" :style="{ background: bannerHex(layer.color) }" />
-                  <UButton icon="i-lucide-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="move(layers.length - 1 - i, 1)" />
-                  <UButton icon="i-lucide-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="move(layers.length - 1 - i, -1)" />
-                  <UButton icon="i-lucide-x" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="removeLayer(layers.length - 1 - i)" />
+                  <UButton icon="i-pixelarticons-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="move(layers.length - 1 - i, 1)" />
+                  <UButton icon="i-pixelarticons-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="move(layers.length - 1 - i, -1)" />
+                  <UButton icon="i-pixelarticons-close" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="removeLayer(layers.length - 1 - i)" />
                 </div>
               </div>
 
@@ -225,7 +225,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
               <div class="mb-1 flex items-center justify-between gap-4">
                 <div class="text-sm font-medium">{{ cmd.label }}</div>
                 <UButton
-                  icon="i-lucide-copy"
+                  icon="i-pixelarticons-copy"
                   size="xs"
                   variant="ghost"
                   color="neutral"

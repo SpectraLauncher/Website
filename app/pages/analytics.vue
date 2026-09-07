@@ -92,7 +92,7 @@ useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
         </ul>
 
         <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-chart-line" class="mx-auto size-10 text-dimmed" />
+          <UIcon name="i-pixelarticons-chart-line" class="mx-auto size-10 text-dimmed" />
           <p class="mt-3 text-sm text-muted">{{ t('account.noProjects') }}</p>
         </div>
       </section>

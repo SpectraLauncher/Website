@@ -37,7 +37,7 @@ defineOgImage('Spectra', {
                 <span class="mt-2 block text-xs text-dimmed">{{ t(`${doc.id}.updated`) }}</span>
               </span>
               <UIcon
-                name="i-lucide-chevron-right"
+                name="i-pixelarticons-chevron-right"
                 class="mt-1 size-4 shrink-0 text-dimmed transition-transform group-hover:translate-x-0.5"
               />
             </NuxtLink>

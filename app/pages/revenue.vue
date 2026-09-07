@@ -82,7 +82,7 @@ useSeoMeta({ title: () => t('nav.account.revenue'), robots: 'noindex' })
           color="warning"
           variant="subtle"
           class="mt-6 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :title="t('account.notConnected')"
           :description="t('account.notConnectedBody')"
         >
@@ -121,7 +121,7 @@ useSeoMeta({ title: () => t('nav.account.revenue'), robots: 'noindex' })
         </ul>
 
         <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-wallet" class="mx-auto size-10 text-dimmed" />
+          <UIcon name="i-pixelarticons-wallet" class="mx-auto size-10 text-dimmed" />
           <p class="mt-3 text-sm text-muted">{{ t('account.noSales') }}</p>
         </div>
       </section>
@@ -151,7 +151,7 @@ useSeoMeta({ title: () => t('nav.account.revenue'), robots: 'noindex' })
               class="mt-3 rounded-xl"
               size="sm"
               color="neutral"
-              icon="i-lucide-banknote"
+              icon="i-pixelarticons-banknote"
               :disabled="balance.available < ledger.minimum"
               :loading="asking === balance.currency"
               :label="t('ledger.request')"
@@ -169,7 +169,7 @@ useSeoMeta({ title: () => t('nav.account.revenue'), robots: 'noindex' })
             :key="payout.id"
             class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm"
           >
-            <UIcon name="i-lucide-banknote" class="size-4 shrink-0 text-muted" />
+            <UIcon name="i-pixelarticons-banknote" class="size-4 shrink-0 text-muted" />
             <span class="font-medium">{{ money(payout.amount, payout.currency) }}</span>
             <UBadge size="sm" variant="subtle" :label="t(`ledger.statuses.${payout.status}`)" />
             <span class="flex-1"></span>

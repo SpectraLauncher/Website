@@ -60,7 +60,7 @@ function clearLocal() {
         <p class="mb-4 text-sm/relaxed text-muted">{{ t('cookies.manageBody') }}</p>
 
         <div class="flex flex-wrap items-center gap-3">
-          <UButton size="sm" color="neutral" variant="subtle" class="rounded-xl" icon="i-lucide-eraser" :label="t('cookies.clear')" @click="clearLocal" />
+          <UButton size="sm" color="neutral" variant="subtle" class="rounded-xl" icon="i-pixelarticons-eraser" :label="t('cookies.clear')" @click="clearLocal" />
           <span v-if="cleared" class="text-sm text-primary">{{ t('cookies.cleared') }}</span>
         </div>
       </div>

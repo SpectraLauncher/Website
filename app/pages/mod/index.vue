@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="mod"
     prefix="mod"
-    icon="i-lucide-puzzle"
+    icon="i-pixelarticons-shapes"
     :title="t('catalog.mods.title')"
     :sub="t('catalog.mods.sub')"
   />

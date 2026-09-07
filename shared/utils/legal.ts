@@ -5,13 +5,13 @@
 // To add a document: an entry here, a page rendering <LegalPage :section="id" />,
 // and a `<id>` block per locale with title, intro, updated and sections.
 export const LEGAL_DOCUMENTS = [
-  { id: 'terms', path: '/terms', icon: 'i-lucide-handshake' },
-  { id: 'rules', path: '/legal/rules', icon: 'i-lucide-scale' },
-  { id: 'copyright', path: '/legal/copyright', icon: 'i-lucide-copyright' },
-  { id: 'monetization', path: '/legal/monetization', icon: 'i-lucide-wallet' },
-  { id: 'privacy', path: '/privacy', icon: 'i-lucide-lock' },
-  { id: 'cookies', path: '/cookies', icon: 'i-lucide-cookie' },
-  { id: 'security', path: '/legal/security', icon: 'i-lucide-shield' },
+  { id: 'terms', path: '/terms', icon: 'i-pixelarticons-hand' },
+  { id: 'rules', path: '/legal/rules', icon: 'i-pixelarticons-scale' },
+  { id: 'copyright', path: '/legal/copyright', icon: 'i-pixelarticons-letter-c-circle' },
+  { id: 'monetization', path: '/legal/monetization', icon: 'i-pixelarticons-wallet' },
+  { id: 'privacy', path: '/privacy', icon: 'i-pixelarticons-lock' },
+  { id: 'cookies', path: '/cookies', icon: 'i-pixelarticons-cake' },
+  { id: 'security', path: '/legal/security', icon: 'i-pixelarticons-shield' },
 ] as const
 
 export type LegalDocument = typeof LEGAL_DOCUMENTS[number]['id']

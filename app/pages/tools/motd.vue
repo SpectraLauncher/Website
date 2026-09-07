@@ -33,7 +33,7 @@ const faq = computed(() => (tm('motd.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 

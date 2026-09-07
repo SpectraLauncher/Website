@@ -52,7 +52,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
       <section class="container mx-auto max-w-4xl px-4 pb-24 pt-40">
         <div class="mb-6 flex flex-wrap items-center gap-4">
           <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-            <UIcon name="i-lucide-badge-check" class="size-6 text-primary" />
+            <UIcon name="i-pixelarticons-check-double" class="size-6 text-primary" />
           </span>
           <div class="min-w-0 flex-1">
             <h1 class="text-2xl font-semibold tracking-tight">{{ t('verification.queueTitle') }}</h1>
@@ -64,7 +64,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
             variant="ghost"
             color="neutral"
             class="rounded-xl"
-            icon="i-lucide-arrow-left"
+            icon="i-pixelarticons-arrow-left"
             :label="t('catalog.admin.backToPanel')"
             :to="localePath('/admin')"
           />
@@ -75,7 +75,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
           color="error"
           variant="subtle"
           class="mb-4 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="problem"
         />
 
@@ -90,7 +90,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
                 <img v-if="item.subject.image" :src="item.subject.image" alt="" class="size-full object-cover">
                 <UIcon
                   v-else
-                  :name="item.kind === 'organization' ? 'i-lucide-users' : 'i-lucide-user'"
+                  :name="item.kind === 'organization' ? 'i-pixelarticons-users' : 'i-pixelarticons-user'"
                   class="size-5 text-dimmed"
                 />
               </span>
@@ -120,7 +120,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
                   rel="nofollow ugc noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-primary hover:underline"
                 >
-                  <UIcon name="i-lucide-external-link" class="size-3.5" />
+                  <UIcon name="i-pixelarticons-external-link" class="size-3.5" />
                   {{ name }}
                 </a>
               </li>
@@ -153,7 +153,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
         </ul>
 
         <div v-else class="rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-inbox" class="mx-auto size-10 text-dimmed" />
+          <UIcon name="i-pixelarticons-inbox" class="mx-auto size-10 text-dimmed" />
           <p class="mt-3 text-sm text-muted">{{ t('verification.queueEmpty') }}</p>
         </div>
       </section>

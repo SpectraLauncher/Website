@@ -45,12 +45,12 @@ watch(me, (user) => {
 const discover: NavigationMenuItem = {
     label: 'nav.discover',
     children: [
-        { label: 'nav.mods', icon: 'i-lucide-puzzle', to: localePath('/mod'), description: 'nav.modsDesc' },
-        { label: 'nav.plugins', icon: 'i-lucide-plug', to: localePath('/plugin'), description: 'nav.pluginsDesc' },
-        { label: 'nav.resourcepacks', icon: 'i-lucide-image', to: localePath('/resourcepack'), description: 'nav.resourcepacksDesc' },
-        { label: 'nav.shaders', icon: 'i-lucide-sun', to: localePath('/shader'), description: 'nav.shadersDesc' },
-        { label: 'nav.modpacks', icon: 'i-lucide-boxes', to: localePath('/pack'), description: 'nav.modpacksDesc' },
-        { label: 'nav.schematics', icon: 'i-lucide-blocks', to: localePath('/schematic'), description: 'nav.schematicsDesc' },
+        { label: 'nav.mods', icon: 'i-pixelarticons-shapes', to: localePath('/mod'), description: 'nav.modsDesc' },
+        { label: 'nav.plugins', icon: 'i-pixelarticons-plug', to: localePath('/plugin'), description: 'nav.pluginsDesc' },
+        { label: 'nav.resourcepacks', icon: 'i-pixelarticons-image', to: localePath('/resourcepack'), description: 'nav.resourcepacksDesc' },
+        { label: 'nav.shaders', icon: 'i-pixelarticons-sun', to: localePath('/shader'), description: 'nav.shadersDesc' },
+        { label: 'nav.modpacks', icon: 'i-pixelarticons-archive', to: localePath('/pack'), description: 'nav.modpacksDesc' },
+        { label: 'nav.schematics', icon: 'i-pixelarticons-blocks', to: localePath('/schematic'), description: 'nav.schematicsDesc' },
     ]
 }
 
@@ -60,7 +60,7 @@ const items = ref<NavigationMenuItem[]>([
     {
         label: 'nav.community',
         children: [
-            { label: 'Badges', icon: 'i-lucide-award', to: localePath('/badges'), description: 'nav.badgesDesc' },
+            { label: 'Badges', icon: 'i-pixelarticons-trophy', to: localePath('/badges'), description: 'nav.badgesDesc' },
             { label: 'GitHub', icon: 'i-simple-icons-github', target: '_blank', to: 'https://github.com/SpectraLauncher', description: 'nav.githubDesc' },
             { label: 'Discord', icon: 'i-simple-icons-discord', target: '_blank', to: DISCORD_INVITE, description: 'nav.discordDesc' },
         ]
@@ -81,27 +81,27 @@ const accountMenu = computed(() => {
     if (!user) return []
 
     const account = [
-        { label: t('nav.account.profile'), icon: 'i-lucide-user', to: localePath(`/u/${user.username}`) },
-        { label: t('nav.account.notifications'), icon: 'i-lucide-bell', to: localePath('/notifications') },
-        { label: t('nav.account.settings'), icon: 'i-lucide-settings', to: localePath('/settings') },
+        { label: t('nav.account.profile'), icon: 'i-pixelarticons-user', to: localePath(`/u/${user.username}`) },
+        { label: t('nav.account.notifications'), icon: 'i-pixelarticons-bell', to: localePath('/notifications') },
+        { label: t('nav.account.settings'), icon: 'i-pixelarticons-gear', to: localePath('/settings') },
     ]
 
     const creating = catalogOpen.value
         ? [
-            { label: t('nav.account.projects'), icon: 'i-lucide-package', to: localePath('/projects') },
-            { label: t('nav.account.collections'), icon: 'i-lucide-bookmark', to: localePath('/collections') },
-            { label: t('nav.account.organizations'), icon: 'i-lucide-users', to: localePath('/organizations') },
-                { label: t('nav.account.analytics'), icon: 'i-lucide-chart-line', to: localePath('/analytics') },
-            { label: t('nav.account.revenue'), icon: 'i-lucide-wallet', to: localePath('/revenue') },
-            { label: t('billing.title'), icon: 'i-lucide-credit-card', to: localePath('/billing') },
-            { label: t('nav.account.library'), icon: 'i-lucide-library', to: localePath('/library') },
-            { label: t('reports.mine'), icon: 'i-lucide-flag', to: localePath('/reports') },
+            { label: t('nav.account.projects'), icon: 'i-pixelarticons-package', to: localePath('/projects') },
+            { label: t('nav.account.collections'), icon: 'i-pixelarticons-bookmark', to: localePath('/collections') },
+            { label: t('nav.account.organizations'), icon: 'i-pixelarticons-users', to: localePath('/organizations') },
+                { label: t('nav.account.analytics'), icon: 'i-pixelarticons-chart-line', to: localePath('/analytics') },
+            { label: t('nav.account.revenue'), icon: 'i-pixelarticons-wallet', to: localePath('/revenue') },
+            { label: t('billing.title'), icon: 'i-pixelarticons-credit-card', to: localePath('/billing') },
+            { label: t('nav.account.library'), icon: 'i-pixelarticons-library', to: localePath('/library') },
+            { label: t('reports.mine'), icon: 'i-pixelarticons-flag', to: localePath('/reports') },
         ]
         : []
 
     const out = [account]
     if (creating.length) out.push(creating)
-    out.push([{ label: t('nav.account.signOut'), icon: 'i-lucide-log-out', onSelect: signOut }])
+    out.push([{ label: t('nav.account.signOut'), icon: 'i-pixelarticons-logout', onSelect: signOut }])
     return out
 })
 
@@ -149,7 +149,7 @@ defineExpose({ items })
                         v-model="lang"
                         :items="langs"
                         value-key="value"
-                        icon="i-lucide-languages"
+                        icon="i-pixelarticons-languages"
                         variant="ghost"
                         color="neutral"
                         :ui="{ base: 'rounded-xl cursor-pointer' }"
@@ -164,7 +164,7 @@ defineExpose({ items })
                     >
                         <UButton
                             :to="localePath('/notifications')"
-                            icon="i-lucide-bell"
+                            icon="i-pixelarticons-bell"
                             variant="ghost"
                             color="neutral"
                             :aria-label="t('nav.account.notifications')"
@@ -180,8 +180,8 @@ defineExpose({ items })
                         <UButton
                             :label="me.username || me.name"
                             :avatar="me.image ? { src: me.image } : undefined"
-                            :icon="me.image ? undefined : 'i-lucide-user-round'"
-                            trailing-icon="i-lucide-chevron-down"
+                            :icon="me.image ? undefined : 'i-pixelarticons-avatar-circle'"
+                            trailing-icon="i-pixelarticons-chevron-down"
                             variant="ghost"
                             color="neutral"
                             class="rounded-xl cursor-pointer"
@@ -193,7 +193,7 @@ defineExpose({ items })
                         :label="t('nav.login')"
                         variant="solid"
                         color="neutral"
-                        icon="i-lucide-log-in"
+                        icon="i-pixelarticons-login"
                         class="rounded-xl cursor-pointer"
                     />
                 </div>
@@ -203,7 +203,7 @@ defineExpose({ items })
                     variant="ghost"
                     color="neutral"
                     size="lg"
-                    :icon="menuOpen ? 'i-lucide-x' : 'i-lucide-menu'"
+                    :icon="menuOpen ? 'i-pixelarticons-close' : 'i-pixelarticons-menu'"
                     :aria-label="t('nav.menu')"
                     @click="menuOpen = !menuOpen"
                 />
@@ -227,7 +227,7 @@ defineExpose({ items })
                                 v-model="lang"
                                 :items="langs"
                                 value-key="value"
-                                icon="i-lucide-languages"
+                                icon="i-pixelarticons-languages"
                                 variant="soft"
                                 color="neutral"
                                 class="w-full"
@@ -253,7 +253,7 @@ defineExpose({ items })
                                 :label="t('nav.login')"
                                 variant="solid"
                                 color="neutral"
-                                icon="i-lucide-log-in"
+                                icon="i-pixelarticons-login"
                                 block
                                 class="rounded-xl"
                             />

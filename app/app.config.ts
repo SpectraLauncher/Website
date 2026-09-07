@@ -5,6 +5,57 @@ export default defineAppConfig({
       neutral: 'zinc'
     },
 
+    // What Nuxt UI reaches for on its own: the chevron in a dropdown, the tick in
+    // a checkbox, the spinner on a loading button. Without this the components
+    // keep drawing Lucide next to our own pixel icons.
+    //
+    // To add one: the key Nuxt UI documents, and an i-pixelarticons-* name.
+    icons: {
+      arrowDown: 'i-pixelarticons-arrow-down',
+      arrowLeft: 'i-pixelarticons-arrow-left',
+      arrowRight: 'i-pixelarticons-arrow-right',
+      arrowUp: 'i-pixelarticons-arrow-up',
+      caution: 'i-pixelarticons-alert',
+      check: 'i-pixelarticons-check',
+      chevronDoubleLeft: 'i-pixelarticons-chevron-left-2',
+      chevronDoubleRight: 'i-pixelarticons-chevron-right-2',
+      chevronDown: 'i-pixelarticons-chevron-down',
+      chevronLeft: 'i-pixelarticons-chevron-left',
+      chevronRight: 'i-pixelarticons-chevron-right',
+      chevronUp: 'i-pixelarticons-chevron-up',
+      close: 'i-pixelarticons-close',
+      copy: 'i-pixelarticons-copy',
+      copyCheck: 'i-pixelarticons-check-double',
+      dark: 'i-pixelarticons-moon',
+      drag: 'i-pixelarticons-more-vertical',
+      ellipsis: 'i-pixelarticons-more-horizontal',
+      error: 'i-pixelarticons-close-box',
+      external: 'i-pixelarticons-external-link',
+      eye: 'i-pixelarticons-eye',
+      eyeOff: 'i-pixelarticons-eye-closed',
+      file: 'i-pixelarticons-file',
+      folder: 'i-pixelarticons-folder',
+      folderOpen: 'i-pixelarticons-folder',
+      hash: 'i-pixelarticons-hash',
+      info: 'i-pixelarticons-circle-info',
+      light: 'i-pixelarticons-sun',
+      loading: 'i-pixelarticons-loader',
+      menu: 'i-pixelarticons-menu',
+      minus: 'i-pixelarticons-minus',
+      panelClose: 'i-pixelarticons-layout-sidebar-left',
+      panelOpen: 'i-pixelarticons-layout-sidebar-right',
+      plus: 'i-pixelarticons-plus',
+      reload: 'i-pixelarticons-reload',
+      search: 'i-pixelarticons-search',
+      star: 'i-pixelarticons-star',
+      stop: 'i-pixelarticons-square',
+      success: 'i-pixelarticons-checkbox-on',
+      system: 'i-pixelarticons-monitor',
+      tip: 'i-pixelarticons-lightbulb',
+      upload: 'i-pixelarticons-upload',
+      warning: 'i-pixelarticons-warning-box'
+    },
+
 
     button: {
       slots: {

@@ -145,9 +145,9 @@ const social = (provider: string) =>
   auth.signIn.social({ provider: provider as any, callbackURL: next.value })
 
 const pitch = computed(() => [
-  { icon: 'i-lucide-package-check', text: t('auth.pitch1') },
-  { icon: 'i-lucide-refresh-cw', text: t('auth.pitch2') },
-  { icon: 'i-lucide-users', text: t('auth.pitch3') }
+  { icon: 'i-pixelarticons-check-double', text: t('auth.pitch1') },
+  { icon: 'i-pixelarticons-refresh', text: t('auth.pitch2') },
+  { icon: 'i-pixelarticons-users', text: t('auth.pitch3') }
 ])
 
 useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
@@ -212,7 +212,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
           <template v-else-if="mode === 'verify'">
             <div class="text-center">
               <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                <UIcon name="i-lucide-mail-check" class="size-6 text-primary" />
+                <UIcon name="i-pixelarticons-mail-check" class="size-6 text-primary" />
               </span>
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.verifyTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t(cameFromSignIn ? 'auth.verifyBodySignIn' : 'auth.verifyBody') }}</p>
@@ -227,7 +227,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               color="neutral"
               size="sm"
               class="mb-4 -ml-2"
-              icon="i-lucide-arrow-left"
+              icon="i-pixelarticons-arrow-left"
               :label="t('auth.backToSignIn')"
               @click="mode = 'signin'"
             />
@@ -244,7 +244,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
             color="error"
             variant="subtle"
             class="mt-5"
-            icon="i-lucide-circle-alert"
+            icon="i-pixelarticons-alert"
             :description="error"
           />
           <UAlert
@@ -252,7 +252,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
             color="success"
             variant="subtle"
             class="mt-5"
-            icon="i-lucide-mail-check"
+            icon="i-pixelarticons-mail-check"
             :description="sent"
           />
 
@@ -262,7 +262,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
             variant="outline"
             color="neutral"
             block
-            icon="i-lucide-key-round"
+            icon="i-pixelarticons-key"
             :loading="passkeyBusy"
             :label="t('auth.signInPasskey')"
             @click="signInWithPasskey"
@@ -316,7 +316,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               v-model="form.email"
               type="email"
               autocomplete="email"
-              icon="i-lucide-mail"
+              icon="i-pixelarticons-mail"
               size="lg"
               :placeholder="t('auth.email')"
               class="w-full"
@@ -335,7 +335,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               v-if="mode === 'signup'"
               v-model="form.username"
               autocomplete="username"
-              icon="i-lucide-at-sign"
+              icon="i-pixelarticons-at-sign"
               size="lg"
               :placeholder="t('auth.username')"
               class="w-full"
@@ -344,7 +344,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               v-model="form.email"
               type="email"
               autocomplete="email"
-              icon="i-lucide-mail"
+              icon="i-pixelarticons-mail"
               size="lg"
               :placeholder="t('auth.email')"
               class="w-full"
@@ -353,7 +353,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               v-model="form.password"
               :type="showPassword ? 'text' : 'password'"
               :autocomplete="mode === 'signup' ? 'new-password' : 'current-password'"
-              icon="i-lucide-lock"
+              icon="i-pixelarticons-lock"
               size="lg"
               :placeholder="t('auth.password')"
               class="w-full"
@@ -363,7 +363,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
                   variant="link"
                   color="neutral"
                   size="xs"
-                  :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                  :icon="showPassword ? 'i-pixelarticons-eye-closed' : 'i-pixelarticons-eye'"
                   :aria-label="t('auth.togglePassword')"
                   @click="showPassword = !showPassword"
                 />

@@ -62,7 +62,7 @@ const renderUrl = (poseId: string, cropId: RenderCrop, px: number) => {
 async function clearCache() {
   await $fetch('/api/dev-cache', { method: 'DELETE' })
   bust.value = Date.now()
-  toast.add({ title: 'Render cache cleared', icon: 'i-lucide-trash-2' })
+  toast.add({ title: 'Render cache cleared', icon: 'i-pixelarticons-trash' })
 }
 
 const origin = computed(() => useRequestURL().origin)
@@ -128,7 +128,7 @@ async function search() {
 
 const copyUrl = async () => {
   await navigator.clipboard.writeText(absoluteUrl.value)
-  toast.add({ title: t('skinPoses.apiCopied'), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('skinPoses.apiCopied'), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const download = () => {
@@ -170,7 +170,7 @@ onMounted(search)
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -184,7 +184,7 @@ onMounted(search)
             <UInput
               v-model="query"
               size="lg"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               class="min-w-0 flex-1 font-mono"
               :placeholder="t('skinPoses.searchPh')"
               :maxlength="36"
@@ -193,7 +193,7 @@ onMounted(search)
           </form>
 
           <p v-if="error" class="mt-3 flex items-center gap-2 text-sm text-red-400">
-            <UIcon name="i-lucide-triangle-alert" class="size-4" />
+            <UIcon name="i-pixelarticons-warning-box" class="size-4" />
             {{ error }}
           </p>
 
@@ -221,10 +221,10 @@ onMounted(search)
             <p class="mt-3 text-xs text-dimmed">{{ t(`skinPoses.cropHint.${crop}`) }}</p>
 
             <div class="mt-4 flex flex-wrap items-center gap-2">
-              <UButton icon="i-lucide-download" size="sm" color="neutral" :label="t('skinPoses.download')" @click="download" />
-              <UButton icon="i-lucide-link" size="sm" variant="ghost" color="neutral" :label="t('skinPoses.apiCopy')" @click="copyUrl" />
+              <UButton icon="i-pixelarticons-download" size="sm" color="neutral" :label="t('skinPoses.download')" @click="download" />
+              <UButton icon="i-pixelarticons-link" size="sm" variant="ghost" color="neutral" :label="t('skinPoses.apiCopy')" @click="copyUrl" />
               <DevOnly>
-                <UButton icon="i-lucide-trash-2" size="sm" variant="ghost" color="warning" label="Clear cache" @click="clearCache" />
+                <UButton icon="i-pixelarticons-trash" size="sm" variant="ghost" color="warning" label="Clear cache" @click="clearCache" />
               </DevOnly>
             </div>
           </div>

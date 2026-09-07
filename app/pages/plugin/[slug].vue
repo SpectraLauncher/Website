@@ -39,7 +39,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-plug"
+        icon="i-pixelarticons-plug"
         :gallery="data?.gallery ?? []"
         :back-to="'/plugin'"
         :back-label="t('catalog.plugins.title')"

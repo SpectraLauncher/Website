@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="resourcepack"
     prefix="resourcepack"
-    icon="i-lucide-image"
+    icon="i-pixelarticons-image"
     :title="t('catalog.resourcepacks.title')"
     :sub="t('catalog.resourcepacks.sub')"
   />

@@ -37,7 +37,7 @@ useSeoMeta({ title: () => t('nav.account.organizations'), robots: 'noindex' })
             >
               <span class="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                 <img v-if="org.logo" :src="org.logo" alt="" class="size-full object-cover">
-                <UIcon v-else name="i-lucide-users" class="size-5 text-dimmed" />
+                <UIcon v-else name="i-pixelarticons-users" class="size-5 text-dimmed" />
               </span>
               <span class="min-w-0 flex-1">
                 <span class="block truncate font-semibold">{{ org.name }}</span>
@@ -51,7 +51,7 @@ useSeoMeta({ title: () => t('nav.account.organizations'), robots: 'noindex' })
         </ul>
 
         <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-users" class="mx-auto size-10 text-dimmed" />
+          <UIcon name="i-pixelarticons-users" class="mx-auto size-10 text-dimmed" />
           <p class="mt-3 text-sm text-muted">{{ t('account.noOrganizations') }}</p>
         </div>
       </section>

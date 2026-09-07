@@ -31,7 +31,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
             </div>
           </div>
 
-          <UButton :to="localePath('/launcher')" variant="solid" color="neutral" size="lg" :label="t('home.launcherCta')" trailing-icon="i-lucide-arrow-right" class="mb-4 w-full justify-center rounded-xl sm:w-auto" />
+          <UButton :to="localePath('/launcher')" variant="solid" color="neutral" size="lg" :label="t('home.launcherCta')" trailing-icon="i-pixelarticons-arrow-right" class="mb-4 w-full justify-center rounded-xl sm:w-auto" />
           
           <div data-hero="" class="flex flex-wrap items-center gap-x-3.5 gap-y-2 text-xs text-white/70 sm:text-sm">
             <span class="inline-flex items-center gap-[7px]">

@@ -39,7 +39,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-image"
+        icon="i-pixelarticons-image"
         :gallery="data?.gallery ?? []"
         :back-to="'/resourcepack'"
         :back-label="t('catalog.resourcepacks.title')"

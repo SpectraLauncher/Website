@@ -50,13 +50,13 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
             <div class="flex items-center justify-center gap-3">
               <img src="/logo-transparent.png" width="38" height="38" alt="" />
               <UIcon
-                :name="state === 'error' ? 'i-lucide-x' : 'i-lucide-arrow-right'"
+                :name="state === 'error' ? 'i-pixelarticons-close' : 'i-pixelarticons-arrow-right'"
                 class="size-4"
                 :class="state === 'error' ? 'text-red-400' : 'text-dimmed'"
               />
               <span class="flex size-[38px] items-center justify-center rounded-xl border border-white/10 bg-white/5">
                 <UIcon
-                  :name="state === 'working' ? 'i-lucide-loader-circle' : 'i-lucide-monitor'"
+                  :name="state === 'working' ? 'i-pixelarticons-loader' : 'i-pixelarticons-monitor'"
                   class="size-[18px]"
                   :class="state === 'working' ? 'animate-spin text-muted' : state === 'error' ? 'text-red-400' : 'text-primary'"
                 />
@@ -82,12 +82,12 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
               <p class="truncate text-xs text-dimmed">{{ t('launcherAuth.signedInAs') }}</p>
             </div>
 
-            <UIcon v-if="state === 'ready'" name="i-lucide-check" class="size-4 text-primary" />
+            <UIcon v-if="state === 'ready'" name="i-pixelarticons-check" class="size-4 text-primary" />
           </div>
 
           <template v-if="state === 'idle' || state === 'working'">
             <p class="mt-5 flex gap-2.5 rounded-xl border border-amber-400/20 bg-amber-400/5 px-3.5 py-3 text-xs/relaxed text-muted">
-              <UIcon name="i-lucide-shield-alert" class="mt-0.5 size-4 shrink-0 text-amber-400" />
+              <UIcon name="i-pixelarticons-shield-off" class="mt-0.5 size-4 shrink-0 text-amber-400" />
               <span>{{ t('launcherAuth.warning') }}</span>
             </p>
 
@@ -96,7 +96,7 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
               size="lg"
               color="neutral"
               class="mt-4"
-              icon="i-lucide-check"
+              icon="i-pixelarticons-check"
               :loading="state === 'working'"
               :disabled="!me || state === 'working'"
               :label="t('launcherAuth.authorize')"
@@ -112,7 +112,7 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
               size="lg"
               color="neutral"
               class="mt-5"
-              icon="i-lucide-external-link"
+              icon="i-pixelarticons-external-link"
               :label="t('launcherAuth.openAgain')"
             />
             <p class="mt-3 text-center text-xs text-dimmed">{{ t('launcherAuth.closeHint') }}</p>

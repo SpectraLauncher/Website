@@ -36,7 +36,7 @@ useSeoMeta({
               :to="localePath('/docs')"
               class="mb-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default"
             >
-              <UIcon name="i-lucide-arrow-left" class="size-4" />
+              <UIcon name="i-pixelarticons-arrow-left" class="size-4" />
               {{ t('docs.title') }}
             </NuxtLink>
 
@@ -77,7 +77,7 @@ useSeoMeta({
                   v-if="around.previous"
                   variant="ghost"
                   color="neutral"
-                  icon="i-lucide-arrow-left"
+                  icon="i-pixelarticons-arrow-left"
                   class="rounded-xl"
                   :to="localePath(`/docs/${around.previous}`)"
                   :label="t(`docs.pages.${around.previous}.title`)"
@@ -87,7 +87,7 @@ useSeoMeta({
                   v-if="around.next"
                   variant="ghost"
                   color="neutral"
-                  trailing-icon="i-lucide-arrow-right"
+                  trailing-icon="i-pixelarticons-arrow-right"
                   class="rounded-xl"
                   :to="localePath(`/docs/${around.next}`)"
                   :label="t(`docs.pages.${around.next}.title`)"
@@ -96,7 +96,7 @@ useSeoMeta({
             </template>
 
             <div v-else class="rounded-3xl border border-white/10 p-12 text-center">
-              <UIcon name="i-lucide-file-question" class="mx-auto size-10 text-dimmed" />
+              <UIcon name="i-pixelarticons-file-alt" class="mx-auto size-10 text-dimmed" />
               <h1 class="mt-4 text-xl font-semibold">{{ t('docs.notFound') }}</h1>
               <UButton
                 class="mt-4 rounded-xl"

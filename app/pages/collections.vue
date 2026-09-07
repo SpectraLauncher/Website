@@ -111,7 +111,7 @@ const VISIBILITIES = computed(() =>
           <UButton
             color="neutral"
             class="rounded-xl"
-            icon="i-lucide-plus"
+            icon="i-pixelarticons-plus"
             :label="t('collections.create')"
             @click="creating = !creating"
           />
@@ -149,7 +149,7 @@ const VISIBILITIES = computed(() =>
             class="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
           >
             <UIcon
-              :name="collection.kind === 'favourites' ? 'i-lucide-star' : 'i-lucide-bookmark'"
+              :name="collection.kind === 'favourites' ? 'i-pixelarticons-star' : 'i-pixelarticons-bookmark'"
               class="size-5 shrink-0"
               :class="collection.kind === 'favourites' ? 'text-primary' : 'text-muted'"
             />
@@ -165,7 +165,7 @@ const VISIBILITIES = computed(() =>
               size="xs"
               variant="ghost"
               color="error"
-              icon="i-lucide-trash-2"
+              icon="i-pixelarticons-trash"
               :loading="busy === collection.id"
               :aria-label="t('collections.delete')"
               @click="remove(collection)"

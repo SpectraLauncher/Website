@@ -10,12 +10,12 @@ type Pane = 'overview' | 'messages' | 'moderation' | 'welcome' | 'tickets' | 'co
 const pane = ref<Pane>('overview')
 
 const PANES = [
-  { id: 'overview', label: 'Przegląd', icon: 'i-lucide-gauge' },
-  { id: 'messages', label: 'Wiadomości', icon: 'i-lucide-message-square' },
-  { id: 'moderation', label: 'Moderacja', icon: 'i-lucide-gavel' },
-  { id: 'welcome', label: 'Powitania', icon: 'i-lucide-door-open' },
-  { id: 'tickets', label: 'Zgłoszenia', icon: 'i-lucide-ticket' },
-  { id: 'config', label: 'Ustawienia', icon: 'i-lucide-settings' },
+  { id: 'overview', label: 'Przegląd', icon: 'i-pixelarticons-speed-fast' },
+  { id: 'messages', label: 'Wiadomości', icon: 'i-pixelarticons-message' },
+  { id: 'moderation', label: 'Moderacja', icon: 'i-pixelarticons-scale' },
+  { id: 'welcome', label: 'Powitania', icon: 'i-pixelarticons-hand' },
+  { id: 'tickets', label: 'Zgłoszenia', icon: 'i-pixelarticons-membercard' },
+  { id: 'config', label: 'Ustawienia', icon: 'i-pixelarticons-gear' },
 ] as const
 
 const busy = ref('')
@@ -553,7 +553,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                     <div class="mb-2 flex items-center gap-2">
                       <span class="text-sm font-medium">Embed {{ i + 1 }}</span>
                       <UButton
-                        class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-trash-2"
+                        class="ms-auto" size="xs" color="error" variant="ghost" icon="i-pixelarticons-trash"
                         @click="msgEmbeds.splice(i, 1)"
                       />
                     </div>
@@ -562,7 +562,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
 
                   <div class="flex items-center gap-3">
                     <UButton
-                      size="xs" color="neutral" variant="soft" icon="i-lucide-plus"
+                      size="xs" color="neutral" variant="soft" icon="i-pixelarticons-plus"
                       :label="`Dodaj embed (${msgEmbeds.length}/${MAX_EMBEDS})`"
                       :disabled="msgEmbeds.length >= MAX_EMBEDS"
                       @click="msgEmbeds.push(emptyEmbed())"
@@ -589,7 +589,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
 
             <div class="flex flex-wrap items-center gap-3 border-t border-white/8 pt-3">
               <UButton
-                :icon="editingId ? 'i-lucide-save' : 'i-lucide-send'"
+                :icon="editingId ? 'i-pixelarticons-save' : 'i-pixelarticons-send'"
                 :label="editingId ? 'Zapisz zmiany' : 'Wyślij'"
                 :disabled="composerEmpty || !msgChannelId || embedCharacters > EMBED_BUDGET"
                 :loading="busy === 'send'"
@@ -617,7 +617,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 </p>
               </div>
               <UButton
-                size="xs" color="neutral" variant="soft" icon="i-lucide-pencil"
+                size="xs" color="neutral" variant="soft" icon="i-pixelarticons-pencil"
                 @click="startEditMessage(m)"
               />
             </li>
@@ -628,7 +628,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
       <div v-else-if="pane === 'moderation'" class="space-y-4">
         <UCard>
           <template #header><h2 class="font-semibold">Znajdź osobę</h2></template>
-          <UInput v-model="memberQuery" icon="i-lucide-search" placeholder="Nazwa użytkownika albo pseudonim…" class="w-full max-w-md" />
+          <UInput v-model="memberQuery" icon="i-pixelarticons-search" placeholder="Nazwa użytkownika albo pseudonim…" class="w-full max-w-md" />
 
           <ul v-if="members.length" class="mt-3 divide-y divide-white/6 rounded-lg bg-white/[0.02]">
             <li
@@ -657,7 +657,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                   <span v-else>no linked Spectra account</span>
                 </div>
               </div>
-              <UIcon v-if="m.mutedUntil" name="i-lucide-volume-x" class="size-4 text-amber-300" title="Aktualnie wyciszony" />
+              <UIcon v-if="m.mutedUntil" name="i-pixelarticons-volume-x" class="size-4 text-amber-300" title="Aktualnie wyciszony" />
             </li>
           </ul>
         </UCard>
@@ -677,11 +677,11 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
               </div>
             </div>
             <div class="flex flex-wrap gap-2">
-              <UButton color="warning" variant="soft" icon="i-lucide-volume-x" label="Wycisz" :loading="busy === 'mute'" @click="moderate('mute')" />
-              <UButton color="success" variant="soft" icon="i-lucide-volume-2" label="Odcisz" :loading="busy === 'unmute'" @click="moderate('unmute')" />
-              <UButton color="warning" icon="i-lucide-user-minus" label="Wyrzuć" :loading="busy === 'kick'" @click="moderate('kick')" />
-              <UButton color="error" icon="i-lucide-hammer" label="Zbanuj" :loading="busy === 'ban'" @click="moderate('ban')" />
-              <UButton color="neutral" variant="soft" icon="i-lucide-undo-2" label="Odbanuj" :loading="busy === 'unban'" @click="moderate('unban')" />
+              <UButton color="warning" variant="soft" icon="i-pixelarticons-volume-x" label="Wycisz" :loading="busy === 'mute'" @click="moderate('mute')" />
+              <UButton color="success" variant="soft" icon="i-pixelarticons-volume-2" label="Odcisz" :loading="busy === 'unmute'" @click="moderate('unmute')" />
+              <UButton color="warning" icon="i-pixelarticons-user-minus" label="Wyrzuć" :loading="busy === 'kick'" @click="moderate('kick')" />
+              <UButton color="error" icon="i-pixelarticons-tools" label="Zbanuj" :loading="busy === 'ban'" @click="moderate('ban')" />
+              <UButton color="neutral" variant="soft" icon="i-pixelarticons-undo" label="Odbanuj" :loading="busy === 'unban'" @click="moderate('unban')" />
             </div>
           </div>
         </UCard>
@@ -701,7 +701,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 </p>
               </div>
               <UButton
-                size="xs" color="error" variant="ghost" icon="i-lucide-trash-2"
+                size="xs" color="error" variant="ghost" icon="i-pixelarticons-trash"
                 :loading="busy === `warning-${w.id}`" @click="deleteWarning(w.id)"
               />
             </li>
@@ -776,7 +776,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             </p>
 
             <UButton
-              icon="i-lucide-save" label="Zapisz"
+              icon="i-pixelarticons-save" label="Zapisz"
               :loading="busy === 'save-welcome'"
               @click="saveWelcome"
             />
@@ -795,7 +795,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             :items="[{ label: 'Wszystkie', value: 'all' }, { label: 'Otwarte', value: 'open' }, { label: 'Zamknięte', value: 'closed' }]"
             class="w-36"
           />
-          <UButton color="neutral" variant="ghost" size="sm" icon="i-lucide-refresh-cw" label="Przeładuj" @click="loadTickets" />
+          <UButton color="neutral" variant="ghost" size="sm" icon="i-pixelarticons-refresh" label="Przeładuj" @click="loadTickets" />
         </div>
 
         <UCard :ui="{ body: 'p-0' }">
@@ -817,7 +817,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
                 </p>
               </div>
               <UButton
-                size="xs" color="neutral" variant="soft" icon="i-lucide-file-text"
+                size="xs" color="neutral" variant="soft" icon="i-pixelarticons-file-text"
                 :disabled="!t.hasTranscript" :title="t.hasTranscript ? 'Przeczytaj zapis' : 'Brak zapisu — wciąż otwarte'"
                 :loading="busy === `ticket-${t.id}`" @click="showTicket(t.id)"
               />
@@ -893,7 +893,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             </div>
           </div>
 
-          <UButton class="mt-4" icon="i-lucide-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
+          <UButton class="mt-4" icon="i-pixelarticons-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
         </UCard>
 
         <UCard>
@@ -922,7 +922,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             <code class="rounded bg-white/8 px-1 font-mono">unlock</code> and
             <code class="rounded bg-white/8 px-1 font-mono">kick</code> for their own channel.
           </p>
-          <UButton class="mt-4" icon="i-lucide-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
+          <UButton class="mt-4" icon="i-pixelarticons-save" label="Zapisz konfigurację" :loading="busy === 'save-config'" @click="saveConfig" />
         </UCard>
 
         <UCard>
@@ -939,7 +939,7 @@ const roleName = (id: string) => roles.value.find(r => r.id === id)?.name ?? id
             <UInput v-model="panelTitle" class="w-full max-w-md" placeholder="Tytuł" />
             <UTextarea v-model="panelDescription" :rows="3" class="w-full" placeholder="Opis" />
             <UButton
-              icon="i-lucide-send" label="Opublikuj panel"
+              icon="i-pixelarticons-send" label="Opublikuj panel"
               :disabled="!config.ticketPanelChannel" :loading="busy === 'ticket-panel'"
               @click="postTicketPanel"
             />

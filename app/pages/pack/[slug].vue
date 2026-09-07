@@ -39,7 +39,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-boxes"
+        icon="i-pixelarticons-archive"
         :gallery="data?.gallery ?? []"
         :back-to="'/pack'"
         :back-label="t('catalog.modpacks.title')"

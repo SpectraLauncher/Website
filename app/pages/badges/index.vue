@@ -79,7 +79,7 @@ useSchemaOrg(computed(() => [
             loading="lazy"
           >
           <span v-else class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-            <UIcon name="i-lucide-award" class="size-6 text-primary" />
+            <UIcon name="i-pixelarticons-trophy" class="size-6 text-primary" />
           </span>
 
           <div class="min-w-0">

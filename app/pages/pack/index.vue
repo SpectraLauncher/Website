@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="modpack"
     prefix="pack"
-    icon="i-lucide-boxes"
+    icon="i-pixelarticons-archive"
     :title="t('catalog.modpacks.title')"
     :sub="t('catalog.modpacks.sub')"
   />

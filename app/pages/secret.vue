@@ -51,7 +51,7 @@ useSeoMeta({ title: () => `${t('secret.title')}`, robots: 'noindex, nofollow' })
       <section class="container mx-auto max-w-md px-4 pb-24 pt-40">
         <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-8 text-center backdrop-blur-sm">
           <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-            <UIcon name="i-lucide-terminal" class="size-6 text-primary" />
+            <UIcon name="i-pixelarticons-terminal" class="size-6 text-primary" />
           </span>
 
           <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('secret.title') }}</h1>
@@ -60,7 +60,7 @@ useSeoMeta({ title: () => `${t('secret.title')}`, robots: 'noindex, nofollow' })
           <template v-if="won">
             <div class="mt-6 rounded-2xl border border-primary/40 bg-primary/10 p-5">
               <img v-if="won.image" :src="won.image" :alt="won.name" class="mx-auto mb-3 size-16 object-contain">
-              <UIcon v-else name="i-lucide-award" class="mb-3 size-10 text-primary" />
+              <UIcon v-else name="i-pixelarticons-trophy" class="mb-3 size-10 text-primary" />
               <p class="font-semibold">{{ t('secret.won', { name: won.name }) }}</p>
             </div>
             <UButton

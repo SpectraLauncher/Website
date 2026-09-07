@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
     <div ref="host" class="relative h-[420px] w-full">
       <div v-if="loading" class="absolute inset-0 grid place-items-center text-sm text-dimmed">
         <span class="inline-flex items-center gap-2">
-          <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin" />
+          <UIcon name="i-pixelarticons-loader" class="size-4 animate-spin" />
           {{ $t('catalog.schematic.loadingPreview') }}
         </span>
       </div>
@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
 
     <div v-if="preview && !failed" class="flex flex-wrap items-center gap-4 border-t border-white/10 px-5 py-3">
       <label class="flex flex-1 items-center gap-3 text-xs text-dimmed">
-        <UIcon name="i-lucide-layers" class="size-4 shrink-0" />
+        <UIcon name="i-pixelarticons-card-stack" class="size-4 shrink-0" />
         <input
           v-model.number="layer"
           type="range"

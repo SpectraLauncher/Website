@@ -27,22 +27,22 @@ export interface NotificationItem {
 // Adding a kind: an entry here, the matching `notifications.<kind>` string in
 // every locale, and the kind itself in NotificationKind on the server.
 export const NOTIFICATION_ICONS: Record<string, string> = {
-  friend_request: 'i-lucide-user-plus',
-  friend_accepted: 'i-lucide-user-check',
-  instance_invite: 'i-lucide-package',
-  instance_update: 'i-lucide-refresh-cw',
-  project_approved: 'i-lucide-badge-check',
-  project_rejected: 'i-lucide-circle-x',
-  project_removed: 'i-lucide-trash-2',
-  project_message: 'i-lucide-gavel',
-  project_comment: 'i-lucide-message-square',
-  comment_reply: 'i-lucide-reply',
-  report_received: 'i-lucide-flag',
-  report_closed: 'i-lucide-flag-off',
+  friend_request: 'i-pixelarticons-user-plus',
+  friend_accepted: 'i-pixelarticons-contact',
+  instance_invite: 'i-pixelarticons-package',
+  instance_update: 'i-pixelarticons-refresh',
+  project_approved: 'i-pixelarticons-check-double',
+  project_rejected: 'i-pixelarticons-close-box',
+  project_removed: 'i-pixelarticons-trash',
+  project_message: 'i-pixelarticons-scale',
+  project_comment: 'i-pixelarticons-message',
+  comment_reply: 'i-pixelarticons-reply',
+  report_received: 'i-pixelarticons-flag',
+  report_closed: 'i-pixelarticons-flag',
 }
 
 export function notificationIcon(kind: string): string {
-  return NOTIFICATION_ICONS[kind] ?? 'i-lucide-bell'
+  return NOTIFICATION_ICONS[kind] ?? 'i-pixelarticons-bell'
 }
 
 // One poll shared by every component that shows notifications, so the bell and

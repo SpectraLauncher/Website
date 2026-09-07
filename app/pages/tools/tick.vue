@@ -28,7 +28,7 @@ const rate = computed(() => perDay(Math.max(1, Math.floor(num(period.value)))))
 
 const copy = async (v: string) => {
   await navigator.clipboard.writeText(v)
-  toast.add({ title: t('colorCodes.copied', { value: v }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: v }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const PHASE_COLOR: Record<string, string> = {
@@ -63,7 +63,7 @@ const faq = computed(() => (tm('ticks.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -111,11 +111,11 @@ const faq = computed(() => (tm('ticks.faq') as unknown[]).map((x, i) => ({
                     {{ t(`ticks.phases.${phase.key}`) }}
                   </span>
                   <span class="flex items-center gap-2 text-sm" :class="canSleep(value) ? 'text-success' : 'text-dimmed'">
-                    <UIcon :name="canSleep(value) ? 'i-lucide-bed' : 'i-lucide-bed-single'" class="size-4" />
+                    <UIcon :name="canSleep(value) ? 'i-pixelarticons-bed' : 'i-pixelarticons-hotel-bed'" class="size-4" />
                     {{ canSleep(value) ? t('ticks.canSleep') : t('ticks.noSleep') }}
                   </span>
                   <span class="flex items-center gap-2 text-sm" :class="mobsSpawn(value) ? 'text-error' : 'text-dimmed'">
-                    <UIcon name="i-lucide-ghost" class="size-4" />
+                    <UIcon name="i-pixelarticons-alien" class="size-4" />
                     {{ mobsSpawn(value) ? t('ticks.mobsYes') : t('ticks.mobsNo') }}
                   </span>
                 </div>

@@ -25,10 +25,10 @@ watch(potion, (p) => {
 })
 
 const ITEM_ICONS: Record<PotionItem, string> = {
-  potion: 'i-lucide-flask-round',
-  splash_potion: 'i-lucide-droplets',
-  lingering_potion: 'i-lucide-cloud',
-  tipped_arrow: 'i-lucide-move-up-right'
+  potion: 'i-pixelarticons-potion',
+  splash_potion: 'i-pixelarticons-drop',
+  lingering_potion: 'i-pixelarticons-cloud',
+  tipped_arrow: 'i-pixelarticons-corner-right-up'
 }
 
 const effectName = (key: string) => t(`potion.effects.${key}`)
@@ -79,7 +79,7 @@ const commands = computed(() =>
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('potion.features') as unknown[]).map(x => ({
@@ -107,7 +107,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -140,7 +140,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
             <UInput
               v-model="query"
               size="sm"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               class="mb-3 w-full"
               :placeholder="t('potion.search')"
             />
@@ -160,8 +160,8 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
                   <span class="block truncate text-xs text-dimmed">{{ summary(p) }}</span>
                 </span>
                 <span class="flex shrink-0 gap-1">
-                  <UIcon v-if="p.forms.long" name="i-lucide-clock" class="size-3.5 text-dimmed" :title="t('potion.variants.long')" />
-                  <UIcon v-if="p.forms.strong" name="i-lucide-arrow-up" class="size-3.5 text-dimmed" :title="t('potion.variants.strong')" />
+                  <UIcon v-if="p.forms.long" name="i-pixelarticons-clock" class="size-3.5 text-dimmed" :title="t('potion.variants.long')" />
+                  <UIcon v-if="p.forms.strong" name="i-pixelarticons-arrow-up" class="size-3.5 text-dimmed" :title="t('potion.variants.strong')" />
                 </span>
               </button>
 
@@ -188,10 +188,10 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
               <div v-else class="mb-6 flex flex-wrap items-center gap-2">
                 <template v-for="(step, i) in chain" :key="i">
                   <span v-if="step.ingredient" class="flex items-center gap-1.5 text-xs text-muted">
-                    <UIcon name="i-lucide-plus" class="size-3 text-dimmed" />
+                    <UIcon name="i-pixelarticons-plus" class="size-3 text-dimmed" />
                     <IngredientIcon :ingredient="step.ingredient" :size="22" />
                     {{ t(`potion.ingredients.${step.ingredient}`) }}
-                    <UIcon name="i-lucide-chevron-right" class="size-3.5 text-dimmed" />
+                    <UIcon name="i-pixelarticons-chevron-right" class="size-3.5 text-dimmed" />
                   </span>
                   <span class="flex items-center gap-1.5 rounded-xl border border-white/10 bg-black/40 px-2.5 py-1.5">
                     <PotionBottle :potion-key="step.potion" :color="potionByKey(step.potion)?.color || '#385DC6'" :size="26" />
@@ -263,7 +263,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
                       <span v-if="cmd.duration" class="font-mono text-xs text-dimmed">{{ cmd.duration }}</span>
                     </div>
                     <UButton
-                      icon="i-lucide-copy"
+                      icon="i-pixelarticons-copy"
                       size="xs"
                       variant="ghost"
                       color="neutral"

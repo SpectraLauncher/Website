@@ -59,7 +59,7 @@ useSeoMeta({
           :to="localePath('/legal')"
           class="mb-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default"
         >
-          <UIcon name="i-lucide-arrow-left" class="size-4" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4" />
           {{ t('legal.title') }}
         </NuxtLink>
 
@@ -79,7 +79,7 @@ useSeoMeta({
                 :key="i"
                 class="flex gap-2.5 text-sm/relaxed text-muted"
               >
-                <UIcon name="i-lucide-dot" class="mt-0.5 size-4 shrink-0 text-dimmed" />
+                <UIcon name="i-pixelarticons-circle" class="mt-0.5 size-4 shrink-0 text-dimmed" />
                 <span class="min-w-0 break-words">{{ point }}</span>
               </li>
             </ul>

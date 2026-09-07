@@ -140,14 +140,14 @@ const fieldStyle = (inline: boolean) => inline ? {} : { gridColumn: '1 / -1' }
               >
               <span v-else-if="component.emoji?.name">{{ component.emoji.name }}</span>
               {{ component.label || (component.emoji ? '' : 'Button') }}
-              <UIcon v-if="component.style === 5" name="i-lucide-external-link" class="size-3.5 opacity-70" />
+              <UIcon v-if="component.style === 5" name="i-pixelarticons-external-link" class="size-3.5 opacity-70" />
             </button>
             <div
               v-else
               class="flex w-full max-w-[400px] items-center justify-between rounded border border-white/10 bg-[#1e1f22] px-3 py-2 text-[14px] text-[#949ba4]"
             >
               {{ component.placeholder || 'Make a selection' }}
-              <UIcon name="i-lucide-chevron-down" class="size-4" />
+              <UIcon name="i-pixelarticons-chevron-down" class="size-4" />
             </div>
           </template>
         </div>

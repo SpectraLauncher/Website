@@ -68,7 +68,7 @@ const asText = computed(() =>
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('circle.theLayer') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('circle.theLayer') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('circle.features') as unknown[]).map(x => ({
@@ -96,7 +96,7 @@ const faq = computed(() => (tm('circle.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -176,7 +176,7 @@ const faq = computed(() => (tm('circle.faq') as unknown[]).map((x, i) => ({
               </div>
 
               <UButton
-                icon="i-lucide-copy"
+                icon="i-pixelarticons-copy"
                 size="sm"
                 variant="ghost"
                 color="neutral"
@@ -292,7 +292,7 @@ const faq = computed(() => (tm('circle.faq') as unknown[]).map((x, i) => ({
             class="cursor-not-allowed rounded-2xl border border-zinc-600/50 bg-black/30 p-5 opacity-60 backdrop-blur-sm"
           >
             <div class="mb-3 flex items-center justify-between gap-3">
-              <UIcon name="i-lucide-download" class="size-5 text-dimmed" />
+              <UIcon name="i-pixelarticons-download" class="size-5 text-dimmed" />
               <span class="font-mono text-xs text-dimmed">{{ f.ext }}</span>
             </div>
             <div class="mb-1 font-semibold tracking-tight">{{ f.name }}</div>

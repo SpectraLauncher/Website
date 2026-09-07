@@ -22,12 +22,12 @@ export const LINK_KINDS = [
 export type LinkKind = typeof LINK_KINDS[number]
 
 export const LINK_ICONS: Record<LinkKind, string> = {
-  website: 'i-lucide-globe',
-  source: 'i-lucide-code',
-  issues: 'i-lucide-bug',
-  wiki: 'i-lucide-book-open',
+  website: 'i-pixelarticons-globe',
+  source: 'i-pixelarticons-code',
+  issues: 'i-pixelarticons-bug',
+  wiki: 'i-pixelarticons-book-open',
   discord: 'i-simple-icons-discord',
-  donate: 'i-lucide-heart-handshake',
+  donate: 'i-pixelarticons-heart',
   youtube: 'i-simple-icons-youtube',
   twitch: 'i-simple-icons-twitch',
   github: 'i-simple-icons-github',

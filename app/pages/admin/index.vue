@@ -43,11 +43,11 @@ interface AdminUser {
 const me = computed(() => session.value.data?.user as any)
 
 const TABS = [
-  { id: 'overview', icon: 'i-lucide-layout-dashboard', label: 'Przegląd' },
-  { id: 'telemetry', icon: 'i-lucide-chart-no-axes-column', label: 'Telemetria' },
-  { id: 'shares', icon: 'i-lucide-package', label: 'Paczki' },
-  { id: 'users', icon: 'i-lucide-users', label: 'Użytkownicy' },
-  { id: 'badges', icon: 'i-lucide-award', label: 'Odznaki' },
+  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd' },
+  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria' },
+  { id: 'shares', icon: 'i-pixelarticons-package', label: 'Paczki' },
+  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy' },
+  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki' },
   { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord' }
 ] as const
 
@@ -312,14 +312,14 @@ const KEY_FIGURES = computed(() => {
   const o = stats.value?.overview
   const s = stats.value?.shares?.overview
   return [
-    { label: 'Instalacje', value: num(o?.totalInstalls), icon: 'i-lucide-download', hint: 'wszystkie' },
-    { label: 'Aktywni dziś', value: num(o?.dau), icon: 'i-lucide-activity', hint: 'DAU' },
-    { label: 'Aktywni w tygodniu', value: num(o?.wau), icon: 'i-lucide-calendar-days', hint: 'WAU' },
-    { label: 'Aktywni w miesiącu', value: num(o?.mau), icon: 'i-lucide-calendar-range', hint: 'MAU' },
-    { label: 'Uruchomienia', value: num(o?.launches30), icon: 'i-lucide-play', hint: '30 dni' },
-    { label: 'Crashe', value: num(o?.crashes30), icon: 'i-lucide-triangle-alert', hint: '30 dni' },
-    { label: 'Konta', value: num(usersTotal.value), icon: 'i-lucide-users', hint: 'łącznie' },
-    { label: 'Paczki aktywne', value: num(s?.active), icon: 'i-lucide-package', hint: 'nie wygasły' }
+    { label: 'Instalacje', value: num(o?.totalInstalls), icon: 'i-pixelarticons-download', hint: 'wszystkie' },
+    { label: 'Aktywni dziś', value: num(o?.dau), icon: 'i-pixelarticons-trending', hint: 'DAU' },
+    { label: 'Aktywni w tygodniu', value: num(o?.wau), icon: 'i-pixelarticons-calendar-month', hint: 'WAU' },
+    { label: 'Aktywni w miesiącu', value: num(o?.mau), icon: 'i-pixelarticons-calendar-range', hint: 'MAU' },
+    { label: 'Uruchomienia', value: num(o?.launches30), icon: 'i-pixelarticons-play', hint: '30 dni' },
+    { label: 'Crashe', value: num(o?.crashes30), icon: 'i-pixelarticons-warning-box', hint: '30 dni' },
+    { label: 'Konta', value: num(usersTotal.value), icon: 'i-pixelarticons-users', hint: 'łącznie' },
+    { label: 'Paczki aktywne', value: num(s?.active), icon: 'i-pixelarticons-package', hint: 'nie wygasły' }
   ]
 })
 
@@ -341,7 +341,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
         <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
           <div class="flex flex-wrap items-center gap-5">
             <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-lucide-shield" class="size-6 text-primary" />
+              <UIcon name="i-pixelarticons-shield" class="size-6 text-primary" />
             </span>
 
             <div class="min-w-0 flex-1">
@@ -359,7 +359,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-package"
+              icon="i-pixelarticons-package"
               label="Katalog"
               :to="localePath('/admin/catalog')"
             />
@@ -368,7 +368,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-badge-check"
+              icon="i-pixelarticons-check-double"
               :label="$t('verification.queueTitle')"
               :to="localePath('/admin/verification')"
             />
@@ -377,7 +377,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-refresh-cw"
+              icon="i-pixelarticons-refresh"
               :loading="busy === 'stats' || busy === 'users'"
               label="Odśwież"
               @click="tab === 'users' ? loadUsers() : loadStats()"
@@ -387,15 +387,15 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               color="neutral"
               size="lg"
               class="rounded-xl"
-              icon="i-lucide-log-out"
+              icon="i-pixelarticons-logout"
               label="Wyloguj"
               @click="signOut"
             />
           </div>
         </div>
 
-        <UAlert v-if="error" color="error" variant="subtle" class="mb-4" icon="i-lucide-circle-alert" :description="error" />
-        <UAlert v-if="notice" color="success" variant="subtle" class="mb-4" icon="i-lucide-check" :description="notice" />
+        <UAlert v-if="error" color="error" variant="subtle" class="mb-4" icon="i-pixelarticons-alert" :description="error" />
+        <UAlert v-if="notice" color="success" variant="subtle" class="mb-4" icon="i-pixelarticons-check" :description="notice" />
 
         <div class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm lg:grid lg:grid-cols-[230px_1fr]">
           <nav class="flex gap-1 overflow-x-auto border-b border-white/10 p-3 lg:flex-col lg:border-b-0 lg:border-r">
@@ -538,7 +538,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                   size="xs"
                   variant="ghost"
                   color="neutral"
-                  icon="i-lucide-refresh-cw"
+                  icon="i-pixelarticons-refresh"
                   label="Przelicz"
                   :loading="busy === 'badge-sync'"
                   @click="recalcBadges"
@@ -554,7 +554,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                   >
                     <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-10 shrink-0 rounded-xl object-contain">
                     <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5">
-                      <UIcon name="i-lucide-award" class="size-5 text-primary" />
+                      <UIcon name="i-pixelarticons-trophy" class="size-5 text-primary" />
                     </span>
 
                     <div class="min-w-0 flex-1">
@@ -567,12 +567,12 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                       <p class="text-[11px] text-dimmed">{{ rules.find(r => r.id === badge.rule)?.label ?? badge.rule }}</p>
                     </div>
 
-                    <UButton size="xs" variant="ghost" color="neutral" icon="i-lucide-pencil" aria-label="Edytuj" @click="editBadge(badge)" />
+                    <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="editBadge(badge)" />
                     <UButton
                       size="xs"
                       variant="ghost"
                       color="error"
-                      icon="i-lucide-trash-2"
+                      icon="i-pixelarticons-trash"
                       aria-label="Usuń"
                       :loading="busy === `badge:${badge.slug}`"
                       @click="deleteBadge(badge.slug)"
@@ -598,7 +598,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                           class="size-12 shrink-0 rounded-lg object-contain"
                         >
                         <span v-else class="grid size-12 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
-                          <UIcon name="i-lucide-image" class="size-5 text-dimmed" />
+                          <UIcon name="i-pixelarticons-image" class="size-5 text-dimmed" />
                         </span>
 
                         <div class="min-w-0 flex-1">
@@ -606,7 +606,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                             size="xs"
                             variant="subtle"
                             color="neutral"
-                            icon="i-lucide-upload"
+                            icon="i-pixelarticons-upload"
                             :loading="busy === 'badge-image'"
                             :disabled="!badgeForm.slug"
                             :label="badgeForm.image ? 'Zmień obrazek' : 'Wgraj obrazek'"
@@ -622,7 +622,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                           size="xs"
                           variant="ghost"
                           color="neutral"
-                          icon="i-lucide-x"
+                          icon="i-pixelarticons-close"
                           aria-label="Usuń obrazek"
                           @click="badgeForm.image = ''"
                         />
@@ -718,7 +718,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                   variant="ghost"
                   color="error"
                   size="sm"
-                  icon="i-lucide-trash-2"
+                  icon="i-pixelarticons-trash"
                   :loading="busy === 'purge'"
                   label="Usuń konta testowe"
                   @click="purgeTest"
@@ -727,7 +727,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
 
               <UInput
                 v-model="search"
-                icon="i-lucide-search"
+                icon="i-pixelarticons-search"
                 size="lg"
                 class="mb-4 w-full max-w-sm"
                 placeholder="nick, e-mail albo konto Minecraft"
@@ -764,7 +764,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                           <div class="min-w-0">
                             <div class="flex items-center gap-1.5">
                               <span class="truncate font-medium">{{ user.name || user.username || '—' }}</span>
-                              <UIcon v-if="user.emailVerified" name="i-lucide-badge-check" class="size-3.5 shrink-0 text-primary" />
+                              <UIcon v-if="user.emailVerified" name="i-pixelarticons-check-double" class="size-3.5 shrink-0 text-primary" />
                               <UBadge v-if="user.banned" size="sm" color="error" variant="subtle" label="ban" />
                             </div>
                             <p class="truncate text-xs text-dimmed">{{ user.email }}</p>
@@ -790,12 +790,12 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                           </template>
 
                           <template v-else>
-                            <UButton size="xs" variant="ghost" color="neutral" icon="i-lucide-pencil" aria-label="Edytuj" @click="startEdit(user)" />
+                            <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="startEdit(user)" />
                             <UButton
                               size="xs"
                               variant="ghost"
                               :color="user.banned ? 'success' : 'warning'"
-                              :icon="user.banned ? 'i-lucide-user-round-check' : 'i-lucide-ban'"
+                              :icon="user.banned ? 'i-pixelarticons-contact' : 'i-pixelarticons-cancel'"
                               :aria-label="user.banned ? 'Odblokuj' : 'Zablokuj'"
                               :loading="busy === `user:${user.id}`"
                               @click="toggleBan(user)"
@@ -804,7 +804,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                               size="xs"
                               variant="ghost"
                               color="error"
-                              icon="i-lucide-trash-2"
+                              icon="i-pixelarticons-trash"
                               aria-label="Usuń"
                               @click="confirmDelete = user.id"
                             />

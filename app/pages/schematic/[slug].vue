@@ -58,7 +58,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-blocks"
+        icon="i-pixelarticons-blocks"
         :gallery="data?.gallery ?? []"
         :back-to="'/schematic'"
         :back-label="t('catalog.schematics.title')"

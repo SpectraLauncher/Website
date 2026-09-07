@@ -31,12 +31,12 @@ export const MC_COLORS: McColor[] = [
 ]
 
 export const MC_FORMATS: McFormat[] = [
-  { code: 'l', key: 'bold', icon: 'i-lucide-bold' },
-  { code: 'o', key: 'italic', icon: 'i-lucide-italic' },
-  { code: 'n', key: 'underline', icon: 'i-lucide-underline' },
-  { code: 'm', key: 'strike', icon: 'i-lucide-strikethrough' },
-  { code: 'k', key: 'obfuscated', icon: 'i-lucide-shuffle' },
-  { code: 'r', key: 'reset', icon: 'i-lucide-rotate-ccw' }
+  { code: 'l', key: 'bold', icon: 'i-pixelarticons-letter-b' },
+  { code: 'o', key: 'italic', icon: 'i-pixelarticons-letter-i' },
+  { code: 'n', key: 'underline', icon: 'i-pixelarticons-letter-u' },
+  { code: 'm', key: 'strike', icon: 'i-pixelarticons-letter-s' },
+  { code: 'k', key: 'obfuscated', icon: 'i-pixelarticons-shuffle' },
+  { code: 'r', key: 'reset', icon: 'i-pixelarticons-reload' }
 ]
 
 const BY_HEX = new Map(MC_COLORS.map(c => [c.hex.toLowerCase(), c]))

@@ -46,7 +46,8 @@
     "test:watch": "vitest",
     "check:ui": "node test/ui-props-check.mjs",
     "check:responsive": "node test/responsive-check.mjs",
-    "check:apidocs": "node test/api-docs-check.mjs"
+    "check:apidocs": "node test/api-docs-check.mjs",
+    "check:icons": "node test/icons-check.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.2",
@@ -76,7 +77,7 @@
     "vue": "^3.5.41"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.126",
+    "@iconify-json/pixelarticons": "^1.2.9",
     "@iconify-json/simple-icons": "^1.2.93",
     "@types/markdown-it": "^14.2.0",
     "@types/nodemailer": "^8.0.1",

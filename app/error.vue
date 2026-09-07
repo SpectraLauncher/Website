@@ -41,13 +41,13 @@ const goHome = () => clearError({ redirect: localePath('/') })
         </p>
 
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <UButton size="lg" class="rounded-xl" icon="i-lucide-house" :label="t('error.home')" @click="goHome" />
+          <UButton size="lg" class="rounded-xl" icon="i-pixelarticons-home" :label="t('error.home')" @click="goHome" />
           <UButton
             size="lg"
             variant="soft"
             color="neutral"
             class="rounded-xl"
-            icon="i-lucide-arrow-left"
+            icon="i-pixelarticons-arrow-left"
             :label="t('error.back')"
             @click="$router.back()"
           />

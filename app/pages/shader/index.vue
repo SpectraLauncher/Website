@@ -8,7 +8,7 @@ const { t } = useI18n()
   <CatalogBrowse
     type="shader"
     prefix="shader"
-    icon="i-lucide-sun"
+    icon="i-pixelarticons-sun"
     :title="t('catalog.shaders.title')"
     :sub="t('catalog.shaders.sub')"
   />

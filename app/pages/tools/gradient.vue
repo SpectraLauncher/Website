@@ -50,7 +50,7 @@ const charStyle = (hex: string) => ({
 const copy = async (value: string) => {
   if (!value) return
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('smallText.theText') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('smallText.theText') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const steps = computed(() => (tm('gradient.steps') as unknown[]).map((s, i) => ({
@@ -79,7 +79,7 @@ const faq = computed(() => (tm('gradient.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -117,7 +117,7 @@ const faq = computed(() => (tm('gradient.faq') as unknown[]).map((x, i) => ({
                   :aria-label="t('locator.remove')"
                   @click.stop="removeStop(i)"
                 >
-                  <UIcon name="i-lucide-x" class="size-3" />
+                  <UIcon name="i-pixelarticons-close" class="size-3" />
                 </span>
               </button>
 
@@ -131,7 +131,7 @@ const faq = computed(() => (tm('gradient.faq') as unknown[]).map((x, i) => ({
 
             <UButton
               v-if="stops.length < MAX_STOPS"
-              icon="i-lucide-plus"
+              icon="i-pixelarticons-plus"
               variant="ghost"
               color="neutral"
               class="size-14 justify-center rounded-2xl border border-dashed border-zinc-600/60"
@@ -192,7 +192,7 @@ const faq = computed(() => (tm('gradient.faq') as unknown[]).map((x, i) => ({
             <div class="mb-1 flex items-center justify-between gap-4">
               <div class="text-sm font-medium">{{ out.label }}</div>
               <UButton
-                icon="i-lucide-copy"
+                icon="i-pixelarticons-copy"
                 size="xs"
                 variant="ghost"
                 color="neutral"

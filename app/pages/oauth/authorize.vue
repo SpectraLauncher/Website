@@ -86,7 +86,7 @@ const host = computed(() => {
           color="error"
           variant="subtle"
           class="rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="error"
         />
 
@@ -97,7 +97,7 @@ const host = computed(() => {
           <div class="mb-6 flex flex-wrap items-center gap-4">
             <span class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
               <img v-if="info.client.icon" :src="info.client.icon" alt="" class="size-full object-cover">
-              <UIcon v-else name="i-lucide-boxes" class="size-6 text-dimmed" />
+              <UIcon v-else name="i-pixelarticons-archive" class="size-6 text-dimmed" />
             </span>
             <div class="min-w-0">
               <h1 class="truncate text-xl font-semibold tracking-tight">{{ info.client.name }}</h1>
@@ -111,7 +111,7 @@ const host = computed(() => {
               :key="scope"
               class="flex items-start gap-2 text-sm"
             >
-              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary" />
+              <UIcon name="i-pixelarticons-check" class="mt-0.5 size-4 shrink-0 text-primary" />
               <span class="text-muted">{{ t(`tokens.scopes.${scope}`) }}</span>
             </li>
           </ul>

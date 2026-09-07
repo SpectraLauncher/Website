@@ -59,7 +59,7 @@ const pickedIngame = computed(() => toHex(setBrightness(fromHex(picked.value))))
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('locator.features') as unknown[]).map(x => ({
@@ -87,7 +87,7 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -97,7 +97,7 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
         <form class="mt-8 flex flex-wrap gap-3" @submit.prevent="lookup">
           <UInput
             v-model="query"
-            icon="i-lucide-search"
+            icon="i-pixelarticons-search"
             size="lg"
             :placeholder="t('locator.placeholder')"
             class="w-full sm:w-96"
@@ -166,7 +166,7 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
             </div>
 
             <UButton
-              icon="i-lucide-x"
+              icon="i-pixelarticons-close"
               size="xs"
               variant="ghost"
               color="neutral"
@@ -198,7 +198,7 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
               <div class="text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('locator.rawLabel') }}</div>
               <div class="font-mono text-sm text-muted">{{ picked.toUpperCase() }}</div>
             </div>
-            <UIcon name="i-lucide-arrow-right" class="size-5 text-dimmed" />
+            <UIcon name="i-pixelarticons-arrow-right" class="size-5 text-dimmed" />
             <div>
               <div class="text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('locator.ingameLabel') }}</div>
               <button type="button" class="cursor-pointer font-mono text-sm" :style="{ color: pickedIngame }" @click="copy(pickedIngame)">

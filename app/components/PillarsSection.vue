@@ -4,8 +4,8 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 
 const pillars = computed(() => [
-  { icon: 'i-lucide-rocket', to: localePath('/launcher'), t: t('home.p1t'), d: t('home.p1d'), cta: t('home.p1cta') },
-  { icon: 'i-lucide-wrench', to: localePath('/tools'), t: t('home.p2t'), d: t('home.p2d'), cta: t('home.p2cta') },
+  { icon: 'i-pixelarticons-zap', to: localePath('/launcher'), t: t('home.p1t'), d: t('home.p1d'), cta: t('home.p1cta') },
+  { icon: 'i-pixelarticons-tools', to: localePath('/tools'), t: t('home.p2t'), d: t('home.p2d'), cta: t('home.p2cta') },
   { icon: 'i-simple-icons-discord', to: DISCORD_INVITE, t: t('home.p3t'), d: t('home.p3d'), cta: t('home.p3cta') }
 ])
 </script>
@@ -28,7 +28,7 @@ const pillars = computed(() => [
 
         <div class="flex items-center gap-1.5 text-sm text-muted transition-colors group-hover:text-default">
           {{ p.cta }}
-          <UIcon name="i-lucide-arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
         </div>
       </GlassCard>
     </div>

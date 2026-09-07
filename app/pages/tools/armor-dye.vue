@@ -17,7 +17,7 @@ const target = ref('@p')
 
 const addDye = (id: string) => {
   if (used.value.length >= MAX_DYES) {
-    toast.add({ title: t('armorDye.maxDyes', { n: MAX_DYES }), icon: 'i-lucide-info', color: 'warning' })
+    toast.add({ title: t('armorDye.maxDyes', { n: MAX_DYES }), icon: 'i-pixelarticons-circle-info', color: 'warning' })
     return
   }
   used.value.push(id)
@@ -47,12 +47,12 @@ const matchGrouped = computed(() => {
 
 const applyMatch = () => {
   used.value = [...match.value.dyes]
-  toast.add({ title: t('armorDye.applied'), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('armorDye.applied'), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('armorDye.features') as unknown[]).map(x => ({
@@ -80,7 +80,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -111,7 +111,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
               <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('armorDye.currentMix') }}</div>
               <UButton
                 v-if="used.length"
-                icon="i-lucide-rotate-ccw"
+                icon="i-pixelarticons-reload"
                 size="xs"
                 variant="ghost"
                 color="neutral"
@@ -135,7 +135,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                 <span class="text-sm">
                   <span v-if="g.n > 1" class="text-dimmed">{{ g.n }}× </span>{{ t(`banner.colors.${g.dye.id}`) }}
                 </span>
-                <UIcon name="i-lucide-x" class="size-3 text-dimmed opacity-0 transition-opacity group-hover:opacity-100" />
+                <UIcon name="i-pixelarticons-close" class="size-3 text-dimmed opacity-0 transition-opacity group-hover:opacity-100" />
               </button>
             </div>
 
@@ -190,7 +190,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
             />
             <UInput v-model="target" size="sm" class="w-28 font-mono" />
             <UButton
-              icon="i-lucide-copy"
+              icon="i-pixelarticons-copy"
               size="xs"
               variant="ghost"
               color="neutral"
@@ -224,7 +224,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                   </div>
                 </div>
 
-                <UIcon name="i-lucide-arrow-right" class="size-5 text-dimmed" />
+                <UIcon name="i-pixelarticons-arrow-right" class="size-5 text-dimmed" />
 
                 <div>
                   <div class="mb-2 text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('armorDye.mixedResult') }}</div>
@@ -272,7 +272,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                 </div>
 
                 <UButton
-                  icon="i-lucide-arrow-up"
+                  icon="i-pixelarticons-arrow-up"
                   size="xs"
                   variant="ghost"
                   color="neutral"

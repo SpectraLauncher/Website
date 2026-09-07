@@ -25,7 +25,7 @@ const estimate = computed(() => estimateRam(num(players.value), num(mods.value))
 
 const applyEstimate = () => {
   ramGb.value = estimate.value
-  toast.add({ title: t('startFile.applied', { n: estimate.value }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('startFile.applied', { n: estimate.value }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const opts = computed<StartFileOptions>(() => ({
@@ -50,7 +50,7 @@ const suggestSmall = computed(() =>
 
 const copy = async () => {
   await navigator.clipboard.writeText(script.value)
-  toast.add({ title: t('colorCodes.copied', { value: fileName.value }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: fileName.value }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const download = () => {
@@ -89,7 +89,7 @@ const faq = computed(() => (tm('startFile.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -109,7 +109,7 @@ const faq = computed(() => (tm('startFile.faq') as unknown[]).map((x, i) => ({
                   <label class="text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('startFile.ram') }}</label>
                   <UPopover>
                     <UButton
-                      icon="i-lucide-calculator"
+                      icon="i-pixelarticons-calculator"
                       size="xs"
                       variant="ghost"
                       color="neutral"
@@ -175,15 +175,15 @@ const faq = computed(() => (tm('startFile.faq') as unknown[]).map((x, i) => ({
                 </div>
 
                 <p v-if="suggestExtreme" class="mt-3 flex items-start gap-2 text-xs text-warning">
-                  <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-3.5 shrink-0" />
+                  <UIcon name="i-pixelarticons-warning-box" class="mt-0.5 size-3.5 shrink-0" />
                   {{ t('startFile.hintExtreme') }}
                 </p>
                 <p v-if="suggestSmall" class="mt-3 flex items-start gap-2 text-xs text-warning">
-                  <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-3.5 shrink-0" />
+                  <UIcon name="i-pixelarticons-warning-box" class="mt-0.5 size-3.5 shrink-0" />
                   {{ t('startFile.hintSmall') }}
                 </p>
                 <p v-if="preset === 'zgc' && opts.ramGb < ZGC_MIN_GB" class="mt-3 flex items-start gap-2 text-xs text-warning">
-                  <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-3.5 shrink-0" />
+                  <UIcon name="i-pixelarticons-warning-box" class="mt-0.5 size-3.5 shrink-0" />
                   {{ t('startFile.hintZgcSmall', { n: ZGC_MIN_GB }) }}
                 </p>
 
@@ -239,12 +239,12 @@ const faq = computed(() => (tm('startFile.faq') as unknown[]).map((x, i) => ({
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-file-terminal" class="size-4 text-dimmed" />
+                <UIcon name="i-pixelarticons-script" class="size-4 text-dimmed" />
                 <span class="font-mono text-sm">{{ fileName }}</span>
               </div>
               <div class="flex gap-1">
-                <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy" />
-                <UButton icon="i-lucide-download" size="xs" variant="ghost" color="neutral" :label="t('startFile.download')" @click="download" />
+                <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy" />
+                <UButton icon="i-pixelarticons-download" size="xs" variant="ghost" color="neutral" :label="t('startFile.download')" @click="download" />
               </div>
             </div>
 

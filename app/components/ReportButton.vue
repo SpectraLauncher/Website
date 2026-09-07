@@ -61,14 +61,14 @@ watch(open, (value) => {
       :size="props.size ?? 'xs'"
       variant="ghost"
       color="neutral"
-      icon="i-lucide-flag"
+      icon="i-pixelarticons-flag"
       :label="props.label"
       :aria-label="t('reports.title')"
     />
 
     <template #body>
       <div v-if="sent" class="space-y-3 text-center">
-        <UIcon name="i-lucide-check-circle" class="size-8 text-primary" />
+        <UIcon name="i-pixelarticons-checkbox-on" class="size-8 text-primary" />
         <p class="text-sm">{{ t('reports.thanks') }}</p>
       </div>
 

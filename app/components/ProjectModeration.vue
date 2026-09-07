@@ -108,7 +108,7 @@ async function submit() {
     :class="needsAppeal ? 'border-error/40 bg-error/5' : 'border-white/10 bg-white/[0.02]'"
   >
     <header class="mb-4 flex flex-wrap items-center gap-2">
-      <UIcon name="i-lucide-gavel" class="size-5 text-muted" />
+      <UIcon name="i-pixelarticons-scale" class="size-5 text-muted" />
       <h2 class="text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
       <UBadge
         :color="STATUS_COLOR[status] ?? 'neutral'"
@@ -161,7 +161,7 @@ async function submit() {
         size="sm"
         color="primary"
         class="rounded-xl"
-        icon="i-lucide-send"
+        icon="i-pixelarticons-send"
         :loading="submitting"
         :label="t('catalog.submit')"
         @click="submit"

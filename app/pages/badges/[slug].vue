@@ -72,13 +72,13 @@ useSchemaOrg(computed(() => (data.value
 
       <section class="container mx-auto max-w-4xl px-4 pb-24 pt-40">
         <NuxtLink :to="localePath('/badges')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('badges.title') }}
         </NuxtLink>
 
         <template v-if="error || !data">
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-10 text-center backdrop-blur-sm">
-            <UIcon name="i-lucide-award" class="size-8 text-muted" />
+            <UIcon name="i-pixelarticons-trophy" class="size-8 text-muted" />
             <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('badges.notFound') }}</h1>
           </div>
         </template>
@@ -92,7 +92,7 @@ useSchemaOrg(computed(() => (data.value
               class="size-20 shrink-0 rounded-2xl object-contain"
             >
             <span v-else class="grid size-20 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-lucide-award" class="size-8 text-primary" />
+              <UIcon name="i-pixelarticons-trophy" class="size-8 text-primary" />
             </span>
 
             <div class="min-w-0 flex-1">

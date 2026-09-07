@@ -78,7 +78,7 @@ const groups = computed(() =>
         <div class="mt-9 flex flex-wrap items-center gap-3">
           <UInput
             v-model="query"
-            icon="i-lucide-search"
+            icon="i-pixelarticons-search"
             size="lg"
             :placeholder="t('toolsPage.searchPh')"
             class="w-full sm:w-80"
@@ -113,7 +113,7 @@ const groups = computed(() =>
         </div>
 
         <div v-else class="rounded-3xl border border-zinc-600/50 bg-black/30 py-20 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-search-x" class="mx-auto mb-3 size-8 text-dimmed" />
+          <UIcon name="i-pixelarticons-search" class="mx-auto mb-3 size-8 text-dimmed" />
           <p class="text-muted">{{ t('toolsPage.empty') }}</p>
         </div>
       </section>

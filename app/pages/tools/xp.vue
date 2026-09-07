@@ -36,7 +36,7 @@ const amount = (s: XpSource) => (s.min === s.max ? String(s.min) : `${s.min}–$
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const faq = computed(() => (tm('xp.faq') as unknown[]).map((x, i) => ({
@@ -64,7 +64,7 @@ const features = computed(() => (tm('xp.features') as unknown[]).map(x => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -89,7 +89,7 @@ const features = computed(() => (tm('xp.features') as unknown[]).map(x => ({
             </div>
 
             <div class="grid place-items-center pb-3">
-              <UIcon name="i-lucide-arrow-left-right" class="size-5 text-dimmed" />
+              <UIcon name="i-pixelarticons-arrows-horizontal" class="size-5 text-dimmed" />
             </div>
 
             <div>

@@ -37,7 +37,7 @@ function dismiss() {
       class="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-2xl border border-zinc-600/50 bg-black/80 p-4 backdrop-blur-md sm:inset-x-6"
     >
       <div class="flex flex-wrap items-center gap-4">
-        <UIcon name="i-lucide-cookie" class="size-5 shrink-0 text-primary" />
+        <UIcon name="i-pixelarticons-cake" class="size-5 shrink-0 text-primary" />
 
         <p class="min-w-0 flex-1 text-sm/relaxed text-muted">
           {{ t('cookieNotice.body') }}

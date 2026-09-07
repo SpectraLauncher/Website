@@ -228,7 +228,7 @@ onMounted(search)
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -242,7 +242,7 @@ onMounted(search)
             <UInput
               v-model="query"
               size="lg"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               class="min-w-0 flex-1 font-mono"
               :placeholder="t('skinStealer.searchPh')"
               :maxlength="36"
@@ -251,7 +251,7 @@ onMounted(search)
           </form>
 
           <p v-if="error" class="mt-3 flex items-center gap-2 text-sm text-red-400">
-            <UIcon name="i-lucide-triangle-alert" class="size-4" />
+            <UIcon name="i-pixelarticons-warning-box" class="size-4" />
             {{ error }}
           </p>
 
@@ -292,8 +292,8 @@ onMounted(search)
             </div>
 
             <div class="mt-4 flex flex-wrap gap-2">
-              <UButton icon="i-lucide-download" size="sm" color="neutral" :disabled="!skinCanvas" :label="t('skinStealer.downloadSkin')" @click="downloadSkin" />
-              <UButton icon="i-lucide-user-square" size="sm" variant="ghost" color="neutral" :disabled="!skinCanvas" :label="t('skinStealer.downloadHead')" @click="downloadHead" />
+              <UButton icon="i-pixelarticons-download" size="sm" color="neutral" :disabled="!skinCanvas" :label="t('skinStealer.downloadSkin')" @click="downloadSkin" />
+              <UButton icon="i-pixelarticons-avatar-square" size="sm" variant="ghost" color="neutral" :disabled="!skinCanvas" :label="t('skinStealer.downloadHead')" @click="downloadHead" />
             </div>
 
             <p class="mt-3 text-xs/relaxed text-dimmed">{{ t('skinStealer.textureHint') }}</p>
@@ -305,7 +305,7 @@ onMounted(search)
             <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('skinStealer.capes') }}</div>
             <UButton
               v-if="activeCape"
-              icon="i-lucide-x"
+              icon="i-pixelarticons-close"
               size="xs"
               variant="ghost"
               color="neutral"
@@ -345,7 +345,7 @@ onMounted(search)
                   </span>
                 </span>
                 <UButton
-                  icon="i-lucide-download"
+                  icon="i-pixelarticons-download"
                   size="xs"
                   variant="ghost"
                   color="neutral"
@@ -358,7 +358,7 @@ onMounted(search)
           </div>
 
           <p v-if="degraded" class="mt-3 flex items-center gap-2 text-xs text-amber-400">
-            <UIcon name="i-lucide-triangle-alert" class="size-3.5" />
+            <UIcon name="i-pixelarticons-warning-box" class="size-3.5" />
             {{ t('skinStealer.capesDegraded') }}
           </p>
           <p class="mt-3 text-xs/relaxed text-dimmed">{{ t('skinStealer.capesHint') }}</p>

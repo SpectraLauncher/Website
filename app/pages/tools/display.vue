@@ -90,7 +90,7 @@ const segDot = (seg: TellrawSegment) => mcColorHex(seg.color)
 const copy = async (value: string) => {
   if (!value) return
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('display.features') as unknown[]).map(x => ({
@@ -118,7 +118,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -195,7 +195,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
               <div class="mb-4 flex items-center justify-between gap-3">
                 <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('display.transformation') }}</div>
                 <UButton
-                  icon="i-lucide-rotate-ccw"
+                  icon="i-pixelarticons-reload"
                   size="xs"
                   variant="ghost"
                   color="neutral"
@@ -293,7 +293,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
               <div class="mb-3 flex items-center justify-between gap-3">
                 <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('display.command') }}</div>
                 <UButton
-                  icon="i-lucide-copy"
+                  icon="i-pixelarticons-copy"
                   size="xs"
                   variant="ghost"
                   color="neutral"
@@ -310,36 +310,36 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
               <pre class="overflow-x-auto whitespace-pre-wrap break-all rounded-2xl border border-white/10 bg-black/40 p-4 font-mono text-xs text-muted">{{ command }}</pre>
 
               <p v-if="tooLong" class="mt-2 flex items-center gap-1.5 text-xs text-amber-400">
-                <UIcon name="i-lucide-triangle-alert" class="size-3.5" />
+                <UIcon name="i-pixelarticons-warning-box" class="size-3.5" />
                 {{ t('display.tooLong', { n: command.length, max: MAX_CHAT }) }}
               </p>
 
               <div class="mt-4 flex flex-wrap items-center gap-2">
                 <span class="text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('display.killLabel') }}</span>
                 <code class="rounded bg-black/50 px-2 py-1 font-mono text-xs text-muted">{{ kill }}</code>
-                <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :aria-label="t('colorCodes.copy')" @click="copy(kill)" />
+                <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :aria-label="t('colorCodes.copy')" @click="copy(kill)" />
               </div>
             </div>
 
             <div v-if="s.kind === 'text'" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <div class="mb-4 flex items-center justify-between gap-3">
                 <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('display.textSegments') }}</div>
-                <UButton icon="i-lucide-plus" size="xs" variant="ghost" color="neutral" :label="t('display.addSegment')" @click="addSegment" />
+                <UButton icon="i-pixelarticons-plus" size="xs" variant="ghost" color="neutral" :label="t('display.addSegment')" @click="addSegment" />
               </div>
 
               <div class="flex flex-col gap-3">
                 <div v-for="(seg, i) in s.segments" :key="i" class="rounded-2xl border border-white/10 bg-black/40">
                   <div class="flex items-center gap-2 p-3">
                     <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left" @click="openSegment = openSegment === i ? -1 : i">
-                      <UIcon name="i-lucide-chevron-right" class="size-4 shrink-0 text-dimmed transition-transform" :class="openSegment === i ? 'rotate-90' : ''" />
+                      <UIcon name="i-pixelarticons-chevron-right" class="size-4 shrink-0 text-dimmed transition-transform" :class="openSegment === i ? 'rotate-90' : ''" />
                       <span class="size-3 shrink-0 rounded" :style="{ background: segDot(seg) }" />
                       <span class="truncate text-sm" :class="seg.text ? '' : 'text-dimmed'">
                         {{ seg.text.replace(/\n/g, '⏎') || t('display.emptySegment') }}
                       </span>
                     </button>
-                    <UButton icon="i-lucide-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="moveSegment(i, -1)" />
-                    <UButton icon="i-lucide-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="moveSegment(i, 1)" />
-                    <UButton v-if="s.segments.length > 1" icon="i-lucide-x" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="removeSegment(i)" />
+                    <UButton icon="i-pixelarticons-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="moveSegment(i, -1)" />
+                    <UButton icon="i-pixelarticons-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="moveSegment(i, 1)" />
+                    <UButton v-if="s.segments.length > 1" icon="i-pixelarticons-close" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="removeSegment(i)" />
                   </div>
 
                   <div v-if="openSegment === i" class="border-t border-white/10 p-4">
@@ -360,7 +360,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
                       />
                       <UPopover>
                         <button type="button" class="grid size-6 cursor-pointer place-items-center rounded border border-dashed border-zinc-500 text-dimmed" :title="t('tellraw.hexColor')">
-                          <UIcon name="i-lucide-pipette" class="size-3" />
+                          <UIcon name="i-pixelarticons-pipette" class="size-3" />
                         </button>
                         <template #content>
                           <div class="flex flex-col gap-3 p-4">
@@ -377,11 +377,11 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
 
                     <div class="mt-4 flex flex-wrap items-center gap-1.5">
                       <span class="mr-1 text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('colorCodes.formatsTitle') }}</span>
-                      <UButton size="xs" :variant="seg.bold ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-bold" :aria-label="t('display.styles.bold')" @click="seg.bold = !seg.bold" />
-                      <UButton size="xs" :variant="seg.italic ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-italic" :aria-label="t('display.styles.italic')" @click="seg.italic = !seg.italic" />
-                      <UButton size="xs" :variant="seg.underlined ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-underline" :aria-label="t('display.styles.underlined')" @click="seg.underlined = !seg.underlined" />
-                      <UButton size="xs" :variant="seg.strikethrough ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-strikethrough" :aria-label="t('display.styles.strikethrough')" @click="seg.strikethrough = !seg.strikethrough" />
-                      <UButton size="xs" :variant="seg.obfuscated ? 'subtle' : 'ghost'" color="neutral" icon="i-lucide-shuffle" :aria-label="t('display.styles.obfuscated')" @click="seg.obfuscated = !seg.obfuscated" />
+                      <UButton size="xs" :variant="seg.bold ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-letter-b" :aria-label="t('display.styles.bold')" @click="seg.bold = !seg.bold" />
+                      <UButton size="xs" :variant="seg.italic ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-letter-i" :aria-label="t('display.styles.italic')" @click="seg.italic = !seg.italic" />
+                      <UButton size="xs" :variant="seg.underlined ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-letter-u" :aria-label="t('display.styles.underlined')" @click="seg.underlined = !seg.underlined" />
+                      <UButton size="xs" :variant="seg.strikethrough ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-letter-s" :aria-label="t('display.styles.strikethrough')" @click="seg.strikethrough = !seg.strikethrough" />
+                      <UButton size="xs" :variant="seg.obfuscated ? 'subtle' : 'ghost'" color="neutral" icon="i-pixelarticons-shuffle" :aria-label="t('display.styles.obfuscated')" @click="seg.obfuscated = !seg.obfuscated" />
                     </div>
                   </div>
                 </div>
@@ -469,7 +469,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
 
               <div class="mt-5 mb-2 flex items-center justify-between gap-3">
                 <span class="text-sm text-muted">{{ t('display.blockProps') }}</span>
-                <UButton icon="i-lucide-plus" size="xs" variant="ghost" color="neutral" :label="t('display.addProp')" @click="addProp" />
+                <UButton icon="i-pixelarticons-plus" size="xs" variant="ghost" color="neutral" :label="t('display.addProp')" @click="addProp" />
               </div>
 
               <div class="flex flex-col gap-2">
@@ -477,7 +477,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
                   <UInput v-model="prop.key" size="xs" class="flex-1 font-mono" :placeholder="t('display.propKey')" />
                   <span class="text-dimmed">=</span>
                   <UInput v-model="prop.value" size="xs" class="flex-1 font-mono" :placeholder="t('display.propValue')" />
-                  <UButton icon="i-lucide-x" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="s.blockProps.splice(i, 1)" />
+                  <UButton icon="i-pixelarticons-close" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="s.blockProps.splice(i, 1)" />
                 </div>
               </div>
 

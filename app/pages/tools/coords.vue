@@ -54,7 +54,7 @@ const useForChunk = (v: Vec3) => {
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const round = (n: number) => Math.round(n * 100) / 100
@@ -84,7 +84,7 @@ const faq = computed(() => (tm('coords.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -97,7 +97,7 @@ const faq = computed(() => (tm('coords.faq') as unknown[]).map((x, i) => ({
           <div class="mb-5 flex items-center justify-between gap-4">
             <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('coords.convertTitle') }}</div>
             <UButton
-              icon="i-lucide-arrow-left-right"
+              icon="i-pixelarticons-arrows-horizontal"
               size="xs"
               variant="ghost"
               color="neutral"
@@ -127,7 +127,7 @@ const faq = computed(() => (tm('coords.faq') as unknown[]).map((x, i) => ({
             <div class="grid place-items-center">
               <div class="rounded-full border border-white/10 bg-black/40 p-3">
                 <UIcon
-                  name="i-lucide-arrow-right"
+                  name="i-pixelarticons-arrow-right"
                   class="size-5 text-dimmed transition-transform duration-300"
                   :class="fromNether ? 'rotate-180' : ''"
                 />
@@ -162,7 +162,7 @@ const faq = computed(() => (tm('coords.faq') as unknown[]).map((x, i) => ({
             <div v-for="cmd in [{ k: 'overworld', v: tpOverworld }, { k: 'nether', v: tpNether }]" :key="cmd.k" class="rounded-2xl border border-white/10 bg-black/40 p-4">
               <div class="mb-2 flex items-center justify-between gap-3">
                 <span class="text-xs text-dimmed">{{ t(`coords.${cmd.k}`) }}</span>
-                <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(cmd.v)" />
+                <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(cmd.v)" />
               </div>
               <pre class="overflow-x-auto font-mono text-sm text-muted">{{ cmd.v }}</pre>
             </div>

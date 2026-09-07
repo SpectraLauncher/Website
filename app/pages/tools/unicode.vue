@@ -41,7 +41,7 @@ const found = computed(() => groups.value.reduce((n, g) => n + g.symbols.length,
 const copy = async (symbol: string) => {
   const value = asEscape.value ? escapeSeq(symbol) : symbol
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const features = computed(() => (tm('unicode.features') as unknown[]).map(x => ({
@@ -69,7 +69,7 @@ const faq = computed(() => (tm('unicode.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -79,7 +79,7 @@ const faq = computed(() => (tm('unicode.faq') as unknown[]).map((x, i) => ({
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <UInput
             v-model="query"
-            icon="i-lucide-search"
+            icon="i-pixelarticons-search"
             size="lg"
             :placeholder="t('unicode.searchPh')"
             class="w-full sm:w-80"
@@ -89,7 +89,7 @@ const faq = computed(() => (tm('unicode.faq') as unknown[]).map((x, i) => ({
             color="neutral"
             size="lg"
             class="rounded-xl"
-            icon="i-lucide-code"
+            icon="i-pixelarticons-code"
             :label="t('unicode.escapeMode')"
             @click="asEscape = !asEscape"
           />
@@ -98,7 +98,7 @@ const faq = computed(() => (tm('unicode.faq') as unknown[]).map((x, i) => ({
             color="neutral"
             size="lg"
             class="rounded-xl"
-            icon="i-lucide-gamepad-2"
+            icon="i-pixelarticons-gamepad"
             :label="t('unicode.mcOnly')"
             :title="t('unicode.mcOnlyHint')"
             @click="mcOnly = !mcOnly"
@@ -130,7 +130,7 @@ const faq = computed(() => (tm('unicode.faq') as unknown[]).map((x, i) => ({
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('unicode.allTitle') }}</h2>
 
         <div v-if="!groups.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 py-20 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-search-x" class="mx-auto mb-3 size-8 text-dimmed" />
+          <UIcon name="i-pixelarticons-search" class="mx-auto mb-3 size-8 text-dimmed" />
           <p class="text-muted">{{ t('toolsPage.empty') }}</p>
         </div>
 

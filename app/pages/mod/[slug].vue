@@ -39,7 +39,7 @@ useSeoMeta({
       <CatalogProject
         v-if="project"
         :project="project"
-        icon="i-lucide-puzzle"
+        icon="i-pixelarticons-shapes"
         :gallery="data?.gallery ?? []"
         :back-to="'/mod'"
         :back-label="t('catalog.mods.title')"

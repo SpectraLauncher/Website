@@ -70,7 +70,7 @@ const applySmallCaps = () => {
   if (!ed) return
   const { from, to } = ed.state.selection
   if (from === to) {
-    toast.add({ title: t('motd.selectFirst'), icon: 'i-lucide-info', color: 'warning' })
+    toast.add({ title: t('motd.selectFirst'), icon: 'i-pixelarticons-circle-info', color: 'warning' })
     return
   }
   const text = ed.state.doc.textBetween(from, to, '\n')
@@ -106,7 +106,7 @@ const renderText = (run: McRun) => {
 
 const copy = async (value: string, label: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: label }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: label }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 </script>
 
@@ -143,7 +143,7 @@ const copy = async (value: string, label: string) => {
         />
 
         <UButton
-          icon="i-lucide-case-lower"
+          icon="i-pixelarticons-text-start-a"
           size="sm"
           variant="ghost"
           color="neutral"
@@ -221,7 +221,7 @@ const copy = async (value: string, label: string) => {
         <div class="mb-1 flex items-center justify-between gap-4">
           <div class="text-sm font-medium">{{ out.label }}</div>
           <UButton
-            icon="i-lucide-copy"
+            icon="i-pixelarticons-copy"
             size="xs"
             variant="ghost"
             color="neutral"

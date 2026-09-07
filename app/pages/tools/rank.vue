@@ -37,7 +37,7 @@ const onUpload = async (event: Event) => {
   if (!file) return
 
   if (file.size > 256 * 1024) {
-    toast.add({ title: t('rank.tooBig'), icon: 'i-lucide-triangle-alert', color: 'warning' })
+    toast.add({ title: t('rank.tooBig'), icon: 'i-pixelarticons-warning-box', color: 'warning' })
     return
   }
 
@@ -68,7 +68,7 @@ const copyDataUrl = async () => {
   const url = canvasRef.value?.dataUrl(exportScale.value)
   if (!url) return
   await navigator.clipboard.writeText(url)
-  toast.add({ title: t('rank.copiedUrl'), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('rank.copiedUrl'), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const paletteGroups = [
@@ -123,7 +123,7 @@ const faq = computed(() => (tm('rank.faq') as unknown[]).map((x, i) => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -217,8 +217,8 @@ const faq = computed(() => (tm('rank.faq') as unknown[]).map((x, i) => ({
                     @click="exportScale = x"
                   />
                 </div>
-                <UButton icon="i-lucide-download" size="sm" color="neutral" :label="t('rank.download')" @click="download" />
-                <UButton icon="i-lucide-copy" size="sm" variant="ghost" color="neutral" :label="t('rank.copyUrl')" @click="copyDataUrl" />
+                <UButton icon="i-pixelarticons-download" size="sm" color="neutral" :label="t('rank.download')" @click="download" />
+                <UButton icon="i-pixelarticons-copy" size="sm" variant="ghost" color="neutral" :label="t('rank.copyUrl')" @click="copyDataUrl" />
                 <span class="font-mono text-xs text-dimmed">{{ tag.width * exportScale }} × {{ tag.height * exportScale }} px</span>
               </div>
               <p class="mt-3 text-xs/relaxed text-dimmed">{{ t('rank.exportHint') }}</p>
@@ -267,7 +267,7 @@ const faq = computed(() => (tm('rank.faq') as unknown[]).map((x, i) => ({
                   :title="t('rank.noIcon')"
                   @click="s.icon = ''; s.customIcon = ''"
                 >
-                  <UIcon name="i-lucide-ban" class="size-4 text-dimmed" />
+                  <UIcon name="i-pixelarticons-cancel" class="size-4 text-dimmed" />
                 </button>
                 <button
                   v-for="ic in RANK_ICONS"
@@ -284,9 +284,9 @@ const faq = computed(() => (tm('rank.faq') as unknown[]).map((x, i) => ({
 
               <div class="mb-4 flex flex-wrap items-center gap-2">
                 <input ref="fileInput" type="file" accept="image/png,image/webp" class="hidden" @change="onUpload">
-                <UButton icon="i-lucide-upload" size="xs" variant="ghost" color="neutral" :label="t('rank.upload')" @click="fileInput?.click()" />
+                <UButton icon="i-pixelarticons-upload" size="xs" variant="ghost" color="neutral" :label="t('rank.upload')" @click="fileInput?.click()" />
                 <img v-if="s.customIcon" :src="s.customIcon" class="size-7 [image-rendering:pixelated]" alt="" >
-                <UButton v-if="s.customIcon" icon="i-lucide-x" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="clearCustom" />
+                <UButton v-if="s.customIcon" icon="i-pixelarticons-close" size="xs" variant="ghost" color="neutral" :aria-label="t('locator.remove')" @click="clearCustom" />
               </div>
               <p class="mb-4 text-xs text-dimmed">{{ t('rank.uploadHint') }}</p>
 

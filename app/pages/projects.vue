@@ -59,7 +59,7 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
             <div class="flex flex-wrap items-center gap-4">
               <span class="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                 <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
-                <UIcon v-else name="i-lucide-package" class="size-5 text-dimmed" />
+                <UIcon v-else name="i-pixelarticons-package" class="size-5 text-dimmed" />
               </span>
 
               <div class="min-w-0 flex-1">
@@ -89,7 +89,7 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
         </ul>
 
         <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
-          <UIcon name="i-lucide-package-open" class="mx-auto size-10 text-dimmed" />
+          <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
           <p class="mt-3 text-sm text-muted">{{ t('account.noProjects') }}</p>
         </div>
       </section>

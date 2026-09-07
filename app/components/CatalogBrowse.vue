@@ -199,7 +199,7 @@ useSeoMeta({
                 v-model="query"
                 size="lg"
                 class="min-w-48 flex-1"
-                icon="i-lucide-search"
+                icon="i-pixelarticons-search"
                 :placeholder="t('catalog.searchPlaceholder')"
                 @keyup.enter="sync()"
               />
@@ -209,7 +209,7 @@ useSeoMeta({
                 size="lg"
                 variant="subtle"
                 color="neutral"
-                icon="i-lucide-sliders-horizontal"
+                icon="i-pixelarticons-sliders-horizontal"
                 :label="activeCount ? String(activeCount) : ''"
                 @click="filtersOpen = !filtersOpen"
               />
@@ -240,7 +240,7 @@ useSeoMeta({
                   :aria-pressed="layout === mode"
                   @click="layout = mode"
                 >
-                  <UIcon :name="mode === 'grid' ? 'i-lucide-layout-grid' : 'i-lucide-rows-3'" class="size-4" />
+                  <UIcon :name="mode === 'grid' ? 'i-pixelarticons-grid' : 'i-pixelarticons-layout-rows'" class="size-4" />
                 </button>
               </div>
             </div>
@@ -300,7 +300,7 @@ useSeoMeta({
             </ul>
 
             <div v-else-if="!pending" class="mt-16 text-center">
-              <UIcon name="i-lucide-search-x" class="mx-auto size-10 text-dimmed" />
+              <UIcon name="i-pixelarticons-search" class="mx-auto size-10 text-dimmed" />
               <p class="mt-3 text-muted">{{ t('catalog.empty') }}</p>
               <UButton
                 v-if="activeCount"
@@ -316,7 +316,7 @@ useSeoMeta({
               <UButton
                 variant="subtle"
                 color="neutral"
-                icon="i-lucide-chevron-left"
+                icon="i-pixelarticons-chevron-left"
                 :disabled="page <= 1"
                 :aria-label="t('catalog.previousPage')"
                 @click="goto(page - 1)"
@@ -325,7 +325,7 @@ useSeoMeta({
               <UButton
                 variant="subtle"
                 color="neutral"
-                icon="i-lucide-chevron-right"
+                icon="i-pixelarticons-chevron-right"
                 :disabled="page >= pages"
                 :aria-label="t('catalog.nextPage')"
                 @click="goto(page + 1)"

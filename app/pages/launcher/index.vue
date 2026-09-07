@@ -51,18 +51,18 @@ const rows = computed(() => list('launcherPage.rows').map((x, i) => ({
 })))
 
 const EXTRA_ICONS = [
-  'i-lucide-zap',
-  'i-lucide-server',
-  'i-lucide-life-buoy',
-  'i-lucide-import',
-  'i-lucide-palette',
-  'i-lucide-user-round-check'
+  'i-pixelarticons-zap',
+  'i-pixelarticons-server',
+  'i-pixelarticons-circle-question',
+  'i-pixelarticons-download',
+  'i-pixelarticons-colors-swatch',
+  'i-pixelarticons-contact'
 ]
 
 const extras = computed(() => list('launcherPage.extras').map((x, i) => ({
   title: rt((x as { title: string }).title),
   body: rt((x as { body: string }).body),
-  icon: EXTRA_ICONS[i] ?? 'i-lucide-check'
+  icon: EXTRA_ICONS[i] ?? 'i-pixelarticons-check'
 })))
 
 const account = computed(() => list('launcherPage.account').map(x => ({
@@ -147,7 +147,7 @@ useSchemaOrg(computed(() => [
                 external
                 size="xl"
                 color="neutral"
-                icon="i-lucide-download"
+                icon="i-pixelarticons-download"
                 class="rounded-xl"
                 :label="t('hero.downloadFor', { os })"
               />
@@ -158,7 +158,7 @@ useSchemaOrg(computed(() => [
                 color="neutral"
                 class="rounded-xl"
                 :label="t('hero.allPlatforms')"
-                trailing-icon="i-lucide-arrow-down"
+                trailing-icon="i-pixelarticons-arrow-down"
               />
             </div>
 
@@ -234,7 +234,7 @@ useSchemaOrg(computed(() => [
               size="lg"
               color="neutral"
               class="rounded-xl"
-              icon="i-lucide-user-round-plus"
+              icon="i-pixelarticons-avatar-circle-plus"
               :label="t('launcherPage.accountCta')"
             />
             <p class="mt-3 text-xs text-dimmed">{{ t('launcherPage.accountNote') }}</p>
@@ -317,7 +317,7 @@ useSchemaOrg(computed(() => [
           external
           size="xl"
           color="neutral"
-          icon="i-lucide-download"
+          icon="i-pixelarticons-download"
           class="rounded-xl"
           :label="t('hero.downloadFor', { os })"
         />

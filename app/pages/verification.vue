@@ -119,7 +119,7 @@ useSeoMeta({ title: () => t('verification.title'), robots: 'noindex' })
           color="error"
           variant="subtle"
           class="mt-6 rounded-2xl"
-          icon="i-lucide-triangle-alert"
+          icon="i-pixelarticons-warning-box"
           :description="problem"
         />
 

@@ -68,7 +68,7 @@ useSeoMeta({
           <template v-if="error || !meta">
             <div class="text-center">
               <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                <UIcon name="i-lucide-package-x" class="size-6 text-muted" />
+                <UIcon name="i-pixelarticons-close-box" class="size-6 text-muted" />
               </span>
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('share.notFoundTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t('share.notFoundDesc') }}</p>
@@ -87,7 +87,7 @@ useSeoMeta({
           <template v-else>
             <div class="mb-6 flex items-center gap-4">
               <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-                <UIcon name="i-lucide-package" class="size-6 text-primary" />
+                <UIcon name="i-pixelarticons-package" class="size-6 text-primary" />
               </span>
               <div class="min-w-0">
                 <p class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('share.eyebrow') }}</p>
@@ -121,7 +121,7 @@ useSeoMeta({
               size="xl"
               color="neutral"
               class="rounded-xl"
-              icon="i-lucide-download"
+              icon="i-pixelarticons-download"
               :label="t('share.openBtn')"
             />
             <p class="mt-2 text-center text-xs text-dimmed">{{ t('share.openHint') }}</p>
@@ -134,7 +134,7 @@ useSeoMeta({
                 variant="outline"
                 color="neutral"
                 class="rounded-xl"
-                icon="i-lucide-arrow-down-to-line"
+                icon="i-pixelarticons-arrow-bar-down"
                 :label="t('share.getLauncher')"
               />
             </div>

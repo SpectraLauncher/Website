@@ -38,7 +38,7 @@ useSeoMeta({
                   class="group flex items-start gap-2 text-sm transition-colors hover:text-highlighted"
                 >
                   <UIcon
-                    name="i-lucide-chevron-right"
+                    name="i-pixelarticons-chevron-right"
                     class="mt-0.5 size-3.5 shrink-0 text-dimmed transition-transform group-hover:translate-x-0.5"
                   />
                   <span class="min-w-0">

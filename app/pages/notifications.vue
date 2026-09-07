@@ -45,7 +45,7 @@ function line(item: NotificationItem): string {
             size="sm"
             variant="ghost"
             color="neutral"
-            icon="i-lucide-check-check"
+            icon="i-pixelarticons-check-double"
             :label="t('notifications.markAll')"
             @click="markRead()"
           />
@@ -77,7 +77,7 @@ function line(item: NotificationItem): string {
               size="xs"
               variant="ghost"
               color="neutral"
-              icon="i-lucide-x"
+              icon="i-pixelarticons-close"
               :aria-label="t('notifications.dismiss')"
               @click="dismiss(item.id)"
             />

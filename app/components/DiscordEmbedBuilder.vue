@@ -70,10 +70,10 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
 
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.author = !open.author">
-        <UIcon name="i-lucide-user" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-user" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Author</span>
         <span v-if="embed.author.name" class="truncate text-[11px] text-white/35">{{ summary(embed.author.name) }}</span>
-        <UIcon :name="open.author ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ms-auto size-4 text-white/40" />
+        <UIcon :name="open.author ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'" class="ms-auto size-4 text-white/40" />
       </button>
       <div v-show="open.author" class="space-y-2 border-t border-white/8 p-3">
         <div>
@@ -93,10 +93,10 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
 
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.body = !open.body">
-        <UIcon name="i-lucide-heading" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-heading" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Title and text</span>
         <span v-if="embed.title" class="truncate text-[11px] text-white/35">{{ summary(embed.title) }}</span>
-        <UIcon :name="open.body ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ms-auto size-4 text-white/40" />
+        <UIcon :name="open.body ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'" class="ms-auto size-4 text-white/40" />
       </button>
       <div v-show="open.body" class="space-y-2 border-t border-white/8 p-3">
         <div>
@@ -119,10 +119,10 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
 
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.images = !open.images">
-        <UIcon name="i-lucide-image" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-image" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Images</span>
         <span v-if="embed.image.url || embed.thumbnail.url" class="text-[11px] text-white/35">set</span>
-        <UIcon :name="open.images ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ms-auto size-4 text-white/40" />
+        <UIcon :name="open.images ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'" class="ms-auto size-4 text-white/40" />
       </button>
       <div v-show="open.images" class="space-y-2 border-t border-white/8 p-3">
         <div>
@@ -138,10 +138,10 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
 
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.fields = !open.fields">
-        <UIcon name="i-lucide-table-2" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-table" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Fields</span>
         <span v-if="embed.fields.length" class="text-[11px] text-white/35">{{ embed.fields.length }}/{{ LIMITS.fields }}</span>
-        <UIcon :name="open.fields ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ms-auto size-4 text-white/40" />
+        <UIcon :name="open.fields ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'" class="ms-auto size-4 text-white/40" />
       </button>
       <div v-show="open.fields" class="space-y-2 border-t border-white/8 p-3">
         <div v-for="(field, i) in embed.fields" :key="i" class="rounded-lg bg-white/[0.03] p-2.5">
@@ -149,7 +149,7 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
             <span class="text-[11px] font-medium text-white/40">Field {{ i + 1 }}</span>
             <UCheckbox v-model="field.inline" label="Inline" :ui="{ label: 'text-[11px]' }" />
             <UButton
-              class="ms-auto" size="xs" color="error" variant="ghost" icon="i-lucide-x"
+              class="ms-auto" size="xs" color="error" variant="ghost" icon="i-pixelarticons-close"
               @click="embed.fields.splice(i, 1)"
             />
           </div>
@@ -163,7 +163,7 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
           />
         </div>
         <UButton
-          size="xs" color="neutral" variant="soft" icon="i-lucide-plus" label="Add field"
+          size="xs" color="neutral" variant="soft" icon="i-pixelarticons-plus" label="Add field"
           :disabled="embed.fields.length >= LIMITS.fields"
           @click="addField"
         />
@@ -172,10 +172,10 @@ const SWATCHES = ['#5865f2', '#38bdf8', '#57f287', '#fee75c', '#faa61a', '#ed424
 
     <div class="overflow-hidden rounded-lg border border-white/8">
       <button type="button" class="flex w-full items-center gap-2 bg-white/[0.03] px-3 py-2 text-left transition hover:bg-white/[0.06]" @click="open.footer = !open.footer">
-        <UIcon name="i-lucide-panel-bottom" class="size-4 text-white/40" />
+        <UIcon name="i-pixelarticons-layout-footer" class="size-4 text-white/40" />
         <span class="text-sm font-medium">Footer</span>
         <span v-if="embed.footer.text" class="truncate text-[11px] text-white/35">{{ summary(embed.footer.text) }}</span>
-        <UIcon :name="open.footer ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ms-auto size-4 text-white/40" />
+        <UIcon :name="open.footer ? 'i-pixelarticons-chevron-up' : 'i-pixelarticons-chevron-down'" class="ms-auto size-4 text-white/40" />
       </button>
       <div v-show="open.footer" class="space-y-2 border-t border-white/8 p-3">
         <div>

@@ -133,7 +133,7 @@ const num = (v: unknown) => (Array.isArray(v) ? Number(v[0]) : Number(v)) || 0
 
 const copy = async (value: string) => {
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const downloadHead = () => {
@@ -177,7 +177,7 @@ onMounted(search)
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -191,7 +191,7 @@ onMounted(search)
             <UInput
               v-model="query"
               size="lg"
-              icon="i-lucide-search"
+              icon="i-pixelarticons-search"
               class="min-w-0 flex-1 font-mono"
               :placeholder="t('playerHead.searchPh')"
               :maxlength="36"
@@ -200,7 +200,7 @@ onMounted(search)
           </form>
 
           <p v-if="error" class="mt-3 flex items-center gap-2 text-sm text-red-400">
-            <UIcon name="i-lucide-triangle-alert" class="size-4" />
+            <UIcon name="i-pixelarticons-warning-box" class="size-4" />
             {{ error }}
           </p>
 
@@ -232,7 +232,7 @@ onMounted(search)
               </div>
 
               <UButton
-                icon="i-lucide-download"
+                icon="i-pixelarticons-download"
                 size="sm"
                 variant="ghost"
                 color="neutral"
@@ -303,7 +303,7 @@ onMounted(search)
                   <UBadge variant="subtle" size="sm" :label="t(`playerHead.versionRange.${cmd.version}`)" />
                 </div>
                 <UButton
-                  icon="i-lucide-copy"
+                  icon="i-pixelarticons-copy"
                   size="xs"
                   variant="ghost"
                   color="neutral"

@@ -113,7 +113,7 @@ onMounted(() => {
                     class="inline-flex items-center justify-center gap-3 rounded-[13px] px-6 py-4 text-[16px] font-bold no-underline transition-transform hover:-translate-y-0.5"
                     style="color:#04121f;background:linear-gradient(135deg,#7dd3fc,#38bdf8 55%,#0ea5e9);box-shadow:0 10px 34px rgba(56,189,248,.38)"
                 >
-                    <UIcon name="i-lucide-download" size="20" />
+                    <UIcon name="i-pixelarticons-download" size="20" />
                 {{ t('hero.downloadFor', { os }) }}
                 </NuxtLink>
                 <NuxtLink

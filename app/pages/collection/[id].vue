@@ -125,7 +125,7 @@ async function remove(projectId: string) {
                 size="xs"
                 variant="ghost"
                 color="error"
-                icon="i-lucide-x"
+                icon="i-pixelarticons-close"
                 :loading="busy === project.id"
                 :aria-label="t('collections.remove')"
                 @click="remove(project.id)"

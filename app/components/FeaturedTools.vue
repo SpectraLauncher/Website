@@ -11,7 +11,7 @@ const { t } = useI18n()
       <h2 class="text-4xl font-semibold tracking-tight">{{ t('home.toolsTitle') }}</h2>
       <NuxtLink :to="localePath('/tools')" class="group flex items-center gap-1.5 pb-1.5 text-sm text-muted transition-colors hover:text-default">
         {{ t('home.seeAll') }}
-        <UIcon name="i-lucide-arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+        <UIcon name="i-pixelarticons-arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
       </NuxtLink>
     </div>
     <p v-reveal class="mb-8 max-w-[62ch] text-muted">{{ t('home.toolsSub') }}</p>

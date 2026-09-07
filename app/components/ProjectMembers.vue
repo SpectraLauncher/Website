@@ -86,7 +86,7 @@ const remove = (member: Member) => act(member.userId, () =>
     class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
   >
     <div class="mb-1 flex flex-wrap items-center gap-2">
-      <UIcon name="i-lucide-users" class="size-5 text-muted" />
+      <UIcon name="i-pixelarticons-users" class="size-5 text-muted" />
       <h2 class="text-lg font-semibold">{{ t('projectMembers.title') }}</h2>
     </div>
     <p class="mb-5 text-sm text-muted">{{ t('projectMembers.hint') }}</p>
@@ -98,7 +98,7 @@ const remove = (member: Member) => act(member.userId, () =>
         <div class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
           <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
             <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
-            <UIcon v-else name="i-lucide-user" class="size-4 text-dimmed" />
+            <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
           </span>
 
           <NuxtLink
@@ -121,7 +121,7 @@ const remove = (member: Member) => act(member.userId, () =>
             size="xs"
             variant="ghost"
             color="neutral"
-            icon="i-lucide-settings-2"
+            icon="i-pixelarticons-settings-2"
             :aria-label="t('projectMembers.edit')"
             @click="edit(member)"
           />
@@ -130,7 +130,7 @@ const remove = (member: Member) => act(member.userId, () =>
             size="xs"
             variant="ghost"
             color="error"
-            icon="i-lucide-user-minus"
+            icon="i-pixelarticons-user-minus"
             :loading="busy === member.userId"
             :aria-label="t('projectMembers.remove')"
             @click="remove(member)"
@@ -184,7 +184,7 @@ const remove = (member: Member) => act(member.userId, () =>
         v-model="invitee"
         size="sm"
         class="min-w-0 flex-1"
-        icon="i-lucide-at-sign"
+        icon="i-pixelarticons-at-sign"
         :placeholder="t('auth.username')"
         @keyup.enter="invite"
       />

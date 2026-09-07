@@ -73,7 +73,7 @@ const namedColors = computed(() =>
 const copy = async (value: string) => {
   if (!value) return
   await navigator.clipboard.writeText(value)
-  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-lucide-check', color: 'success' })
+  toast.add({ title: t('colorCodes.copied', { value: t('banner.theCommand') }), icon: 'i-pixelarticons-check', color: 'success' })
 }
 
 const faq = computed(() => (tm('tellraw.faq') as unknown[]).map((x, i) => ({
@@ -101,7 +101,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
 
       <section class="container mx-auto px-4 pb-10 pt-48">
         <NuxtLink :to="localePath('/tools')" class="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-default">
-          <UIcon name="i-lucide-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          <UIcon name="i-pixelarticons-arrow-left" class="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
           {{ t('toolsPage.title') }}
         </NuxtLink>
 
@@ -200,7 +200,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
           <div class="mb-4 flex items-center justify-between gap-4">
             <div class="text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('tellraw.segments') }}</div>
             <UButton
-              icon="i-lucide-plus"
+              icon="i-pixelarticons-plus"
               size="xs"
               variant="ghost"
               color="neutral"
@@ -222,7 +222,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
                   @click="openSegment = openSegment === i ? -1 : i"
                 >
                   <UIcon
-                    name="i-lucide-chevron-right"
+                    name="i-pixelarticons-chevron-right"
                     class="size-4 shrink-0 text-dimmed transition-transform"
                     :class="openSegment === i ? 'rotate-90' : ''"
                   />
@@ -230,15 +230,15 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
                   <span class="truncate text-sm" :class="seg.text ? '' : 'text-dimmed'">
                     {{ seg.text || t('tellraw.emptySegment') }}
                   </span>
-                  <UIcon v-if="seg.clickAction !== 'none' && seg.clickValue" name="i-lucide-mouse-pointer-click" class="size-3.5 shrink-0 text-dimmed" />
-                  <UIcon v-if="seg.hoverText" name="i-lucide-message-square" class="size-3.5 shrink-0 text-dimmed" />
+                  <UIcon v-if="seg.clickAction !== 'none' && seg.clickValue" name="i-pixelarticons-pointer" class="size-3.5 shrink-0 text-dimmed" />
+                  <UIcon v-if="seg.hoverText" name="i-pixelarticons-message" class="size-3.5 shrink-0 text-dimmed" />
                 </button>
 
-                <UButton icon="i-lucide-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="move(i, -1)" />
-                <UButton icon="i-lucide-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="move(i, 1)" />
+                <UButton icon="i-pixelarticons-chevron-up" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.up')" @click="move(i, -1)" />
+                <UButton icon="i-pixelarticons-chevron-down" size="xs" variant="ghost" color="neutral" :aria-label="t('banner.down')" @click="move(i, 1)" />
                 <UButton
                   v-if="segments.length > 1"
-                  icon="i-lucide-x"
+                  icon="i-pixelarticons-close"
                   size="xs"
                   variant="ghost"
                   color="neutral"
@@ -269,7 +269,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
                       class="grid size-6 cursor-pointer place-items-center rounded border border-dashed border-zinc-500 text-dimmed"
                       :title="t('tellraw.hexColor')"
                     >
-                      <UIcon name="i-lucide-pipette" class="size-3" />
+                      <UIcon name="i-pixelarticons-pipette" class="size-3" />
                     </button>
                     <template #content>
                       <div class="flex flex-col gap-3 p-4">
@@ -288,11 +288,11 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
                   <span class="mr-1 text-[10px] uppercase tracking-[0.12em] text-dimmed">{{ t('colorCodes.formatsTitle') }}</span>
                   <UButton
                     v-for="f in [
-                      { key: 'bold', icon: 'i-lucide-bold' },
-                      { key: 'italic', icon: 'i-lucide-italic' },
-                      { key: 'underlined', icon: 'i-lucide-underline' },
-                      { key: 'strikethrough', icon: 'i-lucide-strikethrough' },
-                      { key: 'obfuscated', icon: 'i-lucide-shuffle' }
+                      { key: 'bold', icon: 'i-pixelarticons-letter-b' },
+                      { key: 'italic', icon: 'i-pixelarticons-letter-i' },
+                      { key: 'underlined', icon: 'i-pixelarticons-letter-u' },
+                      { key: 'strikethrough', icon: 'i-pixelarticons-letter-s' },
+                      { key: 'obfuscated', icon: 'i-pixelarticons-shuffle' }
                     ]"
                     :key="f.key"
                     :icon="f.icon"
@@ -342,7 +342,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
             <div class="mb-3 flex items-center justify-between gap-4">
               <div class="text-sm font-medium">{{ t('tellraw.commandOut') }}</div>
-              <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(command)" />
+              <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(command)" />
             </div>
             <pre class="overflow-x-auto whitespace-pre-wrap break-all rounded-2xl bg-black/40 p-3 font-mono text-xs text-muted">{{ command || '—' }}</pre>
           </div>
@@ -350,7 +350,7 @@ const tips = computed(() => (tm('tellraw.tips') as unknown[]).map(x => ({
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
             <div class="mb-3 flex items-center justify-between gap-4">
               <div class="text-sm font-medium">{{ t('tellraw.jsonOut') }}</div>
-              <UButton icon="i-lucide-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(jsonOnly)" />
+              <UButton icon="i-pixelarticons-copy" size="xs" variant="ghost" color="neutral" :label="t('colorCodes.copy')" @click="copy(jsonOnly)" />
             </div>
             <div class="mb-2 text-xs text-dimmed">{{ t('tellraw.jsonHint') }}</div>
             <pre class="overflow-x-auto whitespace-pre-wrap break-all rounded-2xl bg-black/40 p-3 font-mono text-xs text-muted">{{ jsonOnly }}</pre>
