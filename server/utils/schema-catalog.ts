@@ -320,6 +320,17 @@ export async function ensureCatalogSchema() {
       ON version_file (scan_verdict) WHERE scan_verdict <> 'clean'
   `)
 
+  // Knobs that have to move without a deploy — the commission rate, its floor,
+  // the minimum a project may be priced at. One row of JSON per subject rather
+  // than a column per number, so changing one is an UPDATE and not a migration.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS platform_setting (
+      key     TEXT PRIMARY KEY,
+      value   JSONB NOT NULL DEFAULT '{}',
+      updated BIGINT NOT NULL
+    );
+  `)
+
   await pool.query(`
     ALTER TABLE project ADD COLUMN IF NOT EXISTS disclosures JSONB NOT NULL DEFAULT '{}'
   `)
