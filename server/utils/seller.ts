@@ -41,6 +41,20 @@ export async function sellerByAccount(account: string): Promise<SellerRow | unde
 // Express accounts put identity checks, tax details and payouts on Stripe's
 // side. Nothing here ever sees a bank account or a document, which is the whole
 // reason for using Connect rather than collecting any of it.
+// Two clicks race otherwise: the second insert is refused by the unique index,
+// but Stripe already holds an account nothing points at. The attempt window is
+// part of the key because Stripe replays a saved response for 24 hours and
+// saves failures too — keyed on the account alone, one refusal locks that
+// person out for the rest of the day, long after whatever caused it was fixed.
+// Two clicks either side of a window boundary can still make a second account,
+// which is the rarer accident and the cheaper one: the unique index keeps the
+// database straight, and the spare account is never referenced.
+export const ONBOARDING_WINDOW_MS = 120_000
+
+export function onboardingAttempt(subject: string | null, now = Date.now()): string {
+  return `seller:${subject}:${Math.floor(now / ONBOARDING_WINDOW_MS)}`
+}
+
 export async function ensureSellerAccount(input: {
   userId: string | null
   orgId: string | null
@@ -63,9 +77,7 @@ export async function ensureSellerAccount(input: {
       product_description: 'Minecraft content sold on usespectra.app',
     },
   }, {
-    // Two clicks race here otherwise: the second insert is refused by the unique
-    // index, but Stripe already holds an account nothing points at.
-    idempotencyKey: `seller:${input.orgId ?? input.userId}`,
+    idempotencyKey: onboardingAttempt(input.orgId ?? input.userId),
   }))
 
   const now = Date.now()
