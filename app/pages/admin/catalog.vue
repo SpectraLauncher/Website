@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'admin' })
 
 const localePath = useLocalePath()
 const { t } = useI18n()
+const { ask } = useConfirm()
 
 interface ShortProject {
   id: string
@@ -430,7 +431,12 @@ async function save() {
 
 async function remove() {
   if (!selected.value) return
-  if (!confirm(t('catalog.admin.confirmDelete', { title: selected.value.title }))) return
+  const ok = await ask({
+    title: t('catalog.admin.confirmDelete', { title: selected.value.title }),
+    confirmLabel: t('catalog.admin.delete'),
+    danger: true,
+  })
+  if (!ok) return
   busy.value = 'delete'
   try {
     await $fetch(`/api/admin/catalog/projects/${selected.value.id}`, { method: 'DELETE' })
@@ -599,7 +605,12 @@ async function saveVersion() {
 
 async function removeVersion(id: string) {
   if (!selected.value) return
-  if (!confirm(t('catalog.admin.confirmDeleteVersion'))) return
+  const ok = await ask({
+    title: t('catalog.admin.confirmDeleteVersion'),
+    confirmLabel: t('catalog.admin.delete'),
+    danger: true,
+  })
+  if (!ok) return
   busy.value = 'version'
   try {
     await $fetch(`/api/admin/catalog/versions/${id}`, { method: 'DELETE' })

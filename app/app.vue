@@ -66,6 +66,7 @@ useSeoMeta({
       <CreateProject />
       <CreateOrganization />
       <CreateCollection />
+      <ConfirmDialog />
       <CookieNotice />
       <SiteAnalytics />
     </div>

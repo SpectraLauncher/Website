@@ -3,6 +3,7 @@ definePageMeta({ middleware: 'catalog' })
 
 const route = useRoute()
 const { t, locale } = useI18n()
+const { ask } = useConfirm()
 const localePath = useLocalePath()
 
 interface Member {
@@ -105,7 +106,12 @@ async function saveMember(member: Member) {
 }
 
 async function removeMember(member: Member) {
-  if (!confirm(t('catalog.org.confirmRemove', { name: member.username || member.name }))) return
+  const ok = await ask({
+    title: t('catalog.org.confirmRemove', { name: member.username || member.name }),
+    confirmLabel: t('catalog.org.remove'),
+    danger: true,
+  })
+  if (!ok) return
   busy.value = member.userId
   problem.value = ''
   try {
@@ -122,8 +128,18 @@ async function removeMember(member: Member) {
   }
 }
 
+// Walking out as the last member takes the organization and everything it owns
+// with it, so that question is not the same question.
+const lastOne = computed(() => (data.value?.members?.length ?? 0) < 2)
+
 async function leave() {
-  if (!confirm(t('catalog.org.confirmLeave'))) return
+  const ok = await ask({
+    title: lastOne.value ? t('catalog.org.confirmLeaveLast') : t('catalog.org.confirmLeave'),
+    body: lastOne.value ? t('catalog.org.confirmLeaveLastBody') : undefined,
+    confirmLabel: t('catalog.org.leave'),
+    danger: true,
+  })
+  if (!ok) return
   busy.value = 'leave'
   problem.value = ''
   try {

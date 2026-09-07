@@ -251,6 +251,19 @@ export function removeMember(orgId: string, userId: string) {
   return exec('DELETE FROM member WHERE "organizationId" = $1 AND "userId" = $2', [orgId, userId])
 }
 
+export async function memberCount(orgId: string): Promise<number> {
+  const row = await one<{ n: string }>(
+    'SELECT count(*)::text AS n FROM member WHERE "organizationId" = $1', [orgId])
+  return Number(row?.n ?? 0)
+}
+
+// project.org_id cascades, so the projects go with it. That is the point: an
+// organization with nobody in it owns projects nobody can administer, publish a
+// fix for, or take down.
+export function deleteOrganization(orgId: string) {
+  return exec('DELETE FROM organization WHERE id = $1', [orgId])
+}
+
 export interface MemberContext {
   org: OrgRow
   actor: Standing

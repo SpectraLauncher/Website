@@ -7,7 +7,7 @@ const open = creating.project
 
 const title = ref('')
 const slug = ref('')
-const slugTouched = ref(false)
+const slugField = useTemplateRef('slugField')
 const type = ref<string>('mod')
 const owner = ref('me')
 const visibility = ref<string>('public')
@@ -16,14 +16,28 @@ const authorship = ref(false)
 const busy = ref(false)
 const error = ref('')
 
-const organizations = ref<Array<{ id: string, name: string }>>([])
+const organizations = ref<Array<{ id: string, name: string, logo?: string | null }>>([])
 
 const typeOptions = computed(() =>
   PROJECT_TYPES.map(value => ({ value, label: t(`catalog.admin.types.${value}`) })))
 
+const session = useAuthSession()
+const account = computed(() =>
+  session.value.data?.user as { name?: string, username?: string, image?: string } | undefined)
+
 const ownerOptions = computed(() => [
-  { value: 'me', label: t('create.project.ownerSelf') },
-  ...organizations.value.map(org => ({ value: org.id, label: org.name })),
+  {
+    value: 'me',
+    label: account.value?.username || account.value?.name || t('create.project.ownerSelf'),
+    avatar: account.value?.image ? { src: account.value.image } : undefined,
+    icon: account.value?.image ? undefined : 'i-pixelarticons-user',
+  },
+  ...organizations.value.map(org => ({
+    value: org.id,
+    label: org.name,
+    avatar: org.logo ? { src: org.logo } : undefined,
+    icon: org.logo ? undefined : 'i-pixelarticons-users',
+  })),
 ])
 
 const visibilityOptions = computed(() =>
@@ -31,14 +45,10 @@ const visibilityOptions = computed(() =>
 
 // The address follows the name until somebody edits it, and then it stops —
 // changing a slug somebody has already typed is the one thing this must not do.
-watch(title, (value) => {
-  if (!slugTouched.value) slug.value = normalizeSlug(value)
-})
-
-const problem = computed(() => (slug.value ? slugProblem(slug.value) : null))
+watch(title, value => slugField.value?.follow(value))
 
 const ready = computed(() =>
-  Boolean(title.value.trim()) && Boolean(slug.value) && !problem.value
+  Boolean(title.value.trim()) && Boolean(slug.value) && !slugProblem(slug.value)
   && summary.value.trim().length >= 3 && authorship.value)
 
 watch(open, async (value) => {
@@ -46,7 +56,7 @@ watch(open, async (value) => {
 
   error.value = ''
   try {
-    const res = await $fetch<{ organizations: Array<{ id: string, name: string }> }>('/api/org/mine')
+    const res = await $fetch<{ organizations: typeof organizations.value }>('/api/org/mine')
     organizations.value = res.organizations
   }
   catch { organizations.value = [] }
@@ -73,7 +83,6 @@ async function create() {
     title.value = ''
     slug.value = ''
     summary.value = ''
-    slugTouched.value = false
     authorship.value = false
 
     await navigateTo(localePath(res.project.path))
@@ -105,35 +114,19 @@ async function create() {
           />
         </UFormField>
 
-        <UFormField
+        <SlugField
+          ref="slugField"
+          v-model="slug"
           :label="t('create.project.url')"
-          :error="problem ? t(`catalog.slugProblem.${problem}`) : undefined"
-        >
-          <UInput
-            v-model="slug"
-            :maxlength="64"
-            autocomplete="off"
-            class="w-full"
-            @update:model-value="slugTouched = true"
-          />
-          <template #help>
-            <span class="break-all font-mono text-xs text-dimmed">
-              usespectra.app/{{ TYPE_PREFIX[type as keyof typeof TYPE_PREFIX] }}/{{ slug || '…' }}
-            </span>
-          </template>
-        </UFormField>
+          :prefix="`usespectra.app/${TYPE_PREFIX[type as keyof typeof TYPE_PREFIX]}/`"
+        />
 
         <UFormField :label="t('create.project.owner')" :help="t('create.project.ownerHint')">
           <USelect v-model="owner" :items="ownerOptions" value-key="value" class="w-full" />
         </UFormField>
 
         <UFormField :label="t('create.project.visibility')" :help="t(`create.visibilityHint.${visibility}`)">
-          <USelect
-            v-model="visibility"
-            :items="visibilityOptions"
-            value-key="value"
-            class="w-full"
-          />
+          <ChoiceRow v-model="visibility" :options="visibilityOptions" />
         </UFormField>
 
         <UFormField :label="t('create.project.summary')" :help="t('create.project.summaryHint')">

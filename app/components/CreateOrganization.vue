@@ -8,16 +8,15 @@ const open = creating.organization
 
 const name = ref('')
 const slug = ref('')
-const slugTouched = ref(false)
+const slugField = useTemplateRef('slugField')
+const summary = ref('')
 const busy = ref(false)
 const error = ref('')
 
-watch(name, (value) => {
-  if (!slugTouched.value) slug.value = normalizeSlug(value)
-})
+watch(name, value => slugField.value?.follow(value))
 
-const problem = computed(() => (slug.value ? slugProblem(slug.value) : null))
-const ready = computed(() => Boolean(name.value.trim()) && Boolean(slug.value) && !problem.value)
+const ready = computed(() =>
+  Boolean(name.value.trim()) && Boolean(slug.value) && !slugProblem(slug.value))
 
 async function create() {
   busy.value = true
@@ -29,12 +28,26 @@ async function create() {
     const res = await auth.organization.create({ name: name.value.trim(), slug: slug.value })
     if (res.error) throw new Error(res.error.message || 'failed')
 
+    const created = res.data!
+
+    // The description is ours rather than better-auth's, so it goes in a second
+    // step. Failing here must not lose the organization that already exists.
+    if (summary.value.trim()) {
+      try {
+        await $fetch(`/api/org/${encodeURIComponent(created.slug)}`, {
+          method: 'PATCH',
+          body: { summary: summary.value.trim() },
+        })
+      }
+      catch { /* the description can be written again from the settings */ }
+    }
+
     open.value = false
     name.value = ''
     slug.value = ''
-    slugTouched.value = false
+    summary.value = ''
 
-    await navigateTo(localePath(`/org/${res.data!.slug}`))
+    await navigateTo(localePath(`/org/${created.slug}`))
   }
   catch (e: any) {
     error.value = e?.message || t('auth.genericError')
@@ -61,22 +74,24 @@ async function create() {
           />
         </UFormField>
 
-        <UFormField
+        <SlugField
+          ref="slugField"
+          v-model="slug"
           :label="t('create.organization.url')"
-          :error="problem ? t(`catalog.slugProblem.${problem}`) : undefined"
+          prefix="usespectra.app/org/"
+        />
+
+        <UFormField
+          :label="t('create.organization.description')"
+          :help="t('create.organization.descriptionHint')"
         >
-          <UInput
-            v-model="slug"
-            :maxlength="64"
-            autocomplete="off"
+          <UTextarea
+            v-model="summary"
+            :rows="3"
+            :maxlength="300"
+            :placeholder="t('create.organization.descriptionPlaceholder')"
             class="w-full"
-            @update:model-value="slugTouched = true"
           />
-          <template #help>
-            <span class="break-all font-mono text-xs text-dimmed">
-              usespectra.app/org/{{ slug || '…' }}
-            </span>
-          </template>
         </UFormField>
 
         <UAlert v-if="error" color="error" variant="subtle" :description="error" />

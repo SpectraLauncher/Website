@@ -3172,7 +3172,10 @@
         "add_project": "Dodawanie projektów",
         "remove_project": "Usuwanie projektów",
         "delete_organization": "Usunięcie organizacji"
-      }
+      },
+      "remove": "Usuń",
+      "confirmLeaveLast": "Wyjść i usunąć tę organizację?",
+      "confirmLeaveLastBody": "Jesteś jedynym członkiem. Wyjście usuwa organizację i każdy projekt, który do niej należy. Tego nie da się cofnąć."
     },
     "warn": {
       "datapack": "To wygląda na datapack, którego katalog jeszcze nie obsługuje.",
@@ -3271,7 +3274,8 @@
       "queueEmpty": "Nic nie czeka.",
       "review": "Sprawdź",
       "refresh": "Odśwież",
-      "waiting": "{days} d"
+      "waiting": "{days} d",
+      "delete": "Usuń"
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",
@@ -4256,7 +4260,8 @@
       "description": "Czym się zajmuje",
       "descriptionPlaceholder": "Robimy…",
       "submit": "Utwórz organizację",
-      "hint": "Organizacja jest właścicielem projektów wspólnie, a jej członkowie dzielą się pracą."
+      "hint": "Organizacja jest właścicielem projektów wspólnie, a jej członkowie dzielą się pracą.",
+      "descriptionHint": "Zdanie albo dwa. Pokazuje się na stronie organizacji."
     },
     "collection": {
       "title": "Nowa kolekcja",
@@ -4298,5 +4303,8 @@
       "disclosures": "Sprawdź deklaracje",
       "disclosureHint": "Telemetria, reklamy, AI, płatne elementy — wszystko, o czym czytelnik chce wiedzieć najpierw."
     }
+  },
+  "confirm": {
+    "yes": "Tak, zrób to"
   }
 }

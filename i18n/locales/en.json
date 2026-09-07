@@ -3172,7 +3172,10 @@
         "add_project": "Add projects",
         "remove_project": "Remove projects",
         "delete_organization": "Delete the organization"
-      }
+      },
+      "remove": "Remove",
+      "confirmLeaveLast": "Leave and delete this organization?",
+      "confirmLeaveLastBody": "You are the only member. Leaving deletes the organization and every project it owns. This cannot be undone."
     },
     "warn": {
       "datapack": "This looks like a datapack, which the catalog does not carry yet.",
@@ -3271,7 +3274,8 @@
       "queueEmpty": "Nothing waiting.",
       "review": "Review",
       "refresh": "Refresh",
-      "waiting": "{days} d"
+      "waiting": "{days} d",
+      "delete": "Delete"
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",
@@ -4256,7 +4260,8 @@
       "description": "What it does",
       "descriptionPlaceholder": "We build…",
       "submit": "Create organization",
-      "hint": "An organization owns projects as a group, and its members share the work."
+      "hint": "An organization owns projects as a group, and its members share the work.",
+      "descriptionHint": "One or two sentences. It shows on the organization page."
     },
     "collection": {
       "title": "New collection",
@@ -4298,5 +4303,8 @@
       "disclosures": "Check the declarations",
       "disclosureHint": "Telemetry, advertisements, AI, paid parts — anything a reader would want to know first."
     }
+  },
+  "confirm": {
+    "yes": "Yes, do it"
   }
 }

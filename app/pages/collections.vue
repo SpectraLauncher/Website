@@ -11,6 +11,7 @@ interface Collection {
 }
 
 const { t } = useI18n()
+const { ask } = useConfirm()
 const localePath = useLocalePath()
 const session = useAuthSession()
 
@@ -65,7 +66,12 @@ async function create() {
 }
 
 async function remove(collection: Collection) {
-  if (!confirm(t('collections.confirmDelete', { title: collection.title }))) return
+  const ok = await ask({
+    title: t('collections.confirmDelete', { title: collection.title }),
+    confirmLabel: t('collections.delete'),
+    danger: true,
+  })
+  if (!ok) return
   busy.value = collection.id
   try {
     await $fetch(`/api/catalog/collections/${collection.id}`, { method: 'DELETE' })
