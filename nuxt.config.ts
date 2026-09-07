@@ -3,7 +3,21 @@ import { TOOLS } from './app/utils/tools'
 import { LEGAL_DOCUMENTS } from './shared/utils/legal'
 import { DOC_PAGES } from './shared/utils/docs'
 
-const CATALOG_PUBLIC = process.env.CATALOG_PUBLIC === 'true'
+// Named NUXT_PUBLIC_CATALOG_PUBLIC because the value has to survive two
+// different moments, and only that prefix works for the later one.
+//
+// At build time it shapes robots.txt and the sitemap's exclude list below, which
+// are module options and are fixed when the bundle is made. At run time Nuxt
+// overrides runtimeConfig.public.catalogPublic from the env var named after the
+// key path - which is this name, and nothing else. Read under any other name the
+// flag bakes as false and no deployment setting can ever move it.
+//
+// The image is built without the deployment's environment, so setting this only
+// in the deployment opens the gate while leaving robots.txt and the sitemap shut.
+// That mismatch is deliberate and one-directional: the catalog becomes reachable
+// but not indexed. Opening it to crawlers as well needs a rebuild with this
+// variable set.
+const CATALOG_PUBLIC = process.env.NUXT_PUBLIC_CATALOG_PUBLIC === 'true'
 
 const LEGAL_PATHS = LEGAL_DOCUMENTS.map(doc => doc.path).filter(path => path.startsWith('/legal/'))
 

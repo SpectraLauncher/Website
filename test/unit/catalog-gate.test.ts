@@ -19,7 +19,7 @@ describe('flaga katalogu', () => {
     expect(catalogIsIndexable()).toBe(true)
   })
 
-  // Nuxt can hand back the NUXT_CATALOG_PUBLIC value as a string, so 'true' has
+  // Nuxt can hand back the NUXT_PUBLIC_CATALOG_PUBLIC value as a string, so 'true' has
   // to open it too.
   it('przyjmuje takze string true', () => {
     (runtimeConfig.public as Record<string, unknown>).catalogPublic = 'true'

@@ -4,10 +4,15 @@ import type { H3Event } from 'h3'
 // One flag for the whole catalog. While it is off, every catalog route — pages,
 // the public API and the Modrinth-compatible API — exists for the admin only and
 // answers 404 to everyone else. Opening it to the world is a change to
-// CATALOG_PUBLIC, not a hunt for conditions scattered across files.
+// NUXT_PUBLIC_CATALOG_PUBLIC, not a hunt for conditions scattered across files.
+//
+// That prefix is required rather than decorative: Nuxt overrides a public
+// runtime value only from the env var named after its key path, so under any
+// other name this reads whatever the build saw and never changes again.
 //
 // The comparison is explicit because Boolean('false') is true, and this flag
 // holds the gates for the entire catalog — a stray string has to leave it shut.
+// Env values arrive as strings, so 'true' has to count.
 export function catalogIsPublic(): boolean {
   const value = useRuntimeConfig().public.catalogPublic
   return value === true || value === 'true'
