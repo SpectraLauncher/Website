@@ -25,19 +25,21 @@ function* walk(dir, exts) {
   }
 }
 
-// server/api/catalog/project/[slug]/versions.get.ts -> /api/catalog/project/:/versions
-function pattern(file) {
+// server/api/catalog/project/[slug]/versions.get.ts -> GET /api/catalog/project/*/versions
+function route(file) {
   const rest = file.slice(`${ROOT}/`.length).replace(/\.ts$/, '')
   const parts = rest.split('.')
-  if (METHODS.includes(parts.at(-1))) parts.pop()
+  const method = METHODS.includes(parts.at(-1)) ? parts.pop().toUpperCase() : 'GET'
 
-  return `/api/${parts.join('.')}`
+  const url = `/api/${parts.join('.')}`
     .replace(/\/index$/, '')
     .replace(/\[\.\.\.\w+\]/g, '**')
     .replace(/\[\w+\]/g, '*')
+
+  return { method, url }
 }
 
-const routes = [...walk(ROOT, ['.ts'])].map(pattern)
+const routes = [...walk(ROOT, ['.ts'])].map(route)
 
 // A call site's dynamic segments are template holes or variables; both become *.
 function normalise(url) {
@@ -46,15 +48,13 @@ function normalise(url) {
     .replace(/\/+$/, '')
 }
 
-function matches(url) {
-  return routes.some((route) => {
-    if (route.includes('**')) return url.startsWith(route.slice(0, route.indexOf('**')))
+function samePath(pattern, url) {
+  if (pattern.includes('**')) return url.startsWith(pattern.slice(0, pattern.indexOf('**')))
 
-    const a = route.split('/')
-    const b = url.split('/')
-    if (a.length !== b.length) return false
-    return a.every((part, i) => part === '*' || b[i] === '*' || part === b[i])
-  })
+  const a = pattern.split('/')
+  const b = url.split('/')
+  if (a.length !== b.length) return false
+  return a.every((part, i) => part === '*' || b[i] === '*' || part === b[i])
 }
 
 const problems = []
@@ -63,12 +63,31 @@ let checked = 0
 for (const file of walk('app', ['.vue', '.ts'])) {
   const source = fs.readFileSync(file, 'utf8')
 
-  for (const [, url] of source.matchAll(/['"`](\/api\/[^'"`\s?]*)/g)) {
+  // The method sits in the options object after the url, usually a line or two
+  // down. A route file that does not name one answers GET.
+  // The tail is a lookahead so it is not consumed: two calls a few lines apart
+  // must both be seen, not swallowed by the first one's window.
+  for (const [, url, tail] of source.matchAll(/['"`](\/api\/[^'"`\s?]*)(?=([\s\S]{0,300}))/g)) {
     const clean = normalise(url)
     if (EXTERNAL.some(pattern => pattern.test(clean))) continue
 
     checked++
-    if (!matches(clean)) problems.push(`${file}: ${url} has no handler in ${ROOT}`)
+
+    if (!routes.some(r => samePath(r.url, clean))) {
+      problems.push(`${file}: ${url} has no handler in ${ROOT}`)
+      continue
+    }
+
+    // `method: next ? 'POST' : 'DELETE'` is chosen at runtime; only the path can
+    // be checked for those.
+    const options = /^[^)]*/.exec(tail)[0]
+    const named = /method:\s*['"]([a-zA-Z]+)['"]/.exec(options)
+    if (!named && /method:/.test(options)) continue
+
+    const method = (named?.[1] ?? 'GET').toUpperCase()
+    if (!routes.some(r => r.method === method && samePath(r.url, clean))) {
+      problems.push(`${file}: ${method} ${url} — the route exists but not for that method`)
+    }
   }
 }
 

@@ -234,9 +234,6 @@ useSeoMeta({
   ogType: 'profile',
   ogUrl: () => profileUrl.value,
   ogImage: () => renderUrl.value || undefined,
-  twitterCard: () => (renderUrl.value ? 'summary_large_image' : 'summary'),
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => seoDescription.value,
   robots: () => (data.value ? 'index, follow' : 'noindex')
 })
 

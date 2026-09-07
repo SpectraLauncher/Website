@@ -28,9 +28,7 @@ useSeoMeta({
   description: () => t('launcherPage.sub'),
   ogTitle: () => seoTitle.value,
   ogDescription: () => t('launcherPage.sub'),
-  ogUrl: () => pageUrl.value,
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => t('launcherPage.sub')
+  ogUrl: () => pageUrl.value
 })
 
 const list = (key: string) => {

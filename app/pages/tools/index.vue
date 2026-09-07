@@ -17,9 +17,7 @@ useSeoMeta({
   description: () => t('toolsPage.sub'),
   ogTitle: () => seoTitle.value,
   ogDescription: () => t('toolsPage.sub'),
-  ogUrl: () => listUrl.value,
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => t('toolsPage.sub')
+  ogUrl: () => listUrl.value
 })
 
 useSchemaOrg(computed(() => [

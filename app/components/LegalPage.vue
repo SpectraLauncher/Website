@@ -41,9 +41,7 @@ useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
   ogTitle: () => seoTitle.value,
-  ogDescription: () => seoDescription.value,
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => seoDescription.value
+  ogDescription: () => seoDescription.value
 })
 </script>
 

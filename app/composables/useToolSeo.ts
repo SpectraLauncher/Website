@@ -22,14 +22,12 @@ export function useToolSeo(slug: string, key: string) {
     title: () => title.value,
     description: () => description.value,
     ogTitle: () => title.value,
-    ogDescription: () => description.value,
-    twitterTitle: () => title.value,
-    twitterDescription: () => description.value,
+    ogDescription: () => description.value
   })
 
   defineOgImage('Spectra', {
     title: () => name.value,
-    description: () => description.value,
+    description: () => description.value
   })
 
   const list = <T>(path: string): T[] => {
@@ -56,20 +54,20 @@ export function useToolSeo(slug: string, key: string) {
         'operatingSystem': 'Any',
         'browserRequirements': 'Requires JavaScript',
         'isAccessibleForFree': true,
-        'offers': { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        'offers': { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
       }),
       defineBreadcrumb({
         itemListElement: [
           { name: 'Spectra', item: localePath('/') },
           { name: t('nav.tools'), item: localePath('/tools') },
           { name: name.value },
-        ],
+        ]
       }),
       ...faq.map(entry => defineQuestion({ name: entry.q, acceptedAnswer: entry.a })),
       ...(steps.length
         ? [defineHowTo({
             name: te(`${key}.howTitle`) ? t(`${key}.howTitle`) : name.value,
-            step: steps.map(step => ({ name: step.title, text: step.body || step.title })),
+            step: steps.map(step => ({ name: step.title, text: step.body || step.title }))
           })]
         : []),
     ]

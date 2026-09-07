@@ -26,9 +26,7 @@ useSeoMeta({
   description: () => t('badges.sub'),
   ogTitle: () => seoTitle.value,
   ogDescription: () => t('badges.sub'),
-  ogUrl: () => listUrl.value,
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => t('badges.sub')
+  ogUrl: () => listUrl.value
 })
 
 useSchemaOrg(computed(() => [

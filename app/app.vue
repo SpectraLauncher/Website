@@ -30,7 +30,7 @@ useHead(() => ({
 
 defineOgImage('Spectra', {
   title: () => t('meta.title'),
-  description: () => t('meta.description'),
+  description: () => t('meta.description')
 })
 
 useSeoMeta({
@@ -41,10 +41,7 @@ useSeoMeta({
   ogType: 'website',
   ogSiteName: 'Spectra Launcher',
   ogUrl: () => canonical.value,
-  ogLocale: () => ogLocale.value,
-  twitterCard: 'summary_large_image',
-  twitterTitle: () => t('meta.title'),
-  twitterDescription: () => t('meta.description')
+  ogLocale: () => ogLocale.value
 })
 
 </script>

@@ -143,7 +143,7 @@ onMounted(() => {
     position: absolute;
     inset: 0.14em -0.06em 0.06em;
     z-index: -1;
-    background: url('grass.webp');
+    background: url('/grass.webp');
     background-repeat: repeat-x;
     background-position: left;
     background-size: contain;

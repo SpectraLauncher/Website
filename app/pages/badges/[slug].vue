@@ -40,8 +40,6 @@ useSeoMeta({
   ogDescription: () => seoDescription.value,
   ogUrl: () => pageUrl.value,
   ogImage: () => data.value?.badge.image || undefined,
-  twitterTitle: () => seoTitle.value,
-  twitterDescription: () => seoDescription.value,
   robots: () => (data.value ? 'index, follow' : 'noindex')
 })
 
