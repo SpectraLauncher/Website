@@ -22,3 +22,20 @@ describe('stopka nalezy do app.vue', () => {
     expect(readFileSync('app/app.vue', 'utf8')).toContain('<SiteFooter />')
   })
 })
+
+// min-h-screen alone only stops the page being shorter than the viewport. Without
+// a flex column and a growing page area, the footer sits wherever the content
+// ended - halfway up on the account pages, which are mostly short.
+describe('stopka trzyma sie dolu', () => {
+  const app = readFileSync('app/app.vue', 'utf8')
+
+  it('wrapper jest kolumna na pelnej wysokosci', () => {
+    expect(app).toMatch(/flex min-h-screen flex-col/)
+  })
+
+  it('obszar strony rosnie, zeby ja zepchnac', () => {
+    const page = app.indexOf('<NuxtPage />')
+    expect(app.lastIndexOf('flex-1', page)).toBeGreaterThan(-1)
+    expect(app.indexOf('<SiteFooter />')).toBeGreaterThan(page)
+  })
+})

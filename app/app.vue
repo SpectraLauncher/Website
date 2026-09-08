@@ -60,8 +60,15 @@ useSeoMeta({
 
 <template>
   <UApp>
-    <div class="overflow-x-clip relative min-h-screen">
-      <NuxtPage />
+    <!-- min-h-screen alone only stops the page being shorter than the viewport;
+         it does not stop the footer sitting wherever the content ended. The
+         column plus flex-1 is what pushes it down on a short page, which is most
+         of the account pages. Same shape as error.vue. -->
+    <div class="overflow-x-clip relative flex min-h-screen flex-col">
+      <div class="flex-1">
+        <NuxtPage />
+      </div>
+
       <SiteFooter />
       <CreateProject />
       <CreateOrganization />
