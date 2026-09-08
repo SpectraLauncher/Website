@@ -113,3 +113,24 @@ describe('dostawa nie czeka na karencje', () => {
     expect(events).toContain('graceDays * DAY_MS')
   })
 })
+
+// Accounts v2 has its own event family, and whether the classic account.updated
+// still fires for a v2 account is not something the documentation commits to.
+describe('zmiany na koncie sprzedawcy', () => {
+  it('przyjmuje obie rodziny zdarzen', () => {
+    expect(events).toContain(`event.type === 'account.updated'`)
+    expect(events).toContain(`event.type.startsWith('v2.core.account')`)
+  })
+
+  // A v1 event carries the object, a v2 one points at it through related_object.
+  it('czyta identyfikator z obu ksztaltow ladunku', () => {
+    expect(events).toContain('payload.data?.object?.id')
+    expect(events).toContain('payload.related_object?.id')
+  })
+
+  // Nothing else is read from the payload, which is what makes a repeat
+  // delivery harmless: the account is fetched fresh either way.
+  it('i tak pyta Stripe o aktualny stan konta', () => {
+    expect(events).toContain('refreshAccount(row)')
+  })
+})

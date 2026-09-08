@@ -17,6 +17,15 @@ const DAY_MS = 86_400_000
 // than this integration asked for, and a 500 on an event nobody wants would have
 // it redelivered for days.
 export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
+  // Accounts v2 has its own event family alongside the classic one, including
+  // v2.core.account[configuration.recipient].capability_status_updated - which
+  // is the moment transfers actually switch on. Whether the v1 account.updated
+  // still fires for a v2 account is not something the documentation commits to,
+  // so both are accepted and both do the same thing: go and ask.
+  if (event.type === 'account.updated' || event.type.startsWith('v2.core.account')) {
+    return await accountUpdated(event)
+  }
+
   switch (event.type) {
     case 'payment_intent.succeeded':
       return await paymentSucceeded(event.data.object)
@@ -30,9 +39,6 @@ export async function handleStripeEvent(event: Stripe.Event): Promise<void> {
 
     case 'charge.dispute.closed':
       return await disputeClosed(event.data.object)
-
-    case 'account.updated':
-      return await accountUpdated(event.data.object as { id?: string })
   }
 }
 
@@ -167,9 +173,19 @@ async function disputeClosed(dispute: Stripe.Dispute): Promise<void> {
   }
 }
 
-async function accountUpdated(account: { id?: string }): Promise<void> {
-  const id = String(account?.id ?? '')
-  if (!id) return
+// The two event families put the account id in different places: a v1 event
+// carries the object itself, a v2 one is thin and points at it through
+// related_object. Neither payload is read for anything else - whatever it says,
+// the account is fetched fresh, which is also what makes a duplicate delivery
+// harmless.
+async function accountUpdated(event: Stripe.Event): Promise<void> {
+  const payload = event as unknown as {
+    data?: { object?: { id?: string } }
+    related_object?: { id?: string }
+  }
+
+  const id = String(payload.data?.object?.id ?? payload.related_object?.id ?? '')
+  if (!id.startsWith('acct_')) return
 
   const row = await connectedAccountByStripeId(id)
   if (row) await refreshAccount(row)
