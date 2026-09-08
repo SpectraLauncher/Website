@@ -27,6 +27,11 @@ export const DOC_SECTIONS = [
     pages: ['moderation', 'reporting'],
   },
   {
+    id: 'money',
+    icon: 'i-pixelarticons-wallet',
+    pages: ['selling', 'payouts'],
+  },
+  {
     id: 'developers',
     icon: 'i-pixelarticons-code',
     pages: ['api-tokens', 'oauth', 'rate-limits'],

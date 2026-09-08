@@ -43,6 +43,7 @@ export interface CatalogProjectData {
   updated: number
   versions: CatalogVersion[]
   price?: number
+  canDownload?: boolean
   currency?: string
   owned?: boolean
   follows: number
@@ -107,12 +108,15 @@ const primaryFile = computed(() =>
 
 const gallery = computed(() => props.gallery ?? [])
 
-// Priced, and not already owned by whoever is looking. The server decides
-// `owned` - it knows about entitlements, the project's owner and admins - so
-// this only has to read it.
+// Priced, and not held by whoever is looking. `owned` is deliberately narrower
+// than "may download": an admin may take any file down, which means reaching it,
+// but they have not bought it and the page should not pretend otherwise. Folding
+// the two together hid this button from every admin - and while the catalog is
+// closed, that is everyone who can open the page.
 const cart = useCart()
 const needsBuying = computed(() =>
   Number(props.project.price ?? 0) > 0 && props.project.owned !== true)
+const canDownload = computed(() => props.project.canDownload !== false)
 const inCart = computed(() => cart.has(props.project.id))
 const price = computed(() => new Intl.NumberFormat(locale.value, {
   style: 'currency',
@@ -209,11 +213,14 @@ async function toggleFollow() {
 
       <div class="flex flex-wrap gap-2">
         <!-- A paid project somebody does not own has nothing to download yet, and
-             offering the button anyway only produces a 402. -->
+             offering the button anyway only produces a 402. An admin keeps the
+             button as well as the price, because they can reach the file for
+             moderation without having bought it. -->
         <UButton
-          v-if="primaryFile && !needsBuying"
+          v-if="primaryFile && canDownload"
           size="lg"
-          color="primary"
+          :color="needsBuying ? 'neutral' : 'primary'"
+          :variant="needsBuying ? 'subtle' : 'solid'"
           class="rounded-xl"
           icon="i-pixelarticons-download"
           :label="t('catalog.download')"
@@ -221,7 +228,7 @@ async function toggleFollow() {
           external
         />
         <UButton
-          v-else-if="needsBuying"
+          v-if="needsBuying"
           size="lg"
           color="primary"
           class="rounded-xl"

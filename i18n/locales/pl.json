@@ -3913,7 +3913,8 @@
       "content": "Szukanie treści",
       "authors": "Dla autorów",
       "rules": "Zasady i moderacja",
-      "developers": "Dla programistów"
+      "developers": "Dla programistów",
+      "money": "Pieniądze"
     },
     "sectionHints": {
       "start": "Czym to jest i jak działa konto.",
@@ -3983,7 +3984,9 @@
       "rate-limits": {
         "title": "Limity zapytań",
         "summary": "Czego się spodziewać i jak się zachować."
-      }
+      },
+      "selling": "Sprzedaż",
+      "payouts": "Wypłaty"
     },
     "api": {
       "title": "Opis API",

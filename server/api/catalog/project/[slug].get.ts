@@ -16,10 +16,19 @@ export default defineEventHandler(async (event) => {
   await recordView(event, project!.id).catch(e => console.error('[attribution] view', e))
   const price = Number(project!.price ?? 0)
 
+  // Two different questions, and folding them together made the buy button
+  // unreachable: an admin was marked as owning everything, and while the catalog
+  // is admin-only that is everyone who can see the page at all.
+  //
+  // owned is whether this person actually holds it - they wrote it, or they
+  // bought it. An author does not buy their own project.
   const owned = price > 0 && viewer
-    ? isAdmin(viewer) || project!.owner_id === viewer.id
-      || await ownsProject(viewer.id, project!.id)
+    ? project!.owner_id === viewer.id || await ownsProject(viewer.id, project!.id)
     : false
+
+  // Whether the file will actually come back. An admin may take anything down,
+  // which means being able to look at it first.
+  const canDownload = price <= 0 || owned || Boolean(viewer && isAdmin(viewer))
 
   const following = viewer ? await isFollowing(viewer.id, project!.id) : false
   const favourited = viewer ? await isFavourite(viewer.id, project!.id) : false
@@ -33,6 +42,7 @@ export default defineEventHandler(async (event) => {
       price,
       currency: project!.currency,
       owned,
+      canDownload,
     },
     gallery,
     listed: isListed(project!.status),

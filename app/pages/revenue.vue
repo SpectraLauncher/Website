@@ -135,7 +135,5 @@ useSeoMeta({ title: () => t('revenue.title'), robots: 'noindex' })
         </ul>
       </section>
     </div>
-
-    <SiteFooter />
   </div>
 </template>

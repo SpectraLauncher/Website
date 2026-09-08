@@ -205,7 +205,5 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
         </div>
       </section>
     </div>
-
-    <SiteFooter />
   </div>
 </template>

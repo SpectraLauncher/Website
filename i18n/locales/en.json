@@ -3913,7 +3913,8 @@
       "content": "Finding content",
       "authors": "For authors",
       "rules": "Rules and moderation",
-      "developers": "For developers"
+      "developers": "For developers",
+      "money": "Money"
     },
     "sectionHints": {
       "start": "What this is and how an account works.",
@@ -3983,7 +3984,9 @@
       "rate-limits": {
         "title": "Rate limits",
         "summary": "What to expect and how to behave."
-      }
+      },
+      "selling": "Selling",
+      "payouts": "Payouts"
     },
     "api": {
       "title": "API reference",
