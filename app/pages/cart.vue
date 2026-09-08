@@ -4,6 +4,19 @@ definePageMeta({ middleware: 'catalog' })
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const cart = useCart()
+const session = useAuthSession()
+
+const signedIn = computed(() => Boolean(session.value.data?.user))
+
+// Signed in, or told us to go ahead without an account. Until one of the two is
+// true there is nothing to ask for an address into.
+const asGuest = ref(false)
+const email = ref('')
+
+const identified = computed(() => signedIn.value || asGuest.value)
+const emailLooksReal = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()))
+const canPay = computed(() =>
+  consent.value && (signedIn.value || (asGuest.value && emailLooksReal.value)))
 
 const consent = ref(false)
 const busy = ref(false)
@@ -48,7 +61,14 @@ async function startPayment() {
   try {
     const res = await $fetch<{ clientSecret: string, publishableKey: string }>(
       '/api/catalog/checkout',
-      { method: 'POST', body: { items: cart.items.value, consent: consent.value } },
+      {
+        method: 'POST',
+        body: {
+          items: cart.items.value,
+          consent: consent.value,
+          ...(signedIn.value ? {} : { email: email.value.trim() }),
+        },
+      },
     )
 
     const Stripe = await whenStripeReady()
@@ -155,17 +175,52 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
           </div>
 
           <template v-if="!paying">
-            <!-- Unchecked by default and required: a waiver nobody actively gave
-                 is not a waiver, and pre-ticking it would make it worthless. -->
-            <UCheckbox v-model="consent" :label="t('cart.consent')" />
+            <!-- An account is not needed to buy. Whoever does not want one says
+                 so here, and then the receipt is the only copy of the purchase
+                 they get - which is why the address is asked for and not
+                 optional. -->
+            <div v-if="!identified" class="rounded-2xl border border-default p-5">
+              <p class="font-medium">{{ t('cart.identify') }}</p>
+              <p class="mt-1 text-sm text-muted">{{ t('cart.identifyHint') }}</p>
 
-            <UButton
-              class="rounded-xl"
-              :loading="busy"
-              :disabled="!consent"
-              :label="t('cart.pay', { amount: money(cart.totalMinor.value) })"
-              @click="startPayment()"
-            />
+              <div class="mt-4 flex flex-wrap gap-3">
+                <UButton
+                  class="rounded-xl"
+                  :label="t('cart.asGuest')"
+                  @click="asGuest = true"
+                />
+                <UButton
+                  variant="subtle"
+                  color="neutral"
+                  class="rounded-xl"
+                  :label="t('cart.signIn')"
+                  :to="localePath('/login') + `?next=${encodeURIComponent(localePath('/cart'))}`"
+                />
+              </div>
+            </div>
+
+            <template v-else>
+              <UFormField
+                v-if="!signedIn"
+                :label="t('cart.email')"
+                :help="t('cart.emailHint')"
+              >
+                <UInput v-model="email" type="email" class="w-full" placeholder="you@example.com" />
+              </UFormField>
+
+              <!-- Unchecked by default and required: a waiver nobody actively
+                   gave is not a waiver, and pre-ticking it would make it
+                   worthless. -->
+              <UCheckbox v-model="consent" :label="t('cart.consent')" />
+
+              <UButton
+                class="rounded-xl"
+                :loading="busy"
+                :disabled="!canPay"
+                :label="t('cart.pay', { amount: money(cart.totalMinor.value) })"
+                @click="startPayment()"
+              />
+            </template>
           </template>
 
           <template v-else>

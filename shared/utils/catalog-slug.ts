@@ -14,7 +14,8 @@ export const SLUG_MAX = 64
 // through if it is missing from this list.
 const ROUTES = [
   'account', 'admin', 'badges', 'cart', 'cookies', 'launcher', 'library', 'login',
-  'privacy', 'reset-password', 'revenue', 's', 'secret', 'seller', 'terms', 'tools',
+  'order', 'privacy', 'reset-password', 'revenue', 's', 'secret', 'seller', 'terms',
+  'tools',
   'u', 'verification',
 ]
 

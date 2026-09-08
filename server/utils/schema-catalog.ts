@@ -398,6 +398,18 @@ export async function ensureCatalogSchema() {
     CREATE INDEX IF NOT EXISTS idx_sale_status ON sale (status, created);
   `)
 
+  // Buying without an account. There is then no user to hang an entitlement on,
+  // so the sale carries the address the receipt goes to and a token that is the
+  // only key to the files. Existing rows predate this and were all signed in,
+  // hence the ALTERs rather than a rewrite.
+  await pool.query('ALTER TABLE sale ALTER COLUMN buyer_id DROP NOT NULL')
+  await pool.query('ALTER TABLE sale ADD COLUMN IF NOT EXISTS buyer_email TEXT')
+  await pool.query('ALTER TABLE sale ADD COLUMN IF NOT EXISTS access_token TEXT')
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_sale_token ON sale (access_token)
+      WHERE access_token IS NOT NULL
+  `)
+
   // A removed project must not erase what somebody paid for, so the reference
   // goes null and the title stays as it was sold.
   await pool.query(`

@@ -35,7 +35,7 @@ const CATALOG_PATHS = [
 const ACCOUNT_PATHS = [
   '/account', '/settings', '/notifications', '/library', '/collections', '/cart',
   '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller',
-  '/reports', '/oauth'
+  '/reports', '/oauth', '/order'
 ]
 
 const PRIVATE_PATHS = [

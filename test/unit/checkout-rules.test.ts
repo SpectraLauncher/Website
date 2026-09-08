@@ -7,6 +7,32 @@ const util = readFileSync('server/utils/checkout.ts', 'utf8')
 const hook = readFileSync('server/api/hooks/stripe.post.ts', 'utf8')
 const events = readFileSync('server/utils/stripe-events.ts', 'utf8')
 
+describe('zakup bez konta', () => {
+  // No account means no entitlement row to hang the files on, so the receipt
+  // address is the only way back to them - which is why it is required rather
+  // than collected if offered.
+  it('gosc musi podac adres, zalogowany nie', () => {
+    expect(checkout).toContain('viewer?.email ?? readEmail(body.email)')
+    expect(checkout).toContain('a valid email is needed for the receipt')
+  })
+
+  it('zamowienie dostaje token, ktory jest calym poswiadczeniem goscia', () => {
+    expect(util).toContain('accessToken')
+    expect(util).toContain(`status = 'paid'`)
+  })
+
+  // Otherwise a token would open any project, not the ones that were bought.
+  it('token otwiera tylko to, co bylo w tej sprzedazy', () => {
+    const entitlement = readFileSync('server/utils/entitlement.ts', 'utf8')
+    expect(entitlement).toContain('i.project_id = $2')
+    expect(entitlement).toContain(`s.status = 'paid'`)
+  })
+
+  it('paragon wychodzi raz, z dostawy ktora ruszyla wiersz', () => {
+    expect(events.indexOf('if (!moved) return')).toBeLessThan(events.indexOf('sendReceipt('))
+  })
+})
+
 describe('zgoda na natychmiastowa dostawe', () => {
   // An EU buyer keeps the right to withdraw from a digital purchase unless they
   // waive it before delivery. No waiver, no payment.
@@ -37,7 +63,7 @@ describe('kolejnosc zapisu przy checkoucie', () => {
   // Prices are never taken from the browser: the cart endpoint and the checkout
   // run the same function over the same rules.
   it('ceny licza sie na serwerze, nie przychodza z przegladarki', () => {
-    expect(checkout).toContain('priceCart(user, body.items')
+    expect(checkout).toContain('priceCart(viewer, body.items')
     expect(checkout).not.toMatch(/body\.(total|amount|price)/)
   })
 })

@@ -1,12 +1,13 @@
 // Prices a cart without creating anything. The page asks for this on every
 // change, and the checkout prices it again from the same function rather than
 // trusting the numbers back.
+//
+// No account needed: buying as a guest is allowed, so pricing has to be too.
 export default defineEventHandler(async (event) => {
-  await requireCatalogRead(event)
-  const user = await requireUser(event)
+  const viewer = await requireCatalogRead(event)
 
   const body = await readBody<{ items?: unknown }>(event) ?? {}
-  const cart = await priceCart(user, body.items, await commissionSettings())
+  const cart = await priceCart(viewer, body.items, await commissionSettings())
 
   return {
     items: cart.lines.map(line => ({

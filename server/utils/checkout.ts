@@ -40,7 +40,7 @@ interface Candidate {
 
 // One query for the whole cart rather than one per line: a ten-item cart on a
 // page that re-prices as it changes is otherwise ten round trips every time.
-async function candidates(userId: string, keys: string[]): Promise<Candidate[]> {
+async function candidates(userId: string | null, keys: string[]): Promise<Candidate[]> {
   if (!keys.length) return []
 
   return await q<Candidate>(
@@ -66,7 +66,7 @@ export interface PricedCart {
 // the numbers. Every rule that could refuse a purchase is applied here, and the
 // checkout runs it again rather than trusting what the browser sent back.
 export async function priceCart(
-  user: { id: string },
+  user: { id: string } | null,
   keys: unknown,
   settings: CommissionSettings,
 ): Promise<PricedCart> {
@@ -74,7 +74,7 @@ export async function priceCart(
     .filter((k): k is string => typeof k === 'string' && k.length > 0)
     .map(k => k.trim()))].slice(0, MAX_CART_ITEMS)
 
-  const found = await candidates(user.id, wanted)
+  const found = await candidates(user?.id ?? null, wanted)
   const problems: string[] = []
 
   const sellable: Candidate[] = []
@@ -151,19 +151,25 @@ async function sellerTermsFor(project: Candidate) {
 //
 // Nothing here grants anything: that waits for the payment to succeed.
 export async function openSale(input: {
-  buyerId: string
+  buyerId: string | null
+  buyerEmail: string
   cart: PricedCart
   consentAt: number
-}): Promise<string> {
+}): Promise<{ saleId: string, accessToken: string }> {
   const saleId = newId()
 
+  // The only key a guest has to their files, so it is long enough that guessing
+  // one is not a strategy. Signed-in buyers get it too: the receipt is the same
+  // email either way, and a link that works without signing in is the point.
+  const accessToken = `${newId()}${newId()}${newId()}`
+
   await exec(
-    `INSERT INTO sale (id, buyer_id, status, currency, total_minor, fee_minor,
-                       consent_at, consent_terms, created)
-     VALUES ($1, $2, 'pending', $3, $4, $5, $6, $7, $8)`,
+    `INSERT INTO sale (id, buyer_id, buyer_email, access_token, status, currency,
+                       total_minor, fee_minor, consent_at, consent_terms, created)
+     VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10)`,
     [
-      saleId, input.buyerId, CURRENCY, input.cart.totalMinor, input.cart.feeMinor,
-      input.consentAt, CONSENT_TERMS, Date.now(),
+      saleId, input.buyerId, input.buyerEmail.toLowerCase(), accessToken, CURRENCY,
+      input.cart.totalMinor, input.cart.feeMinor, input.consentAt, CONSENT_TERMS, Date.now(),
     ],
   )
 
@@ -179,7 +185,7 @@ export async function openSale(input: {
     )
   }
 
-  return saleId
+  return { saleId, accessToken }
 }
 
 // Recorded once the intent exists. The intent also carries the sale id in its
@@ -189,21 +195,34 @@ export async function attachIntent(saleId: string, intentId: string): Promise<vo
   await exec('UPDATE sale SET intent_id = $2 WHERE id = $1', [saleId, intentId])
 }
 
+export interface SaleRow {
+  id: string
+  buyer_id: string | null
+  buyer_email: string | null
+  access_token: string | null
+  status: string
+  total_minor: number
+}
+
+const SALE_COLUMNS = 'id, buyer_id, buyer_email, access_token, status, total_minor'
+
 export async function saleById(id: string) {
-  return await one<{ id: string, buyer_id: string, status: string, total_minor: number }>(
-    'SELECT id, buyer_id, status, total_minor FROM sale WHERE id = $1', [id])
+  // sql-safe: SALE_COLUMNS is a constant column list
+  return await one<SaleRow>(`SELECT ${SALE_COLUMNS} FROM sale WHERE id = $1`, [id])
+}
+
+// The token is what a guest holds instead of an account. Only a paid sale opens
+// anything: a pending one is somebody who reached the payment form and stopped.
+export async function saleByToken(token: string) {
+  // sql-safe: SALE_COLUMNS is a constant column list
+  return await one<SaleRow>(
+    `SELECT ${SALE_COLUMNS} FROM sale WHERE access_token = $1 AND status = 'paid'`, [token])
 }
 
 export async function saleByIntent(intentId: string) {
-  return await one<{
-    id: string
-    buyer_id: string
-    status: string
-    total_minor: number
-  }>(
-    'SELECT id, buyer_id, status, total_minor FROM sale WHERE intent_id = $1',
-    [intentId],
-  )
+  // sql-safe: SALE_COLUMNS is a constant column list
+  return await one<SaleRow>(
+    `SELECT ${SALE_COLUMNS} FROM sale WHERE intent_id = $1`, [intentId])
 }
 
 export async function itemsOfSale(saleId: string) {

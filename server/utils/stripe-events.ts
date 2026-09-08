@@ -6,6 +6,7 @@ import { transferSettings } from './commission'
 import { connectedAccountByStripeId, refreshAccount } from './connect'
 import { itemsOfSale, saleById, saleByIntent } from './checkout'
 import { grantEntitlement, revokeEntitlement } from './entitlement'
+import { sendReceipt } from './receipt'
 import { recordChargeback, recordSale } from './ledger'
 import { enqueue } from './queue'
 
@@ -73,17 +74,28 @@ async function paymentSucceeded(intent: Stripe.PaymentIntent): Promise<void> {
 
   // Delivery is not the seller's grace period. The buyer paid, so the download
   // opens now, whatever is still waiting to move between accounts.
-  for (const item of items) {
-    if (item.project_id) {
-      await grantEntitlement({
-        userId: sale.buyer_id,
-        projectId: item.project_id,
-        saleItemId: item.id,
-      })
+  //
+  // Only for somebody with an account: a guest has nothing to hang an
+  // entitlement on, and their access is the token on the sale instead.
+  if (sale.buyer_id) {
+    for (const item of items) {
+      if (item.project_id) {
+        await grantEntitlement({
+          userId: sale.buyer_id,
+          projectId: item.project_id,
+          saleItemId: item.id,
+        })
+      }
     }
   }
 
   if (!moved) return
+
+  // Sent once, from the delivery that actually moved the row. For a guest this
+  // is the only copy of their purchase they will ever have, so a failure here
+  // must not take the rest of the handler down with it.
+  await sendReceipt(await saleById(sale.id) ?? sale)
+    .catch(e => console.error('[receipt] could not send', sale.id, e))
 
   for (const item of items) await recordSale(item)
 
@@ -103,7 +115,7 @@ async function paymentFailed(intent: Stripe.PaymentIntent): Promise<void> {
 
 async function saleForCharge(charge: string | null) {
   if (!charge) return undefined
-  return await one<{ id: string, buyer_id: string, status: string }>(
+  return await one<{ id: string, buyer_id: string | null, status: string }>(
     'SELECT id, buyer_id, status FROM sale WHERE charge_id = $1', [charge])
 }
 
@@ -119,7 +131,11 @@ async function disputeOpened(dispute: Stripe.Dispute): Promise<void> {
 
   for (const item of await itemsOfSale(sale.id)) {
     await recordChargeback(item, `dispute ${dispute.id}`)
-    if (item.project_id) await revokeEntitlement(sale.buyer_id, item.project_id)
+    // A guest has no entitlement row to revoke; their access dies with the
+    // sale's status, which the token check reads.
+    if (item.project_id && sale.buyer_id) {
+      await revokeEntitlement(sale.buyer_id, item.project_id)
+    }
   }
 }
 
@@ -141,7 +157,7 @@ async function disputeClosed(dispute: Stripe.Dispute): Promise<void> {
     // has already been given back.
     await reverseChargeback(item.id, dispute.id)
 
-    if (item.project_id) {
+    if (item.project_id && sale.buyer_id) {
       await exec(
         `UPDATE entitlement SET revoked = NULL
          WHERE user_id = $1 AND project_id = $2`,

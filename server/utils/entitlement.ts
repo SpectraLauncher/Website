@@ -63,3 +63,47 @@ export async function libraryOf(userId: string) {
     [userId],
   )
 }
+
+// The newest primary file per project, which is what a download link points at.
+// DISTINCT ON is the cheap way to say "one row per project, newest first"
+// without a window function or a second query per project.
+export async function primaryFilesFor(projectIds: string[]) {
+  if (!projectIds.length) return new Map<string, { id: string, filename: string, size: number }>()
+
+  const rows = await q<{
+    project_id: string
+    id: string
+    filename: string
+    size: string
+  }>(
+    `SELECT DISTINCT ON (v.project_id)
+            v.project_id, f.id, f.filename, f.size
+     FROM version v
+     JOIN version_file f ON f.version_id = v.id
+     WHERE v.project_id = ANY($1)
+     ORDER BY v.project_id, v.created DESC, f.is_primary DESC, f.filename`,
+    [projectIds],
+  )
+
+  return new Map(rows.map(row => [row.project_id, {
+    id: row.id,
+    filename: row.filename,
+    size: Number(row.size),
+  }]))
+}
+
+// Whether a token opens this particular project. The token is a guest's whole
+// credential, so it is only ever accepted against a paid sale that actually
+// contained the thing being asked for.
+export async function tokenOpensProject(token: string, projectId: string): Promise<boolean> {
+  if (token.length < 16) return false
+
+  const row = await one<{ id: string }>(
+    `SELECT i.id FROM sale s
+     JOIN sale_item i ON i.sale_id = s.id
+     WHERE s.access_token = $1 AND s.status = 'paid' AND i.project_id = $2`,
+    [token, projectId],
+  )
+
+  return Boolean(row)
+}

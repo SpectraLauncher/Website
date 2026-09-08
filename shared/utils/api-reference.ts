@@ -95,6 +95,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'POST /api/me/minecraft', group: 'account', auth: 'session', summary: 'Link a Minecraft account' },
   { route: 'POST /api/me/activity', group: 'account', auth: 'session', summary: 'Record play time from the launcher' },
   { route: 'POST /api/catalog/cart', group: 'projects', auth: 'session', summary: 'Price a cart without buying it' },
+  { route: 'GET /api/catalog/order/{token}', group: 'projects', auth: 'public', summary: 'Files a guest bought, by the token from their receipt' },
   { route: 'POST /api/catalog/checkout', group: 'projects', auth: 'session', summary: 'Start a payment for a cart' },
   { route: 'GET /api/catalog/library', group: 'projects', auth: 'session', summary: 'Projects you have bought' },
   { route: 'GET /api/seller/ledger', group: 'account', auth: 'session', summary: 'Your balance, ledger and payouts' },

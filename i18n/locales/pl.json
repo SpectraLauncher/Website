@@ -4489,7 +4489,13 @@
     "toLibrary": "Przejdź do biblioteki",
     "failed": "Płatność się nie powiodła. Spróbuj jeszcze raz.",
     "consent": "Zgadzam się na natychmiastowe udostępnienie plików i przyjmuję do wiadomości, że tracę prawo odstąpienia od umowy.",
-    "open": "Otwórz koszyk"
+    "open": "Otwórz koszyk",
+    "identify": "Jak chcesz kupić?",
+    "identifyHint": "Konto nie jest potrzebne. Bez niego linki do pobrania wyślemy mailem — to będzie twoja jedyna kopia zakupu, więc podaj adres, do którego masz dostęp.",
+    "asGuest": "Kontynuuj jako gość",
+    "signIn": "Zaloguj się",
+    "email": "Adres e-mail",
+    "emailHint": "Tam wyślemy linki do pobrania i potwierdzenie zakupu."
   },
   "library": {
     "title": "Biblioteka",
@@ -4527,5 +4533,12 @@
       "fallback": "Bez podziału całość trafia do właścicieli.",
       "noAccount": "Nie ma jeszcze konta do wypłat — udział poczeka jako oczekujący."
     }
+  },
+  "order": {
+    "title": "Twoje pliki",
+    "intro": "Zakup przeszedł. Poniżej pliki, za które zapłaciłeś.",
+    "missing": "Nie znaleźliśmy takiego zamówienia. Sprawdź, czy link z maila jest kompletny.",
+    "gone": "Projekt został zdjęty — nie ma już czego pobrać.",
+    "keep": "Zachowaj tego maila. Link działa dalej i nie wymaga logowania."
   }
 }

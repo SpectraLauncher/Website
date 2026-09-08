@@ -4489,7 +4489,13 @@
     "toLibrary": "Go to the library",
     "failed": "The payment did not go through. Try again.",
     "consent": "I agree to the files being made available immediately and accept that I lose my right to withdraw.",
-    "open": "Open the cart"
+    "open": "Open the cart",
+    "identify": "How do you want to buy?",
+    "identifyHint": "An account is not required. Without one we email the download links — that will be your only copy of the purchase, so use an address you can reach.",
+    "asGuest": "Continue as a guest",
+    "signIn": "Sign in",
+    "email": "Email address",
+    "emailHint": "Where the download links and the confirmation go."
   },
   "library": {
     "title": "Library",
@@ -4527,5 +4533,12 @@
       "fallback": "With no split, the owners take everything.",
       "noAccount": "No payout account yet — their share waits as pending."
     }
+  },
+  "order": {
+    "title": "Your files",
+    "intro": "The purchase went through. Here is what you paid for.",
+    "missing": "We could not find that order. Check the link from the email is complete.",
+    "gone": "The project has been taken down — there is nothing left to download.",
+    "keep": "Keep this email. The link keeps working and needs no sign-in."
   }
 }
