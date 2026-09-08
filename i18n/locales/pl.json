@@ -4488,7 +4488,8 @@
     "done": "Zapłacone. Pliki są już w twojej bibliotece.",
     "toLibrary": "Przejdź do biblioteki",
     "failed": "Płatność się nie powiodła. Spróbuj jeszcze raz.",
-    "consent": "Zgadzam się na natychmiastowe udostępnienie plików i przyjmuję do wiadomości, że tracę prawo odstąpienia od umowy."
+    "consent": "Zgadzam się na natychmiastowe udostępnienie plików i przyjmuję do wiadomości, że tracę prawo odstąpienia od umowy.",
+    "open": "Otwórz koszyk"
   },
   "library": {
     "title": "Biblioteka",

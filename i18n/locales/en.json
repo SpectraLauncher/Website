@@ -4488,7 +4488,8 @@
     "done": "Paid. The files are in your library.",
     "toLibrary": "Go to the library",
     "failed": "The payment did not go through. Try again.",
-    "consent": "I agree to the files being made available immediately and accept that I lose my right to withdraw."
+    "consent": "I agree to the files being made available immediately and accept that I lose my right to withdraw.",
+    "open": "Open the cart"
   },
   "library": {
     "title": "Library",

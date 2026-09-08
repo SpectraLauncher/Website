@@ -5,16 +5,6 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const cart = useCart()
 
-interface Line {
-  projectId: string
-  slug: string
-  title: string
-  icon: string | null
-  path: string
-  priceMinor: number
-}
-
-const priced = ref<{ items: Line[], totalMinor: number, problems: string[] } | null>(null)
 const consent = ref(false)
 const busy = ref(false)
 const problem = ref('')
@@ -29,24 +19,9 @@ const money = (minor: number) => new Intl.NumberFormat(locale.value, {
   currency: 'EUR',
 }).format(minor / 100)
 
-async function reprice() {
-  if (!cart.items.value.length) {
-    priced.value = { items: [], totalMinor: 0, problems: [] }
-    return
-  }
-
-  priced.value = await $fetch('/api/catalog/cart', {
-    method: 'POST',
-    body: { items: cart.items.value },
-  })
-
-  // Anything the server refused - already owned, gone, now free - is dropped
-  // rather than left sitting there failing the checkout every time.
-  const keep = new Set(priced.value!.items.map(item => item.projectId))
-  for (const id of [...cart.items.value]) if (!keep.has(id)) cart.remove(id)
-}
-
-watch(() => cart.items.value.join(','), () => reprice(), { immediate: true })
+// Priced once in the composable and shared, so this page and the navbar's
+// popover never disagree about what is in the cart.
+onMounted(() => cart.reprice())
 
 useHead({ script: [{ src: 'https://js.stripe.com/v3/', async: true }] })
 
@@ -152,13 +127,13 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
           <UButton class="mt-4 rounded-xl" :to="localePath('/library')" :label="t('cart.toLibrary')" />
         </div>
 
-        <div v-else-if="!priced?.items.length" class="mt-8 text-muted">
+        <div v-else-if="!cart.lines.value.length" class="mt-8 text-muted">
           {{ t('cart.empty') }}
         </div>
 
         <div v-else class="mt-8 space-y-6">
           <ul class="divide-y divide-default rounded-2xl border border-default">
-            <li v-for="line in priced.items" :key="line.projectId" class="flex items-center gap-3 p-4">
+            <li v-for="line in cart.lines.value" :key="line.projectId" class="flex items-center gap-3 p-4">
               <img v-if="line.icon" :src="line.icon" alt="" class="size-10 rounded-lg" />
               <NuxtLink :to="localePath(line.path)" class="flex-1 font-medium hover:underline">
                 {{ line.title }}
@@ -176,7 +151,7 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
 
           <div class="flex items-center justify-between text-lg font-medium">
             <span>{{ t('cart.total') }}</span>
-            <span>{{ money(priced.totalMinor) }}</span>
+            <span>{{ money(cart.totalMinor.value) }}</span>
           </div>
 
           <template v-if="!paying">
@@ -188,7 +163,7 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
               class="rounded-xl"
               :loading="busy"
               :disabled="!consent"
-              :label="t('cart.pay', { amount: money(priced.totalMinor) })"
+              :label="t('cart.pay', { amount: money(cart.totalMinor.value) })"
               @click="startPayment()"
             />
           </template>

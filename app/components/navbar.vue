@@ -40,6 +40,7 @@ const catalogVisible = computed(() =>
 // anything into it, and a button that always answers 404 is worse than none.
 const canPublish = computed(() => Boolean(me.value) && catalogVisible.value)
 
+const cart = useCart()
 const creating = useCreateFlows()
 
 const publishMenu = computed(() => [
@@ -170,6 +171,7 @@ defineExpose({ items })
                 </div>
 
                 <div class="hidden gap-3 items-center lg:flex">
+                    <CartButton />
                     <UDropdownMenu
                         v-if="canPublish"
                         :items="publishMenu"
@@ -228,15 +230,36 @@ defineExpose({ items })
                     />
                 </div>
 
-                <UButton
-                    class="rounded-xl lg:hidden"
-                    variant="ghost"
-                    color="neutral"
-                    size="lg"
-                    :icon="menuOpen ? 'i-pixelarticons-close' : 'i-pixelarticons-menu'"
-                    :aria-label="t('nav.menu')"
-                    @click="menuOpen = !menuOpen"
-                />
+                <div class="flex items-center gap-1 lg:hidden">
+                    <!-- No hover on a phone, so this one goes straight to the
+                         cart rather than opening a popover nobody can trigger. -->
+                    <UChip
+                        v-if="cart.count.value > 0"
+                        :text="cart.count.value"
+                        size="xl"
+                        color="primary"
+                    >
+                        <UButton
+                            :to="localePath('/cart')"
+                            icon="i-pixelarticons-cart"
+                            variant="ghost"
+                            color="neutral"
+                            size="lg"
+                            class="rounded-xl"
+                            :aria-label="t('cart.title')"
+                        />
+                    </UChip>
+
+                    <UButton
+                        class="rounded-xl"
+                        variant="ghost"
+                        color="neutral"
+                        size="lg"
+                        :icon="menuOpen ? 'i-pixelarticons-close' : 'i-pixelarticons-menu'"
+                        :aria-label="t('nav.menu')"
+                        @click="menuOpen = !menuOpen"
+                    />
+                </div>
             </div>
 
             <div
