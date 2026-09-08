@@ -76,9 +76,12 @@ async function startPayment() {
     const group = stripe.elements({ clientSecret: res.clientSecret })
     const payment = group.create('payment')
 
-    await nextTick()
-    payment.mount(holder.value)
+    // The container only exists once the form is showing, so this order matters:
+    // flip the flag, let Vue render, then mount. Mounting first hands Stripe a
+    // null and it says only "Missing argument".
     paying.value = true
+    await nextTick()
+    payment.mount(holder.value!)
 
     elements = {
       submit: async () => {

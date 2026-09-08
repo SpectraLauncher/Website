@@ -72,7 +72,14 @@ export default defineEventHandler((event) => {
     'strict-transport-security': 'max-age=31536000; includeSubDomains',
     'x-content-type-options': 'nosniff',
     'referrer-policy': 'strict-origin-when-cross-origin',
-    'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    // payment=() switches off the Payment Request API outright, which is what
+    // Google Pay and Apple Pay inside Stripe's Payment Element are. The wallet
+    // buttons simply do not appear, and the console says only "payment is not
+    // allowed in this document". Allowed for this origin and for Stripe's frame,
+    // and for nothing else.
+    'permissions-policy':
+      'camera=(), microphone=(), geolocation=(), '
+      + 'payment=(self "https://js.stripe.com")',
     'content-security-policy': policy(),
   })
 })

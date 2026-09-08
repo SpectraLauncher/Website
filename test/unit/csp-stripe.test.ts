@@ -52,6 +52,28 @@ describe('CSP dla komponentow Connect', () => {
     expect(source).not.toContain(`'cross-origin-opener-policy'`)
   })
 
+  // payment=() switches off the Payment Request API, which is what Google Pay
+  // and Apple Pay inside the Payment Element are. The buttons then never appear
+  // and the console says only that payment is not allowed.
+  // The header itself, not the file: the comment above it names the old value to
+  // explain why it changed, and matching on the whole source would read that
+  // explanation as the setting.
+  const permissions = source.slice(
+    source.indexOf(`'permissions-policy':`),
+    source.indexOf(`'content-security-policy'`),
+  )
+
+  it('nie wylacza Payment Request API, ktorego uzywaja portfele', () => {
+    expect(permissions).toContain('payment=(self "https://js.stripe.com")')
+    expect(permissions).not.toMatch(/payment=\(\)/)
+  })
+
+  it('nadal wylacza kamere, mikrofon i lokalizacje', () => {
+    for (const feature of ['camera=()', 'microphone=()', 'geolocation=()']) {
+      expect(permissions, feature).toContain(feature)
+    }
+  })
+
   it('obrazy i tak sa dozwolone z kazdego https', () => {
     expect(directive('img-src')).toContain('https:')
   })

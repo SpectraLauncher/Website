@@ -68,6 +68,18 @@ describe('kolejnosc zapisu przy checkoucie', () => {
   })
 })
 
+describe('formularz platnosci', () => {
+  const page = readFileSync('app/pages/cart.vue', 'utf8')
+
+  // The container only exists once the form is showing. Mounting before the flag
+  // hands Stripe a null, and it reports only "Missing argument".
+  it('kontener istnieje, zanim Stripe sie w nim montuje', () => {
+    expect(page.indexOf('paying.value = true')).toBeLessThan(page.indexOf('payment.mount('))
+    expect(page).toContain('await nextTick()')
+    expect(page.indexOf('await nextTick()')).toBeLessThan(page.indexOf('payment.mount('))
+  })
+})
+
 describe('webhook', () => {
   it('zapisuje zdarzenie, zanim cokolwiek zrobi', () => {
     expect(hook.indexOf('recordEvent(')).toBeLessThan(hook.indexOf('handleStripeEvent('))
