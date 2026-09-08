@@ -4495,7 +4495,9 @@
     "asGuest": "Kontynuuj jako gość",
     "signIn": "Zaloguj się",
     "email": "Adres e-mail",
-    "emailHint": "Tam wyślemy linki do pobrania i potwierdzenie zakupu."
+    "emailHint": "Tam wyślemy linki do pobrania i potwierdzenie zakupu.",
+    "doneGuest": "Zapłacone. Linki do pobrania wysłaliśmy też na twój adres — zachowaj tego maila, bo bez konta to twoja jedyna kopia zakupu.",
+    "toFiles": "Przejdź do plików"
   },
   "library": {
     "title": "Biblioteka",

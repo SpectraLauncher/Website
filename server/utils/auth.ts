@@ -200,7 +200,7 @@ export function mailTemplate(raw: {
 
       <tr><td align="left" style="padding:20px 4px 0;font-family:${sans};font-size:11px;line-height:1.7;color:#9a9689;">
         <a href="${site}" style="color:#6f7480;text-decoration:none;font-weight:600;">usespectra.app</a>
-        &nbsp;&middot;&nbsp; A free, open-source Minecraft launcher.
+        &nbsp;&middot;&nbsp; A free, open-source platform.
       </td></tr>
 
     </table>

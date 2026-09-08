@@ -13,16 +13,20 @@ const signedIn = computed(() => Boolean(session.value.data?.user))
 const asGuest = ref(false)
 const email = ref('')
 
-const identified = computed(() => signedIn.value || asGuest.value)
-const emailLooksReal = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()))
-const canPay = computed(() =>
-  consent.value && (signedIn.value || (asGuest.value && emailLooksReal.value)))
-
 const consent = ref(false)
 const busy = ref(false)
 const problem = ref('')
 const paying = ref(false)
 const done = ref(false)
+
+// Returned by the checkout so a guest can reach their files straight away
+// instead of waiting on the receipt. It opens nothing until the sale is paid.
+const orderToken = ref('')
+
+const identified = computed(() => signedIn.value || asGuest.value)
+const emailLooksReal = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()))
+const canPay = computed(() =>
+  consent.value && (signedIn.value || (asGuest.value && emailLooksReal.value)))
 
 const holder = ref<HTMLElement | null>(null)
 let elements: { submit: () => Promise<void> } | null = null
@@ -59,7 +63,11 @@ async function startPayment() {
   problem.value = ''
 
   try {
-    const res = await $fetch<{ clientSecret: string, publishableKey: string }>(
+    const res = await $fetch<{
+      clientSecret: string
+      publishableKey: string
+      accessToken: string
+    }>(
       '/api/catalog/checkout',
       {
         method: 'POST',
@@ -70,6 +78,8 @@ async function startPayment() {
         },
       },
     )
+
+    orderToken.value = res.accessToken
 
     const Stripe = await whenStripeReady()
     const stripe = Stripe(res.publishableKey)
@@ -87,7 +97,13 @@ async function startPayment() {
       submit: async () => {
         const { error } = await stripe.confirmPayment({
           elements: group,
-          confirmParams: { return_url: `${location.origin}${localePath('/library')}` },
+          // Where a redirecting method comes back to. A guest has no library, so
+          // it has to be the order page and its token.
+          confirmParams: {
+            return_url: signedIn.value
+              ? `${location.origin}${localePath('/library')}`
+              : `${location.origin}${localePath('/order')}/${orderToken.value}`,
+          },
           redirect: 'if_required',
         })
 
@@ -146,8 +162,22 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
         />
 
         <div v-if="done" class="mt-8 rounded-2xl border border-default p-6 text-center">
-          <p class="font-medium">{{ t('cart.done') }}</p>
-          <UButton class="mt-4 rounded-xl" :to="localePath('/library')" :label="t('cart.toLibrary')" />
+          <!-- A guest has no library to send them to, and saying they have one
+               is worse than saying nothing. -->
+          <p class="font-medium">{{ signedIn ? t('cart.done') : t('cart.doneGuest') }}</p>
+
+          <UButton
+            v-if="signedIn"
+            class="mt-4 rounded-xl"
+            :to="localePath('/library')"
+            :label="t('cart.toLibrary')"
+          />
+          <UButton
+            v-else-if="orderToken"
+            class="mt-4 rounded-xl"
+            :to="`${localePath('/order')}/${orderToken}`"
+            :label="t('cart.toFiles')"
+          />
         </div>
 
         <div v-else-if="!cart.lines.value.length" class="mt-8 text-muted">

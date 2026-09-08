@@ -134,3 +134,25 @@ describe('zmiany na koncie sprzedawcy', () => {
     expect(events).toContain('refreshAccount(row)')
   })
 })
+
+// A guest has no library. Telling them their files are in one is worse than
+// telling them nothing, and it was what the page said.
+describe('co widzi kupujacy po zaplaceniu', () => {
+  const page = readFileSync('app/pages/cart.vue', 'utf8')
+
+  it('gosc nie jest odsylany do biblioteki', () => {
+    expect(page).toContain(`signedIn ? t('cart.done') : t('cart.doneGuest')`)
+    expect(page).toContain(`v-if="signedIn"`)
+  })
+
+  it('gosc dostaje link do swoich plikow od razu', () => {
+    expect(page).toContain('orderToken')
+    expect(checkout).toContain('accessToken,')
+  })
+
+  // Where a redirecting method comes back to. Sending a guest to the library
+  // would strand them on a page that is not theirs.
+  it('powrot po przekierowaniu zalezy od tego, kto kupuje', () => {
+    expect(page).toContain('return_url: signedIn.value')
+  })
+})

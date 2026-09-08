@@ -4495,7 +4495,9 @@
     "asGuest": "Continue as a guest",
     "signIn": "Sign in",
     "email": "Email address",
-    "emailHint": "Where the download links and the confirmation go."
+    "emailHint": "Where the download links and the confirmation go.",
+    "doneGuest": "Paid. We have emailed the download links as well — keep that email, it is your only copy of the purchase without an account.",
+    "toFiles": "Open your files"
   },
   "library": {
     "title": "Library",

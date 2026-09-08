@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   // failure in between would leave Stripe holding a charge that nothing here
   // records - the one failure that costs somebody money. This way the worst case
   // is a pending row nobody uses.
-  const { saleId } = await openSale({
+  const { saleId, accessToken } = await openSale({
     buyerId: viewer?.id ?? null,
     buyerEmail: email,
     cart,
@@ -59,6 +59,12 @@ export default defineEventHandler(async (event) => {
     clientSecret: intent.client_secret,
     totalMinor: cart.totalMinor,
     publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+    // Handed to the browser that just paid for it, which is the same browser the
+    // receipt would eventually reach. It opens nothing until the sale is paid -
+    // saleByToken only matches a paid one - so returning it before the payment
+    // completes gives away no access. It saves a guest waiting on an email to
+    // reach files they have already bought.
+    accessToken,
   }
 })
 
