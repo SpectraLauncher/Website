@@ -11,6 +11,12 @@ const { scanExports } = await import(pathToFileURL(path.join(store, pkg, 'node_m
 const ROOTS = ['app/utils', 'app/composables', 'server/utils', 'shared/utils']
 const DECLARED = /^export\s+(?:async\s+)?(?:function|const|let|class)\s+([A-Za-z0-9_$]+)/gm
 
+// unimport's scanner reports values, not types — but auto-import covers types
+// too, and two files exporting one interface name is the worse collision of the
+// pair: nothing fails at run time, TypeScript simply resolves the name to the
+// wrong shape. `Share` meaning two different things got through on that.
+const DECLARED_TYPES = /^export\s+(?:interface|type)\s+([A-Za-z0-9_$]+)/gm
+
 function* walk(dir) {
   if (!fs.existsSync(dir)) return
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -46,6 +52,7 @@ for (const root of ROOTS) {
     const missing = declared.filter(name => !seen.has(name))
     if (missing.length) problems.push(`${file} — skaner nie widzi: ${missing.join(', ')}`)
 
+    for (const m of src.matchAll(DECLARED_TYPES)) seen.add(m[1])
     exportsOf.set(file, seen)
   }
 }

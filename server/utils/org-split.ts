@@ -3,12 +3,12 @@ import { q, usePool } from './db'
 
 export const SHARE_TOTAL = 10_000
 
-export interface Share {
+export interface OrgShare {
   userId: string
   shareBps: number
 }
 
-export async function splitFor(orgId: string): Promise<Share[]> {
+export async function splitFor(orgId: string): Promise<OrgShare[]> {
   const rows = await q<{ user_id: string, share_bps: number }>(
     'SELECT user_id, share_bps FROM org_split WHERE org_id = $1 ORDER BY user_id',
     [orgId],
@@ -44,10 +44,10 @@ export async function splitMembers(orgId: string) {
 // Shares are stored as basis points and have to add up exactly. Anything else
 // is refused rather than normalised: a team that meant 30/30/30 should be told
 // the tenth is missing, not have it silently handed to somebody.
-export function readShares(input: unknown): Share[] {
+export function readShares(input: unknown): OrgShare[] {
   const rows = Array.isArray(input) ? input : []
 
-  const shares: Share[] = []
+  const shares: OrgShare[] = []
   for (const row of rows) {
     const record = (row ?? {}) as Record<string, unknown>
     const userId = String(record.userId ?? '').trim()
