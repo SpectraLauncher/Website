@@ -79,7 +79,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -114,8 +114,8 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
                 />
               </div>
               <div class="flex items-start justify-center gap-6 rounded-2xl bg-[#101010] py-6">
-                <BannerPreview :base="base" :layers="layers" :scale="5" />
-                <BannerPreview :base="base" :layers="layers" :scale="3" shield />
+                <ToolsBannerPreview :base="base" :layers="layers" :scale="5" />
+                <ToolsBannerPreview :base="base" :layers="layers" :scale="3" shield />
               </div>
             </div>
 
@@ -130,7 +130,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
                   :key="layers.length - 1 - i"
                   class="flex items-center gap-2 rounded-xl border border-white/10 bg-black/40 p-2"
                 >
-                  <BannerPreview :base="'white'" :layers="[layer]" :scale="1" />
+                  <ToolsBannerPreview :base="'white'" :layers="[layer]" :scale="1" />
                   <span class="min-w-0 flex-1 truncate text-xs text-muted">
                     {{ t(`banner.patterns.${layer.pattern}`) }}
                   </span>
@@ -190,7 +190,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
                     :title="t(`banner.patterns.${p.id}`)"
                     @click="addLayer(p.id)"
                   >
-                    <BannerPreview :base="'white'" :layers="[{ pattern: p.id, color: activeColor }]" :scale="1.6" />
+                    <ToolsBannerPreview :base="'white'" :layers="[{ pattern: p.id, color: activeColor }]" :scale="1.6" />
                   </button>
                 </div>
               </div>
@@ -207,7 +207,7 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
                   :title="t(`banner.presetNames.${p.key}`)"
                   @click="usePreset(p)"
                 >
-                  <BannerPreview :base="p.base" :layers="p.layers" :scale="2" />
+                  <ToolsBannerPreview :base="p.base" :layers="p.layers" :scale="2" />
                 </button>
               </div>
             </div>
@@ -243,10 +243,10 @@ const faq = computed(() => (tm('banner.faq') as unknown[]).map((x, i) => ({
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('locator.featuresTitle') }}</h2>
         <div class="grid gap-4 md:grid-cols-3">
-          <GlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
+          <UiGlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
             <h3 class="mb-2 font-semibold tracking-tight">{{ f.title }}</h3>
             <p class="text-sm/relaxed text-muted">{{ f.body }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 

@@ -20,7 +20,7 @@ useSeoMeta({ robots: 'noindex' })
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
     <section v-if="error" class="container mx-auto max-w-2xl px-4 py-40 text-center">
       <h1 class="text-2xl font-semibold">{{ t('catalog.notFound') }}</h1>
     </section>

@@ -69,7 +69,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -100,7 +100,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
               :title="t(`banner.colors.${d.id}`)"
               @click="addDye(d.id)"
             >
-              <DyeIcon :dye="d" :size="32" />
+              <ToolsDyeIcon :dye="d" :size="32" />
             </button>
           </div>
         </div>
@@ -131,7 +131,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                 :title="t('armorDye.removeOne')"
                 @click="removeDye(used.indexOf(g.dye.id))"
               >
-                <DyeIcon :dye="g.dye" :size="24" />
+                <ToolsDyeIcon :dye="g.dye" :size="24" />
                 <span class="text-sm">
                   <span v-if="g.n > 1" class="text-dimmed">{{ g.n }}× </span>{{ t(`banner.colors.${g.dye.id}`) }}
                 </span>
@@ -160,7 +160,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
           <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
             <div class="mb-4 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('colorCodes.previewLabel') }}</div>
             <div class="grid place-items-center rounded-2xl bg-[#101010] py-6">
-              <ArmorPreview :piece="piece" :color="mixed" :scale="9" />
+              <ToolsArmorPreview :piece="piece" :color="mixed" :scale="9" />
             </div>
 
             <div class="mt-4 flex flex-wrap justify-center gap-2">
@@ -173,7 +173,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                 :title="t(`armorDye.pieces.${p}`)"
                 @click="piece = p"
               >
-                <ArmorPreview :piece="p" :color="mixed" :scale="2.4" />
+                <ToolsArmorPreview :piece="p" :color="mixed" :scale="2.4" />
               </button>
             </div>
           </div>
@@ -265,7 +265,7 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
                   :key="g.dye.id"
                   class="flex items-center gap-2 rounded-xl border border-white/10 bg-black/40 py-1.5 pl-2 pr-3"
                 >
-                  <DyeIcon :dye="g.dye" :size="24" />
+                  <ToolsDyeIcon :dye="g.dye" :size="24" />
                   <span class="text-sm">
                     <span v-if="g.n > 1" class="text-dimmed">{{ g.n }}× </span>{{ t(`banner.colors.${g.dye.id}`) }}
                   </span>
@@ -289,10 +289,10 @@ const faq = computed(() => (tm('armorDye.faq') as unknown[]).map((x, i) => ({
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('locator.featuresTitle') }}</h2>
         <div class="grid gap-4 md:grid-cols-3">
-          <GlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
+          <UiGlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
             <h3 class="mb-2 font-semibold tracking-tight">{{ f.title }}</h3>
             <p class="text-sm/relaxed text-muted">{{ f.body }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 

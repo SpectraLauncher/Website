@@ -27,7 +27,7 @@ const goHome = () => clearError({ redirect: localePath('/') })
 <template>
   <UApp>
     <div class="relative flex min-h-screen flex-col overflow-x-clip">
-      <Navbar />
+      <SiteNavbar />
 
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
 

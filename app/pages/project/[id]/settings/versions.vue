@@ -258,7 +258,7 @@ const loaderOptions = computed(() =>
           </UFormField>
           <div class="sm:col-span-2">
             <UFormField :label="t('catalog.gameVersions')">
-              <GameVersionPicker v-model="draft.gameVersions" :versions="gameVersions" />
+              <ProjectGameVersionPicker v-model="draft.gameVersions" :versions="gameVersions" />
             </UFormField>
 
             <!-- The manifest comes from Mojang, so it can be unreachable. Typing
@@ -281,7 +281,7 @@ const loaderOptions = computed(() =>
         </div>
 
         <UFormField :label="t('catalog.changelog')" class="mt-3">
-          <MarkdownEditor v-model="draft.changelog" :rows="8" />
+          <UiMarkdownEditor v-model="draft.changelog" :rows="8" />
         </UFormField>
 
         <UButton

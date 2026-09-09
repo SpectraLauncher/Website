@@ -13,7 +13,7 @@ const pillars = computed(() => [
 <template>
   <section class="container mx-auto px-4 py-20">
     <div class="grid gap-4 md:grid-cols-3">
-      <GlassCard
+      <UiGlassCard
         v-for="p in pillars"
         :key="p.t"
         v-reveal
@@ -30,7 +30,7 @@ const pillars = computed(() => [
           {{ p.cta }}
           <UIcon name="i-pixelarticons-arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
         </div>
-      </GlassCard>
+      </UiGlassCard>
     </div>
   </section>
 </template>

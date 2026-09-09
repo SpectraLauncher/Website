@@ -17,7 +17,7 @@ const { t } = useI18n()
     <p v-reveal class="mb-8 max-w-[62ch] text-muted">{{ t('home.toolsSub') }}</p>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <GlassCard
+      <UiGlassCard
         v-for="tool in FEATURED_TOOLS"
         :key="tool.id"
         v-reveal
@@ -38,7 +38,7 @@ const { t } = useI18n()
         <p class="mb-4 flex-1 text-sm/relaxed text-muted">{{ t(`tools.${tool.id}`) }}</p>
 
         <div class="text-xs text-dimmed">{{ t(`cats.${tool.cat}`) }}</div>
-      </GlassCard>
+      </UiGlassCard>
     </div>
   </section>
 </template>

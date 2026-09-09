@@ -107,7 +107,7 @@ async function uploadIcon(event: Event) {
         <UTextarea v-model="form.summary" :rows="3" :maxlength="256" class="w-full" />
       </UFormField>
 
-      <SlugField
+      <UiSlugField
         v-model="form.slug"
         :label="t('create.project.url')"
         :prefix="`usespectra.app/${project?.path.split('/')[1] ?? ''}/`"
@@ -117,7 +117,7 @@ async function uploadIcon(event: Event) {
         :label="t('create.project.visibility')"
         :help="t(`create.visibilityHint.${form.visibility}`)"
       >
-        <ChoiceRow v-model="form.visibility" :options="visibilityOptions" />
+        <UiChoiceRow v-model="form.visibility" :options="visibilityOptions" />
       </UFormField>
     </div>
 

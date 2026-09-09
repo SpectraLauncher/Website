@@ -4,11 +4,11 @@ useHead({ titleTemplate: '%s' })
 
 <template>
   <div>
-    <Navbar/>
-    <HeroSection/>
-    <PillarsSection/>
-    <FeaturedTools/>
-    <LauncherSection/>
+    <SiteNavbar/>
+    <HomeHeroSection/>
+    <HomePillarsSection/>
+    <HomeFeaturedTools/>
+    <HomeLauncherSection/>
     <DiscordCta/>
   </div>
 </template>

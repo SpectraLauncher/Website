@@ -49,7 +49,7 @@ watchEffect(() => {
       :description="problem"
     />
 
-    <MarkdownEditor
+    <UiMarkdownEditor
       v-model="description"
       :rows="24"
       :upload-to="`/api/catalog/project/${encodeURIComponent(project?.slug ?? '')}/image`"

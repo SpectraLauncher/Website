@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { cssSafeAssetUrl, safeAssetUrl } from '../../shared/utils/links'
 
-const component = readFileSync('app/components/ProjectBackdrop.vue', 'utf8')
+const component = readFileSync('app/components/project/Backdrop.vue', 'utf8')
 
 const TYPES = ['mod', 'pack', 'plugin', 'resourcepack', 'schematic', 'shader']
 

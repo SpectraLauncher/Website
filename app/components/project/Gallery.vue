@@ -34,6 +34,6 @@ const images = computed(() =>
 
     <p v-else class="text-sm text-dimmed">{{ t('catalog.noGallery') }}</p>
 
-    <ImageLightbox v-model="shown" :images="images" />
+    <UiImageLightbox v-model="shown" :images="images" />
   </div>
 </template>

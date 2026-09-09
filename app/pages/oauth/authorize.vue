@@ -77,7 +77,7 @@ const host = computed(() => {
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <section class="mx-auto flex min-h-[70vh] max-w-lg items-center px-4 pb-12 pt-32">
       <div class="w-full">

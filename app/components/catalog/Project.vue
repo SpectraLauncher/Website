@@ -207,7 +207,7 @@ async function toggleFollow() {
             <UIcon name="i-pixelarticons-heart" class="size-4" :class="following ? 'text-primary' : ''" />
             {{ t('catalog.follows', { n: count(followCount) }) }}
           </button>
-          <ReportButton item-type="project" :item-id="project.id" size="xs" />
+          <ProjectReportButton item-type="project" :item-id="project.id" size="xs" />
         </div>
       </div>
 

@@ -121,7 +121,7 @@ async function create() {
           />
         </UFormField>
 
-        <SlugField
+        <UiSlugField
           ref="slugField"
           v-model="slug"
           :label="t('create.project.url')"
@@ -140,7 +140,7 @@ async function create() {
         </UFormField>
 
         <UFormField :label="t('create.project.visibility')" :help="t(`create.visibilityHint.${visibility}`)">
-          <ChoiceRow v-model="visibility" :options="visibilityOptions" />
+          <UiChoiceRow v-model="visibility" :options="visibilityOptions" />
         </UFormField>
 
         <UFormField :label="t('create.project.summary')" :help="t('create.project.summaryHint')">

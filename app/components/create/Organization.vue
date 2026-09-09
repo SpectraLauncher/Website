@@ -74,7 +74,7 @@ async function create() {
           />
         </UFormField>
 
-        <SlugField
+        <UiSlugField
           ref="slugField"
           v-model="slug"
           :label="t('create.organization.url')"

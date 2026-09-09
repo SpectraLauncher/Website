@@ -53,7 +53,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
           </div>
         </div>
 
-        <GlassCard v-reveal class="p-3">
+        <UiGlassCard v-reveal class="p-3">
           
           <img
             src="/screenshots/MainMenu.png"
@@ -61,7 +61,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
             class="block w-full rounded-2xl"
             loading="lazy"
           />
-        </GlassCard>
+        </UiGlassCard>
       </div>
   </section>
 

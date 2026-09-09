@@ -260,7 +260,7 @@ useSchemaOrg(computed(() => (data.value
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-40% mask-b-to-100%"></div>
@@ -632,7 +632,7 @@ useSchemaOrg(computed(() => (data.value
                 {{ t('activity.title') }}
               </h2>
 
-              <ActivityGraph v-if="data.activity.length" :days="data.activity" />
+              <UiActivityGraph v-if="data.activity.length" :days="data.activity" />
               <p v-else class="text-sm/relaxed text-muted">{{ t('activity.empty') }}</p>
             </div>
           </div>

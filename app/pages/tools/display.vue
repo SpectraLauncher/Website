@@ -107,7 +107,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -184,7 +184,7 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
           <div class="flex flex-col gap-4">
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <div class="mb-3 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('display.preview') }}</div>
-              <DisplayPreview ref="preview" :state="s" />
+              <ToolsDisplayPreview ref="preview" :state="s" />
               <p class="mt-3 flex items-start gap-2 text-xs text-dimmed">
                 <span class="mt-1 inline-block size-2 shrink-0 rounded-full bg-emerald-400"></span>
                 {{ t('display.originHint') }}
@@ -591,10 +591,10 @@ const faq = computed(() => (tm('display.faq') as unknown[]).map((x, i) => ({
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('locator.featuresTitle') }}</h2>
         <div class="grid gap-4 md:grid-cols-3">
-          <GlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
+          <UiGlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
             <h3 class="mb-2 font-semibold tracking-tight">{{ f.title }}</h3>
             <p class="text-sm/relaxed text-muted">{{ f.body }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 

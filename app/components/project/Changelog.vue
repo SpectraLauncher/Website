@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CatalogVersion } from '~/components/CatalogProject.vue'
+import type { CatalogVersion } from '~/components/catalog/Project.vue'
 
 const props = defineProps<{ versions: CatalogVersion[] }>()
 

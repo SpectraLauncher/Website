@@ -73,8 +73,8 @@ useSeoMeta({
       <CreateProject />
       <CreateOrganization />
       <CreateCollection />
-      <ConfirmDialog />
-      <CookieNotice />
+      <UiConfirmDialog />
+      <SiteCookieNotice />
       <SiteAnalytics />
     </div>
   </UApp>

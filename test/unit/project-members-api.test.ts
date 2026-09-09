@@ -41,7 +41,7 @@ describe('czlonkowie projektu', () => {
   it('interfejs dostaje wlasna maske, zeby wyszarzyc reszte', () => {
     expect(list).toContain('projectMaskToList(standing.mask)')
 
-    const ui = readFileSync('app/components/ProjectMembers.vue', 'utf8')
+    const ui = readFileSync('app/components/project/Members.vue', 'utf8')
     expect(ui).toContain(':disabled="!may(key)"')
   })
 })

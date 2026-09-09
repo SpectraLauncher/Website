@@ -119,7 +119,7 @@ useSchemaOrg(computed(() => [
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg-day.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -168,7 +168,7 @@ useSchemaOrg(computed(() => [
             </div>
           </div>
 
-          <GlassCard v-reveal class="p-3">
+          <UiGlassCard v-reveal class="p-3">
             <img
               src="/screenshots/MainMenu.png"
               alt="Spectra Launcher"
@@ -176,7 +176,7 @@ useSchemaOrg(computed(() => [
               width="1280"
               height="800"
             />
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
     </div>
@@ -192,7 +192,7 @@ useSchemaOrg(computed(() => [
           <h2 class="mb-4 text-3xl font-semibold tracking-tight">{{ row.title }}</h2>
           <p class="max-w-[54ch] text-muted">{{ row.body }}</p>
         </div>
-        <GlassCard class="p-2.5" :class="i % 2 ? 'lg:order-1' : ''">
+        <UiGlassCard class="p-2.5" :class="i % 2 ? 'lg:order-1' : ''">
           <img
             :src="`/screenshots/${row.shot}`"
             :alt="row.title"
@@ -201,18 +201,18 @@ useSchemaOrg(computed(() => [
             width="1280"
             height="800"
           />
-        </GlassCard>
+        </UiGlassCard>
       </div>
     </section>
 
     <section class="container mx-auto px-4 py-8">
       <h2 v-reveal class="mb-6 text-2xl font-semibold tracking-tight">{{ t('launcherPage.extrasTitle') }}</h2>
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <GlassCard v-for="item in extras" :key="item.title" v-reveal class="p-6">
+        <UiGlassCard v-for="item in extras" :key="item.title" v-reveal class="p-6">
           <UIcon :name="item.icon" class="mb-3 size-5 text-primary" />
           <h3 class="mb-2 font-semibold tracking-tight">{{ item.title }}</h3>
           <p class="text-sm/relaxed text-muted">{{ item.body }}</p>
-        </GlassCard>
+        </UiGlassCard>
       </div>
     </section>
 

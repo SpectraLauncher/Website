@@ -62,7 +62,7 @@ const groups = computed(() =>
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -105,7 +105,7 @@ const groups = computed(() =>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <ToolCard v-for="tool in g.tools" :key="tool.id" :tool="tool" />
+              <ToolsCard v-for="tool in g.tools" :key="tool.id" :tool="tool" />
             </div>
           </div>
         </div>

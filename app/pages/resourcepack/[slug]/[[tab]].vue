@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CatalogProjectData } from '~/components/CatalogProject.vue'
+import type { CatalogProjectData } from '~/components/catalog/Project.vue'
 
 definePageMeta({ middleware: 'catalog' })
 
@@ -29,7 +29,7 @@ useSeoMeta({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <ProjectBackdrop :gallery="data?.gallery ?? []" />

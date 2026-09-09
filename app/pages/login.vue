@@ -156,7 +156,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -321,7 +321,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
               :placeholder="t('auth.email')"
               class="w-full"
             />
-            <TurnstileWidget
+            <UiTurnstileWidget
               v-if="captchaOn"
               ref="captcha"
               :site-key="config!.turnstileSiteKey"
@@ -372,7 +372,7 @@ useSeoMeta({ title: () => `${t('auth.title')}`, robots: 'noindex, follow' })
 
             <p v-if="mode === 'signup'" class="text-xs text-dimmed">{{ t('auth.passwordRule') }}</p>
 
-            <TurnstileWidget
+            <UiTurnstileWidget
               v-if="captchaOn"
               ref="captcha"
               :site-key="config!.turnstileSiteKey"

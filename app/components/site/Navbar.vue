@@ -171,7 +171,7 @@ defineExpose({ items })
                 </div>
 
                 <div class="hidden gap-3 items-center lg:flex">
-                    <CartButton />
+                    <SiteCartButton />
                     <UDropdownMenu
                         v-if="canPublish"
                         :items="publishMenu"

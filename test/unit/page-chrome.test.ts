@@ -7,7 +7,7 @@ import { expect, it } from 'vitest'
 // there is no way off it, and the content sits where the bar would have been.
 // Nothing in the framework enforces this and every page added during a long
 // session is a chance to forget, so it is read off disk instead.
-const CHROME = ['<Navbar', '<CatalogBrowse', '<LegalPage']
+const CHROME = ['<SiteNavbar', '<CatalogBrowse', '<LegalPage']
 
 // Pages that legitimately render nothing. A redirect has no interface to frame.
 const BARE = ['app/pages/account.vue']

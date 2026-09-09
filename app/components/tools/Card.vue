@@ -22,7 +22,7 @@ const blocks = computed(() => {
 </script>
 
 <template>
-  <GlassCard :id="tool.id" :to="tool.page ? localePath(`/tools/${tool.id}`) : undefined" class="flex min-h-56 flex-col scroll-mt-32">
+  <UiGlassCard :id="tool.id" :to="tool.page ? localePath(`/tools/${tool.id}`) : undefined" class="flex min-h-56 flex-col scroll-mt-32">
     <div
       class="pointer-events-none absolute -bottom-20 -right-14 size-64 rounded-full opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-55"
       :style="`background: hsl(${tool.glow ?? 210} 90% 55% / 0.4)`"
@@ -67,7 +67,7 @@ const blocks = computed(() => {
       <h3 class="mt-6 text-lg font-semibold tracking-tight">{{ tool.name }}</h3>
       <p class="mt-1.5 text-sm/relaxed text-muted">{{ t(`tools.${tool.id}`) }}</p>
     </div>
-  </GlassCard>
+  </UiGlassCard>
 </template>
 
 <style scoped>

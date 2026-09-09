@@ -240,6 +240,6 @@ async function saveOrder() {
 
     <p v-else class="mt-5 text-sm text-dimmed">{{ t('catalog.noGallery') }}</p>
 
-    <ImageLightbox v-model="shown" :images="images" />
+    <UiImageLightbox v-model="shown" :images="images" />
   </div>
 </template>

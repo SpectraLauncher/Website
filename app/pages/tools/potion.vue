@@ -96,7 +96,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -154,7 +154,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
                 :class="p.key === selectedKey ? 'border-zinc-400 bg-white/5' : 'border-white/10 bg-black/30 hover:border-zinc-500'"
                 @click="selectedKey = p.key"
               >
-                <PotionBottle :potion-key="p.key" :color="p.color" :size="34" />
+                <ToolsPotionBottle :potion-key="p.key" :color="p.color" :size="34" />
                 <span class="min-w-0 flex-1">
                   <span class="block truncate text-sm font-medium">{{ t(`potion.names.${p.key}`) }}</span>
                   <span class="block truncate text-xs text-dimmed">{{ summary(p) }}</span>
@@ -172,7 +172,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
           <div class="flex flex-col gap-4">
             <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
               <div class="mb-6 flex items-center gap-4">
-                <PotionBottle :potion-key="potion.key" :color="potion.color" :size="56" />
+                <ToolsPotionBottle :potion-key="potion.key" :color="potion.color" :size="56" />
                 <div>
                   <h2 class="text-2xl font-semibold tracking-tight">{{ t(`potion.names.${potion.key}`) }}</h2>
                   <p class="font-mono text-xs text-dimmed">minecraft:{{ form.id }}</p>
@@ -189,20 +189,20 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
                 <template v-for="(step, i) in chain" :key="i">
                   <span v-if="step.ingredient" class="flex items-center gap-1.5 text-xs text-muted">
                     <UIcon name="i-pixelarticons-plus" class="size-3 text-dimmed" />
-                    <IngredientIcon :ingredient="step.ingredient" :size="22" />
+                    <ToolsIngredientIcon :ingredient="step.ingredient" :size="22" />
                     {{ t(`potion.ingredients.${step.ingredient}`) }}
                     <UIcon name="i-pixelarticons-chevron-right" class="size-3.5 text-dimmed" />
                   </span>
                   <span class="flex items-center gap-1.5 rounded-xl border border-white/10 bg-black/40 px-2.5 py-1.5">
-                    <PotionBottle :potion-key="step.potion" :color="potionByKey(step.potion)?.color || '#385DC6'" :size="26" />
+                    <ToolsPotionBottle :potion-key="step.potion" :color="potionByKey(step.potion)?.color || '#385DC6'" :size="26" />
                     <span class="text-xs">{{ t(`potion.names.${step.potion}`) }}</span>
                   </span>
                 </template>
               </div>
 
               <p v-if="potion.alt" class="-mt-4 mb-6 flex flex-wrap items-center gap-1.5 text-xs text-dimmed">
-                <PotionBottle :potion-key="potion.alt.from" :color="potionByKey(potion.alt.from)?.color || '#385DC6'" :size="20" />
-                <IngredientIcon :ingredient="potion.alt.ingredient" :size="20" />
+                <ToolsPotionBottle :potion-key="potion.alt.from" :color="potionByKey(potion.alt.from)?.color || '#385DC6'" :size="20" />
+                <ToolsIngredientIcon :ingredient="potion.alt.ingredient" :size="20" />
                 {{ t('potion.alsoFrom', {
                   from: t(`potion.names.${potion.alt.from}`),
                   ingredient: t(`potion.ingredients.${potion.alt.ingredient}`)
@@ -222,7 +222,7 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
                   <span class="block text-sm font-medium">{{ t(`potion.variants.${v}`) }}</span>
                   <span v-if="variantIngredient(v)" class="flex items-center gap-1 text-[11px] text-dimmed">
                     +
-                    <IngredientIcon :ingredient="variantIngredient(v)" :size="18" />
+                    <ToolsIngredientIcon :ingredient="variantIngredient(v)" :size="18" />
                     {{ t(`potion.ingredients.${variantIngredient(v)}`) }}
                   </span>
                   <span class="mt-1.5 block text-xs text-muted">
@@ -284,23 +284,23 @@ const faq = computed(() => (tm('potion.faq') as unknown[]).map((x, i) => ({
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('potion.ingredientsTitle') }}</h2>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <GlassCard v-for="ing in INGREDIENTS" :key="ing.key" v-reveal class="p-5">
+          <UiGlassCard v-for="ing in INGREDIENTS" :key="ing.key" v-reveal class="p-5">
             <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold tracking-tight">
-              <IngredientIcon :ingredient="ing.key" :size="28" />
+              <ToolsIngredientIcon :ingredient="ing.key" :size="28" />
               {{ t(`potion.ingredients.${ing.key}`) }}
             </h3>
             <p class="text-sm/relaxed text-muted">{{ t(`potion.roles.${ing.key}`) }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('locator.featuresTitle') }}</h2>
         <div class="grid gap-4 md:grid-cols-3">
-          <GlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
+          <UiGlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
             <h3 class="mb-2 font-semibold tracking-tight">{{ f.title }}</h3>
             <p class="text-sm/relaxed text-muted">{{ f.body }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 

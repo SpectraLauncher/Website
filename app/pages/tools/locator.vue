@@ -76,7 +76,7 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
 
 <template>
   <div>
-    <Navbar />
+    <SiteNavbar />
 
     <div class="relative">
       <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
@@ -216,10 +216,10 @@ const faq = computed(() => (tm('locator.faq') as unknown[]).map((x, i) => ({
       <section class="container mx-auto px-4 pb-16">
         <h2 v-reveal class="mb-5 text-2xl font-semibold tracking-tight">{{ t('locator.featuresTitle') }}</h2>
         <div class="grid gap-4 md:grid-cols-3">
-          <GlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
+          <UiGlassCard v-for="f in features" :key="f.title" v-reveal class="p-6">
             <h3 class="mb-2 font-semibold tracking-tight">{{ f.title }}</h3>
             <p class="text-sm/relaxed text-muted">{{ f.body }}</p>
-          </GlassCard>
+          </UiGlassCard>
         </div>
       </section>
 
