@@ -66,7 +66,12 @@ const fallback = computed(() =>
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <!-- The width lives here rather than on whatever holds this component, so one
+       toggle moves both sides of the figure and it keeps its proportions. -->
+  <div
+    class="flex flex-col gap-2 transition-[width] duration-300"
+    :class="expanded ? 'w-64 sm:w-80' : 'w-40'"
+  >
     <div
       class="relative overflow-hidden rounded-2xl border border-inset-line bg-inset transition-[height] duration-300"
       :class="expanded ? 'h-[26rem] sm:h-[32rem]' : 'h-64'"

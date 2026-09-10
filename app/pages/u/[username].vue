@@ -253,9 +253,14 @@ useSchemaOrg(computed(() => (data.value
     <template v-else>
       <UiPanel class="overflow-hidden">
         <div class="flex flex-wrap gap-6 p-5 sm:p-6">
-          <div v-if="mc" class="w-40 shrink-0">
-            <ProfileSkin :name="mc" :skin="skinCanvas" :cape="capeCanvas" :model="skinModel" />
-          </div>
+          <ProfileSkin
+            v-if="mc"
+            class="shrink-0"
+            :name="mc"
+            :skin="skinCanvas"
+            :cape="capeCanvas"
+            :model="skinModel"
+          />
 
           <div class="min-w-0 flex-1 basis-72">
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
