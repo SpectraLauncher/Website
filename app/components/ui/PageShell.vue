@@ -10,7 +10,9 @@ withDefaults(defineProps<{ width?: string }>(), { width: 'max-w-7xl' })
   <div class="min-h-screen bg-page">
     <SiteNavbar />
 
-    <section class="container mx-auto px-4 pb-24 pt-24" :class="width">
+    <!-- The navigation is fixed and sits 12 rem down the page on a wide screen,
+         so the clearance is not the height of the bar alone. -->
+    <section class="container mx-auto px-4 pb-24 pt-28 sm:pt-36" :class="width">
       <slot />
     </section>
 
