@@ -3614,7 +3614,25 @@
       "freeNote": "This project is free. Anyone can download the files without paying."
     },
     "free": "Free",
-    "statusLabel": "Status"
+    "statusLabel": "Status",
+    "version": {
+      "allVersions": "All versions",
+      "gameVersion": "Game version",
+      "platform": "Platform",
+      "published": "Published",
+      "changes": "Changes",
+      "files": "Files",
+      "filename": "File name",
+      "openNewTab": "Open in new tab",
+      "copyLink": "Copy link",
+      "copyId": "Copy ID",
+      "edit": "Edit version",
+      "remove": "Delete version",
+      "more": "More options",
+      "linkCopied": "Link copied.",
+      "idCopied": "ID copied.",
+      "noChanges": "No changelog for this version."
+    }
   },
   "verification": {
     "title": "Verification",

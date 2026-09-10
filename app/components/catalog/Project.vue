@@ -63,6 +63,8 @@ const props = defineProps<{
   backLabel: string
   icon: string
   tab?: string
+  /** Set by the address /<type>/<slug>/version/<id>. */
+  versionId?: string
   gallery?: Array<{ id: string, url: string, title: string, featured: boolean }>
 }>()
 
@@ -107,6 +109,11 @@ const primaryFile = computed(() =>
   latest.value?.files.find(file => file.primary) ?? latest.value?.files[0] ?? null)
 
 const gallery = computed(() => props.gallery ?? [])
+
+// The version the address names, if it names one. An id nobody has falls back
+// to the list rather than to an empty page.
+const openVersion = computed(() =>
+  props.project.versions.find(version => version.id === props.versionId) ?? null)
 
 // Priced, and not held by whoever is looking. `owned` is deliberately narrower
 // than "may download": an admin may take any file down, which means reaching it,
@@ -283,7 +290,25 @@ async function toggleFollow() {
 
         <ProjectGallery v-else-if="current === 'gallery'" :gallery="gallery" />
         <ProjectChangelog v-else-if="current === 'changelog'" :versions="project.versions" />
-        <ProjectVersions v-else-if="current === 'versions'" :versions="project.versions" />
+
+        <template v-else-if="current === 'versions'">
+          <ProjectVersionDetail
+            v-if="openVersion"
+            :version="openVersion"
+            :path="project.path"
+            :project-id="project.id"
+            :project-title="project.title"
+            :environment="project.environment"
+            :can-edit="canEdit"
+          />
+          <ProjectVersionList
+            v-else
+            :versions="project.versions"
+            :path="project.path"
+            :project-id="project.id"
+            :can-edit="canEdit"
+          />
+        </template>
 
         <template v-else-if="current === 'moderation'">
           <ProjectMembers :slug="project.slug" />

@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -8,11 +8,21 @@ const component = readFileSync('app/components/project/Backdrop.vue', 'utf8')
 
 const TYPES = ['mod', 'pack', 'plugin', 'resourcepack', 'schematic', 'shader']
 
+// The page file's name is a routing decision that has changed once already
+// ([[tab]] to [...tab] when versions gained their own address), and this test
+// has nothing to say about which it is.
+function projectPage(type: string): string {
+  const dir = `app/pages/${type}/[slug]`
+  const file = readdirSync(dir).find(name => name.endsWith('.vue'))
+  if (!file) throw new Error(`brak strony w ${dir}`)
+  return readFileSync(`${dir}/${file}`, 'utf8')
+}
+
 describe('tlo strony projektu', () => {
   const header = readFileSync('app/components/catalog/Project.vue', 'utf8')
 
   it.each(TYPES)('%s nie maluje wlasnego tla', (type) => {
-    const page = readFileSync(`app/pages/${type}/[slug]/[[tab]].vue`, 'utf8')
+    const page = projectPage(type)
 
     expect(page).not.toContain(`bg-[url('/bg.webp')]`)
     expect(page).not.toContain('bg-cover bg-center')
@@ -22,7 +32,7 @@ describe('tlo strony projektu', () => {
   // once for every type rather than each page rendering it for itself.
   it('naglowek projektu jest jedynym miejscem, ktore je zamawia', () => {
     const owners = TYPES.filter(type =>
-      readFileSync(`app/pages/${type}/[slug]/[[tab]].vue`, 'utf8').includes('<ProjectBackdrop'))
+      projectPage(type).includes('<ProjectBackdrop'))
 
     expect(owners).toEqual([])
     expect(header).toContain('<ProjectBackdrop :gallery="gallery" />')

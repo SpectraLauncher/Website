@@ -8,7 +8,8 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const slug = computed(() => String(route.params.slug ?? ''))
-const tab = computed(() => String(route.params.tab ?? ''))
+// /mod/x, /mod/x/versions and /mod/x/version/<id> all land here.
+const parts = computed(() => projectRouteParts(route.params.tab))
 
 const { data, error } = await useFetch<{
   project: CatalogProjectData
@@ -56,7 +57,8 @@ useSeoMeta({
       :project="project"
       icon="i-pixelarticons-blocks"
       :gallery="data?.gallery ?? []"
-      :tab="tab"
+      :tab="parts.tab"
+      :version-id="parts.versionId"
       :back-to="'/schematic'"
       :back-label="t('catalog.schematics.title')"
     >

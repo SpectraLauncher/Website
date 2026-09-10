@@ -8,7 +8,8 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const slug = computed(() => String(route.params.slug ?? ''))
-const tab = computed(() => String(route.params.tab ?? ''))
+// /mod/x, /mod/x/versions and /mod/x/version/<id> all land here.
+const parts = computed(() => projectRouteParts(route.params.tab))
 
 const { data, error } = await useFetch<{
   project: CatalogProjectData
@@ -32,17 +33,18 @@ useSeoMeta({
     <CatalogProject
       v-if="project"
       :project="project"
-      icon="i-pixelarticons-image"
+      icon="i-pixelarticons-sun"
       :gallery="data?.gallery ?? []"
-      :tab="tab"
-      :back-to="'/resourcepack'"
-      :back-label="t('catalog.resourcepacks.title')"
+      :tab="parts.tab"
+      :version-id="parts.versionId"
+      :back-to="'/shader'"
+      :back-label="t('catalog.shaders.title')"
     />
 
     <UiPanel v-else-if="error" class="mx-auto max-w-lg p-12 text-center">
       <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
       <h1 class="mt-3 text-xl font-bold text-highlighted">{{ t('catalog.notFound') }}</h1>
-      <UButton class="mt-6" :to="localePath('/resourcepack')" :label="t('catalog.resourcepacks.title')" />
+      <UButton class="mt-6" :to="localePath('/shader')" :label="t('catalog.shaders.title')" />
     </UiPanel>
   </UiPageShell>
 </template>
