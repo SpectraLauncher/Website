@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { headCommand, HEAD_VERSIONS, type HeadVersion } from '~/utils/playerHead'
-import { capeTextureUrl, modCapeUrl, type CapeSource, type SkinAnimation } from '~/utils/skin'
+import { capeTextureUrl, modCapeUrl, type CapeSource } from '~/utils/skin'
 
 const route = useRoute()
 const localePath = useLocalePath()
 const { t, locale } = useI18n()
 const toast = useToast()
 const session = useAuthSession()
+const { count } = useCatalogFormat()
 
 type Status = 'online' | 'offline' | 'in_game' | 'dnd'
 
@@ -38,6 +39,7 @@ interface Profile {
     lastSeen: number | null
   }
   activity: Array<{ day: string, launches: number, seconds: number }>
+  feed: ProfileEvent[]
   badges: Array<{ slug: string, name: string, description: string, image: string | null }>
   projects: Array<{
     id: string
@@ -66,7 +68,7 @@ const joined = computed(() => {
   if (!raw) return ''
   const ms = Number.isNaN(Number(raw)) ? Date.parse(raw) : Number(raw)
   return Number.isFinite(ms)
-    ? new Date(ms).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })
+    ? new Intl.DateTimeFormat(locale.value, { dateStyle: 'long' }).format(new Date(ms))
     : ''
 })
 
@@ -74,28 +76,10 @@ const STATUS_STYLE: Record<Status, string> = {
   online: 'bg-green-400',
   in_game: 'bg-sky-400',
   dnd: 'bg-red-400',
-  offline: 'bg-zinc-500'
+  offline: 'bg-zinc-500',
 }
 
 const signedIn = computed(() => Boolean(session.value.data))
-const LAUNCHER_STATS = computed(() => {
-  const stats = data.value?.stats
-  if (!stats) return []
-
-  const firstJoin = stats.firstDay
-    ? new Intl.DateTimeFormat(locale.value, { year: 'numeric', month: 'short', timeZone: 'UTC' })
-        .format(new Date(`${stats.firstDay}T00:00:00Z`))
-    : '—'
-
-  const average = stats.activeDays ? humanDuration(stats.seconds / stats.activeDays) : '—'
-
-  return [
-    { label: t('activity.firstJoin'), value: firstJoin },
-    { label: t('activity.lastOnline'), value: stats.lastSeen ? timeAgo(stats.lastSeen, locale.value) : '—' },
-    { label: t('activity.perDay'), value: average },
-    { label: t('activity.week'), value: stats.week ? humanDuration(stats.week) : '—' }
-  ]
-})
 
 const openList = computed(() => data.value?.visibility === 'public' || data.value?.isOwner)
 
@@ -106,45 +90,44 @@ const friendsHeading = computed(() => {
     : t('profile.friendsMutual', { n: data.value.friends.length })
 })
 
+// The four figures that fit above the fold, in the order somebody scans them:
+// what they made, how far it reached, who they know, how much they play.
+const KEY_FIGURES = computed(() => {
+  const stats = data.value?.stats
+  if (!stats) return []
+
+  return [
+    { label: t('profile.statPacks'), value: count(stats.packs) },
+    { label: t('profile.statDownloads'), value: count(stats.downloads) },
+    { label: t('profile.statFriends'), value: openList.value ? count(data.value!.friends.length) : '—' },
+    { label: t('activity.week'), value: stats.week ? humanDuration(stats.week) : '—' },
+  ]
+})
+
+const LAUNCHER_STATS = computed(() => {
+  const stats = data.value?.stats
+  if (!stats) return []
+
+  const firstJoin = stats.firstDay
+    ? new Intl.DateTimeFormat(locale.value, { year: 'numeric', month: 'short', timeZone: 'UTC' })
+        .format(new Date(`${stats.firstDay}T00:00:00Z`))
+    : '—'
+
+  return [
+    { k: t('activity.firstJoin'), v: firstJoin },
+    { k: t('activity.lastOnline'), v: stats.lastSeen ? timeAgo(stats.lastSeen, locale.value) : '—' },
+    { k: t('activity.perDay'), v: stats.activeDays ? humanDuration(stats.seconds / stats.activeDays) : '—' },
+  ]
+})
+
+const TABS = ['overview', 'projects', 'friends'] as const
+const tab = ref<(typeof TABS)[number]>('overview')
+
 const skinCanvas = shallowRef<HTMLCanvasElement | null>(null)
 const capeCanvas = shallowRef<HTMLCanvasElement | null>(null)
 const skinModel = ref<'classic' | 'slim'>('classic')
 
 const capes = ref<Array<{ key: string, url: string, thumb: string, name: string }>>([])
-
-const MODEL_YAW = -20
-
-const expanded = ref(false)
-
-const base = ref<SkinAnimation>('none')
-const held = ref(new Set<string>())
-
-const animation = computed<SkinAnimation>(() =>
-  held.value.has('crouch') ? 'crouch' : held.value.has('walk') ? 'walk' : base.value)
-
-const WALK_KEYS = new Set(['w', 'arrowup', 's', 'arrowdown'])
-
-const bind = (event: KeyboardEvent, down: boolean) => {
-  if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return
-
-  const key = event.key.toLowerCase()
-  const action = key === 'shift' ? 'crouch' : WALK_KEYS.has(key) ? 'walk' : ''
-  if (!action) return
-
-  const next = new Set(held.value)
-  down ? next.add(action) : next.delete(action)
-  held.value = next
-}
-
-const onDown = (e: KeyboardEvent) => bind(e, true)
-const onUp = (e: KeyboardEvent) => bind(e, false)
-const onBlur = () => { held.value = new Set() }
-
-const ANIMATIONS: Array<{ id: SkinAnimation, icon: string, label: string }> = [
-  { id: 'none', icon: 'i-pixelarticons-avatar-circle', label: 'profile.animIdle' },
-  { id: 'walk', icon: 'i-pixelarticons-human-run', label: 'profile.animWalk' },
-  { id: 'crouch', icon: 'i-pixelarticons-arrow-bar-down', label: 'profile.animCrouch' }
-]
 
 async function loadMinecraft() {
   if (!mc.value) return
@@ -169,27 +152,16 @@ async function loadMinecraft() {
     ...(res.owned ?? []).map(c => ({ key: `mj-${c.slug}`, url: capeTextureUrl(c.hash), name: c.name })),
     ...(res.capes ?? [])
       .filter(c => c.source !== 'minecraft')
-      .map(c => ({ key: c.source, url: modCapeUrl(c.source, mc.value, profile.uuid), name: c.source }))
+      .map(c => ({ key: c.source, url: modCapeUrl(c.source, mc.value, profile.uuid), name: c.source })),
   ]
 
   capes.value = (await Promise.all(found.map(async cape => ({
     ...cape,
-    thumb: await loadCapeFront(cape.url).catch(() => '')
+    thumb: await loadCapeFront(cape.url).catch(() => ''),
   })))).filter(c => c.thumb)
 }
 
-onMounted(() => {
-  loadMinecraft()
-  window.addEventListener('keydown', onDown)
-  window.addEventListener('keyup', onUp)
-  window.addEventListener('blur', onBlur)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', onDown)
-  window.removeEventListener('keyup', onUp)
-  window.removeEventListener('blur', onBlur)
-})
+onMounted(loadMinecraft)
 
 const headVersion = ref<HeadVersion>('modern')
 
@@ -201,7 +173,7 @@ const give = computed(() => (mc.value
       uuid: data.value?.user.mcUuid ?? '',
       textures: '',
       target: '@p',
-      amount: 1
+      amount: 1,
     })
   : ''))
 
@@ -234,12 +206,12 @@ useSeoMeta({
   ogType: 'profile',
   ogUrl: () => profileUrl.value,
   ogImage: () => renderUrl.value || undefined,
-  robots: () => (data.value ? 'index, follow' : 'noindex')
+  robots: () => (data.value ? 'index, follow' : 'noindex'),
 })
 
 defineOgImage('Spectra', {
   title: () => (data.value ? label(data.value.user) : t('profile.notFound')),
-  description: () => seoDescription.value
+  description: () => seoDescription.value,
 })
 
 useSchemaOrg(computed(() => (data.value
@@ -252,325 +224,176 @@ useSchemaOrg(computed(() => (data.value
         ...(renderUrl.value ? { image: renderUrl.value } : {}),
         ...(data.value.badges?.length
           ? { award: data.value.badges.map((badge: { name: string }) => badge.name) }
-          : {})
-      })
+          : {}),
+      }),
     ]
   : [])))
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell>
+    <template v-if="error || !data">
+      <UiPanel class="mx-auto max-w-lg p-10 text-center">
+        <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-inset-line bg-inset">
+          <UIcon name="i-pixelarticons-avatar-circle-x" class="size-6 text-muted" />
+        </span>
+        <h1 class="mt-4 text-2xl font-bold tracking-tight text-highlighted">{{ t('profile.notFound') }}</h1>
+        <p class="mt-2 font-mono text-sm text-dimmed">@{{ username }}</p>
+        <UButton
+          :to="localePath('/launcher')"
+          class="mt-6"
+          size="lg"
+          color="neutral"
+          variant="subtle"
+          :label="t('nav.launcher')"
+        />
+      </UiPanel>
+    </template>
 
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-40% mask-b-to-100%"></div>
-
-      <template v-if="error || !data">
-        <section class="container mx-auto max-w-lg px-4 pb-24 pt-40">
-          <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-10 text-center backdrop-blur-sm">
-            <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-pixelarticons-avatar-circle-x" class="size-6 text-muted" />
-            </span>
-            <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('profile.notFound') }}</h1>
-            <p class="mt-2 font-mono text-sm text-dimmed">@{{ username }}</p>
-            <UButton
-              :to="localePath('/launcher')"
-              class="mt-6 rounded-xl"
-              size="lg"
-              color="neutral"
-              variant="outline"
-              :label="t('nav.launcher')"
-            />
+    <template v-else>
+      <UiPanel class="overflow-hidden">
+        <div class="flex flex-wrap gap-6 p-5 sm:p-6">
+          <div v-if="mc" class="w-40 shrink-0">
+            <ProfileSkin :name="mc" :skin="skinCanvas" :cape="capeCanvas" :model="skinModel" />
           </div>
-        </section>
-      </template>
 
-      <template v-else>
-        <section class="container mx-auto px-4 pt-28 sm:pt-36">
-          <div class="flex flex-wrap items-end justify-center gap-6 sm:justify-start sm:gap-8">
-            <div
-              v-if="mc"
-              class="relative shrink-0 transition-[height,width] duration-300"
-              :class="expanded ? 'h-[26rem] w-56 sm:h-[36rem] sm:w-80' : '-mb-16 h-[20rem] w-44 sm:-mb-36 sm:h-[30rem] sm:w-64'"
-            >
-              <SkinViewer
-                v-if="skinCanvas"
-                :skin="skinCanvas"
-                :cape="capeCanvas"
-                :model="skinModel"
-                :animation="animation"
-                :yaw="-MODEL_YAW"
-                :spin="false"
-                class="!h-full !bg-transparent"
-              />
-              <img
-                v-else
-                :src="`/render/default/${encodeURIComponent(mc)}/full?size=512&light=studio&yaw=${MODEL_YAW}`"
-                :alt="mc"
-                class="size-full object-contain [image-rendering:pixelated]"
+          <div class="min-w-0 flex-1 basis-72">
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <h1 class="text-3xl font-extrabold tracking-tight text-highlighted">
+                {{ data.user.name || label(data.user) }}
+              </h1>
+              <span class="font-mono text-sm text-dimmed">@{{ data.user.username }}</span>
+            </div>
+
+            <p v-if="data.user.bio" class="mt-2.5 max-w-prose whitespace-pre-wrap break-words text-pretty text-muted">
+              {{ data.user.bio }}
+            </p>
+
+            <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-dimmed">
+              <span v-if="joined" class="inline-flex items-center gap-1.5">
+                <UIcon name="i-pixelarticons-calendar" class="size-3.5" />
+                {{ t('profile.joined', { date: joined }) }}
+              </span>
+              <span v-if="mc" class="inline-flex items-center gap-1.5">
+                <UIcon name="i-pixelarticons-box" class="size-3.5" />
+                <span class="font-mono">{{ mc }}</span>
+              </span>
+              <UTooltip
+                v-if="locatorHex"
+                :text="t('profile.locatorColor', { name: mc || label(data.user) })"
               >
-
-              <div
-                v-if="expanded"
-                class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1 rounded-2xl border border-white/10 bg-black/60 p-1 backdrop-blur-sm"
-              >
-                <UTooltip v-for="anim in ANIMATIONS" :key="anim.id" :text="t(anim.label)">
-                  <UButton
-                    size="sm"
-                    color="neutral"
-                    :variant="base === anim.id ? 'subtle' : 'ghost'"
-                    :icon="anim.icon"
-                    :aria-label="t(anim.label)"
-                    @click="base = anim.id"
-                  />
-                </UTooltip>
-              </div>
-            </div>
-
-            <div class="min-w-0 flex-1 pb-6">
-              <h1 class="mb-2 truncate text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">{{ data.user.name || label(data.user) }}</h1>
-              <p class="mb-4 font-mono text-muted">@{{ data.user.username }}</p>
-
-              <p v-if="data.user.bio" class="mb-4 max-w-prose whitespace-pre-wrap break-words text-sm text-muted">
-                {{ data.user.bio }}
-              </p>
-
-              <div v-if="profileLinks.length" class="mb-4 flex flex-wrap gap-2">
-                <UButton
-                  v-for="link in profileLinks"
-                  :key="link.kind"
-                  :to="link.url"
-                  :icon="LINK_ICONS[link.kind]"
-                  :label="t(`links.${link.kind}`)"
-                  size="xs"
-                  variant="soft"
-                  color="neutral"
-                  class="rounded-lg"
-                  target="_blank"
-                  rel="nofollow ugc noopener noreferrer"
-                  external
-                />
-              </div>
-
-              <div class="mb-1 flex items-center gap-1">
-                <UButton
-                  v-if="data.user.mcUuid"
-                  size="sm"
-                  variant="ghost"
-                  color="neutral"
-                  icon="i-pixelarticons-copy"
-                  class="min-w-0 max-w-full font-mono"
-                  @click="copy(data.user.mcUuid)"
-                >
-                  <span class="truncate">UUID {{ data.user.mcUuid }}</span>
-                </UButton>
-                <UTooltip
-                  v-if="locatorHex"
-                  :text="t('profile.locatorColor', { name: mc || label(data.user) })"
-                >
-                  <NuxtLink
-                    :to="localePath('/tools/locator')"
-                    class="block size-3.5 shrink-0 rounded-full border border-white/20 transition-transform hover:scale-125"
-                    :style="{ background: locatorHex, boxShadow: `0 0 10px ${locatorHex}80` }"
-                    :aria-label="t('profile.locatorColor', { name: mc || label(data.user) })"
-                  />
-                </UTooltip>
-              </div>
-              <div class="flex flex-wrap items-center gap-2">
-                <UBadge v-if="joined" size="lg" variant="subtle" color="neutral" icon="i-pixelarticons-calendar" :label="t('profile.joined', { date: joined })" />
-                <UBadge v-if="mc" size="lg" variant="subtle" color="neutral" icon="i-pixelarticons-box" :label="mc" />
-                <UButton
-                  v-if="mc"
-                  size="sm"
-                  variant="subtle"
-                  color="neutral"
-                  class="rounded-xl"
-                  :icon="expanded ? 'i-pixelarticons-collapse' : 'i-pixelarticons-expand'"
-                  :label="t(expanded ? 'profile.shrink' : 'profile.expand')"
-                  @click="expanded = !expanded"
-                />
-              </div>
-
-              <p v-if="mc" class="mt-3 text-xs text-dimmed">{{ t('profile.keysHint') }}</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="relative z-10 container mx-auto grid gap-4 px-4 pb-24 pt-10 lg:grid-cols-[320px_1fr] lg:items-start">
-          <div class="flex flex-col gap-4">
-            <div v-if="data.projects?.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
-              <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-package" class="size-4 text-primary" />
-                {{ t('catalog.org.projects') }}
-                <span class="text-dimmed">({{ data.projects.length }})</span>
-              </h2>
-
-              <ul class="space-y-2">
-                <li v-for="project in data.projects" :key="project.id">
-                  <NuxtLink
-                    :to="localePath(project.path)"
-                    class="flex items-center gap-3 rounded-xl px-2 py-1.5 transition-colors hover:bg-white/5"
-                  >
-                    <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-white/5">
-                      <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
-                      <UIcon v-else name="i-pixelarticons-package" class="size-4 text-dimmed" />
-                    </span>
-                    <span class="min-w-0 flex-1">
-                      <span class="block truncate text-sm font-medium">{{ project.title }}</span>
-                      <span class="block text-xs text-dimmed">
-                        {{ t('catalog.downloads', { n: project.downloads.toLocaleString() }) }}
-                      </span>
-                    </span>
-                  </NuxtLink>
-                </li>
-              </ul>
-            </div>
-
-            <div v-if="data.badges.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
-              <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-trophy" class="size-4 text-primary" />
-                {{ t('badges.title') }}
-                <span class="text-dimmed">({{ data.badges.length }})</span>
-              </h2>
-
-              <div class="flex flex-wrap gap-2">
                 <NuxtLink
-                  v-for="badge in data.badges"
-                  :key="badge.slug"
-                  :to="localePath(`/badges/${badge.slug}`)"
-                  class="grid size-12 place-items-center rounded-xl border border-white/10 bg-black/40 transition-colors hover:border-zinc-400"
-                  :title="`${badge.name}${badge.description ? ' — ' + badge.description : ''}`"
-                >
-                  <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-9 object-contain">
-                  <UIcon v-else name="i-pixelarticons-trophy" class="size-5 text-primary" />
-                </NuxtLink>
-              </div>
-            </div>
-
-            <div v-if="capes.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
-              <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-flag" class="size-4 text-primary" />
-                {{ t('profile.capes') }}
-                <span class="text-dimmed">({{ capes.length }})</span>
-              </h2>
-              <div class="grid grid-cols-4 gap-2">
-                <div
-                  v-for="cape in capes"
-                  :key="cape.key"
-                  class="overflow-hidden rounded-lg border border-white/10 bg-black/40"
-                  :title="cape.name"
-                >
-                  <img
-                    :src="cape.thumb"
-                    :alt="cape.name"
-                    class="block w-full [image-rendering:pixelated]"
-                  >
-                </div>
-              </div>
-            </div>
-
-            <div v-if="mc" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
-              <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-terminal" class="size-4 text-primary" />
-                {{ t('profile.commands') }}
-              </h2>
-
-              <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.head') }}</p>
-              <div class="mb-2 flex gap-1">
-                <UButton
-                  v-for="v in HEAD_VERSIONS"
-                  :key="v"
-                  size="xs"
-                  color="neutral"
-                  :variant="headVersion === v ? 'subtle' : 'ghost'"
-                  :label="v === 'modern' ? '1.20.5+' : '1.13–1.20.4'"
-                  @click="headVersion = v"
+                  :to="localePath('/tools/locator')"
+                  class="block size-3.5 shrink-0 rounded-full border border-white/20 transition-transform hover:scale-125"
+                  :style="{ background: locatorHex, boxShadow: `0 0 10px ${locatorHex}80` }"
+                  :aria-label="t('profile.locatorColor', { name: mc || label(data.user) })"
                 />
-              </div>
-              <button
-                type="button"
-                class="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-left transition-colors hover:border-zinc-500"
-                @click="copy(give)"
-              >
-                <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ give }}</code>
-                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
-              </button>
+              </UTooltip>
+            </div>
 
-              <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.renderApi') }}</p>
-              <button
-                type="button"
-                class="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-left transition-colors hover:border-zinc-500"
-                @click="copy(renderUrl)"
+            <div v-if="profileLinks.length" class="mt-3 flex flex-wrap gap-1.5">
+              <UButton
+                v-for="link in profileLinks"
+                :key="link.kind"
+                :to="link.url"
+                :icon="LINK_ICONS[link.kind]"
+                :label="t(`links.${link.kind}`)"
+                size="xs"
+                variant="soft"
+                color="neutral"
+                target="_blank"
+                rel="nofollow ugc noopener noreferrer"
+                external
+              />
+            </div>
+
+            <div v-if="data.badges.length" class="mt-4 flex flex-wrap gap-2">
+              <NuxtLink
+                v-for="badge in data.badges"
+                :key="badge.slug"
+                :to="localePath(`/badges/${badge.slug}`)"
+                class="inline-flex h-8 items-center gap-2 rounded-full border border-inset-line bg-inset px-3 text-xs font-semibold text-muted transition-colors hover:border-zinc-600 hover:text-highlighted"
+                :title="badge.description || badge.name"
               >
-                <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ renderUrl }}</code>
-                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
-              </button>
-              <NuxtLink :to="localePath('/tools/skin-poses')" class="mt-2 inline-flex items-center gap-1 text-xs text-dimmed transition-colors hover:text-default">
-                {{ t('profile.morePoses') }}
-                <UIcon name="i-pixelarticons-arrow-right" class="size-3" />
+                <img v-if="badge.image" :src="badge.image" :alt="''" class="size-4 object-contain">
+                <UIcon v-else name="i-pixelarticons-trophy" class="size-3.5 text-primary" />
+                {{ badge.name }}
               </NuxtLink>
             </div>
+          </div>
 
-            <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
-              <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-share" class="size-4 text-primary" />
-                {{ t('profile.share') }}
-              </h2>
-
-              <button
-                type="button"
-                class="mb-3 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-left transition-colors hover:border-zinc-500"
-                @click="copy(profileUrl)"
-              >
-                <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ profileUrl }}</code>
-                <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
-              </button>
-
-              <UButton
-                v-if="mc"
-                block
-                size="sm"
-                variant="outline"
-                color="neutral"
-                icon="i-pixelarticons-brackets-angle"
-                :label="t('profile.embed')"
-                @click="copy(embedCode)"
+          <div class="flex flex-1 basis-52 flex-col justify-end gap-3">
+            <div class="grid grid-cols-2 gap-3">
+              <UiStat
+                v-for="figure in KEY_FIGURES"
+                :key="figure.label"
+                :label="figure.label"
+                :value="figure.value"
               />
             </div>
           </div>
+        </div>
 
-          <div class="flex flex-col gap-4">
-            <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-chart-bar" class="size-4 text-primary" />
-                {{ t('profile.stats') }}
-              </h2>
+        <nav class="flex gap-1 overflow-x-auto border-t border-inset-line px-3">
+          <button
+            v-for="id in TABS"
+            :key="id"
+            type="button"
+            class="shrink-0 cursor-pointer whitespace-nowrap border-b-2 px-4 py-3 text-sm transition-colors"
+            :class="tab === id
+              ? 'border-primary font-bold text-highlighted'
+              : 'border-transparent font-semibold text-muted hover:text-highlighted'"
+            :aria-current="tab === id ? 'page' : undefined"
+            @click="tab = id"
+          >{{ t(`profile.tabs.${id}`) }}</button>
+        </nav>
+      </UiPanel>
 
-              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                <div
-                  v-for="figure in [
-                    { label: t('profile.statPacks'), value: data.stats.packs },
-                    { label: t('profile.statDownloads'), value: data.stats.downloads },
-                    { label: t('profile.statFriends'), value: openList ? data.friends.length : null }
-                  ]"
-                  :key="figure.label"
-                  class="rounded-2xl border border-white/10 bg-black/20 p-4"
-                >
-                  <p class="font-mono text-3xl font-semibold">{{ figure.value ?? '—' }}</p>
-                  <p class="mt-1 text-xs text-muted">{{ figure.label }}</p>
-                </div>
-              </div>
+      <div class="mt-5 grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
+        <main class="flex min-w-0 flex-col gap-5">
+          <template v-if="tab === 'overview'">
+            <UiPanel class="p-5">
+              <h2 class="mb-4 text-base font-bold text-highlighted">{{ t('activity.title') }}</h2>
+              <UiActivityGraph v-if="data.activity.length" :days="data.activity" />
+              <p v-else class="text-sm/relaxed text-muted">{{ t('activity.empty') }}</p>
+            </UiPanel>
 
-              <p class="mt-4 text-sm/relaxed text-muted">{{ t('profile.shared') }}</p>
-            </div>
+            <ProfileFeed :events="data.feed" />
+          </template>
 
-            <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <div class="mb-4 flex flex-wrap items-center gap-3">
-                <h2 class="flex items-center gap-2 text-sm font-semibold">
-                  <UIcon name="i-pixelarticons-users" class="size-4 text-primary" />
-                  {{ friendsHeading }}
-                </h2>
-                <UIcon v-if="!openList" name="i-pixelarticons-eye-closed" class="size-3.5 text-dimmed" :title="t('profile.friendsPrivate')" />
+          <template v-else-if="tab === 'projects'">
+            <UiPanel
+              v-for="project in data.projects"
+              :key="project.id"
+              :to="localePath(project.path)"
+              class="flex items-center gap-4 p-4"
+            >
+              <CatalogThumb :src="project.icon" fallback="i-pixelarticons-package" class="size-14" />
+              <span class="min-w-0 flex-1">
+                <span class="block truncate font-bold text-highlighted">{{ project.title }}</span>
+                <span class="mt-0.5 block line-clamp-1 text-sm text-muted">{{ project.summary }}</span>
+                <span class="mt-1 block text-xs text-dimmed">
+                  {{ t('catalog.downloads', { n: count(project.downloads) }) }}
+                </span>
+              </span>
+            </UiPanel>
+
+            <UiPanel v-if="!data.projects.length" class="p-12 text-center">
+              <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
+              <p class="mt-3 text-sm text-muted">{{ t('catalog.org.noProjects') }}</p>
+            </UiPanel>
+          </template>
+
+          <template v-else>
+            <UiPanel class="p-5">
+              <div class="mb-4 flex flex-wrap items-center gap-2">
+                <h2 class="text-base font-bold text-highlighted">{{ friendsHeading }}</h2>
+                <UIcon
+                  v-if="!openList"
+                  name="i-pixelarticons-eye-closed"
+                  class="size-3.5 text-dimmed"
+                  :title="t('profile.friendsPrivate')"
+                />
               </div>
 
               <div v-if="data.friends.length" class="grid gap-2 sm:grid-cols-2">
@@ -578,7 +401,7 @@ useSchemaOrg(computed(() => (data.value
                   v-for="friend in data.friends"
                   :key="friend.friendshipId"
                   :to="localePath(`/u/${friend.username}`)"
-                  class="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 transition-colors hover:border-zinc-500"
+                  class="flex items-center gap-3 rounded-xl border border-inset-line bg-inset px-4 py-3 transition-colors hover:border-zinc-600"
                 >
                   <span class="relative shrink-0">
                     <img v-if="friend.image" :src="friend.image" alt="" class="size-9 rounded-full object-cover">
@@ -589,15 +412,15 @@ useSchemaOrg(computed(() => (data.value
                     >{{ initialsAvatar(label(friend)).letter }}</span>
 
                     <span
-                      class="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-[#0b0f16]"
+                      class="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-panel"
                       :class="STATUS_STYLE[friend.status]"
                     ></span>
                   </span>
 
-                  <div class="min-w-0 flex-1">
-                    <p class="truncate text-sm font-medium">{{ label(friend) }}</p>
-                    <p class="truncate text-xs text-dimmed">{{ t(`profile.status.${friend.status}`) }}</p>
-                  </div>
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate text-sm font-semibold text-highlighted">{{ label(friend) }}</span>
+                    <span class="block truncate text-xs text-dimmed">{{ t(`profile.status.${friend.status}`) }}</span>
+                  </span>
                 </NuxtLink>
               </div>
 
@@ -606,40 +429,114 @@ useSchemaOrg(computed(() => (data.value
               <p v-else class="text-sm/relaxed text-muted">{{ t('profile.noMutual') }}</p>
 
               <p v-if="!openList" class="mt-3 text-xs/relaxed text-dimmed">{{ t('profile.friendsPrivate') }}</p>
+            </UiPanel>
+          </template>
+        </main>
+
+        <aside class="flex min-w-0 flex-col gap-4">
+          <UiPanel v-if="mc" class="p-5">
+            <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('activity.statsTitle') }}</h2>
+            <div
+              v-for="row in LAUNCHER_STATS"
+              :key="row.k"
+              class="flex justify-between gap-3 py-1.5 text-sm"
+            >
+              <span class="text-dimmed">{{ row.k }}</span>
+              <span class="text-right font-semibold text-default">{{ row.v }}</span>
             </div>
 
-            <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <h2 class="mb-5 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-speed-fast" class="size-4 text-primary" />
-                {{ t('activity.statsTitle') }}
-              </h2>
+            <p v-if="data.user.mcUuid" class="mt-3 break-all border-t border-inset-line pt-3 font-mono text-[11px] text-dimmed">
+              {{ data.user.mcUuid }}
+            </p>
+          </UiPanel>
 
-              <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <div
-                  v-for="figure in LAUNCHER_STATS"
-                  :key="figure.label"
-                  class="rounded-2xl border border-white/10 bg-black/20 p-4 text-center"
-                >
-                  <p class="truncate text-2xl font-semibold">{{ figure.value }}</p>
-                  <p class="mt-1 text-xs text-muted">{{ figure.label }}</p>
-                </div>
+          <UiPanel v-if="capes.length" class="p-5">
+            <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">
+              {{ t('profile.capes') }} ({{ capes.length }})
+            </h2>
+            <div class="grid grid-cols-4 gap-2">
+              <div
+                v-for="cape in capes"
+                :key="cape.key"
+                class="overflow-hidden rounded-lg border border-inset-line bg-inset"
+                :title="cape.name"
+              >
+                <img :src="cape.thumb" :alt="cape.name" class="block w-full [image-rendering:pixelated]">
               </div>
             </div>
+          </UiPanel>
 
-            <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <h2 class="mb-5 flex items-center gap-2 text-sm font-semibold">
-                <UIcon name="i-pixelarticons-calendar-month" class="size-4 text-primary" />
-                {{ t('activity.title') }}
-              </h2>
+          <UiPanel v-if="mc" class="p-5">
+            <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('profile.commands') }}</h2>
 
-              <UiActivityGraph v-if="data.activity.length" :days="data.activity" />
-              <p v-else class="text-sm/relaxed text-muted">{{ t('activity.empty') }}</p>
+            <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.head') }}</p>
+            <div class="mb-2 flex gap-1">
+              <UButton
+                v-for="v in HEAD_VERSIONS"
+                :key="v"
+                size="xs"
+                color="neutral"
+                :variant="headVersion === v ? 'subtle' : 'ghost'"
+                :label="v === 'modern' ? '1.20.5+' : '1.13–1.20.4'"
+                @click="headVersion = v"
+              />
             </div>
-          </div>
-        </section>
-      </template>
-    </div>
+            <button
+              type="button"
+              class="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              @click="copy(give)"
+            >
+              <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ give }}</code>
+              <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
+            </button>
 
-    <DiscordCta />
-  </div>
+            <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.renderApi') }}</p>
+            <button
+              type="button"
+              class="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              @click="copy(renderUrl)"
+            >
+              <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ renderUrl }}</code>
+              <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
+            </button>
+            <NuxtLink
+              :to="localePath('/tools/skin-poses')"
+              class="mt-2 inline-flex items-center gap-1 text-xs text-dimmed transition-colors hover:text-default"
+            >
+              {{ t('profile.morePoses') }}
+              <UIcon name="i-pixelarticons-arrow-right" class="size-3" />
+            </NuxtLink>
+          </UiPanel>
+
+          <UiPanel class="p-5">
+            <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('profile.share') }}</h2>
+
+            <button
+              type="button"
+              class="mb-3 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              @click="copy(profileUrl)"
+            >
+              <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ profileUrl }}</code>
+              <UIcon name="i-pixelarticons-copy" class="size-3.5 shrink-0 text-dimmed" />
+            </button>
+
+            <UButton
+              v-if="mc"
+              block
+              size="sm"
+              variant="subtle"
+              color="neutral"
+              icon="i-pixelarticons-brackets-angle"
+              :label="t('profile.embed')"
+              @click="copy(embedCode)"
+            />
+          </UiPanel>
+        </aside>
+      </div>
+    </template>
+
+    <template #after>
+      <DiscordCta />
+    </template>
+  </UiPageShell>
 </template>

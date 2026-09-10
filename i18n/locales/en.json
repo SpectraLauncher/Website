@@ -2596,7 +2596,20 @@
     "animIdle": "Idle",
     "animWalk": "Walking",
     "animCrouch": "Crouching",
-    "keysHint": "Click the character to swing. Hold Shift to crouch, or W to walk."
+    "keysHint": "Click the character to swing. Hold Shift to crouch, or W to walk.",
+    "feed": {
+      "title": "Recent activity",
+      "empty": "Nothing to show yet.",
+      "release": "Released",
+      "publish": "Published",
+      "org": "Joined",
+      "play": "Played"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "projects": "Projects",
+      "friends": "Friends"
+    }
   },
   "share": {
     "metaTitle": "{name} — shared modpack",

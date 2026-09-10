@@ -2596,7 +2596,20 @@
     "animIdle": "Bezczynność",
     "animWalk": "Chodzenie",
     "animCrouch": "Kucanie",
-    "keysHint": "Kliknij postać, żeby machnęła ręką. Przytrzymaj Shift, żeby kucnęła, albo W, żeby szła."
+    "keysHint": "Kliknij postać, żeby machnęła ręką. Przytrzymaj Shift, żeby kucnęła, albo W, żeby szła.",
+    "feed": {
+      "title": "Ostatnia aktywność",
+      "empty": "Jeszcze nic tu nie ma.",
+      "release": "Wydał",
+      "publish": "Opublikował",
+      "org": "Dołączył do",
+      "play": "Grał"
+    },
+    "tabs": {
+      "overview": "Przegląd",
+      "projects": "Projekty",
+      "friends": "Znajomi"
+    }
   },
   "share": {
     "metaTitle": "{name} — udostępniona paczka",
