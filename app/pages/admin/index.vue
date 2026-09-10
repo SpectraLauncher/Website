@@ -42,16 +42,31 @@ interface AdminUser {
 
 const me = computed(() => session.value.data?.user as any)
 
-const TABS = [
-  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd' },
-  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria' },
-  { id: 'shares', icon: 'i-pixelarticons-package', label: 'Paczki' },
-  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy' },
-  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki' },
-  { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord' }
-] as const
+// Registry: one entry per section of the panel. An entry with `to` opens its
+// own page instead of switching the tab, so the whole panel reads from one
+// list. Adding a section is a line here plus a branch in the body below.
+const NAV = [
+  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd', group: 'Platforma' },
+  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria', group: 'Platforma' },
+  { id: 'catalog', icon: 'i-pixelarticons-package', label: 'Katalog', group: 'Treść', to: '/admin/catalog' },
+  { id: 'verification', icon: 'i-pixelarticons-check-double', label: 'Weryfikacja', group: 'Treść', to: '/admin/verification' },
+  { id: 'shares', icon: 'i-pixelarticons-archive', label: 'Paczki', group: 'Treść' },
+  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie' },
+  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie' },
+  { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje' },
+] as const satisfies readonly SideNavItem[]
 
-const tab = ref<(typeof TABS)[number]['id']>('overview')
+const navItems = computed<SideNavItem[]>(() =>
+  NAV.map(item => ({ ...item, to: item.to ? localePath(item.to) : undefined })))
+
+const tab = ref<string>('overview')
+
+const subtitle = computed(() => {
+  const email = me.value?.email || '—'
+  return stats.value
+    ? `${email} · dane z ${new Date(stats.value.generatedAt).toLocaleString('pl-PL')}`
+    : email
+})
 
 const busy = ref('')
 const error = ref('')
@@ -331,496 +346,442 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell width="max-w-7xl">
+    <UiPageHeader title="Panel" :description="subtitle">
+      <div class="flex flex-wrap gap-2 pb-1.5">
+        <UButton
+          variant="subtle"
+          color="neutral"
+          size="lg"
+          icon="i-pixelarticons-reload"
+          :loading="busy === 'stats' || busy === 'users'"
+          label="Odśwież"
+          @click="tab === 'users' ? loadUsers() : loadStats()"
+        />
+        <UButton
+          variant="ghost"
+          color="neutral"
+          size="lg"
+          icon="i-pixelarticons-logout"
+          label="Wyloguj"
+          @click="signOut"
+        />
+      </div>
+    </UiPageHeader>
 
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
+    <UAlert v-if="error" color="error" variant="subtle" class="mb-4" icon="i-pixelarticons-alert" :description="error" />
+    <UAlert v-if="notice" color="success" variant="subtle" class="mb-4" icon="i-pixelarticons-check" :description="notice" />
 
-      <section class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
-        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-          <div class="flex flex-wrap items-center gap-5">
-            <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-pixelarticons-shield" class="size-6 text-primary" />
-            </span>
+    <div class="grid gap-4 lg:grid-cols-[240px_1fr]">
+      <UiSideNav v-model="tab" :items="navItems" />
 
-            <div class="min-w-0 flex-1">
-              <h1 class="text-2xl font-semibold tracking-tight">Panel</h1>
-              <p class="truncate text-sm text-muted">
-                {{ me?.email || '—' }}
-                <span v-if="stats" class="text-dimmed">
-                  · dane z {{ new Date(stats.generatedAt).toLocaleString('pl-PL') }}
-                </span>
-              </p>
+      <UiPanel class="min-w-0 p-6 lg:p-8">
+        <template v-if="tab === 'overview'">
+          <h2 class="mb-6 text-lg font-semibold tracking-tight">Przegląd</h2>
+
+          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div
+              v-for="figure in KEY_FIGURES"
+              :key="figure.label"
+              class="rounded-2xl border border-inset-line bg-inset p-4"
+            >
+              <div class="mb-2 flex items-center gap-2 text-dimmed">
+                <UIcon :name="figure.icon" class="size-4" />
+                <span class="text-xs uppercase tracking-[0.1em]">{{ figure.hint }}</span>
+              </div>
+              <p class="font-mono text-2xl font-semibold">{{ figure.value }}</p>
+              <p class="text-xs text-muted">{{ figure.label }}</p>
+            </div>
+          </div>
+
+          <template v-if="stats?.activeSeries?.length">
+            <h3 class="mb-3 mt-8 text-sm font-semibold">Aktywne instalacje — 30 dni</h3>
+            <div class="flex h-32 items-end gap-1 rounded-2xl border border-inset-line bg-inset p-4">
+              <div
+                v-for="point in stats.activeSeries"
+                :key="point.label"
+                class="flex-1 rounded-t bg-primary/70 transition-colors hover:bg-primary"
+                :style="{ height: `${Math.max(2, (point.value / peak(stats.activeSeries)) * 100)}%` }"
+                :title="`${point.label}: ${point.value}`"
+              ></div>
+            </div>
+          </template>
+        </template>
+
+        <template v-else-if="tab === 'telemetry'">
+          <h2 class="mb-6 text-lg font-semibold tracking-tight">Telemetria</h2>
+
+          <div v-if="!stats" class="text-sm text-muted">Brak danych.</div>
+
+          <div v-else class="grid gap-4 md:grid-cols-2">
+            <div
+              v-for="group in [
+                { title: 'Wersje launchera', rows: stats.versions },
+                { title: 'Systemy', rows: stats.os },
+                { title: 'Języki', rows: stats.locales },
+                { title: 'Loadery', rows: stats.loaders },
+                { title: 'Wersje Minecrafta', rows: stats.mcVersions },
+                { title: 'Używane funkcje', rows: stats.features }
+              ]"
+              :key="group.title"
+              class="rounded-2xl border border-inset-line bg-inset p-5"
+            >
+              <h3 class="mb-3 text-sm font-semibold">{{ group.title }}</h3>
+
+              <div v-if="group.rows?.length" class="space-y-2">
+                <div v-for="row in group.rows" :key="row.label" class="text-xs">
+                  <div class="mb-1 flex justify-between gap-3">
+                    <span class="truncate text-muted">{{ row.label }}</span>
+                    <span class="shrink-0 font-mono">{{ num(row.value) }}</span>
+                  </div>
+                  <div class="h-1.5 overflow-hidden rounded-full bg-white/5">
+                    <div class="h-full rounded-full bg-primary/70" :style="{ width: `${(row.value / peak(group.rows)) * 100}%` }"></div>
+                  </div>
+                </div>
+              </div>
+              <p v-else class="text-xs text-dimmed">—</p>
+            </div>
+          </div>
+        </template>
+
+        <template v-else-if="tab === 'shares'">
+          <h2 class="mb-6 text-lg font-semibold tracking-tight">Paczki</h2>
+
+          <div v-if="!stats?.shares" class="text-sm text-muted">Brak danych o udostępnieniach.</div>
+
+          <template v-else>
+            <div class="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div
+                v-for="figure in [
+                  { label: 'Utworzone (30 dni)', value: num(stats.shares.overview.created30) },
+                  { label: 'Aktywne', value: num(stats.shares.overview.active) },
+                  { label: 'Pobrania (30 dni)', value: num(stats.shares.overview.downloads30) },
+                  { label: 'W magazynie', value: bytes(stats.shares.overview.storedBytes) }
+                ]"
+                :key="figure.label"
+                class="rounded-2xl border border-inset-line bg-inset p-4"
+              >
+                <p class="font-mono text-2xl font-semibold">{{ figure.value }}</p>
+                <p class="text-xs text-muted">{{ figure.label }}</p>
+              </div>
             </div>
 
+            <h3 class="mb-3 text-sm font-semibold">Ostatnie</h3>
+            <div class="overflow-x-auto rounded-2xl border border-inset-line bg-inset">
+              <table class="w-full min-w-[620px] text-left text-xs">
+                <thead class="text-dimmed">
+                  <tr class="border-b border-white/10">
+                    <th class="px-4 py-3 font-medium">Nazwa</th>
+                    <th class="px-4 py-3 font-medium">Wersja</th>
+                    <th class="px-4 py-3 font-medium">Loader</th>
+                    <th class="px-4 py-3 text-right font-medium">Mody</th>
+                    <th class="px-4 py-3 text-right font-medium">Rozmiar</th>
+                    <th class="px-4 py-3 text-right font-medium">Pobrania</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in stats.shares.recent" :key="row.code" class="border-b border-white/5 last:border-0">
+                    <td class="max-w-[220px] truncate px-4 py-2.5">{{ row.name || row.code }}</td>
+                    <td class="px-4 py-2.5 font-mono text-muted">{{ row.mc_version || '—' }}</td>
+                    <td class="px-4 py-2.5 text-muted">{{ row.loader || '—' }}</td>
+                    <td class="px-4 py-2.5 text-right font-mono">{{ num(row.mods) }}</td>
+                    <td class="px-4 py-2.5 text-right font-mono text-muted">{{ bytes(Number(row.size)) }}</td>
+                    <td class="px-4 py-2.5 text-right font-mono">{{ num(row.downloads) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </template>
+
+                    <template v-else-if="tab === 'badges'">
+          <div class="mb-6 flex items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold tracking-tight">Odznaki</h2>
             <UButton
-              variant="outline"
-              color="neutral"
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-package"
-              label="Katalog"
-              :to="localePath('/admin/catalog')"
-            />
-            <UButton
-              variant="outline"
-              color="neutral"
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-check-double"
-              :label="$t('verification.queueTitle')"
-              :to="localePath('/admin/verification')"
-            />
-            <UButton
-              variant="outline"
-              color="neutral"
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-refresh"
-              :loading="busy === 'stats' || busy === 'users'"
-              label="Odśwież"
-              @click="tab === 'users' ? loadUsers() : loadStats()"
-            />
-            <UButton
+              size="xs"
               variant="ghost"
               color="neutral"
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-logout"
-              label="Wyloguj"
-              @click="signOut"
+              icon="i-pixelarticons-refresh"
+              label="Przelicz"
+              :loading="busy === 'badge-sync'"
+              @click="recalcBadges"
             />
           </div>
-        </div>
 
-        <UAlert v-if="error" color="error" variant="subtle" class="mb-4" icon="i-pixelarticons-alert" :description="error" />
-        <UAlert v-if="notice" color="success" variant="subtle" class="mb-4" icon="i-pixelarticons-check" :description="notice" />
+          <div class="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
+            <div class="space-y-2">
+              <div
+                v-for="badge in badges"
+                :key="badge.slug"
+                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset p-4"
+              >
+                <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-10 shrink-0 rounded-xl object-contain">
+                <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl border border-inset-line bg-inset">
+                  <UIcon name="i-pixelarticons-trophy" class="size-5 text-primary" />
+                </span>
 
-        <div class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm lg:grid lg:grid-cols-[230px_1fr]">
-          <nav class="flex gap-1 overflow-x-auto border-b border-white/10 p-3 lg:flex-col lg:border-b-0 lg:border-r">
-            <button
-              v-for="item in TABS"
-              :key="item.id"
-              type="button"
-              class="flex shrink-0 cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors"
-              :class="tab === item.id ? 'bg-white/10 text-default' : 'text-muted hover:bg-white/5 hover:text-default'"
-              @click="tab = item.id"
-            >
-              <UIcon :name="item.icon" class="size-4 shrink-0" />
-              <span class="whitespace-nowrap">{{ item.label }}</span>
-            </button>
-          </nav>
-
-          <div class="p-6 lg:p-8">
-            <template v-if="tab === 'overview'">
-              <h2 class="mb-6 text-lg font-semibold tracking-tight">Przegląd</h2>
-
-              <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                <div
-                  v-for="figure in KEY_FIGURES"
-                  :key="figure.label"
-                  class="rounded-2xl border border-white/10 bg-black/20 p-4"
-                >
-                  <div class="mb-2 flex items-center gap-2 text-dimmed">
-                    <UIcon :name="figure.icon" class="size-4" />
-                    <span class="text-xs uppercase tracking-[0.1em]">{{ figure.hint }}</span>
-                  </div>
-                  <p class="font-mono text-2xl font-semibold">{{ figure.value }}</p>
-                  <p class="text-xs text-muted">{{ figure.label }}</p>
-                </div>
-              </div>
-
-              <template v-if="stats?.activeSeries?.length">
-                <h3 class="mb-3 mt-8 text-sm font-semibold">Aktywne instalacje — 30 dni</h3>
-                <div class="flex h-32 items-end gap-1 rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <div
-                    v-for="point in stats.activeSeries"
-                    :key="point.label"
-                    class="flex-1 rounded-t bg-primary/70 transition-colors hover:bg-primary"
-                    :style="{ height: `${Math.max(2, (point.value / peak(stats.activeSeries)) * 100)}%` }"
-                    :title="`${point.label}: ${point.value}`"
-                  ></div>
-                </div>
-              </template>
-            </template>
-
-            <template v-else-if="tab === 'telemetry'">
-              <h2 class="mb-6 text-lg font-semibold tracking-tight">Telemetria</h2>
-
-              <div v-if="!stats" class="text-sm text-muted">Brak danych.</div>
-
-              <div v-else class="grid gap-4 md:grid-cols-2">
-                <div
-                  v-for="group in [
-                    { title: 'Wersje launchera', rows: stats.versions },
-                    { title: 'Systemy', rows: stats.os },
-                    { title: 'Języki', rows: stats.locales },
-                    { title: 'Loadery', rows: stats.loaders },
-                    { title: 'Wersje Minecrafta', rows: stats.mcVersions },
-                    { title: 'Używane funkcje', rows: stats.features }
-                  ]"
-                  :key="group.title"
-                  class="rounded-2xl border border-white/10 bg-black/20 p-5"
-                >
-                  <h3 class="mb-3 text-sm font-semibold">{{ group.title }}</h3>
-
-                  <div v-if="group.rows?.length" class="space-y-2">
-                    <div v-for="row in group.rows" :key="row.label" class="text-xs">
-                      <div class="mb-1 flex justify-between gap-3">
-                        <span class="truncate text-muted">{{ row.label }}</span>
-                        <span class="shrink-0 font-mono">{{ num(row.value) }}</span>
-                      </div>
-                      <div class="h-1.5 overflow-hidden rounded-full bg-white/5">
-                        <div class="h-full rounded-full bg-primary/70" :style="{ width: `${(row.value / peak(group.rows)) * 100}%` }"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p v-else class="text-xs text-dimmed">—</p>
-                </div>
-              </div>
-            </template>
-
-            <template v-else-if="tab === 'shares'">
-              <h2 class="mb-6 text-lg font-semibold tracking-tight">Paczki</h2>
-
-              <div v-if="!stats?.shares" class="text-sm text-muted">Brak danych o udostępnieniach.</div>
-
-              <template v-else>
-                <div class="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  <div
-                    v-for="figure in [
-                      { label: 'Utworzone (30 dni)', value: num(stats.shares.overview.created30) },
-                      { label: 'Aktywne', value: num(stats.shares.overview.active) },
-                      { label: 'Pobrania (30 dni)', value: num(stats.shares.overview.downloads30) },
-                      { label: 'W magazynie', value: bytes(stats.shares.overview.storedBytes) }
-                    ]"
-                    :key="figure.label"
-                    class="rounded-2xl border border-white/10 bg-black/20 p-4"
-                  >
-                    <p class="font-mono text-2xl font-semibold">{{ figure.value }}</p>
-                    <p class="text-xs text-muted">{{ figure.label }}</p>
-                  </div>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium">{{ badge.name }}</p>
+                  <p class="truncate font-mono text-xs text-dimmed">{{ badge.slug }}</p>
                 </div>
 
-                <h3 class="mb-3 text-sm font-semibold">Ostatnie</h3>
-                <div class="overflow-x-auto rounded-2xl border border-white/10 bg-black/20">
-                  <table class="w-full min-w-[620px] text-left text-xs">
-                    <thead class="text-dimmed">
-                      <tr class="border-b border-white/10">
-                        <th class="px-4 py-3 font-medium">Nazwa</th>
-                        <th class="px-4 py-3 font-medium">Wersja</th>
-                        <th class="px-4 py-3 font-medium">Loader</th>
-                        <th class="px-4 py-3 text-right font-medium">Mody</th>
-                        <th class="px-4 py-3 text-right font-medium">Rozmiar</th>
-                        <th class="px-4 py-3 text-right font-medium">Pobrania</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="row in stats.shares.recent" :key="row.code" class="border-b border-white/5 last:border-0">
-                        <td class="max-w-[220px] truncate px-4 py-2.5">{{ row.name || row.code }}</td>
-                        <td class="px-4 py-2.5 font-mono text-muted">{{ row.mc_version || '—' }}</td>
-                        <td class="px-4 py-2.5 text-muted">{{ row.loader || '—' }}</td>
-                        <td class="px-4 py-2.5 text-right font-mono">{{ num(row.mods) }}</td>
-                        <td class="px-4 py-2.5 text-right font-mono text-muted">{{ bytes(Number(row.size)) }}</td>
-                        <td class="px-4 py-2.5 text-right font-mono">{{ num(row.downloads) }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="shrink-0 text-right">
+                  <p class="font-mono text-sm">{{ num(badge.holders) }}</p>
+                  <p class="text-[11px] text-dimmed">{{ rules.find(r => r.id === badge.rule)?.label ?? badge.rule }}</p>
                 </div>
-              </template>
-            </template>
 
-                        <template v-else-if="tab === 'badges'">
-              <div class="mb-6 flex items-center justify-between gap-3">
-                <h2 class="text-lg font-semibold tracking-tight">Odznaki</h2>
+                <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="editBadge(badge)" />
                 <UButton
                   size="xs"
                   variant="ghost"
-                  color="neutral"
-                  icon="i-pixelarticons-refresh"
-                  label="Przelicz"
-                  :loading="busy === 'badge-sync'"
-                  @click="recalcBadges"
+                  color="error"
+                  icon="i-pixelarticons-trash"
+                  aria-label="Usuń"
+                  :loading="busy === `badge:${badge.slug}`"
+                  @click="deleteBadge(badge.slug)"
                 />
               </div>
 
-              <div class="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
+              <p v-if="!badges.length" class="text-sm text-muted">Brak odznak. Dodaj pierwszą obok.</p>
+            </div>
+
+            <div class="space-y-6">
+              <div class="rounded-2xl border border-inset-line bg-inset p-5">
+                <h3 class="mb-4 text-sm font-semibold">{{ badgeEditing ? 'Edytuj odznakę' : 'Nowa odznaka' }}</h3>
+
                 <div class="space-y-2">
-                  <div
-                    v-for="badge in badges"
-                    :key="badge.slug"
-                    class="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-4"
-                  >
-                    <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-10 shrink-0 rounded-xl object-contain">
-                    <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5">
-                      <UIcon name="i-pixelarticons-trophy" class="size-5 text-primary" />
+                  <UInput v-model="badgeForm.slug" size="sm" class="w-full font-mono" placeholder="slug, np. og" :disabled="badgeEditing" />
+                  <UInput v-model="badgeForm.name" size="sm" class="w-full" placeholder="nazwa" />
+                  <UTextarea v-model="badgeForm.description" :rows="2" size="sm" class="w-full" placeholder="opis" />
+                  <div class="flex items-center gap-3 rounded-xl border border-inset-line bg-inset p-2">
+                    <img
+                      v-if="badgeForm.image"
+                      :src="badgeForm.image"
+                      alt=""
+                      class="size-12 shrink-0 rounded-lg object-contain"
+                    >
+                    <span v-else class="grid size-12 shrink-0 place-items-center rounded-lg border border-inset-line bg-inset">
+                      <UIcon name="i-pixelarticons-image" class="size-5 text-dimmed" />
                     </span>
 
                     <div class="min-w-0 flex-1">
-                      <p class="truncate text-sm font-medium">{{ badge.name }}</p>
-                      <p class="truncate font-mono text-xs text-dimmed">{{ badge.slug }}</p>
+                      <UButton
+                        size="xs"
+                        variant="subtle"
+                        color="neutral"
+                        icon="i-pixelarticons-upload"
+                        :loading="busy === 'badge-image'"
+                        :disabled="!badgeForm.slug"
+                        :label="badgeForm.image ? 'Zmień obrazek' : 'Wgraj obrazek'"
+                        @click="pickBadgeImage"
+                      />
+                      <p class="mt-1 text-[11px] text-dimmed">
+                        {{ badgeForm.slug ? 'PNG, JPEG albo WebP. Skalowany do 128 px.' : 'Najpierw podaj slug.' }}
+                      </p>
                     </div>
 
-                    <div class="shrink-0 text-right">
-                      <p class="font-mono text-sm">{{ num(badge.holders) }}</p>
-                      <p class="text-[11px] text-dimmed">{{ rules.find(r => r.id === badge.rule)?.label ?? badge.rule }}</p>
-                    </div>
-
-                    <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="editBadge(badge)" />
                     <UButton
+                      v-if="badgeForm.image"
                       size="xs"
                       variant="ghost"
-                      color="error"
-                      icon="i-pixelarticons-trash"
-                      aria-label="Usuń"
-                      :loading="busy === `badge:${badge.slug}`"
-                      @click="deleteBadge(badge.slug)"
+                      color="neutral"
+                      icon="i-pixelarticons-close"
+                      aria-label="Usuń obrazek"
+                      @click="badgeForm.image = ''"
                     />
                   </div>
 
-                  <p v-if="!badges.length" class="text-sm text-muted">Brak odznak. Dodaj pierwszą obok.</p>
+                  <input
+                    ref="badgeImageInput"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    class="hidden"
+                    @change="uploadBadgeImage"
+                  >
+
+                  <USelect
+                    v-model="badgeForm.rule"
+                    size="sm"
+                    class="w-full"
+                    :items="rules.map(r => ({ label: r.label, value: r.id }))"
+                  />
+                  <UInput
+                    v-if="ruleDef && ruleDef.param !== 'none'"
+                    v-model="badgeForm.ruleValue"
+                    size="sm"
+                    class="w-full font-mono"
+                    :type="ruleDef.param === 'date' ? 'date' : ruleDef.param === 'number' ? 'number' : 'text'"
+                    placeholder="wartość warunku"
+                  />
+                  <p v-if="ruleDef" class="text-[11px] text-dimmed">{{ ruleDef.hint }}</p>
+
+                  <div class="flex gap-2 pt-1">
+                    <UButton
+                      size="sm"
+                      color="neutral"
+                      :loading="busy === 'badge-save'"
+                      :disabled="!badgeForm.slug || !badgeForm.name"
+                      label="Zapisz"
+                      @click="saveBadge"
+                    />
+                    <UButton v-if="badgeEditing" size="sm" variant="ghost" color="neutral" label="Anuluj" @click="resetBadgeForm" />
+                  </div>
                 </div>
+              </div>
 
-                <div class="space-y-6">
-                  <div class="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <h3 class="mb-4 text-sm font-semibold">{{ badgeEditing ? 'Edytuj odznakę' : 'Nowa odznaka' }}</h3>
+              <div class="rounded-2xl border border-inset-line bg-inset p-5">
+                <h3 class="mb-4 text-sm font-semibold">Przyznaj ręcznie</h3>
 
-                    <div class="space-y-2">
-                      <UInput v-model="badgeForm.slug" size="sm" class="w-full font-mono" placeholder="slug, np. og" :disabled="badgeEditing" />
-                      <UInput v-model="badgeForm.name" size="sm" class="w-full" placeholder="nazwa" />
-                      <UTextarea v-model="badgeForm.description" :rows="2" size="sm" class="w-full" placeholder="opis" />
-                      <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 p-2">
-                        <img
-                          v-if="badgeForm.image"
-                          :src="badgeForm.image"
-                          alt=""
-                          class="size-12 shrink-0 rounded-lg object-contain"
-                        >
-                        <span v-else class="grid size-12 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5">
-                          <UIcon name="i-pixelarticons-image" class="size-5 text-dimmed" />
-                        </span>
+                <div class="space-y-2">
+                  <USelect
+                    v-model="manual.slug"
+                    size="sm"
+                    class="w-full"
+                    placeholder="wybierz odznakę"
+                    :items="badges.map(b => ({ label: b.name, value: b.slug }))"
+                  />
+                  <UInput v-model="manual.username" size="sm" class="w-full" placeholder="nazwa użytkownika" />
 
-                        <div class="min-w-0 flex-1">
-                          <UButton
-                            size="xs"
-                            variant="subtle"
-                            color="neutral"
-                            icon="i-pixelarticons-upload"
-                            :loading="busy === 'badge-image'"
-                            :disabled="!badgeForm.slug"
-                            :label="badgeForm.image ? 'Zmień obrazek' : 'Wgraj obrazek'"
-                            @click="pickBadgeImage"
-                          />
-                          <p class="mt-1 text-[11px] text-dimmed">
-                            {{ badgeForm.slug ? 'PNG, JPEG albo WebP. Skalowany do 128 px.' : 'Najpierw podaj slug.' }}
-                          </p>
+                  <div class="flex gap-2 pt-1">
+                    <UButton
+                      size="sm"
+                      color="neutral"
+                      :loading="busy === 'badge-award'"
+                      :disabled="!manual.slug || !manual.username"
+                      label="Przyznaj"
+                      @click="awardBadge(false)"
+                    />
+                    <UButton
+                      size="sm"
+                      variant="ghost"
+                      color="error"
+                      :disabled="!manual.slug || !manual.username"
+                      label="Odbierz"
+                      @click="awardBadge(true)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template v-else-if="tab === 'discord'">
+          <h2 class="mb-6 text-lg font-semibold tracking-tight">Discord</h2>
+          <AdminDiscord @unauthorized="denied = true" />
+        </template>
+
+        <template v-else>
+          <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold tracking-tight">
+              Użytkownicy
+              <span class="ml-1 text-sm font-normal text-dimmed">{{ num(usersTotal) }}</span>
+            </h2>
+            <UButton
+              variant="ghost"
+              color="error"
+              size="sm"
+              icon="i-pixelarticons-trash"
+              :loading="busy === 'purge'"
+              label="Usuń konta testowe"
+              @click="purgeTest"
+            />
+          </div>
+
+          <UInput
+            v-model="search"
+            icon="i-pixelarticons-search"
+            size="lg"
+            class="mb-4 w-full max-w-sm"
+            placeholder="nick, e-mail albo konto Minecraft"
+          />
+
+          <div class="overflow-x-auto rounded-2xl border border-inset-line bg-inset">
+            <table class="w-full min-w-[760px] text-left text-sm">
+              <thead class="text-xs text-dimmed">
+                <tr class="border-b border-white/10">
+                  <th class="px-4 py-3 font-medium">Konto</th>
+                  <th class="px-4 py-3 font-medium">Minecraft</th>
+                  <th class="px-4 py-3 text-right font-medium">Znajomi</th>
+                  <th class="px-4 py-3 text-right font-medium">Paczki</th>
+                  <th class="px-4 py-3 font-medium">Dołączył</th>
+                  <th class="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="user in users" :key="user.id" class="border-b border-white/5 last:border-0 align-middle">
+                  <td class="px-4 py-3">
+                    <div v-if="editing === user.id" class="flex flex-wrap gap-2">
+                      <UInput v-model="draft.name" size="sm" placeholder="nazwa" class="w-36" />
+                      <UInput v-model="draft.username" size="sm" placeholder="nick" class="w-32 font-mono" />
+                    </div>
+
+                    <div v-else class="flex items-center gap-3">
+                      <img v-if="user.image" :src="user.image" alt="" class="size-8 shrink-0 rounded-full object-cover">
+                      <span
+                        v-else
+                        class="flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                        :style="`background:hsl(${initialsAvatar(user.username || user.name || user.email).hue} 60% 30%)`"
+                      >{{ initialsAvatar(user.username || user.name || user.email).letter }}</span>
+
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="truncate font-medium">{{ user.name || user.username || '—' }}</span>
+                          <UIcon v-if="user.emailVerified" name="i-pixelarticons-check-double" class="size-3.5 shrink-0 text-primary" />
+                          <UBadge v-if="user.banned" size="sm" color="error" variant="subtle" label="ban" />
                         </div>
+                        <p class="truncate text-xs text-dimmed">{{ user.email }}</p>
+                      </div>
+                    </div>
+                  </td>
 
+                  <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>
+                  <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.friends) }}</td>
+                  <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.shares) }}</td>
+                  <td class="px-4 py-3 text-xs text-muted">{{ date(user.createdAt) }}</td>
+
+                  <td class="px-4 py-3">
+                    <div class="flex justify-end gap-1">
+                      <template v-if="editing === user.id">
+                        <UButton size="xs" color="neutral" :loading="busy === `user:${user.id}`" label="Zapisz" @click="saveUser(user)" />
+                        <UButton size="xs" variant="ghost" color="neutral" label="Anuluj" @click="editing = null" />
+                      </template>
+
+                      <template v-else-if="confirmDelete === user.id">
+                        <UButton size="xs" color="error" :loading="busy === `user:${user.id}`" label="Na pewno" @click="deleteUser(user)" />
+                        <UButton size="xs" variant="ghost" color="neutral" label="Nie" @click="confirmDelete = null" />
+                      </template>
+
+                      <template v-else>
+                        <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="startEdit(user)" />
                         <UButton
-                          v-if="badgeForm.image"
                           size="xs"
                           variant="ghost"
-                          color="neutral"
-                          icon="i-pixelarticons-close"
-                          aria-label="Usuń obrazek"
-                          @click="badgeForm.image = ''"
-                        />
-                      </div>
-
-                      <input
-                        ref="badgeImageInput"
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        class="hidden"
-                        @change="uploadBadgeImage"
-                      >
-
-                      <USelect
-                        v-model="badgeForm.rule"
-                        size="sm"
-                        class="w-full"
-                        :items="rules.map(r => ({ label: r.label, value: r.id }))"
-                      />
-                      <UInput
-                        v-if="ruleDef && ruleDef.param !== 'none'"
-                        v-model="badgeForm.ruleValue"
-                        size="sm"
-                        class="w-full font-mono"
-                        :type="ruleDef.param === 'date' ? 'date' : ruleDef.param === 'number' ? 'number' : 'text'"
-                        placeholder="wartość warunku"
-                      />
-                      <p v-if="ruleDef" class="text-[11px] text-dimmed">{{ ruleDef.hint }}</p>
-
-                      <div class="flex gap-2 pt-1">
-                        <UButton
-                          size="sm"
-                          color="neutral"
-                          :loading="busy === 'badge-save'"
-                          :disabled="!badgeForm.slug || !badgeForm.name"
-                          label="Zapisz"
-                          @click="saveBadge"
-                        />
-                        <UButton v-if="badgeEditing" size="sm" variant="ghost" color="neutral" label="Anuluj" @click="resetBadgeForm" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <h3 class="mb-4 text-sm font-semibold">Przyznaj ręcznie</h3>
-
-                    <div class="space-y-2">
-                      <USelect
-                        v-model="manual.slug"
-                        size="sm"
-                        class="w-full"
-                        placeholder="wybierz odznakę"
-                        :items="badges.map(b => ({ label: b.name, value: b.slug }))"
-                      />
-                      <UInput v-model="manual.username" size="sm" class="w-full" placeholder="nazwa użytkownika" />
-
-                      <div class="flex gap-2 pt-1">
-                        <UButton
-                          size="sm"
-                          color="neutral"
-                          :loading="busy === 'badge-award'"
-                          :disabled="!manual.slug || !manual.username"
-                          label="Przyznaj"
-                          @click="awardBadge(false)"
+                          :color="user.banned ? 'success' : 'warning'"
+                          :icon="user.banned ? 'i-pixelarticons-contact' : 'i-pixelarticons-cancel'"
+                          :aria-label="user.banned ? 'Odblokuj' : 'Zablokuj'"
+                          :loading="busy === `user:${user.id}`"
+                          @click="toggleBan(user)"
                         />
                         <UButton
-                          size="sm"
+                          size="xs"
                           variant="ghost"
                           color="error"
-                          :disabled="!manual.slug || !manual.username"
-                          label="Odbierz"
-                          @click="awardBadge(true)"
+                          icon="i-pixelarticons-trash"
+                          aria-label="Usuń"
+                          @click="confirmDelete = user.id"
                         />
-                      </div>
+                      </template>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-            <template v-else-if="tab === 'discord'">
-              <h2 class="mb-6 text-lg font-semibold tracking-tight">Discord</h2>
-              <AdminDiscord @unauthorized="denied = true" />
-            </template>
-
-            <template v-else>
-              <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-                <h2 class="text-lg font-semibold tracking-tight">
-                  Użytkownicy
-                  <span class="ml-1 text-sm font-normal text-dimmed">{{ num(usersTotal) }}</span>
-                </h2>
-                <UButton
-                  variant="ghost"
-                  color="error"
-                  size="sm"
-                  icon="i-pixelarticons-trash"
-                  :loading="busy === 'purge'"
-                  label="Usuń konta testowe"
-                  @click="purgeTest"
-                />
-              </div>
-
-              <UInput
-                v-model="search"
-                icon="i-pixelarticons-search"
-                size="lg"
-                class="mb-4 w-full max-w-sm"
-                placeholder="nick, e-mail albo konto Minecraft"
-              />
-
-              <div class="overflow-x-auto rounded-2xl border border-white/10 bg-black/20">
-                <table class="w-full min-w-[760px] text-left text-sm">
-                  <thead class="text-xs text-dimmed">
-                    <tr class="border-b border-white/10">
-                      <th class="px-4 py-3 font-medium">Konto</th>
-                      <th class="px-4 py-3 font-medium">Minecraft</th>
-                      <th class="px-4 py-3 text-right font-medium">Znajomi</th>
-                      <th class="px-4 py-3 text-right font-medium">Paczki</th>
-                      <th class="px-4 py-3 font-medium">Dołączył</th>
-                      <th class="px-4 py-3"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="user in users" :key="user.id" class="border-b border-white/5 last:border-0 align-middle">
-                      <td class="px-4 py-3">
-                        <div v-if="editing === user.id" class="flex flex-wrap gap-2">
-                          <UInput v-model="draft.name" size="sm" placeholder="nazwa" class="w-36" />
-                          <UInput v-model="draft.username" size="sm" placeholder="nick" class="w-32 font-mono" />
-                        </div>
-
-                        <div v-else class="flex items-center gap-3">
-                          <img v-if="user.image" :src="user.image" alt="" class="size-8 shrink-0 rounded-full object-cover">
-                          <span
-                            v-else
-                            class="flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                            :style="`background:hsl(${initialsAvatar(user.username || user.name || user.email).hue} 60% 30%)`"
-                          >{{ initialsAvatar(user.username || user.name || user.email).letter }}</span>
-
-                          <div class="min-w-0">
-                            <div class="flex items-center gap-1.5">
-                              <span class="truncate font-medium">{{ user.name || user.username || '—' }}</span>
-                              <UIcon v-if="user.emailVerified" name="i-pixelarticons-check-double" class="size-3.5 shrink-0 text-primary" />
-                              <UBadge v-if="user.banned" size="sm" color="error" variant="subtle" label="ban" />
-                            </div>
-                            <p class="truncate text-xs text-dimmed">{{ user.email }}</p>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>
-                      <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.friends) }}</td>
-                      <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.shares) }}</td>
-                      <td class="px-4 py-3 text-xs text-muted">{{ date(user.createdAt) }}</td>
-
-                      <td class="px-4 py-3">
-                        <div class="flex justify-end gap-1">
-                          <template v-if="editing === user.id">
-                            <UButton size="xs" color="neutral" :loading="busy === `user:${user.id}`" label="Zapisz" @click="saveUser(user)" />
-                            <UButton size="xs" variant="ghost" color="neutral" label="Anuluj" @click="editing = null" />
-                          </template>
-
-                          <template v-else-if="confirmDelete === user.id">
-                            <UButton size="xs" color="error" :loading="busy === `user:${user.id}`" label="Na pewno" @click="deleteUser(user)" />
-                            <UButton size="xs" variant="ghost" color="neutral" label="Nie" @click="confirmDelete = null" />
-                          </template>
-
-                          <template v-else>
-                            <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="startEdit(user)" />
-                            <UButton
-                              size="xs"
-                              variant="ghost"
-                              :color="user.banned ? 'success' : 'warning'"
-                              :icon="user.banned ? 'i-pixelarticons-contact' : 'i-pixelarticons-cancel'"
-                              :aria-label="user.banned ? 'Odblokuj' : 'Zablokuj'"
-                              :loading="busy === `user:${user.id}`"
-                              @click="toggleBan(user)"
-                            />
-                            <UButton
-                              size="xs"
-                              variant="ghost"
-                              color="error"
-                              icon="i-pixelarticons-trash"
-                              aria-label="Usuń"
-                              @click="confirmDelete = user.id"
-                            />
-                          </template>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <p v-if="!users.length" class="px-4 py-8 text-center text-sm text-muted">Brak wyników.</p>
-              </div>
-            </template>
+            <p v-if="!users.length" class="px-4 py-8 text-center text-sm text-muted">Brak wyników.</p>
           </div>
-        </div>
-      </section>
+        </template>
+      </UiPanel>
     </div>
-  </div>
+  </UiPageShell>
 </template>

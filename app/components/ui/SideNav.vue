@@ -13,16 +13,18 @@ const sections = computed(() => groupSideNav(props.items))
         class="hidden px-2.5 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.11em] text-dimmed first:pt-1 lg:block"
       >{{ section.title }}</p>
 
-      <button
+      <component
+        :is="item.to ? 'NuxtLink' : 'button'"
         v-for="item in section.items"
         :key="item.id"
-        type="button"
+        :to="item.to"
+        :type="item.to ? undefined : 'button'"
         class="flex shrink-0 cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
         :class="active === item.id
           ? 'bg-white/10 text-highlighted'
           : 'text-muted hover:bg-white/5 hover:text-highlighted'"
         :aria-current="active === item.id ? 'page' : undefined"
-        @click="active = item.id"
+        @click="item.to || (active = item.id)"
       >
         <UIcon :name="item.icon" class="size-4 shrink-0" />
         <span class="whitespace-nowrap">{{ item.label }}</span>
@@ -35,7 +37,7 @@ const sections = computed(() => groupSideNav(props.items))
           class="ml-auto"
           :label="String(item.badge)"
         />
-      </button>
+      </component>
     </template>
   </nav>
 </template>

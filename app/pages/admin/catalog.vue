@@ -649,727 +649,711 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell>
+    <UiPageHeader
+      :title="t('catalog.admin.title')"
+      :description="t('catalog.admin.subtitle', { n: total })"
+    >
+      <div class="flex flex-wrap gap-2 pb-1.5">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          size="lg"
+          icon="i-pixelarticons-arrow-left"
+          :label="t('catalog.admin.backToPanel')"
+          :to="localePath('/admin')"
+        />
+        <UButton
+          size="lg"
+          icon="i-pixelarticons-plus"
+          :label="t('catalog.admin.newProject')"
+          @click="creating = true; selected = null"
+        />
+      </div>
+    </UiPageHeader>
 
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
+    <UAlert
+      v-if="error"
+      color="error"
+      variant="subtle"
+      class="mb-4 rounded-2xl"
+      icon="i-pixelarticons-warning-box"
+      :description="error"
+    />
+    <UAlert
+      v-if="notice"
+      color="success"
+      variant="subtle"
+      class="mb-4 rounded-2xl"
+      icon="i-pixelarticons-check"
+      :description="notice"
+    />
 
-      <section class="container mx-auto max-w-7xl px-4 pb-24 pt-40">
-        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-          <div class="flex flex-wrap items-center gap-5">
-            <span class="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5">
-              <UIcon name="i-pixelarticons-package" class="size-6 text-primary" />
+    <div
+      v-if="reports.length"
+      class="mb-4 rounded-2xl border border-error/40 bg-error/5 p-6"
+    >
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <UIcon name="i-pixelarticons-flag" class="size-5 text-error" />
+        <h2 class="text-lg font-semibold">{{ t('reports.queue') }}</h2>
+        <UBadge size="sm" color="error" variant="subtle" :label="String(openReports)" />
+        <span class="flex-1"></span>
+        <UButton
+          size="xs"
+          variant="ghost"
+          color="neutral"
+          icon="i-pixelarticons-refresh"
+          :loading="busy === 'reports'"
+          :aria-label="t('catalog.admin.refresh')"
+          @click="loadReports"
+        />
+      </div>
+
+      <ul class="space-y-3">
+        <li
+          v-for="report in reports"
+          :key="report.id"
+          class="rounded-2xl border border-inset-line bg-inset p-4"
+        >
+          <div class="mb-2 flex flex-wrap items-center gap-2 text-sm">
+            <UBadge size="sm" variant="subtle" :label="t(`reports.reasons.${report.reason}`)" />
+            <UBadge size="sm" variant="subtle" color="neutral" :label="report.itemType" />
+            <NuxtLink
+              v-if="report.target"
+              :to="localePath(report.target.path)"
+              class="truncate font-medium text-primary hover:underline"
+            >
+              {{ report.target.label }}
+            </NuxtLink>
+            <span v-else class="text-dimmed">{{ t('reports.gone') }}</span>
+            <span class="flex-1"></span>
+            <span class="text-xs text-dimmed">
+              {{ report.reporter?.username || t('notifications.someone') }}
             </span>
+          </div>
 
-            <div class="min-w-0 flex-1">
-              <h1 class="text-2xl font-semibold tracking-tight">{{ t('catalog.admin.title') }}</h1>
-              <p class="truncate text-sm text-muted">{{ t('catalog.admin.subtitle', { n: total }) }}</p>
-            </div>
+          <p class="mb-3 whitespace-pre-wrap break-words text-sm text-muted">{{ report.body }}</p>
 
+          <UInput
+            v-model="reportNote[report.id]"
+            size="sm"
+            class="w-full"
+            :placeholder="t('reports.note')"
+          />
+
+          <div class="mt-2 flex flex-wrap justify-end gap-2">
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              :loading="busy === report.id"
+              :label="t('reports.dismiss')"
+              @click="decideReport(report, 'dismissed')"
+            />
+            <UButton
+              size="xs"
+              color="error"
+              variant="soft"
+              :loading="busy === report.id"
+              :label="t('reports.resolve')"
+              @click="decideReport(report, 'resolved')"
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mb-4 rounded-2xl border border-panel-line bg-panel p-6">
+      <h2 class="mb-4 text-lg font-semibold">{{ t('ops.title') }}</h2>
+      <AdminOperations />
+    </div>
+
+    <div class="mb-4 rounded-2xl border border-panel-line bg-panel p-6">
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <UIcon name="i-pixelarticons-inbox" class="size-5 text-muted" />
+        <h2 class="text-lg font-semibold">{{ t('catalog.admin.queue') }}</h2>
+        <span class="flex-1"></span>
+        <UButton
+          v-for="entry in ([
+            { id: 'pending', n: queueCounts.pending },
+            { id: 'rejected', n: queueCounts.rejected },
+            { id: 'draft', n: queueCounts.draft },
+          ] as const)"
+          :key="entry.id"
+          size="xs"
+          :variant="queueStatus === entry.id ? 'solid' : 'ghost'"
+          color="neutral"
+          class="rounded-lg"
+          :label="`${t(`catalog.admin.statuses.${entry.id}`)} (${entry.n})`"
+          @click="queueStatus = entry.id; loadQueue()"
+        />
+        <UButton
+          size="xs"
+          variant="ghost"
+          color="neutral"
+          icon="i-pixelarticons-refresh"
+          :loading="busy === 'queue'"
+          :aria-label="t('catalog.admin.refresh')"
+          @click="loadQueue"
+        />
+      </div>
+
+      <ul v-if="queue.length" class="space-y-2">
+        <li
+          v-for="entry in queue"
+          :key="entry.id"
+          class="flex flex-wrap items-center gap-3 rounded-2xl border border-inset-line bg-inset p-3"
+        >
+          <img
+            v-if="entry.icon"
+            :src="entry.icon"
+            alt=""
+            class="size-9 shrink-0 rounded-lg object-cover"
+          >
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-medium">{{ entry.title }}</p>
+            <p class="truncate text-xs text-dimmed">
+              {{ t(`catalog.admin.types.${entry.type}`) }}
+              <template v-if="entry.owner"> · {{ entry.owner.name || entry.owner.slug }}</template>
+            </p>
+          </div>
+          <UBadge
+            variant="subtle"
+            size="sm"
+            :color="waitingDays(entry.waiting) >= 7 ? 'error' : 'neutral'"
+            :label="t('catalog.admin.waiting', { days: waitingDays(entry.waiting) })"
+          />
+          <UButton
+            size="xs"
+            variant="subtle"
+            color="neutral"
+            :label="t('catalog.admin.review')"
+            @click="creating = false; open(entry.id)"
+          />
+        </li>
+      </ul>
+
+      <p v-else class="py-6 text-center text-sm text-dimmed">{{ t('catalog.admin.queueEmpty') }}</p>
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-[340px_1fr]">
+      <aside class="rounded-2xl border border-panel-line bg-panel p-4">
+        <div class="flex gap-2">
+          <UInput
+            v-model="search"
+            :placeholder="t('catalog.admin.searchPlaceholder')"
+            icon="i-pixelarticons-search"
+            class="flex-1"
+            @keyup.enter="loadProjects"
+          />
+          <UButton
+            variant="subtle"
+            color="neutral"
+            icon="i-pixelarticons-refresh"
+            :loading="busy === 'list'"
+            @click="loadProjects"
+          />
+        </div>
+
+        <USelect
+          v-model="filterType"
+          class="mt-2 w-full"
+          :items="[{ value: ANY_TYPE, label: t('catalog.admin.allTypes') }, ...TYPES]"
+          value-key="value"
+          @update:model-value="loadProjects"
+        />
+
+        <ul class="mt-3 space-y-1">
+          <li v-for="project in projects" :key="project.id">
+            <button
+              class="w-full rounded-xl px-3 py-2 text-left transition-colors hover:bg-white/10"
+              :class="selected?.id === project.id ? 'bg-white/10' : ''"
+              @click="creating = false; open(project.id)"
+            >
+              <span class="flex items-center gap-2">
+                <span class="min-w-0 flex-1 truncate text-sm font-medium">{{ project.title }}</span>
+                <UBadge
+                  variant="subtle"
+                  size="sm"
+                  :color="STATUS_COLORS[project.status] ?? 'neutral'"
+                  :label="statusBadge(project.status)"
+                />
+              </span>
+              <span class="truncate text-xs text-dimmed">{{ project.path }}</span>
+            </button>
+          </li>
+          <li v-if="!projects.length && busy !== 'list'" class="px-3 py-6 text-center text-sm text-dimmed">
+            {{ t('catalog.admin.emptyList') }}
+          </li>
+        </ul>
+      </aside>
+
+      <main class="space-y-4">
+        <div v-if="creating" class="rounded-2xl border border-panel-line bg-panel p-6">
+          <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.newProject') }}</h2>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <UInput v-model="draft.title" :placeholder="t('catalog.admin.projectTitle')" />
+            <USelect v-model="draft.type" :items="TYPES" value-key="value" />
+            <UInput v-model="draft.slug" :placeholder="t('catalog.admin.slugOptional')" />
+            <USelect
+              v-if="organizations.length"
+              v-model="draft.orgId"
+              :items="ownerOptions"
+              value-key="value"
+            />
+          </div>
+
+          <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-inset-line bg-inset p-4">
+            <input v-model="authorship" type="checkbox" class="mt-0.5 size-4 shrink-0 accent-primary">
+            <span class="text-sm text-muted">{{ t('catalog.admin.authorship') }}</span>
+          </label>
+
+          <div class="mt-4 flex gap-2">
+            <UButton
+              :label="t('catalog.admin.create')"
+              :loading="busy === 'create'"
+              :disabled="!authorship || !draft.title.trim()"
+              @click="create"
+            />
             <UButton
               variant="ghost"
               color="neutral"
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-arrow-left"
-              :label="t('catalog.admin.backToPanel')"
-              :to="localePath('/admin')"
-            />
-            <UButton
-              size="lg"
-              class="rounded-xl"
-              icon="i-pixelarticons-plus"
-              :label="t('catalog.admin.newProject')"
-              @click="creating = true; selected = null"
+              :label="t('catalog.admin.cancel')"
+              @click="creating = false"
             />
           </div>
         </div>
-
-        <UAlert
-          v-if="error"
-          color="error"
-          variant="subtle"
-          class="mb-4 rounded-2xl"
-          icon="i-pixelarticons-warning-box"
-          :description="error"
-        />
-        <UAlert
-          v-if="notice"
-          color="success"
-          variant="subtle"
-          class="mb-4 rounded-2xl"
-          icon="i-pixelarticons-check"
-          :description="notice"
-        />
 
         <div
-          v-if="reports.length"
-          class="mb-4 rounded-3xl border border-error/40 bg-error/5 p-6 backdrop-blur-sm"
+          v-if="selected"
+          class="rounded-2xl border border-panel-line bg-panel p-6"
         >
           <div class="mb-4 flex flex-wrap items-center gap-3">
-            <UIcon name="i-pixelarticons-flag" class="size-5 text-error" />
-            <h2 class="text-lg font-semibold">{{ t('reports.queue') }}</h2>
-            <UBadge size="sm" color="error" variant="subtle" :label="String(openReports)" />
-            <span class="flex-1"></span>
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="neutral"
-              icon="i-pixelarticons-refresh"
-              :loading="busy === 'reports'"
-              :aria-label="t('catalog.admin.refresh')"
-              @click="loadReports"
-            />
-          </div>
-
-          <ul class="space-y-3">
-            <li
-              v-for="report in reports"
-              :key="report.id"
-              class="rounded-2xl border border-white/10 bg-white/5 p-4"
-            >
-              <div class="mb-2 flex flex-wrap items-center gap-2 text-sm">
-                <UBadge size="sm" variant="subtle" :label="t(`reports.reasons.${report.reason}`)" />
-                <UBadge size="sm" variant="subtle" color="neutral" :label="report.itemType" />
-                <NuxtLink
-                  v-if="report.target"
-                  :to="localePath(report.target.path)"
-                  class="truncate font-medium text-primary hover:underline"
-                >
-                  {{ report.target.label }}
-                </NuxtLink>
-                <span v-else class="text-dimmed">{{ t('reports.gone') }}</span>
-                <span class="flex-1"></span>
-                <span class="text-xs text-dimmed">
-                  {{ report.reporter?.username || t('notifications.someone') }}
-                </span>
-              </div>
-
-              <p class="mb-3 whitespace-pre-wrap break-words text-sm text-muted">{{ report.body }}</p>
-
-              <UInput
-                v-model="reportNote[report.id]"
-                size="sm"
-                class="w-full"
-                :placeholder="t('reports.note')"
-              />
-
-              <div class="mt-2 flex flex-wrap justify-end gap-2">
-                <UButton
-                  size="xs"
-                  variant="ghost"
-                  color="neutral"
-                  :loading="busy === report.id"
-                  :label="t('reports.dismiss')"
-                  @click="decideReport(report, 'dismissed')"
-                />
-                <UButton
-                  size="xs"
-                  color="error"
-                  variant="soft"
-                  :loading="busy === report.id"
-                  :label="t('reports.resolve')"
-                  @click="decideReport(report, 'resolved')"
-                />
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-          <h2 class="mb-4 text-lg font-semibold">{{ t('ops.title') }}</h2>
-          <AdminOperations />
-        </div>
-
-        <div class="mb-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-          <div class="mb-4 flex flex-wrap items-center gap-3">
-            <UIcon name="i-pixelarticons-inbox" class="size-5 text-muted" />
-            <h2 class="text-lg font-semibold">{{ t('catalog.admin.queue') }}</h2>
-            <span class="flex-1"></span>
-            <UButton
-              v-for="entry in ([
-                { id: 'pending', n: queueCounts.pending },
-                { id: 'rejected', n: queueCounts.rejected },
-                { id: 'draft', n: queueCounts.draft },
-              ] as const)"
-              :key="entry.id"
-              size="xs"
-              :variant="queueStatus === entry.id ? 'solid' : 'ghost'"
-              color="neutral"
-              class="rounded-lg"
-              :label="`${t(`catalog.admin.statuses.${entry.id}`)} (${entry.n})`"
-              @click="queueStatus = entry.id; loadQueue()"
-            />
-            <UButton
-              size="xs"
-              variant="ghost"
-              color="neutral"
-              icon="i-pixelarticons-refresh"
-              :loading="busy === 'queue'"
-              :aria-label="t('catalog.admin.refresh')"
-              @click="loadQueue"
-            />
-          </div>
-
-          <ul v-if="queue.length" class="space-y-2">
-            <li
-              v-for="entry in queue"
-              :key="entry.id"
-              class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
-            >
-              <img
-                v-if="entry.icon"
-                :src="entry.icon"
-                alt=""
-                class="size-9 shrink-0 rounded-lg object-cover"
+            <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-inset-line bg-inset">
+              <img v-if="selected.icon" :src="selected.icon" alt="" class="size-full object-cover">
+              <UIcon v-else name="i-pixelarticons-image-plus" class="size-5 text-dimmed" />
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                class="hidden"
+                @change="uploadIcon"
               >
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium">{{ entry.title }}</p>
-                <p class="truncate text-xs text-dimmed">
-                  {{ t(`catalog.admin.types.${entry.type}`) }}
-                  <template v-if="entry.owner"> · {{ entry.owner.name || entry.owner.slug }}</template>
-                </p>
-              </div>
-              <UBadge
-                variant="subtle"
+            </label>
+            <h2 class="min-w-0 flex-1 truncate text-lg font-semibold">{{ selected.title }}</h2>
+            <UBadge variant="subtle" :label="selected.type" />
+            <UButton
+              variant="ghost"
+              color="error"
+              icon="i-pixelarticons-trash"
+              :loading="busy === 'delete'"
+              @click="remove"
+            />
+            <UButton :label="t('catalog.admin.save')" :loading="busy === 'save'" @click="save" />
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-2">
+            <UInput v-model="selected.title" :placeholder="t('catalog.admin.projectTitle')" />
+            <UInput v-model="selected.slug" placeholder="slug" />
+            <UInput
+              v-model="selected.summary"
+              :placeholder="t('catalog.admin.summary')"
+              class="sm:col-span-2"
+            />
+            <UTextarea
+              v-model="selected.description"
+              :rows="8"
+              :placeholder="t('catalog.admin.description')"
+              class="sm:col-span-2"
+            />
+            <USelect v-model="selected.status" :items="STATUSES" value-key="value" />
+            <USelect
+              v-model="selected.license"
+              :items="LICENSES"
+              value-key="value"
+              :placeholder="t('catalog.admin.license')"
+            />
+            <USelect
+              v-if="organizations.length"
+              v-model="selectedOwner"
+              :items="ownerOptions"
+              value-key="value"
+              class="sm:col-span-2"
+            />
+            <USelectMenu
+              v-model="selected.categories"
+              :items="categoryOptions"
+              value-key="value"
+              multiple
+              :placeholder="t('catalog.categories')"
+              class="sm:col-span-2"
+            />
+            <USelectMenu
+              v-model="selected.environment"
+              :items="environmentOptions"
+              value-key="value"
+              multiple
+              :placeholder="t('catalog.environment')"
+              class="sm:col-span-2"
+            />
+            <UInput
+              v-model.number="selected.price"
+              type="number"
+              min="0"
+              :placeholder="t('catalog.admin.price')"
+            />
+            <USelect v-model="selected.currency" :items="CURRENCIES" value-key="value" />
+          </div>
+
+          <p class="mt-2 text-xs text-dimmed">{{ t('catalog.admin.priceHint') }}</p>
+
+          <UAlert
+            v-if="saleNote"
+            color="warning"
+            variant="subtle"
+            class="mt-3 rounded-2xl"
+            icon="i-pixelarticons-scale"
+            :description="saleNote"
+          />
+
+          <div class="mt-6">
+            <h3 class="mb-1 text-sm font-semibold">{{ t('catalog.links') }}</h3>
+            <p class="mb-3 text-xs text-dimmed">{{ t('catalog.admin.linksHint') }}</p>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <UInput
+                v-for="kind in LINK_KINDS"
+                :key="kind"
+                v-model="selected.links[kind]"
+                :icon="LINK_ICONS[kind]"
+                type="url"
+                :placeholder="t(`links.${kind}`)"
+              />
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h3 class="mb-1 text-sm font-semibold">{{ t('disclosures.manage') }}</h3>
+            <p class="mb-3 text-xs text-dimmed">{{ t('disclosures.hint') }}</p>
+
+            <ul class="space-y-2">
+              <li
+                v-for="key in DISCLOSURE_KEYS"
+                :key="key"
+                class="rounded-2xl border border-inset-line bg-inset p-3"
+              >
+                <UCheckbox
+                  :model-value="Boolean(disclosures[key])"
+                  :label="t(`disclosures.${key}`)"
+                  size="sm"
+                  @update:model-value="toggleDisclosure(key)"
+                />
+
+                <div v-if="disclosures[key]" class="mt-3 space-y-2 pl-6">
+                  <div v-if="DISCLOSURES[key].options.length" class="flex flex-wrap gap-3">
+                    <UCheckbox
+                      v-for="option in DISCLOSURES[key].options"
+                      :key="option"
+                      :model-value="disclosures[key]!.options.includes(option)"
+                      :label="t(`disclosures.options.${key}.${option}`)"
+                      size="sm"
+                      @update:model-value="toggleOption(key, option)"
+                    />
+                  </div>
+
+                  <UInput
+                    v-model="disclosures[key]!.note"
+                    size="sm"
+                    class="w-full"
+                    :maxlength="500"
+                    :placeholder="t('disclosures.note')"
+                  />
+
+                  <USelect
+                    v-model="disclosures[key]!.lock"
+                    :items="lockChoices"
+                    value-key="value"
+                    size="sm"
+                    class="w-full sm:w-64"
+                  />
+                </div>
+              </li>
+            </ul>
+
+            <UButton
+              class="mt-3 rounded-xl"
+              size="sm"
+              color="neutral"
+              :loading="busy === 'disclosures'"
+              :label="t('account.save')"
+              @click="saveDisclosures"
+            />
+          </div>
+
+          <p class="mt-3 text-xs text-dimmed">
+            {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
+          </p>
+        </div>
+
+        <div
+          v-if="selected"
+          class="rounded-2xl border border-panel-line bg-panel p-6"
+        >
+          <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
+          <p class="mb-4 text-xs text-dimmed">{{ t('catalog.admin.moderationHint') }}</p>
+
+          <UTextarea
+            v-model="decisionNote"
+            :rows="3"
+            :maxlength="4000"
+            :placeholder="t('catalog.staffReplyPlaceholder')"
+            class="w-full"
+          />
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            <UButton
+              color="success"
+              variant="soft"
+              class="rounded-xl"
+              icon="i-pixelarticons-check-double"
+              :loading="busy === 'approve'"
+              :label="t('catalog.admin.approve')"
+              @click="moderate('approve')"
+            />
+            <UButton
+              color="error"
+              variant="soft"
+              class="rounded-xl"
+              icon="i-pixelarticons-close-box"
+              :disabled="!decisionNote.trim()"
+              :loading="busy === 'reject'"
+              :label="t('catalog.admin.reject')"
+              @click="moderate('reject')"
+            />
+            <UButton
+              color="error"
+              variant="soft"
+              class="rounded-xl"
+              icon="i-pixelarticons-trash"
+              :disabled="!decisionNote.trim()"
+              :loading="busy === 'remove'"
+              :label="t('catalog.admin.remove')"
+              @click="moderate('remove')"
+            />
+          </div>
+
+          <ProjectModeration :key="selected.slug" :slug="selected.slug" />
+        </div>
+
+        <div
+          v-if="selected"
+          class="rounded-2xl border border-panel-line bg-panel p-6"
+        >
+          <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.gallery') }}</h2>
+
+          <ul v-if="gallery.length" class="mb-4 space-y-2">
+            <li
+              v-for="image in gallery"
+              :key="image.id"
+              class="flex flex-wrap items-center gap-3 rounded-2xl border border-inset-line bg-inset p-3"
+            >
+              <img :src="image.url" alt="" class="h-14 w-24 shrink-0 rounded-lg object-cover">
+              <UInput
+                v-model="image.title"
                 size="sm"
-                :color="waitingDays(entry.waiting) >= 7 ? 'error' : 'neutral'"
-                :label="t('catalog.admin.waiting', { days: waitingDays(entry.waiting) })"
+                class="min-w-40 flex-1"
+                :placeholder="t('catalog.admin.imageTitle')"
+                @blur="saveImage(image)"
               />
               <UButton
                 size="xs"
-                variant="subtle"
+                :variant="image.featured ? 'solid' : 'ghost'"
                 color="neutral"
-                :label="t('catalog.admin.review')"
-                @click="creating = false; open(entry.id)"
+                icon="i-pixelarticons-star"
+                :aria-label="t('catalog.admin.featured')"
+                @click="image.featured = !image.featured; saveImage(image)"
+              />
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="error"
+                icon="i-pixelarticons-trash"
+                :loading="busy === image.id"
+                @click="removeImage(image.id)"
               />
             </li>
           </ul>
 
-          <p v-else class="py-6 text-center text-sm text-dimmed">{{ t('catalog.admin.queueEmpty') }}</p>
+          <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-white/15 p-4">
+            <UIcon name="i-pixelarticons-image-plus" class="size-5 text-primary" />
+            <span class="text-sm">{{ t('catalog.admin.addImage') }}</span>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              class="hidden"
+              @change="uploadGallery"
+            >
+          </label>
         </div>
 
-        <div class="grid gap-4 lg:grid-cols-[340px_1fr]">
-          <aside class="rounded-3xl border border-zinc-600/50 bg-black/30 p-4 backdrop-blur-sm">
-            <div class="flex gap-2">
-              <UInput
-                v-model="search"
-                :placeholder="t('catalog.admin.searchPlaceholder')"
-                icon="i-pixelarticons-search"
-                class="flex-1"
-                @keyup.enter="loadProjects"
-              />
-              <UButton
-                variant="subtle"
-                color="neutral"
-                icon="i-pixelarticons-refresh"
-                :loading="busy === 'list'"
-                @click="loadProjects"
-              />
-            </div>
+        <div
+          v-if="selected"
+          class="rounded-2xl border border-panel-line bg-panel p-6"
+        >
+          <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.versions') }}</h2>
 
-            <USelect
-              v-model="filterType"
-              class="mt-2 w-full"
-              :items="[{ value: ANY_TYPE, label: t('catalog.admin.allTypes') }, ...TYPES]"
-              value-key="value"
-              @update:model-value="loadProjects"
-            />
-
-            <ul class="mt-3 space-y-1">
-              <li v-for="project in projects" :key="project.id">
-                <button
-                  class="w-full rounded-xl px-3 py-2 text-left transition-colors hover:bg-white/10"
-                  :class="selected?.id === project.id ? 'bg-white/10' : ''"
-                  @click="creating = false; open(project.id)"
-                >
-                  <span class="flex items-center gap-2">
-                    <span class="min-w-0 flex-1 truncate text-sm font-medium">{{ project.title }}</span>
-                    <UBadge
-                      variant="subtle"
-                      size="sm"
-                      :color="STATUS_COLORS[project.status] ?? 'neutral'"
-                      :label="statusBadge(project.status)"
-                    />
-                  </span>
-                  <span class="truncate text-xs text-dimmed">{{ project.path }}</span>
-                </button>
-              </li>
-              <li v-if="!projects.length && busy !== 'list'" class="px-3 py-6 text-center text-sm text-dimmed">
-                {{ t('catalog.admin.emptyList') }}
-              </li>
-            </ul>
-          </aside>
-
-          <main class="space-y-4">
-            <div v-if="creating" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
-              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.newProject') }}</h2>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <UInput v-model="draft.title" :placeholder="t('catalog.admin.projectTitle')" />
-                <USelect v-model="draft.type" :items="TYPES" value-key="value" />
-                <UInput v-model="draft.slug" :placeholder="t('catalog.admin.slugOptional')" />
-                <USelect
-                  v-if="organizations.length"
-                  v-model="draft.orgId"
-                  :items="ownerOptions"
-                  value-key="value"
-                />
-              </div>
-
-              <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <input v-model="authorship" type="checkbox" class="mt-0.5 size-4 shrink-0 accent-primary">
-                <span class="text-sm text-muted">{{ t('catalog.admin.authorship') }}</span>
-              </label>
-
-              <div class="mt-4 flex gap-2">
-                <UButton
-                  :label="t('catalog.admin.create')"
-                  :loading="busy === 'create'"
-                  :disabled="!authorship || !draft.title.trim()"
-                  @click="create"
-                />
+          <ul v-if="selected.versions.length" class="mb-6 space-y-2">
+            <li
+              v-for="version in selected.versions"
+              :key="version.id"
+              class="rounded-2xl border border-inset-line bg-inset px-4 py-3"
+            >
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-mono text-sm">{{ version.number }}</span>
+                <UBadge variant="subtle" size="sm" :label="version.channel" />
+                <span class="text-xs text-dimmed">
+                  {{ version.gameVersions.join(', ') || t('catalog.admin.noGameVersions') }}
+                  <template v-if="version.loaders.length"> · {{ version.loaders.join(', ') }}</template>
+                </span>
+                <span class="flex-1"></span>
                 <UButton
                   variant="ghost"
                   color="neutral"
-                  :label="t('catalog.admin.cancel')"
-                  @click="creating = false"
+                  size="xs"
+                  icon="i-pixelarticons-pencil"
+                  @click="startVersionEdit(version)"
                 />
-              </div>
-            </div>
-
-            <div
-              v-if="selected"
-              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-            >
-              <div class="mb-4 flex flex-wrap items-center gap-3">
-                <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                  <img v-if="selected.icon" :src="selected.icon" alt="" class="size-full object-cover">
-                  <UIcon v-else name="i-pixelarticons-image-plus" class="size-5 text-dimmed" />
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    class="hidden"
-                    @change="uploadIcon"
-                  >
-                </label>
-                <h2 class="min-w-0 flex-1 truncate text-lg font-semibold">{{ selected.title }}</h2>
-                <UBadge variant="subtle" :label="selected.type" />
                 <UButton
                   variant="ghost"
                   color="error"
+                  size="xs"
                   icon="i-pixelarticons-trash"
-                  :loading="busy === 'delete'"
-                  @click="remove"
+                  @click="removeVersion(version.id)"
                 />
-                <UButton :label="t('catalog.admin.save')" :loading="busy === 'save'" @click="save" />
               </div>
 
-              <div class="grid gap-3 sm:grid-cols-2">
-                <UInput v-model="selected.title" :placeholder="t('catalog.admin.projectTitle')" />
-                <UInput v-model="selected.slug" placeholder="slug" />
+              <div v-if="editingVersion?.id === version.id" class="mt-3 grid gap-2 sm:grid-cols-2">
+                <UInput v-model="editingVersion.number" size="sm" :placeholder="t('catalog.admin.versionNumber')" />
+                <USelect v-model="editingVersion.channel" size="sm" :items="CHANNELS" value-key="value" />
                 <UInput
-                  v-model="selected.summary"
-                  :placeholder="t('catalog.admin.summary')"
-                  class="sm:col-span-2"
-                />
-                <UTextarea
-                  v-model="selected.description"
-                  :rows="8"
-                  :placeholder="t('catalog.admin.description')"
-                  class="sm:col-span-2"
-                />
-                <USelect v-model="selected.status" :items="STATUSES" value-key="value" />
-                <USelect
-                  v-model="selected.license"
-                  :items="LICENSES"
-                  value-key="value"
-                  :placeholder="t('catalog.admin.license')"
-                />
-                <USelect
-                  v-if="organizations.length"
-                  v-model="selectedOwner"
-                  :items="ownerOptions"
-                  value-key="value"
-                  class="sm:col-span-2"
-                />
-                <USelectMenu
-                  v-model="selected.categories"
-                  :items="categoryOptions"
-                  value-key="value"
-                  multiple
-                  :placeholder="t('catalog.categories')"
-                  class="sm:col-span-2"
-                />
-                <USelectMenu
-                  v-model="selected.environment"
-                  :items="environmentOptions"
-                  value-key="value"
-                  multiple
-                  :placeholder="t('catalog.environment')"
-                  class="sm:col-span-2"
-                />
-                <UInput
-                  v-model.number="selected.price"
-                  type="number"
-                  min="0"
-                  :placeholder="t('catalog.admin.price')"
-                />
-                <USelect v-model="selected.currency" :items="CURRENCIES" value-key="value" />
-              </div>
-
-              <p class="mt-2 text-xs text-dimmed">{{ t('catalog.admin.priceHint') }}</p>
-
-              <UAlert
-                v-if="saleNote"
-                color="warning"
-                variant="subtle"
-                class="mt-3 rounded-2xl"
-                icon="i-pixelarticons-scale"
-                :description="saleNote"
-              />
-
-              <div class="mt-6">
-                <h3 class="mb-1 text-sm font-semibold">{{ t('catalog.links') }}</h3>
-                <p class="mb-3 text-xs text-dimmed">{{ t('catalog.admin.linksHint') }}</p>
-                <div class="grid gap-2 sm:grid-cols-2">
-                  <UInput
-                    v-for="kind in LINK_KINDS"
-                    :key="kind"
-                    v-model="selected.links[kind]"
-                    :icon="LINK_ICONS[kind]"
-                    type="url"
-                    :placeholder="t(`links.${kind}`)"
-                  />
-                </div>
-              </div>
-
-              <div class="mt-6">
-                <h3 class="mb-1 text-sm font-semibold">{{ t('disclosures.manage') }}</h3>
-                <p class="mb-3 text-xs text-dimmed">{{ t('disclosures.hint') }}</p>
-
-                <ul class="space-y-2">
-                  <li
-                    v-for="key in DISCLOSURE_KEYS"
-                    :key="key"
-                    class="rounded-2xl border border-white/10 bg-white/5 p-3"
-                  >
-                    <UCheckbox
-                      :model-value="Boolean(disclosures[key])"
-                      :label="t(`disclosures.${key}`)"
-                      size="sm"
-                      @update:model-value="toggleDisclosure(key)"
-                    />
-
-                    <div v-if="disclosures[key]" class="mt-3 space-y-2 pl-6">
-                      <div v-if="DISCLOSURES[key].options.length" class="flex flex-wrap gap-3">
-                        <UCheckbox
-                          v-for="option in DISCLOSURES[key].options"
-                          :key="option"
-                          :model-value="disclosures[key]!.options.includes(option)"
-                          :label="t(`disclosures.options.${key}.${option}`)"
-                          size="sm"
-                          @update:model-value="toggleOption(key, option)"
-                        />
-                      </div>
-
-                      <UInput
-                        v-model="disclosures[key]!.note"
-                        size="sm"
-                        class="w-full"
-                        :maxlength="500"
-                        :placeholder="t('disclosures.note')"
-                      />
-
-                      <USelect
-                        v-model="disclosures[key]!.lock"
-                        :items="lockChoices"
-                        value-key="value"
-                        size="sm"
-                        class="w-full sm:w-64"
-                      />
-                    </div>
-                  </li>
-                </ul>
-
-                <UButton
-                  class="mt-3 rounded-xl"
+                  v-model="editingVersion.name"
                   size="sm"
-                  color="neutral"
-                  :loading="busy === 'disclosures'"
-                  :label="t('account.save')"
-                  @click="saveDisclosures"
-                />
-              </div>
-
-              <p class="mt-3 text-xs text-dimmed">
-                {{ t('catalog.admin.publicAddress', { path: selected.path }) }}
-              </p>
-            </div>
-
-            <div
-              v-if="selected"
-              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-            >
-              <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
-              <p class="mb-4 text-xs text-dimmed">{{ t('catalog.admin.moderationHint') }}</p>
-
-              <UTextarea
-                v-model="decisionNote"
-                :rows="3"
-                :maxlength="4000"
-                :placeholder="t('catalog.staffReplyPlaceholder')"
-                class="w-full"
-              />
-
-              <div class="mt-3 flex flex-wrap gap-2">
-                <UButton
-                  color="success"
-                  variant="soft"
-                  class="rounded-xl"
-                  icon="i-pixelarticons-check-double"
-                  :loading="busy === 'approve'"
-                  :label="t('catalog.admin.approve')"
-                  @click="moderate('approve')"
-                />
-                <UButton
-                  color="error"
-                  variant="soft"
-                  class="rounded-xl"
-                  icon="i-pixelarticons-close-box"
-                  :disabled="!decisionNote.trim()"
-                  :loading="busy === 'reject'"
-                  :label="t('catalog.admin.reject')"
-                  @click="moderate('reject')"
-                />
-                <UButton
-                  color="error"
-                  variant="soft"
-                  class="rounded-xl"
-                  icon="i-pixelarticons-trash"
-                  :disabled="!decisionNote.trim()"
-                  :loading="busy === 'remove'"
-                  :label="t('catalog.admin.remove')"
-                  @click="moderate('remove')"
-                />
-              </div>
-
-              <ProjectModeration :key="selected.slug" :slug="selected.slug" />
-            </div>
-
-            <div
-              v-if="selected"
-              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-            >
-              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.gallery') }}</h2>
-
-              <ul v-if="gallery.length" class="mb-4 space-y-2">
-                <li
-                  v-for="image in gallery"
-                  :key="image.id"
-                  class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
-                >
-                  <img :src="image.url" alt="" class="h-14 w-24 shrink-0 rounded-lg object-cover">
-                  <UInput
-                    v-model="image.title"
-                    size="sm"
-                    class="min-w-40 flex-1"
-                    :placeholder="t('catalog.admin.imageTitle')"
-                    @blur="saveImage(image)"
-                  />
-                  <UButton
-                    size="xs"
-                    :variant="image.featured ? 'solid' : 'ghost'"
-                    color="neutral"
-                    icon="i-pixelarticons-star"
-                    :aria-label="t('catalog.admin.featured')"
-                    @click="image.featured = !image.featured; saveImage(image)"
-                  />
-                  <UButton
-                    size="xs"
-                    variant="ghost"
-                    color="error"
-                    icon="i-pixelarticons-trash"
-                    :loading="busy === image.id"
-                    @click="removeImage(image.id)"
-                  />
-                </li>
-              </ul>
-
-              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-white/15 p-4">
-                <UIcon name="i-pixelarticons-image-plus" class="size-5 text-primary" />
-                <span class="text-sm">{{ t('catalog.admin.addImage') }}</span>
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  class="hidden"
-                  @change="uploadGallery"
-                >
-              </label>
-            </div>
-
-            <div
-              v-if="selected"
-              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-            >
-              <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.admin.versions') }}</h2>
-
-              <ul v-if="selected.versions.length" class="mb-6 space-y-2">
-                <li
-                  v-for="version in selected.versions"
-                  :key="version.id"
-                  class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-                >
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-mono text-sm">{{ version.number }}</span>
-                    <UBadge variant="subtle" size="sm" :label="version.channel" />
-                    <span class="text-xs text-dimmed">
-                      {{ version.gameVersions.join(', ') || t('catalog.admin.noGameVersions') }}
-                      <template v-if="version.loaders.length"> · {{ version.loaders.join(', ') }}</template>
-                    </span>
-                    <span class="flex-1"></span>
-                    <UButton
-                      variant="ghost"
-                      color="neutral"
-                      size="xs"
-                      icon="i-pixelarticons-pencil"
-                      @click="startVersionEdit(version)"
-                    />
-                    <UButton
-                      variant="ghost"
-                      color="error"
-                      size="xs"
-                      icon="i-pixelarticons-trash"
-                      @click="removeVersion(version.id)"
-                    />
-                  </div>
-
-                  <div v-if="editingVersion?.id === version.id" class="mt-3 grid gap-2 sm:grid-cols-2">
-                    <UInput v-model="editingVersion.number" size="sm" :placeholder="t('catalog.admin.versionNumber')" />
-                    <USelect v-model="editingVersion.channel" size="sm" :items="CHANNELS" value-key="value" />
-                    <UInput
-                      v-model="editingVersion.name"
-                      size="sm"
-                      class="sm:col-span-2"
-                      :placeholder="t('catalog.admin.versionName')"
-                    />
-                    <UTextarea
-                      v-model="editingVersion.changelog"
-                      :rows="3"
-                      class="sm:col-span-2"
-                      :placeholder="t('catalog.admin.changelog')"
-                    />
-                    <USelectMenu
-                      v-model="editingVersion.gameVersions"
-                      :items="gameVersions"
-                      multiple
-                      class="sm:col-span-2"
-                      :placeholder="t('catalog.admin.gameVersions')"
-                    />
-                    <div class="flex gap-2 sm:col-span-2">
-                      <UButton
-                        size="sm"
-                        :loading="busy === version.id"
-                        :label="t('catalog.admin.save')"
-                        @click="saveVersion"
-                      />
-                      <UButton
-                        size="sm"
-                        variant="ghost"
-                        color="neutral"
-                        :label="t('catalog.admin.cancel')"
-                        @click="editingVersion = null"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    v-for="file in version.files"
-                    :key="file.id"
-                    class="mt-2 flex items-center gap-2 text-xs text-muted"
-                  >
-                    <UIcon name="i-pixelarticons-file" class="size-3.5" />
-                    <span class="truncate">{{ file.filename }}</span>
-                    <span class="text-dimmed">{{ sizeLabel(file.size) }}</span>
-                    <code class="truncate text-dimmed">{{ file.hashes.sha1.slice(0, 12) }}…</code>
-                  </div>
-                </li>
-              </ul>
-
-              <div class="rounded-2xl border border-dashed border-white/15 p-4">
-                <label class="flex cursor-pointer items-center gap-3">
-                  <UIcon name="i-pixelarticons-upload" class="size-5 text-primary" />
-                  <span class="text-sm">
-                    {{ pendingFile ? pendingFile.filename : t('catalog.admin.pickFile') }}
-                  </span>
-                  <input type="file" class="hidden" @change="upload">
-                </label>
-
-                <div v-if="busy === 'upload'" class="mt-2 text-xs text-dimmed">
-                  {{ t('catalog.admin.readingFile') }}
-                </div>
-
-                <div v-if="analysis" class="mt-3 space-y-2 text-xs">
-                  <p v-if="analysis.detected" class="text-muted">
-                    {{ t('catalog.admin.detected', { kind: analysis.detected }) }}
-                    <template v-if="analysis.gameVersionRange">
-                      · {{ t('catalog.admin.declaredRange', { range: analysis.gameVersionRange }) }}
-                    </template>
-                  </p>
-                  <p v-for="warning in analysis.warnings" :key="warning.code" class="text-warning">
-                    {{ t(warning.code, warning.params) }}
-                  </p>
-                  <div v-if="materials.length" class="text-muted">
-                    {{ t('catalog.admin.materials') }}:
-                    <span v-for="material in materials" :key="material.item" class="text-dimmed">
-                      {{ material.count }}× {{ material.item.replace('minecraft:', '') }},
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <UInput v-model="versionDraft.number" :placeholder="t('catalog.admin.versionNumber')" />
-                <USelect v-model="versionDraft.channel" :items="CHANNELS" value-key="value" />
-                <UInput
-                  v-model="versionDraft.name"
-                  :placeholder="t('catalog.admin.versionName')"
                   class="sm:col-span-2"
+                  :placeholder="t('catalog.admin.versionName')"
                 />
                 <UTextarea
-                  v-model="versionDraft.changelog"
+                  v-model="editingVersion.changelog"
                   :rows="3"
-                  :placeholder="t('catalog.admin.changelog')"
                   class="sm:col-span-2"
+                  :placeholder="t('catalog.admin.changelog')"
                 />
                 <USelectMenu
-                  v-model="versionDraft.gameVersions"
+                  v-model="editingVersion.gameVersions"
                   :items="gameVersions"
                   multiple
-                  :placeholder="t('catalog.admin.gameVersions')"
                   class="sm:col-span-2"
+                  :placeholder="t('catalog.admin.gameVersions')"
                 />
+                <div class="flex gap-2 sm:col-span-2">
+                  <UButton
+                    size="sm"
+                    :loading="busy === version.id"
+                    :label="t('catalog.admin.save')"
+                    @click="saveVersion"
+                  />
+                  <UButton
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    :label="t('catalog.admin.cancel')"
+                    @click="editingVersion = null"
+                  />
+                </div>
               </div>
+              <div
+                v-for="file in version.files"
+                :key="file.id"
+                class="mt-2 flex items-center gap-2 text-xs text-muted"
+              >
+                <UIcon name="i-pixelarticons-file" class="size-3.5" />
+                <span class="truncate">{{ file.filename }}</span>
+                <span class="text-dimmed">{{ sizeLabel(file.size) }}</span>
+                <code class="truncate text-dimmed">{{ file.hashes.sha1.slice(0, 12) }}…</code>
+              </div>
+            </li>
+          </ul>
 
-              <UButton
-                class="mt-4"
-                :label="t('catalog.admin.addVersion')"
-                icon="i-pixelarticons-plus"
-                :loading="busy === 'version'"
-                :disabled="!versionDraft.number.trim()"
-                @click="addVersion"
-              />
+          <div class="rounded-2xl border border-dashed border-white/15 p-4">
+            <label class="flex cursor-pointer items-center gap-3">
+              <UIcon name="i-pixelarticons-upload" class="size-5 text-primary" />
+              <span class="text-sm">
+                {{ pendingFile ? pendingFile.filename : t('catalog.admin.pickFile') }}
+              </span>
+              <input type="file" class="hidden" @change="upload">
+            </label>
+
+            <div v-if="busy === 'upload'" class="mt-2 text-xs text-dimmed">
+              {{ t('catalog.admin.readingFile') }}
             </div>
 
-            <div
-              v-if="!selected && !creating"
-              class="rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm"
-            >
-              <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
-              <p class="mt-3 text-sm text-muted">{{ t('catalog.admin.pickOne') }}</p>
+            <div v-if="analysis" class="mt-3 space-y-2 text-xs">
+              <p v-if="analysis.detected" class="text-muted">
+                {{ t('catalog.admin.detected', { kind: analysis.detected }) }}
+                <template v-if="analysis.gameVersionRange">
+                  · {{ t('catalog.admin.declaredRange', { range: analysis.gameVersionRange }) }}
+                </template>
+              </p>
+              <p v-for="warning in analysis.warnings" :key="warning.code" class="text-warning">
+                {{ t(warning.code, warning.params) }}
+              </p>
+              <div v-if="materials.length" class="text-muted">
+                {{ t('catalog.admin.materials') }}:
+                <span v-for="material in materials" :key="material.item" class="text-dimmed">
+                  {{ material.count }}× {{ material.item.replace('minecraft:', '') }},
+                </span>
+              </div>
             </div>
-          </main>
+          </div>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <UInput v-model="versionDraft.number" :placeholder="t('catalog.admin.versionNumber')" />
+            <USelect v-model="versionDraft.channel" :items="CHANNELS" value-key="value" />
+            <UInput
+              v-model="versionDraft.name"
+              :placeholder="t('catalog.admin.versionName')"
+              class="sm:col-span-2"
+            />
+            <UTextarea
+              v-model="versionDraft.changelog"
+              :rows="3"
+              :placeholder="t('catalog.admin.changelog')"
+              class="sm:col-span-2"
+            />
+            <USelectMenu
+              v-model="versionDraft.gameVersions"
+              :items="gameVersions"
+              multiple
+              :placeholder="t('catalog.admin.gameVersions')"
+              class="sm:col-span-2"
+            />
+          </div>
+
+          <UButton
+            class="mt-4"
+            :label="t('catalog.admin.addVersion')"
+            icon="i-pixelarticons-plus"
+            :loading="busy === 'version'"
+            :disabled="!versionDraft.number.trim()"
+            @click="addVersion"
+          />
         </div>
-      </section>
+
+        <div
+          v-if="!selected && !creating"
+          class="rounded-2xl border border-panel-line bg-panel p-12 text-center"
+        >
+          <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
+          <p class="mt-3 text-sm text-muted">{{ t('catalog.admin.pickOne') }}</p>
+        </div>
+      </main>
     </div>
-  </div>
+  </UiPageShell>
 </template>

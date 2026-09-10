@@ -6,6 +6,10 @@ export interface SideNavItem {
   // Items carrying the same group land under one heading. Leave it out and the
   // item joins the untitled block wherever it sits in the list.
   group?: string
+  // A route turns the entry into a link rather than a tab switch, for a section
+  // that lives on its own page. It reads as active when the page it opens sets
+  // the model to this id.
+  to?: string
 }
 
 export interface SideNavSection {

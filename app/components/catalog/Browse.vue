@@ -37,7 +37,7 @@ const licenses = ref(list(route.query.lic))
 
 const sort = ref(SORTS.includes(route.query.sort as never) ? String(route.query.sort) : 'downloads')
 const perPage = ref(PER_PAGE.includes(Number(route.query.per)) ? Number(route.query.per) : 20)
-const layout = ref(route.query.view === 'rows' ? 'rows' : 'grid')
+const layout = ref(route.query.view === 'grid' ? 'grid' : 'rows')
 const page = ref(Math.max(1, Number(route.query.page) || 1))
 
 const filtersOpen = ref(false)
@@ -101,7 +101,7 @@ function sync(resetPage = true) {
       lic: licenses.value.join(',') || undefined,
       sort: sort.value === 'downloads' ? undefined : sort.value,
       per: perPage.value === 20 ? undefined : perPage.value,
-      view: layout.value === 'grid' ? undefined : layout.value,
+      view: layout.value === 'rows' ? undefined : layout.value,
       page: page.value > 1 ? page.value : undefined,
     },
   })
