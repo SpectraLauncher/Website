@@ -3597,7 +3597,8 @@
       "feeNote": "Prowizja pokrywa też koszt obsługi płatności — Stripe nie dolicza nic osobno. Przy niskich cenach obowiązuje kwota minimalna, więc procent bywa wyższy, niż wynika ze stawki.",
       "payoutNote": "Pieniądze trafiają na twoje konto do wypłat po okresie karencji. Sprzedawać możesz, zanim weryfikacja się skończy.",
       "freeNote": "Projekt jest darmowy. Każdy może pobrać pliki bez płacenia."
-    }
+    },
+    "free": "Za darmo"
   },
   "verification": {
     "title": "Weryfikacja",

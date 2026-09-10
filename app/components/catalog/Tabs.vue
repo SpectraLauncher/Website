@@ -18,15 +18,15 @@ const TABS = [
 </script>
 
 <template>
-  <nav class="-mx-4 overflow-x-auto px-4">
-    <ul class="flex w-max min-w-full gap-1 rounded-2xl border border-zinc-600/50 bg-black/30 p-1 backdrop-blur-sm">
-      <li v-for="tab in TABS" :key="tab.type" class="flex-1">
+  <nav class="-mx-4 overflow-x-auto border-b border-panel-line px-4">
+    <ul class="flex w-max min-w-full gap-1.5 pb-4">
+      <li v-for="tab in TABS" :key="tab.type">
         <NuxtLink
           :to="localePath(tab.to)"
-          class="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm transition-colors"
+          class="flex h-10 items-center gap-2 whitespace-nowrap rounded-xl border px-4 text-sm transition-colors"
           :class="tab.type === current
-            ? 'bg-white/10 font-medium text-highlighted'
-            : 'text-muted hover:bg-white/5 hover:text-highlighted'"
+            ? 'border-primary/40 bg-primary/10 font-bold text-primary'
+            : 'border-panel-line font-medium text-muted hover:border-zinc-600 hover:text-highlighted'"
         >
           <UIcon :name="tab.icon" class="size-4 shrink-0" />
           {{ t(`catalog.${tab.key}.title`) }}

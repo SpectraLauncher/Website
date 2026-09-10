@@ -4,6 +4,9 @@ const props = defineProps<{
   options: Array<{ value: string, count: number }>
   modelValue: string[]
   labelKey?: string
+  // Draws the category or loader mark next to each option. Anything else — a
+  // licence id, a game version — reads better as plain text.
+  marks?: 'category' | 'loader'
   collapseAfter?: number
 }>()
 
@@ -11,6 +14,7 @@ const emit = defineEmits<{ 'update:modelValue': [string[]] }>()
 
 const { t, te } = useI18n()
 
+const open = ref(true)
 const expanded = ref(false)
 const limit = computed(() => props.collapseAfter ?? 8)
 
@@ -35,30 +39,63 @@ function toggle(value: string) {
 </script>
 
 <template>
-  <section v-if="options.length">
-    <h3 class="text-xs font-semibold uppercase tracking-wider text-dimmed">{{ title }}</h3>
-
-    <ul class="mt-2 space-y-0.5">
-      <li v-for="option in visible" :key="option.value">
-        <label class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5">
-          <input
-            type="checkbox"
-            class="size-3.5 shrink-0 accent-primary"
-            :checked="modelValue.includes(option.value)"
-            @change="toggle(option.value)"
-          >
-          <span class="min-w-0 flex-1 truncate text-sm">{{ label(option.value) }}</span>
-          <span class="shrink-0 font-mono text-xs text-dimmed">{{ option.count }}</span>
-        </label>
-      </li>
-    </ul>
-
+  <section v-if="options.length" class="border-t border-inset-line py-3 first:border-t-0">
     <button
-      v-if="hidden"
-      class="mt-1 px-2 text-xs text-primary transition-opacity hover:opacity-80"
-      @click="expanded = !expanded"
+      type="button"
+      class="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/5"
+      :aria-expanded="open"
+      @click="open = !open"
     >
-      {{ expanded ? t('catalog.showLess') : t('catalog.showMore', { n: hidden }) }}
+      <span class="text-[11px] font-bold uppercase tracking-[0.1em] text-dimmed">{{ title }}</span>
+      <span class="flex-1"></span>
+
+      <UBadge
+        v-if="modelValue.length"
+        size="sm"
+        color="primary"
+        variant="subtle"
+        :label="String(modelValue.length)"
+      />
+      <UIcon
+        name="i-pixelarticons-chevron-down"
+        class="size-3.5 shrink-0 text-dimmed transition-transform"
+        :class="!open && '-rotate-90'"
+      />
     </button>
+
+    <template v-if="open">
+      <ul class="mt-1.5 space-y-0.5">
+        <li v-for="option in visible" :key="option.value">
+          <label
+            class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors"
+            :class="modelValue.includes(option.value) ? 'bg-white/5' : 'hover:bg-white/5'"
+          >
+            <input
+              type="checkbox"
+              class="size-3.5 shrink-0 accent-primary"
+              :checked="modelValue.includes(option.value)"
+              @change="toggle(option.value)"
+            >
+            <IconCategory v-if="marks === 'category'" :name="option.value" />
+            <IconLoader v-else-if="marks === 'loader'" :name="option.value" />
+
+            <span
+              class="min-w-0 flex-1 truncate text-sm"
+              :class="modelValue.includes(option.value) ? 'font-semibold text-highlighted' : 'text-default'"
+            >{{ label(option.value) }}</span>
+            <span class="shrink-0 font-mono text-xs text-dimmed">{{ option.count }}</span>
+          </label>
+        </li>
+      </ul>
+
+      <button
+        v-if="hidden"
+        type="button"
+        class="mt-1 cursor-pointer px-2 text-xs font-semibold text-primary transition-opacity hover:opacity-80"
+        @click="expanded = !expanded"
+      >
+        {{ expanded ? t('catalog.showLess') : t('catalog.showMore', { n: hidden }) }}
+      </button>
+    </template>
   </section>
 </template>

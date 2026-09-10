@@ -51,3 +51,35 @@ export function groupVersions(versions: PickableVersion[]): VersionGroup[] {
 export function isReleaseGroup(key: string): boolean {
   return !key.endsWith(SNAPSHOTS)
 }
+
+const RELEASE = /^\d+(\.\d+){0,2}$/
+
+function ordinal(id: string, index: number): number {
+  return Number(id.split('.')[index] ?? 0)
+}
+
+function byRelease(a: string, b: string): number {
+  for (let i = 0; i < 3; i++) {
+    const diff = ordinal(a, i) - ordinal(b, i)
+    if (diff) return diff
+  }
+  return 0
+}
+
+/**
+ * The one line a card has room for, out of a list that can run to thirty
+ * entries. Only proper releases order arithmetically — `24w14a` and `1.21-pre1`
+ * do not, which is the same reason server/utils/game-versions.ts refuses to
+ * parse them — so the range spans the releases and everything else is counted.
+ */
+export function gameVersionRange(versions: string[]): string {
+  const releases = versions.filter(version => RELEASE.test(version)).sort(byRelease)
+  const others = versions.length - releases.length
+
+  const span = releases.length > 1
+    ? `${releases[0]} – ${releases.at(-1)}`
+    : releases[0] ?? ''
+
+  if (!others) return span
+  return span ? `${span} +${others}` : `+${others}`
+}
