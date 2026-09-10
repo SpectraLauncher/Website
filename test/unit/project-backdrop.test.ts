@@ -9,25 +9,31 @@ const component = readFileSync('app/components/project/Backdrop.vue', 'utf8')
 const TYPES = ['mod', 'pack', 'plugin', 'resourcepack', 'schematic', 'shader']
 
 describe('tlo strony projektu', () => {
-  it.each(TYPES)('%s uzywa komponentu, nie wlasnego diva', (type) => {
+  const header = readFileSync('app/components/catalog/Project.vue', 'utf8')
+
+  it.each(TYPES)('%s nie maluje wlasnego tla', (type) => {
     const page = readFileSync(`app/pages/${type}/[slug]/[[tab]].vue`, 'utf8')
 
-    expect(page).toContain('<ProjectBackdrop :gallery="data?.gallery ?? []" />')
     expect(page).not.toContain(`bg-[url('/bg.webp')]`)
+    expect(page).not.toContain('bg-cover bg-center')
   })
 
-  // Six pages carried the same markup, and a change to one of them was a change
-  // to none of the others.
-  it('zostaje jedno miejsce, w ktorym to tlo istnieje', () => {
+  // The banner is a band inside the header card now, so the header renders it
+  // once for every type rather than each page rendering it for itself.
+  it('naglowek projektu jest jedynym miejscem, ktore je zamawia', () => {
     const owners = TYPES.filter(type =>
-      readFileSync(`app/pages/${type}/[slug]/[[tab]].vue`, 'utf8').includes('bg-cover bg-center'))
+      readFileSync(`app/pages/${type}/[slug]/[[tab]].vue`, 'utf8').includes('<ProjectBackdrop'))
 
     expect(owners).toEqual([])
+    expect(header).toContain('<ProjectBackdrop :gallery="gallery" />')
     expect(component).toContain('bg-cover bg-center')
   })
 
-  it('domyslne tlo zostaje, kiedy nic nie jest wyroznione', () => {
-    expect(component).toContain(`'/bg.webp'`)
+  // A stock photograph on every project that never picked one is worse than no
+  // band at all: it makes them all look like the same project.
+  it('bez wyroznionego obrazu nie ma pasa', () => {
+    expect(component).not.toContain(`'/bg.webp'`)
+    expect(component).toContain('v-if="image"')
   })
 
   // Tailwind resolves its arbitrary values when it builds, so a runtime URL has

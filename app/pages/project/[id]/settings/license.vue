@@ -40,7 +40,7 @@ const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: val
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.license') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.license') }}</p>
 

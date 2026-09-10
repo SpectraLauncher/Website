@@ -19,7 +19,7 @@ function detail(key: DisclosureKey): string {
 <template>
   <div
     v-if="active.length"
-    class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+    class="rounded-2xl border border-panel-line bg-panel p-6"
   >
     <h2 class="mb-1 text-lg font-semibold">{{ t('disclosures.title') }}</h2>
     <p class="mb-4 text-xs text-muted">{{ t('disclosures.hint') }}</p>

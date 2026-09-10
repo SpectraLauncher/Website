@@ -28,26 +28,21 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell>
+    <CatalogProject
+      v-if="project"
+      :project="project"
+      icon="i-pixelarticons-sun"
+      :gallery="data?.gallery ?? []"
+      :tab="tab"
+      :back-to="'/shader'"
+      :back-label="t('catalog.shaders.title')"
+    />
 
-    <div class="relative">
-      <ProjectBackdrop :gallery="data?.gallery ?? []" />
-
-      <CatalogProject
-        v-if="project"
-        :project="project"
-        icon="i-pixelarticons-sun"
-        :gallery="data?.gallery ?? []"
-        :tab="tab"
-        :back-to="'/shader'"
-        :back-label="t('catalog.shaders.title')"
-      />
-
-      <section v-else-if="error" class="container mx-auto max-w-2xl px-4 py-40 text-center">
-        <h1 class="text-2xl font-semibold">{{ t('catalog.notFound') }}</h1>
-        <UButton class="mt-6" :to="localePath('/shader')" :label="t('catalog.shaders.title')" />
-      </section>
-    </div>
-  </div>
+    <UiPanel v-else-if="error" class="mx-auto max-w-lg p-12 text-center">
+      <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
+      <h1 class="mt-3 text-xl font-bold text-highlighted">{{ t('catalog.notFound') }}</h1>
+      <UButton class="mt-6" :to="localePath('/shader')" :label="t('catalog.shaders.title')" />
+    </UiPanel>
+  </UiPageShell>
 </template>

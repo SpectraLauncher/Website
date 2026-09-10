@@ -59,7 +59,7 @@ async function save() {
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.disclosures') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.disclosures') }}</p>
 
@@ -76,7 +76,7 @@ async function save() {
       <li
         v-for="key in DISCLOSURE_KEYS"
         :key="key"
-        class="rounded-2xl border border-white/10 bg-white/5 p-4"
+        class="rounded-xl border border-raised-line bg-raised p-4"
       >
         <label class="flex cursor-pointer items-start gap-3">
           <input

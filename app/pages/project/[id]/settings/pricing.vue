@@ -68,7 +68,7 @@ async function save() {
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.pricing') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.pricing') }}</p>
 
@@ -97,7 +97,7 @@ async function save() {
 
         <!-- The arithmetic rather than a percentage to trust: a floor on the fee
              means the rate alone does not tell an author what they get. -->
-        <div v-if="priceMinor > 0 && !tooCheap" class="rounded-2xl border border-default p-4">
+        <div v-if="priceMinor > 0 && !tooCheap" class="rounded-2xl border border-raised-line p-4">
           <p class="text-sm font-medium">{{ t('catalog.pricing.breakdown') }}</p>
 
           <dl class="mt-3 space-y-1.5 text-sm">
@@ -111,7 +111,7 @@ async function save() {
               </dt>
               <dd>− {{ money(fee) }}</dd>
             </div>
-            <div class="flex items-center justify-between gap-4 border-t border-default pt-1.5 font-medium">
+            <div class="flex items-center justify-between gap-4 border-t border-raised-line pt-1.5 font-medium">
               <dt>{{ t('catalog.pricing.youGet') }}</dt>
               <dd>{{ money(net) }}</dd>
             </div>

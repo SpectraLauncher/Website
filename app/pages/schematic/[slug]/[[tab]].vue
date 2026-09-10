@@ -50,70 +50,63 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell>
+    <CatalogProject
+      v-if="project"
+      :project="project"
+      icon="i-pixelarticons-blocks"
+      :gallery="data?.gallery ?? []"
+      :tab="tab"
+      :back-to="'/schematic'"
+      :back-label="t('catalog.schematics.title')"
+    >
+      <template #lead>
+        <ProjectSchematicViewer v-if="previewUrl" :src="previewUrl" />
+      </template>
 
-    <div class="relative">
-      <ProjectBackdrop :gallery="data?.gallery ?? []" />
+      <template #sidebar>
+        <UiPanel v-if="size || meta.blockCount" class="p-5">
+          <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">
+            {{ t('catalog.schematic.details') }}
+          </h2>
+          <dl class="space-y-2 text-sm">
+            <div v-if="size" class="flex justify-between gap-4">
+              <dt class="text-dimmed">{{ t('catalog.schematic.size') }}</dt>
+              <dd class="font-mono text-default">{{ size }}</dd>
+            </div>
+            <div v-if="meta.blockCount" class="flex justify-between gap-4">
+              <dt class="text-dimmed">{{ t('catalog.schematic.blocks') }}</dt>
+              <dd class="font-mono text-default">{{ count(meta.blockCount) }}</dd>
+            </div>
+            <div v-if="meta.format" class="flex justify-between gap-4">
+              <dt class="text-dimmed">{{ t('catalog.schematic.format') }}</dt>
+              <dd class="font-mono text-default">{{ meta.format }}</dd>
+            </div>
+          </dl>
+        </UiPanel>
 
-      <CatalogProject
-        v-if="project"
-        :project="project"
-        icon="i-pixelarticons-blocks"
-        :gallery="data?.gallery ?? []"
-        :tab="tab"
-        :back-to="'/schematic'"
-        :back-label="t('catalog.schematics.title')"
-      >
-        <template #lead>
-          <ProjectSchematicViewer v-if="previewUrl" :src="previewUrl" />
-        </template>
+        <UiPanel v-if="materials.length" class="p-5">
+          <h2 class="mb-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">
+            {{ t('catalog.schematic.materials') }}
+          </h2>
+          <ul class="space-y-1.5 text-sm">
+            <li
+              v-for="material in materials"
+              :key="material.item"
+              class="flex items-baseline justify-between gap-4"
+            >
+              <span class="truncate capitalize text-muted">{{ itemName(material.item) }}</span>
+              <span class="shrink-0 font-mono text-dimmed">{{ count(material.count) }}</span>
+            </li>
+          </ul>
+        </UiPanel>
+      </template>
+    </CatalogProject>
 
-        <template #sidebar>
-          <div
-            v-if="size || meta.blockCount"
-            class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-          >
-            <h2 class="text-lg font-semibold">{{ t('catalog.schematic.details') }}</h2>
-            <dl class="mt-4 space-y-2 text-sm">
-              <div v-if="size" class="flex justify-between gap-4">
-                <dt class="text-dimmed">{{ t('catalog.schematic.size') }}</dt>
-                <dd class="font-mono">{{ size }}</dd>
-              </div>
-              <div v-if="meta.blockCount" class="flex justify-between gap-4">
-                <dt class="text-dimmed">{{ t('catalog.schematic.blocks') }}</dt>
-                <dd class="font-mono">{{ count(meta.blockCount) }}</dd>
-              </div>
-              <div v-if="meta.format" class="flex justify-between gap-4">
-                <dt class="text-dimmed">{{ t('catalog.schematic.format') }}</dt>
-                <dd class="font-mono">{{ meta.format }}</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div
-            v-if="materials.length"
-            class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
-          >
-            <h2 class="text-lg font-semibold">{{ t('catalog.schematic.materials') }}</h2>
-            <ul class="mt-4 space-y-1.5 text-sm">
-              <li
-                v-for="material in materials"
-                :key="material.item"
-                class="flex items-baseline justify-between gap-4"
-              >
-                <span class="truncate capitalize text-muted">{{ itemName(material.item) }}</span>
-                <span class="shrink-0 font-mono text-dimmed">{{ count(material.count) }}</span>
-              </li>
-            </ul>
-          </div>
-        </template>
-      </CatalogProject>
-
-      <section v-else-if="error" class="container mx-auto max-w-2xl px-4 py-40 text-center">
-        <h1 class="text-2xl font-semibold">{{ t('catalog.notFound') }}</h1>
-        <UButton class="mt-6" :to="localePath('/schematic')" :label="t('catalog.schematics.title')" />
-      </section>
-    </div>
-  </div>
+    <UiPanel v-else-if="error" class="mx-auto max-w-lg p-12 text-center">
+      <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
+      <h1 class="mt-3 text-xl font-bold text-highlighted">{{ t('catalog.notFound') }}</h1>
+      <UButton class="mt-6" :to="localePath('/schematic')" :label="t('catalog.schematics.title')" />
+    </UiPanel>
+  </UiPageShell>
 </template>

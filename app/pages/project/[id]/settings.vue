@@ -29,11 +29,19 @@ const TABS = [
   { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line', need: 'view_analytics' },
 ] as const
 
-const tabs = computed(() => TABS
+const tabs = computed<SideNavItem[]>(() => TABS
   .filter(tab => may(tab.need))
-  .map(tab => ({ ...tab, path: localePath(`${base.value}${tab.to}`) })))
+  .map(tab => ({
+    id: tab.id,
+    icon: tab.icon,
+    label: t(`catalog.projectTabs.${tab.id}`),
+    to: localePath(`${base.value}${tab.to}`),
+  })))
 
+// A prefix match would light both the first tab and the open one, so the current
+// entry is the one whose address is exactly this one.
 const here = computed(() => route.path.replace(/\/$/, ''))
+const current = computed(() => tabs.value.find(tab => tab.to === here.value)?.id ?? 'index')
 
 const submitting = ref(false)
 const problem = ref('')
@@ -62,115 +70,84 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
+  <UiPageShell>
+    <!-- Not v-if="project": a child route cannot mount into a parent that has
+         not rendered <NuxtPage /> yet, so on a hard refresh of a tab the whole
+         page came up empty. The shell is always here; the parts that need the
+         project wait for it. -->
+    <UiPanel v-if="error" class="mx-auto max-w-lg p-12 text-center">
+      <h1 class="text-xl font-bold text-highlighted">{{ t('catalog.notFound') }}</h1>
+      <p class="mt-2 text-sm text-muted">{{ t('catalog.noRightsHere') }}</p>
+      <UButton
+        class="mt-6"
+        variant="subtle"
+        color="neutral"
+        :to="localePath('/projects')"
+        :label="t('nav.account.projects')"
+      />
+    </UiPanel>
 
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
+    <template v-else>
+      <UAlert
+        v-if="problem"
+        color="error"
+        variant="subtle"
+        class="mb-6 rounded-2xl"
+        icon="i-pixelarticons-warning-box"
+        :description="problem"
+      />
 
-      <!-- Not v-if="project": a child route cannot mount into a parent that has
-           not rendered <NuxtPage /> yet, so on a hard refresh of a tab the whole
-           page came up empty. The shell is always here; the parts that need the
-           project wait for it. -->
-      <!-- Without this the page is a background and nothing else: no data, no
-           tabs, no message, and nothing in the console either, because a
-           refused fetch is an error state rather than a thrown one. -->
-      <section
-        v-if="error"
-        class="container mx-auto max-w-2xl px-4 py-40 text-center"
-      >
-        <h1 class="text-2xl font-semibold">{{ t('catalog.notFound') }}</h1>
-        <p class="mt-2 text-sm text-muted">{{ t('catalog.noRightsHere') }}</p>
-        <UButton
-          class="mt-6 rounded-xl"
-          variant="subtle"
-          color="neutral"
-          :to="localePath('/projects')"
-          :label="t('nav.account.projects')"
-        />
-      </section>
+      <!-- The list of what is still missing goes above everything, because it
+           is the reason most people opened this area at all. -->
+      <ProjectChecklist
+        v-if="project && project.status !== 'published' && project.status !== 'archived'"
+        class="mb-6"
+        :status="project.status"
+        :slug="project.slug"
+        :settings-path="base"
+        :submitting="submitting"
+        :project="{
+          summary: project.summary,
+          description: project.description,
+          icon: project.icon,
+          license: project.license,
+          categories: project.categories,
+          versions: project.versions,
+          links: project.links,
+          disclosures: project.disclosures,
+          gallery: data?.gallery ?? [],
+        }"
+        @submit="submit"
+      />
 
-      <section v-else class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
-        <UAlert
-          v-if="problem"
-          color="error"
-          variant="subtle"
-          class="mb-6 rounded-2xl"
-          icon="i-pixelarticons-warning-box"
-          :description="problem"
-        />
-
-        <!-- The list of what is still missing goes above everything, because it
-             is the reason most people opened this area at all. -->
-        <ProjectChecklist
-          v-if="project && project.status !== 'published' && project.status !== 'archived'"
-          class="mb-6"
-          :status="project.status"
-          :slug="project.slug"
-          :settings-path="base"
-          :submitting="submitting"
-          :project="{
-            summary: project.summary,
-            description: project.description,
-            icon: project.icon,
-            license: project.license,
-            categories: project.categories,
-            versions: project.versions,
-            links: project.links,
-            disclosures: project.disclosures,
-            gallery: data?.gallery ?? [],
-          }"
-          @submit="submit"
-        />
-
-        <div class="grid gap-8 lg:grid-cols-[240px_1fr] lg:items-start">
-          <aside class="space-y-4 lg:sticky lg:top-28">
+      <div class="grid gap-4 lg:grid-cols-[240px_1fr] lg:items-start">
+        <UiSideNav :model-value="current" :items="tabs">
+          <template #header>
             <NuxtLink
               v-if="project"
               :to="localePath(project.path)"
-              class="flex items-center gap-3 rounded-2xl border border-zinc-600/50 bg-black/30 p-4 backdrop-blur-sm transition-colors hover:border-zinc-500"
+              class="flex items-center gap-3 rounded-xl px-1.5 py-1 transition-colors hover:bg-white/5"
             >
-              <span class="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
+              <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-raised-line bg-raised">
                 <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
                 <UIcon v-else name="i-pixelarticons-package" class="size-5 text-dimmed" />
               </span>
               <span class="min-w-0 flex-1">
-                <span class="block truncate text-sm font-semibold">{{ project.title }}</span>
-                <span class="block text-xs text-dimmed">{{ t(`catalog.status.${project.status}`) }}</span>
+                <span class="block truncate text-sm font-bold text-highlighted">{{ project.title }}</span>
+                <span class="block truncate text-xs text-dimmed">{{ t(`catalog.status.${project.status}`) }}</span>
               </span>
               <UIcon name="i-pixelarticons-arrow-left" class="size-4 shrink-0 text-dimmed" />
             </NuxtLink>
+          </template>
+        </UiSideNav>
 
-            <p class="px-1 text-xs font-semibold uppercase tracking-wide text-dimmed">
-              {{ t('catalog.settings') }}
-            </p>
-
-            <nav>
-              <ul class="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-                <li v-for="tab in tabs" :key="tab.id" class="shrink-0 lg:shrink">
-                  <NuxtLink
-                    :to="tab.path"
-                    class="flex items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors"
-                    :class="here === tab.path.replace(/\/$/, '')
-                      ? 'bg-white/10 font-medium text-default'
-                      : 'text-muted hover:bg-white/5 hover:text-default'"
-                  >
-                    <UIcon :name="tab.icon" class="size-4 shrink-0" />
-                    {{ t(`catalog.projectTabs.${tab.id}`) }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-
-          <div class="min-w-0">
-            <p v-if="status === 'pending' && !project" class="text-sm text-dimmed">
-              {{ t('catalog.loading') }}
-            </p>
-            <NuxtPage />
-          </div>
+        <div class="min-w-0">
+          <p v-if="status === 'pending' && !project" class="text-sm text-dimmed">
+            {{ t('catalog.loading') }}
+          </p>
+          <NuxtPage />
         </div>
-      </section>
-    </div>
-  </div>
+      </div>
+    </template>
+  </UiPageShell>
 </template>

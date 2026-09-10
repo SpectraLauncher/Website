@@ -32,7 +32,7 @@ const owner = computed(() => props.project.owner)
   <aside class="space-y-4">
     <div
       v-if="hasCompatibility"
-      class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm"
+      class="rounded-2xl border border-panel-line bg-panel p-5"
     >
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.compatibility') }}</h2>
 
@@ -85,7 +85,7 @@ const owner = computed(() => props.project.owner)
       </div>
     </div>
 
-    <div v-if="links.length" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
+    <div v-if="links.length" class="rounded-2xl border border-panel-line bg-panel p-5">
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.links') }}</h2>
       <ul class="space-y-2 text-sm">
         <li v-for="[name, url] in links" :key="name">
@@ -104,7 +104,7 @@ const owner = computed(() => props.project.owner)
 
     <div
       v-if="project.categories.length"
-      class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm"
+      class="rounded-2xl border border-panel-line bg-panel p-5"
     >
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.categories') }}</h2>
       <div class="flex flex-wrap gap-1">
@@ -121,7 +121,7 @@ const owner = computed(() => props.project.owner)
 
     <div
       v-if="owner || members?.length"
-      class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm"
+      class="rounded-2xl border border-panel-line bg-panel p-5"
     >
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.creators') }}</h2>
       <ul class="space-y-2">
@@ -130,7 +130,7 @@ const owner = computed(() => props.project.owner)
             :to="localePath(owner.kind === 'organization' ? `/org/${owner.slug}` : `/u/${owner.slug}`)"
             class="flex items-center gap-2.5 transition-colors hover:text-highlighted"
           >
-            <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+            <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
               <img v-if="owner.image" :src="owner.image" alt="" class="size-full object-cover">
               <UIcon
                 v-else
@@ -152,7 +152,7 @@ const owner = computed(() => props.project.owner)
             :to="member.username ? localePath(`/u/${member.username}`) : ''"
             class="flex items-center gap-2.5 transition-colors hover:text-highlighted"
           >
-            <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+            <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
               <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
               <UIcon v-else name="i-pixelarticons-user" class="size-3.5 text-dimmed" />
             </span>
@@ -164,7 +164,7 @@ const owner = computed(() => props.project.owner)
       </ul>
     </div>
 
-    <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm">
+    <div class="rounded-2xl border border-panel-line bg-panel p-5">
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.details') }}</h2>
       <dl class="space-y-2 text-sm">
         <div v-if="project.license" class="flex justify-between gap-4">

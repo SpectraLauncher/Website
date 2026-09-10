@@ -14,7 +14,7 @@ const written = computed(() => props.versions.filter(version => version.changelo
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.changelog') }}</h2>
 
     <ol v-if="written.length" class="space-y-6">

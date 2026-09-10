@@ -69,7 +69,7 @@ async function save() {
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.tags') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.categories') }}</p>
 
@@ -91,7 +91,7 @@ async function save() {
         class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors"
         :class="categories.includes(category)
           ? 'border-primary/50 bg-primary/10'
-          : 'border-white/10 bg-white/5 hover:border-white/20'"
+          : 'border-raised-line bg-raised hover:border-zinc-600'"
       >
         <input
           type="checkbox"
@@ -143,7 +143,7 @@ async function save() {
           class="flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors"
           :class="environment.includes(side)
             ? 'border-primary/50 bg-primary/10'
-            : 'border-white/10 bg-white/5 hover:border-white/20'"
+            : 'border-raised-line bg-raised hover:border-zinc-600'"
         >
           <input v-model="environment" type="checkbox" :value="side" class="size-5 shrink-0 accent-primary">
           <span class="text-sm">{{ t(`catalog.environments.${side}`) }}</span>

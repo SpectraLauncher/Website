@@ -5,15 +5,20 @@ const props = defineProps<{
 
 // The gallery image an author marked as featured, if they marked one. Ordering
 // is the gallery's own, so the first featured entry is the one they put first.
-const featured = computed(() =>
-  cssSafeAssetUrl(props.gallery?.find(image => image.featured)?.url))
-
-const image = computed(() => featured.value ?? '/bg.webp')
+//
+// No fallback: this is a band inside the header card now rather than a wash
+// behind the whole page, and a project with no picture is better off without a
+// stock one than with everybody's the same.
+const image = computed(() =>
+  cssSafeAssetUrl(props.gallery?.find(entry => entry.featured)?.url))
 </script>
 
 <template>
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-cover bg-center mask-b-from-30% mask-b-to-100%"
-    :style="{ backgroundImage: `url(${image})` }"
-  ></div>
+  <div v-if="image" class="relative h-36 sm:h-44">
+    <div
+      class="absolute inset-0 bg-cover bg-center"
+      :style="{ backgroundImage: `url(${image})` }"
+    ></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-page/20 to-panel"></div>
+  </div>
 </template>

@@ -174,7 +174,7 @@ async function toggleFollow() {
 </script>
 
 <template>
-  <section class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
+  <div>
     <NuxtLink
       :to="localePath(backTo)"
       class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-highlighted"
@@ -183,105 +183,102 @@ async function toggleFollow() {
       {{ backLabel }}
     </NuxtLink>
 
-    <header class="mt-6 flex flex-wrap items-start gap-6">
-      <span class="grid size-24 shrink-0 place-items-center overflow-hidden rounded-3xl border border-white/10 bg-white/5">
-        <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
-        <UIcon v-else :name="icon" class="size-10 text-dimmed" />
-      </span>
+    <UiPanel class="mt-4 overflow-hidden">
+      <ProjectBackdrop :gallery="gallery" />
 
-      <div class="min-w-0 flex-1">
-        <h1 class="text-3xl font-semibold tracking-tight">{{ project.title }}</h1>
-        <p class="mt-2 max-w-2xl text-base/relaxed text-muted">{{ project.summary }}</p>
+      <header class="flex flex-wrap items-start gap-5 p-5 sm:p-6">
+        <span class="grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
+          <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
+          <UIcon v-else :name="icon" class="size-10 text-dimmed" />
+        </span>
 
-        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-dimmed">
-          <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-pixelarticons-download" class="size-4" />
-            {{ t('catalog.downloads', { n: count(project.downloads) }) }}
-          </span>
-          <button
-            class="inline-flex items-center gap-1.5 transition-colors hover:text-highlighted"
-            :disabled="followBusy"
-            :aria-pressed="following"
-            @click="toggleFollow"
-          >
-            <UIcon name="i-pixelarticons-heart" class="size-4" :class="following ? 'text-primary' : ''" />
-            {{ t('catalog.follows', { n: count(followCount) }) }}
-          </button>
-          <ProjectReportButton item-type="project" :item-id="project.id" size="xs" />
+        <div class="min-w-0 flex-1 basis-72">
+          <h1 class="text-3xl font-extrabold tracking-tight text-highlighted">{{ project.title }}</h1>
+          <p class="mt-2 max-w-2xl text-pretty text-muted">{{ project.summary }}</p>
+
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-dimmed">
+            <span class="inline-flex items-center gap-1.5">
+              <UIcon name="i-pixelarticons-download" class="size-4" />
+              {{ t('catalog.downloads', { n: count(project.downloads) }) }}
+            </span>
+            <button
+              class="inline-flex cursor-pointer items-center gap-1.5 transition-colors hover:text-highlighted"
+              :disabled="followBusy"
+              :aria-pressed="following"
+              @click="toggleFollow"
+            >
+              <UIcon name="i-pixelarticons-heart" class="size-4" :class="following ? 'text-primary' : ''" />
+              {{ t('catalog.follows', { n: count(followCount) }) }}
+            </button>
+            <ProjectReportButton item-type="project" :item-id="project.id" size="xs" />
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-wrap gap-2">
-        <!-- A paid project somebody does not own has nothing to download yet, and
-             offering the button anyway only produces a 402. An admin keeps the
-             button as well as the price, because they can reach the file for
-             moderation without having bought it. -->
-        <UButton
-          v-if="primaryFile && canDownload"
-          size="lg"
-          :color="needsBuying ? 'neutral' : 'primary'"
-          :variant="needsBuying ? 'subtle' : 'solid'"
-          class="rounded-xl"
-          icon="i-pixelarticons-download"
-          :label="t('catalog.download')"
-          :to="`/api/catalog/download/${primaryFile.id}`"
-          external
-        />
-        <UButton
-          v-if="needsBuying"
-          size="lg"
-          color="primary"
-          class="rounded-xl"
-          :icon="inCart ? 'i-pixelarticons-check' : 'i-pixelarticons-cart'"
-          :label="inCart ? t('cart.inCart') : t('cart.buy', { amount: price })"
-          :to="inCart ? localePath('/cart') : undefined"
-          @click="inCart ? undefined : cart.add(project.id)"
-        />
-        <UButton
-          v-if="canEdit"
-          size="lg"
-          variant="subtle"
-          color="neutral"
-          class="rounded-xl"
-          icon="i-pixelarticons-edit"
-          :label="t('catalog.editProject')"
-          :to="localePath(`/project/${project.id}/settings`)"
-        />
-      </div>
-    </header>
+        <div class="flex flex-wrap gap-2">
+          <!-- A paid project somebody does not own has nothing to download yet, and
+               offering the button anyway only produces a 402. An admin keeps the
+               button as well as the price, because they can reach the file for
+               moderation without having bought it. -->
+          <UButton
+            v-if="primaryFile && canDownload"
+            size="lg"
+            :color="needsBuying ? 'neutral' : 'primary'"
+            :variant="needsBuying ? 'subtle' : 'solid'"
+            icon="i-pixelarticons-download"
+            :label="t('catalog.download')"
+            :to="`/api/catalog/download/${primaryFile.id}`"
+            external
+          />
+          <UButton
+            v-if="needsBuying"
+            size="lg"
+            color="primary"
+            :icon="inCart ? 'i-pixelarticons-check' : 'i-pixelarticons-cart'"
+            :label="inCart ? t('cart.inCart') : t('cart.buy', { amount: price })"
+            :to="inCart ? localePath('/cart') : undefined"
+            @click="inCart ? undefined : cart.add(project.id)"
+          />
+          <UButton
+            v-if="canEdit"
+            size="lg"
+            variant="subtle"
+            color="neutral"
+            icon="i-pixelarticons-edit"
+            :label="t('catalog.editProject')"
+            :to="localePath(`/project/${project.id}/settings`)"
+          />
+        </div>
+      </header>
 
-    <nav class="mt-8 border-b border-white/10">
-      <ul class="-mb-px flex gap-1 overflow-x-auto">
-        <li v-for="entry in tabs" :key="entry.id" class="shrink-0">
-          <NuxtLink
-            :to="entry.path"
-            class="block whitespace-nowrap border-b-2 px-4 py-2.5 text-sm transition-colors"
-            :class="current === entry.id
-              ? 'border-primary font-medium text-default'
-              : 'border-transparent text-muted hover:text-default'"
-          >
-            {{ t(`catalog.tabs.${entry.id}`) }}
-          </NuxtLink>
-        </li>
-      </ul>
-    </nav>
+      <nav class="flex gap-1 overflow-x-auto border-t border-raised-line px-3">
+        <NuxtLink
+          v-for="entry in tabs"
+          :key="entry.id"
+          :to="entry.path"
+          class="shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm transition-colors"
+          :class="current === entry.id
+            ? 'border-primary font-bold text-highlighted'
+            : 'border-transparent font-semibold text-muted hover:text-highlighted'"
+        >
+          {{ t(`catalog.tabs.${entry.id}`) }}
+        </NuxtLink>
+      </nav>
+    </UiPanel>
 
-    <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_300px] lg:items-start">
-      <div class="min-w-0 space-y-6">
+    <div class="mt-5 grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
+      <div class="flex min-w-0 flex-col gap-5">
         <template v-if="current === 'description'">
           <slot name="lead" />
 
           <ProjectDisclosures :disclosures="project.disclosures" />
 
           <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->
-          <article
-            v-if="project.description"
-            class="prose prose-invert max-w-none rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm prose-a:text-primary"
-            v-html="body"
-          />
-          <p v-else class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 text-sm text-dimmed backdrop-blur-sm">
+          <UiPanel v-if="project.description">
+            <article class="prose prose-invert max-w-none p-5 sm:p-6 prose-a:text-primary" v-html="body" />
+          </UiPanel>
+          <UiPanel v-else class="p-6 text-sm text-dimmed">
             {{ t('catalog.noDescription') }}
-          </p>
+          </UiPanel>
         </template>
 
         <ProjectGallery v-else-if="current === 'gallery'" :gallery="gallery" />
@@ -296,10 +293,10 @@ async function toggleFollow() {
         <ProjectComments v-if="current === 'description'" :slug="project.slug" />
       </div>
 
-      <div class="space-y-4">
+      <div class="flex min-w-0 flex-col gap-4">
         <slot name="sidebar" />
         <ProjectSidebar :project="project" />
       </div>
     </div>
-  </section>
+  </div>
 </template>

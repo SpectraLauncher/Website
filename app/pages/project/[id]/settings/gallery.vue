@@ -144,8 +144,8 @@ async function saveOrder() {
 
 <template>
   <div
-    class="rounded-3xl border p-6 backdrop-blur-sm transition-colors"
-    :class="over ? 'border-primary bg-primary/5' : 'border-zinc-600/50 bg-black/30'"
+    class="rounded-2xl border p-6 backdrop-blur-sm transition-colors"
+    :class="over ? 'border-primary bg-primary/5' : 'border-panel-line bg-panel'"
     @dragenter.prevent="enter"
     @dragover.prevent
     @dragleave.prevent="leave"
@@ -164,7 +164,7 @@ async function saveOrder() {
     />
 
     <label
-      class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-600/50 bg-black/30 px-3 py-2 text-sm transition-colors hover:border-zinc-500"
+      class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
     >
       <UIcon name="i-pixelarticons-image-plus" class="size-4" />
       {{ busy === 'upload' ? t('catalog.org.uploading') : t('catalog.addImage') }}
@@ -187,7 +187,7 @@ async function saveOrder() {
         v-for="(image, index) in images"
         :key="image.id"
         class="rounded-2xl border bg-white/5 p-3 transition-colors"
-        :class="dragging === index ? 'border-primary/60 opacity-60' : 'border-white/10'"
+        :class="dragging === index ? 'border-primary/60 opacity-60' : 'border-raised-line'"
         draggable="true"
         @dragstart="dragging = index"
         @dragend="dragging = null"
@@ -224,7 +224,7 @@ async function saveOrder() {
           <img
             :src="image.url"
             :alt="image.title"
-            class="aspect-video w-full rounded-xl border border-white/10 object-cover"
+            class="aspect-video w-full rounded-xl border border-raised-line object-cover"
           >
         </button>
 

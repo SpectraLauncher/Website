@@ -142,7 +142,7 @@ async function transfer() {
       :description="problem"
     />
 
-    <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+    <div class="rounded-2xl border border-panel-line bg-panel p-6">
       <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.members') }}</h2>
       <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.members') }}</p>
 
@@ -153,7 +153,7 @@ async function transfer() {
           v-if="data?.owner"
           class="flex flex-wrap items-center gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-3"
         >
-          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
             <img v-if="data.owner.image" :src="data.owner.image" alt="" class="size-full object-cover">
             <UIcon
               v-else
@@ -180,9 +180,9 @@ async function transfer() {
         <li
           v-for="member in data?.inherited ?? []"
           :key="`org-${member.userId}`"
-          class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
+          class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
         >
-          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
             <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
             <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
           </span>
@@ -198,9 +198,9 @@ async function transfer() {
         <li
           v-for="member in data?.members ?? []"
           :key="member.userId"
-          class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
+          class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
         >
-          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
             <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
             <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
           </span>
@@ -227,7 +227,7 @@ async function transfer() {
         </li>
       </ul>
 
-      <div v-if="may('manage_invites')" class="mt-5 border-t border-white/10 pt-4">
+      <div v-if="may('manage_invites')" class="mt-5 border-t border-raised-line pt-4">
         <p class="mb-2 text-sm text-muted">{{ t('catalog.addMemberHint') }}</p>
         <div class="flex flex-wrap gap-2">
           <UInput
@@ -249,7 +249,7 @@ async function transfer() {
 
     <div
       v-if="data?.isOwner && orgOptions.length"
-      class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+      class="rounded-2xl border border-panel-line bg-panel p-6"
     >
       <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.transferTitle') }}</h2>
       <p class="mb-4 text-sm text-muted">{{ t('catalog.settingsHint.transfer') }}</p>

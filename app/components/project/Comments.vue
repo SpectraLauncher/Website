@@ -139,7 +139,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
 
     <ul v-if="comments.length" class="space-y-5">
       <li v-for="comment in comments" :key="comment.id">
-        <article class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+        <article class="rounded-xl border border-raised-line bg-raised p-4">
           <header class="flex flex-wrap items-center gap-2 text-sm">
             <NuxtLink
               v-if="comment.author.username"
@@ -200,11 +200,11 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
           </div>
         </article>
 
-        <ul v-if="comment.replies.length" class="mt-3 space-y-3 border-l border-white/10 pl-5">
+        <ul v-if="comment.replies.length" class="mt-3 space-y-3 border-l border-raised-line pl-5">
           <li
             v-for="reply in comment.replies"
             :key="reply.id"
-            class="rounded-xl border border-white/10 bg-white/[0.02] p-3"
+            class="rounded-xl border border-raised-line bg-raised p-3"
           >
             <header class="flex flex-wrap items-center gap-2 text-sm">
               <NuxtLink

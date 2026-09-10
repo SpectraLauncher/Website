@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-3xl border border-zinc-600/50 bg-black/30 backdrop-blur-sm">
+  <div class="overflow-hidden rounded-2xl border border-panel-line bg-panel">
     <div ref="host" class="relative h-[420px] w-full">
       <div v-if="loading" class="absolute inset-0 grid place-items-center text-sm text-dimmed">
         <span class="inline-flex items-center gap-2">
@@ -188,7 +188,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-if="preview && !failed" class="flex flex-wrap items-center gap-4 border-t border-white/10 px-5 py-3">
+    <div v-if="preview && !failed" class="flex flex-wrap items-center gap-4 border-t border-raised-line px-5 py-3">
       <label class="flex flex-1 items-center gap-3 text-xs text-dimmed">
         <UIcon name="i-pixelarticons-card-stack" class="size-4 shrink-0" />
         <input

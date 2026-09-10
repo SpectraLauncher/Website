@@ -182,8 +182,8 @@ const loaderOptions = computed(() =>
     />
 
     <div
-      class="rounded-3xl border p-6 backdrop-blur-sm transition-colors"
-      :class="dropping ? 'border-primary bg-primary/5' : 'border-zinc-600/50 bg-black/30'"
+      class="rounded-2xl border p-6 backdrop-blur-sm transition-colors"
+      :class="dropping ? 'border-primary bg-primary/5' : 'border-panel-line bg-panel'"
       @dragenter.prevent="dropping++"
       @dragover.prevent
       @dragleave.prevent="dropping = Math.max(0, dropping - 1)"
@@ -198,7 +198,7 @@ const loaderOptions = computed(() =>
           {{ dropping ? t('catalog.dropHere') : t('catalog.dropFileHint') }}
         </p>
         <label
-          class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-600/50 bg-black/30 px-3 py-2 text-sm transition-colors hover:border-zinc-500"
+          class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
         >
           <UIcon :name="busy === 'upload' ? 'i-pixelarticons-loader' : 'i-pixelarticons-file'" class="size-4" />
           {{ busy === 'upload' ? t('catalog.reading') : t('catalog.chooseFile') }}
@@ -207,7 +207,7 @@ const loaderOptions = computed(() =>
       </div>
 
       <template v-else>
-        <div class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+        <div class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3">
           <UIcon name="i-pixelarticons-file" class="size-5 shrink-0 text-dimmed" />
           <span class="min-w-0 flex-1">
             <span class="block break-all font-mono text-xs">{{ upload.filename }}</span>
@@ -295,14 +295,14 @@ const loaderOptions = computed(() =>
       </template>
     </div>
 
-    <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+    <div class="rounded-2xl border border-panel-line bg-panel p-6">
       <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.versions') }}</h2>
 
       <ul v-if="project?.versions.length" class="space-y-2">
         <li
           v-for="version in project.versions"
           :key="version.id"
-          class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"
+          class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
         >
           <UBadge size="sm" variant="subtle" :label="t(`catalog.channels.${version.channel}`)" />
           <span class="min-w-0 flex-1">

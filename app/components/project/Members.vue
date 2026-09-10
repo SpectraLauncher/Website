@@ -83,7 +83,7 @@ const remove = (member: Member) => act(member.userId, () =>
 <template>
   <section
     v-if="visible && (may('edit_member') || members.length)"
-    class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+    class="mt-10 rounded-2xl border border-panel-line bg-panel p-6"
   >
     <div class="mb-1 flex flex-wrap items-center gap-2">
       <UIcon name="i-pixelarticons-users" class="size-5 text-muted" />
@@ -95,8 +95,8 @@ const remove = (member: Member) => act(member.userId, () =>
 
     <ul v-if="members.length" class="mb-5 space-y-2">
       <li v-for="member in members" :key="member.userId">
-        <div class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-          <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+        <div class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3">
+          <span class="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
             <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
             <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
           </span>
@@ -139,7 +139,7 @@ const remove = (member: Member) => act(member.userId, () =>
 
         <div
           v-if="open === member.userId"
-          class="mt-2 rounded-2xl border border-white/10 bg-white/5 p-4"
+          class="mt-2 rounded-xl border border-raised-line bg-raised p-4"
         >
           <p class="mb-3 text-xs text-muted">{{ t('projectMembers.grantHint') }}</p>
 
@@ -179,7 +179,7 @@ const remove = (member: Member) => act(member.userId, () =>
 
     <p v-else class="mb-5 text-sm text-dimmed">{{ t('projectMembers.none') }}</p>
 
-    <div v-if="may('manage_invites')" class="flex flex-wrap gap-2 border-t border-white/10 pt-4">
+    <div v-if="may('manage_invites')" class="flex flex-wrap gap-2 border-t border-raised-line pt-4">
       <UInput
         v-model="invitee"
         size="sm"

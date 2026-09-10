@@ -13,13 +13,13 @@ const images = computed(() =>
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.gallery') }}</h2>
 
     <ul v-if="images.length" class="grid gap-3 sm:grid-cols-2">
       <li v-for="(image, index) in images" :key="image.id">
         <button class="group block w-full text-left" @click="shown = index">
-          <span class="block overflow-hidden rounded-2xl border border-white/10 transition-colors group-hover:border-zinc-500">
+          <span class="block overflow-hidden rounded-xl border border-raised-line transition-colors group-hover:border-zinc-600">
             <img
               :src="image.url"
               :alt="image.title"

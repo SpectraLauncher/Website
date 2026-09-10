@@ -104,8 +104,8 @@ async function submit() {
 <template>
   <section
     v-if="visible && (messages.length || needsAppeal || canSubmit || status === 'pending' || isStaff)"
-    class="mt-10 rounded-3xl border p-6"
-    :class="needsAppeal ? 'border-error/40 bg-error/5' : 'border-white/10 bg-white/[0.02]'"
+    class="mt-10 rounded-2xl border p-6"
+    :class="needsAppeal ? 'border-error/40 bg-error/5' : 'border-panel-line bg-panel'"
   >
     <header class="mb-4 flex flex-wrap items-center gap-2">
       <UIcon name="i-pixelarticons-scale" class="size-5 text-muted" />
@@ -125,7 +125,7 @@ async function submit() {
       <li
         v-for="message in messages"
         :key="message.id"
-        class="rounded-2xl border border-white/10 p-4"
+        class="rounded-xl border border-raised-line p-4"
         :class="message.staff ? 'bg-white/5' : 'bg-transparent'"
       >
         <header class="flex flex-wrap items-center gap-2 text-sm">

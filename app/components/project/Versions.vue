@@ -28,12 +28,12 @@ const open = ref<string | null>(props.versions[0]?.id ?? null)
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.versions') }}</h2>
 
     <ul v-if="versions.length" class="space-y-2">
       <li v-for="version in versions" :key="version.id">
-        <div class="rounded-2xl border border-white/10 bg-white/5">
+        <div class="rounded-2xl border border-raised-line bg-raised">
           <button
             class="flex w-full flex-wrap items-center gap-3 p-4 text-left"
             @click="open = open === version.id ? null : version.id"
@@ -72,7 +72,7 @@ const open = ref<string | null>(props.versions[0]?.id ?? null)
             />
           </button>
 
-          <div v-if="open === version.id" class="border-t border-white/10 p-4">
+          <div v-if="open === version.id" class="border-t border-raised-line p-4">
             <ul class="space-y-2">
               <li
                 v-for="file in version.files"

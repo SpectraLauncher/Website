@@ -44,10 +44,10 @@ const collapsed = ref(false)
 
 <template>
   <section
-    class="rounded-3xl border p-6"
+    class="rounded-2xl border p-6"
     :class="ready && !isPrivate
       ? 'border-primary/40 bg-primary/5'
-      : 'border-zinc-600/50 bg-black/30 backdrop-blur-sm'"
+      : 'border-panel-line bg-panel'"
   >
     <header class="flex flex-wrap items-center gap-2">
       <UIcon
@@ -111,7 +111,7 @@ const collapsed = ref(false)
       </li>
     </ul>
 
-    <div v-if="canSubmit && !isPrivate" class="mt-5 border-t border-white/10 pt-4">
+    <div v-if="canSubmit && !isPrivate" class="mt-5 border-t border-raised-line pt-4">
       <UButton
         color="primary"
         class="rounded-xl"

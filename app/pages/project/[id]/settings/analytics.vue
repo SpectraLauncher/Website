@@ -16,18 +16,18 @@ const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.analytics') }}</h2>
     <p class="mb-5 text-sm text-muted">
       {{ t('catalog.settingsHint.analytics', { n: data?.days ?? 30 }) }}
     </p>
 
     <div v-if="data" class="grid gap-3 sm:grid-cols-2">
-      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="rounded-xl border border-raised-line bg-raised p-4">
         <p class="text-xs text-dimmed">{{ t('account.views') }}</p>
         <p class="mt-1 text-2xl font-semibold">{{ count(data.totals.views) }}</p>
       </div>
-      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="rounded-xl border border-raised-line bg-raised p-4">
         <p class="text-xs text-dimmed">{{ t('catalog.downloadsLabel') }}</p>
         <p class="mt-1 text-2xl font-semibold">{{ count(data.totals.downloads) }}</p>
       </div>

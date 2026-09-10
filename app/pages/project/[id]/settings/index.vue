@@ -68,7 +68,7 @@ async function uploadIcon(event: Event) {
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.general') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.general') }}</p>
 
@@ -82,13 +82,13 @@ async function uploadIcon(event: Event) {
     />
 
     <div class="mb-5 flex flex-wrap items-center gap-4">
-      <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
         <img v-if="project?.icon" :src="project.icon" alt="" class="size-full object-cover">
         <UIcon v-else name="i-pixelarticons-package" class="size-8 text-dimmed" />
       </span>
       <div>
         <label
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-600/50 bg-black/30 px-3 py-2 text-sm transition-colors hover:border-zinc-500"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
         >
           <UIcon name="i-pixelarticons-camera" class="size-4" />
           {{ uploading ? t('catalog.org.uploading') : t('catalog.uploadIcon') }}

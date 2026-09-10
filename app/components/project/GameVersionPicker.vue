@@ -61,7 +61,7 @@ function toggleGroup(versions: string[]) {
       />
     </div>
 
-    <div class="max-h-72 space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-black/20 p-3">
+    <div class="max-h-72 space-y-3 overflow-y-auto rounded-xl border border-raised-line bg-raised p-3">
       <div v-for="group in groups" :key="group.key">
         <button
           class="mb-1.5 text-xs font-semibold text-dimmed transition-colors hover:text-default"
@@ -76,7 +76,7 @@ function toggleGroup(versions: string[]) {
             class="rounded-lg border px-2 py-1 font-mono text-xs transition-colors"
             :class="selected.includes(version)
               ? 'border-primary/60 bg-primary/15 text-default'
-              : 'border-white/10 bg-white/5 text-muted hover:border-white/25 hover:text-default'"
+              : 'border-raised-line bg-raised text-muted hover:border-zinc-500 hover:text-default'"
             :aria-pressed="selected.includes(version)"
             @click="toggle(version)"
           >{{ version }}</button>
