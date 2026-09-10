@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import type { Component } from 'vue'
+
 const props = defineProps<{ name: string }>()
 
 // Registry: loader id -> the drawn mark next to this file. To add one, drop the
 // svg in app/components/icon/ and add the pair here; anything unmapped falls
 // back to the generic plug, so a loader nobody has drawn yet still renders.
-const MARKS: Record<string, string> = {
-  fabric: 'IconFabric',
-  quilt: 'IconQuilt',
-  forge: 'IconForge',
-  neoforge: 'IconNeoforge',
-  minecraft: 'IconVanilla',
+const MARKS: Record<string, Component> = {
+  fabric: resolveComponent('IconFabric'),
+  quilt: resolveComponent('IconQuilt'),
+  forge: resolveComponent('IconForge'),
+  neoforge: resolveComponent('IconNeoforge'),
+  minecraft: resolveComponent('IconVanilla'),
 }
 
 const mark = computed(() => MARKS[props.name.toLowerCase()])

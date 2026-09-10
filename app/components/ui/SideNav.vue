@@ -5,6 +5,11 @@ const props = defineProps<{ items: SideNavItem[] }>()
 const active = defineModel<string>({ default: '' })
 
 const sections = computed(() => groupSideNav(props.items))
+
+// resolveComponent, never the string 'NuxtLink': <component :is> given a name it
+// cannot resolve renders an unknown element rather than failing, so every entry
+// came out as a <nuxtlink> that looked right and did nothing when clicked.
+const link = resolveComponent('NuxtLink')
 </script>
 
 <template>
@@ -23,7 +28,7 @@ const sections = computed(() => groupSideNav(props.items))
       >{{ section.title }}</p>
 
       <component
-        :is="item.to ? 'NuxtLink' : 'button'"
+        :is="item.to ? link : 'button'"
         v-for="item in section.items"
         :key="item.id"
         :to="item.to"

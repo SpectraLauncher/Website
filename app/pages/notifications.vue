@@ -6,6 +6,10 @@ const localePath = useLocalePath()
 const session = useAuthSession()
 const { items, unread, loaded, refresh, markRead, dismiss } = useNotifications()
 
+// A name in <component :is> does not resolve — it renders an unknown element
+// instead, which is how these rows stopped being clickable without an error.
+const link = resolveComponent('NuxtLink')
+
 useHead({ title: () => t('nav.account.notifications') })
 
 watchEffect(() => {
@@ -58,7 +62,7 @@ function line(item: NotificationItem): string {
 
         <div class="min-w-0 flex-1">
           <component
-            :is="target(item) ? 'NuxtLink' : 'span'"
+            :is="target(item) ? link : 'span'"
             :to="target(item) ?? undefined"
             class="block text-sm"
             :class="target(item) ? 'hover:underline' : ''"
