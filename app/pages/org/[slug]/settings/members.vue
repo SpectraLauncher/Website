@@ -136,7 +136,7 @@ async function invite() {
       :description="problem"
     />
 
-    <div v-if="may('manage_invites')" class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+    <div v-if="may('manage_invites')" class="rounded-2xl border border-panel-line bg-panel p-6">
       <h2 class="text-lg font-semibold">{{ t('catalog.org.invite') }}</h2>
       <p class="mt-1 text-sm text-muted">{{ t('catalog.org.inviteHint') }}</p>
 
@@ -158,17 +158,17 @@ async function invite() {
       <p v-if="invited" class="mt-2 text-sm text-primary">{{ t('catalog.org.inviteSent') }}</p>
     </div>
 
-    <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+    <div class="rounded-2xl border border-panel-line bg-panel p-6">
       <h2 class="mb-4 text-lg font-semibold">{{ t('catalog.org.members') }}</h2>
 
       <ul class="space-y-3">
         <li v-for="member in data?.members ?? []" :key="member.userId">
-          <div class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+          <div class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3">
             <NuxtLink
               :to="member.username ? localePath(`/u/${member.username}`) : ''"
               class="flex min-w-0 flex-1 items-center gap-3"
             >
-              <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+              <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
                 <img v-if="member.image" :src="member.image" alt="" class="size-full object-cover">
                 <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
               </span>
@@ -202,7 +202,7 @@ async function invite() {
 
           <div
             v-if="editing === member.userId"
-            class="mt-2 rounded-2xl border border-white/10 bg-white/5 p-4"
+            class="mt-2 rounded-xl border border-raised-line bg-raised p-4"
           >
             <UFormField :label="t('catalog.org.role')" size="sm">
               <USelect
@@ -246,7 +246,7 @@ async function invite() {
         </li>
       </ul>
 
-      <div v-if="data?.role" class="mt-5 border-t border-white/10 pt-4">
+      <div v-if="data?.role" class="mt-5 border-t border-raised-line pt-4">
         <UButton
           size="sm"
           variant="ghost"

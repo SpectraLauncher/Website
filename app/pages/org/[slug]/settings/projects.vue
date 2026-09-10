@@ -20,7 +20,7 @@ const STATUS_COLOR: Record<string, 'success' | 'warning' | 'error' | 'neutral'> 
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="text-lg font-semibold">{{ t('catalog.org.projects') }}</h2>
     <p class="mt-1 text-sm text-muted">{{ t('catalog.org.projectsHint') }}</p>
 
@@ -28,9 +28,9 @@ const STATUS_COLOR: Record<string, 'success' | 'warning' | 'error' | 'neutral'> 
       <li v-for="project in data.projects" :key="project.id">
         <NuxtLink
           :to="localePath(project.path)"
-          class="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 transition-colors hover:border-zinc-500"
+          class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3 transition-colors hover:border-zinc-600"
         >
-          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
+          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-raised-line bg-raised">
             <img v-if="project.icon" :src="project.icon" alt="" class="size-full object-cover">
             <UIcon v-else name="i-pixelarticons-package" class="size-4 text-dimmed" />
           </span>

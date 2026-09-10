@@ -91,17 +91,17 @@ async function destroy() {
       :description="problem"
     />
 
-    <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+    <div class="rounded-2xl border border-panel-line bg-panel p-6">
       <h2 class="mb-5 text-lg font-semibold">{{ t('catalog.org.details') }}</h2>
 
       <div class="mb-5 flex flex-wrap items-center gap-4">
-        <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+        <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
           <img v-if="org?.logo" :src="org.logo" alt="" class="size-full object-cover">
           <UIcon v-else name="i-pixelarticons-users" class="size-8 text-dimmed" />
         </span>
         <label
           v-if="canEdit"
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-600/50 bg-black/30 px-3 py-2 text-sm transition-colors hover:border-zinc-500"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
         >
           <UIcon name="i-pixelarticons-camera" class="size-4" />
           {{ busy === 'logo' ? t('catalog.org.uploading') : t('catalog.org.uploadLogo') }}
@@ -146,7 +146,7 @@ async function destroy() {
       </div>
     </div>
 
-    <div v-if="canDelete" class="rounded-3xl border border-error/40 bg-error/5 p-6">
+    <div v-if="canDelete" class="rounded-2xl border border-error/40 bg-error/5 p-6">
       <h2 class="text-lg font-semibold">{{ t('catalog.org.delete') }}</h2>
       <p class="mt-2 max-w-prose text-sm/relaxed text-muted">{{ t('catalog.org.deleteHint') }}</p>
       <UButton

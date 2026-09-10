@@ -23,13 +23,17 @@ const TABS = [
   { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line' },
 ]
 
-const tabs = computed(() => TABS.map(tab => ({
-  ...tab,
-  path: localePath(`/org/${slug.value}/settings${tab.to}`),
+const tabs = computed<SideNavItem[]>(() => TABS.map(tab => ({
+  id: tab.id,
+  icon: tab.icon,
+  label: t(`catalog.org.tabs.${tab.id}`),
+  to: localePath(`/org/${slug.value}/settings${tab.to}`),
 })))
 
-// A prefix match would light both Overview and Members on the members page.
+// A prefix match would light both Overview and Members on the members page, so
+// the current entry is the one whose address is exactly this one.
 const here = computed(() => route.path.replace(/\/$/, ''))
+const current = computed(() => tabs.value.find(tab => tab.to === here.value)?.id ?? 'overview')
 
 useSeoMeta({
   title: () => `${org.value?.name ?? ''} — ${t('catalog.org.settings')}`,
@@ -38,63 +42,36 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <SiteNavbar />
-
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
-
-      <section class="container mx-auto max-w-6xl px-4 pb-24 pt-40">
-        <!-- The identity sits in the sidebar with the navigation, so both
-             columns start at the top. A header spanning the full width above
-             them pushes the tabs into the middle of the page, which is the one
-             thing this layout exists to avoid. -->
-        <div class="grid gap-8 lg:grid-cols-[260px_1fr] lg:items-start">
-          <aside class="space-y-4 lg:sticky lg:top-28">
-            <NuxtLink
-              :to="localePath(`/org/${slug}`)"
-              class="flex items-center gap-3 rounded-2xl border border-zinc-600/50 bg-black/30 p-4 backdrop-blur-sm transition-colors hover:border-zinc-500"
-            >
-              <span class="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                <img v-if="org?.logo" :src="org.logo" alt="" class="size-full object-cover">
-                <UIcon v-else name="i-pixelarticons-users" class="size-5 text-dimmed" />
+  <UiPageShell width="max-w-6xl">
+    <!-- The identity sits in the sidebar with the navigation, so both columns
+         start at the top. A header spanning the full width above them pushes the
+         tabs into the middle of the page, which is the one thing this layout
+         exists to avoid. -->
+    <div class="grid gap-4 lg:grid-cols-[260px_1fr] lg:items-start">
+      <UiSideNav :model-value="current" :items="tabs">
+        <template #header>
+          <NuxtLink
+            :to="localePath(`/org/${slug}`)"
+            class="flex items-center gap-3 rounded-xl px-1.5 py-1 transition-colors hover:bg-white/5"
+          >
+            <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-raised-line bg-raised">
+              <img v-if="org?.logo" :src="org.logo" alt="" class="size-full object-cover">
+              <UIcon v-else name="i-pixelarticons-users" class="size-5 text-dimmed" />
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-sm font-bold text-highlighted">{{ org?.name }}</span>
+              <span class="block truncate text-xs text-dimmed">
+                {{ t('catalog.org.memberCount', { n: data?.members.length ?? 0 }) }}
               </span>
-              <span class="min-w-0 flex-1">
-                <span class="block truncate text-sm font-semibold">{{ org?.name }}</span>
-                <span class="block text-xs text-dimmed">
-                  {{ t('catalog.org.memberCount', { n: data?.members.length ?? 0 }) }}
-                </span>
-              </span>
-              <UIcon name="i-pixelarticons-arrow-left" class="size-4 shrink-0 text-dimmed" />
-            </NuxtLink>
+            </span>
+            <UIcon name="i-pixelarticons-arrow-left" class="size-4 shrink-0 text-dimmed" />
+          </NuxtLink>
+        </template>
+      </UiSideNav>
 
-            <p class="px-1 text-xs font-semibold uppercase tracking-wide text-dimmed">
-              {{ t('catalog.org.settings') }}
-            </p>
-
-            <nav>
-              <ul class="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-                <li v-for="tab in tabs" :key="tab.id" class="shrink-0 lg:shrink">
-                  <NuxtLink
-                    :to="tab.path"
-                    class="flex items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors"
-                    :class="here === tab.path.replace(/\/$/, '')
-                      ? 'bg-white/10 font-medium text-default'
-                      : 'text-muted hover:bg-white/5 hover:text-default'"
-                  >
-                    <UIcon :name="tab.icon" class="size-4 shrink-0" />
-                    {{ t(`catalog.org.tabs.${tab.id}`) }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-
-          <div class="min-w-0">
-            <NuxtPage />
-          </div>
-        </div>
-      </section>
+      <div class="min-w-0">
+        <NuxtPage />
+      </div>
     </div>
-  </div>
+  </UiPageShell>
 </template>

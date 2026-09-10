@@ -66,7 +66,7 @@ async function save() {
 </script>
 
 <template>
-  <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+  <div class="rounded-2xl border border-panel-line bg-panel p-6">
     <h2 class="mb-1 text-lg font-semibold">{{ t('org.split.title') }}</h2>
     <p class="mb-5 text-sm text-muted">{{ t('org.split.hint') }}</p>
 
@@ -79,7 +79,7 @@ async function save() {
       :description="problem"
     />
 
-    <ul class="divide-y divide-default rounded-2xl border border-default">
+    <ul class="divide-y divide-raised-line rounded-xl border border-raised-line">
       <li v-for="member in data?.members ?? []" :key="member.user_id" class="flex items-center gap-3 p-4">
         <img v-if="member.image" :src="member.image" alt="" class="size-8 rounded-full" />
 
