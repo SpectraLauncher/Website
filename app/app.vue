@@ -66,7 +66,9 @@ useSeoMeta({
          of the account pages. Same shape as error.vue. -->
     <div class="overflow-x-clip relative flex min-h-screen flex-col">
       <div class="flex-1">
-        <NuxtPage />
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
       </div>
 
       <SiteFooter />

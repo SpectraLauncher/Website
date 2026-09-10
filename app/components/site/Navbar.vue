@@ -99,33 +99,24 @@ const tr = (list: NavigationMenuItem[]): NavigationMenuItem[] => list.map(i => (
     ...(i.children && { children: tr(i.children as NavigationMenuItem[]) })
 }))
 
-// Hidden rather than guarded: the server already answers 404 to these routes
-// while the catalog is closed, so this only avoids linking somewhere broken.
+// The same registry the account panel's sidebar draws, cut into the groups this
+// dropdown shows. One list is what stops the two drifting apart, which they did
+// twice: "My reports" reached the menu and not the panel, /library the reverse.
+const accountNav = useAccountNav()
+
+// Above the divider: yourself, and the two places you go to change something
+// about yourself. Everything else is what you make here.
+const ACCOUNT_FIRST = new Set(['profile', 'notifications', 'settings'])
+
 const accountMenu = computed(() => {
-    const user = me.value
-    if (!user) return []
+    if (!me.value) return []
 
-    const account = [
-        { label: t('nav.account.profile'), icon: 'i-pixelarticons-user', to: localePath(`/u/${user.username}`) },
-        { label: t('nav.account.notifications'), icon: 'i-pixelarticons-bell', to: localePath('/notifications') },
-        { label: t('nav.account.settings'), icon: 'i-pixelarticons-gear', to: localePath('/settings') },
-    ]
+    const link = (item: SideNavItem) => ({ label: item.label, icon: item.icon, to: item.to })
+    const mine = accountNav.value.filter(item => ACCOUNT_FIRST.has(item.id)).map(link)
+    const made = accountNav.value.filter(item => !ACCOUNT_FIRST.has(item.id)).map(link)
 
-    const creating = catalogVisible.value
-        ? [
-            { label: t('nav.account.projects'), icon: 'i-pixelarticons-package', to: localePath('/projects') },
-            { label: t('nav.account.collections'), icon: 'i-pixelarticons-bookmark', to: localePath('/collections') },
-            { label: t('nav.account.organizations'), icon: 'i-pixelarticons-users', to: localePath('/organizations') },
-                { label: t('nav.account.analytics'), icon: 'i-pixelarticons-chart-line', to: localePath('/analytics') },
-            { label: t('nav.account.library'), icon: 'i-pixelarticons-library', to: localePath('/library') },
-            { label: t('nav.account.revenue'), icon: 'i-pixelarticons-chart', to: localePath('/revenue') },
-            { label: t('nav.account.seller'), icon: 'i-pixelarticons-wallet', to: localePath('/seller') },
-            { label: t('reports.mine'), icon: 'i-pixelarticons-flag', to: localePath('/reports') },
-        ]
-        : []
-
-    const out = [account]
-    if (creating.length) out.push(creating)
+    const out = [mine]
+    if (made.length) out.push(made)
     if (isAdmin.value) out.push([{ label: t('nav.account.admin'), icon: 'i-pixelarticons-shield', to: localePath('/admin') }])
     out.push([{ label: t('nav.account.signOut'), icon: 'i-pixelarticons-logout', onSelect: signOut }])
     return out

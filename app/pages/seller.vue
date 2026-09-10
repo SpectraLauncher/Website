@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'catalog' })
+definePageMeta({ middleware: 'catalog', layout: 'account' })
 
 const { t } = useI18n()
 
@@ -120,79 +120,69 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
 
 <template>
   <div>
-    <SiteNavbar />
+    <UiPageHeader :title="t('seller.title')" :description="t('seller.intro')" />
 
-    <div class="relative">
-      <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[url('/bg.webp')] bg-cover bg-center mask-b-from-30% mask-b-to-100%"></div>
+    <UAlert
+      v-if="problem"
+      color="error"
+      variant="subtle"
+      class="mt-6 rounded-2xl"
+      icon="i-pixelarticons-warning-box"
+      :description="problem"
+    />
 
-      <section class="container mx-auto max-w-3xl px-4 pb-24 pt-40">
-        <h1 class="text-3xl font-semibold tracking-tight">{{ t('seller.title') }}</h1>
-        <p class="mt-3 text-base/relaxed text-muted">{{ t('seller.intro') }}</p>
+    <UAlert
+      v-if="data && !data.publishableKey"
+      color="warning"
+      variant="subtle"
+      class="mt-6 rounded-2xl"
+      icon="i-pixelarticons-warning-box"
+      :description="t('seller.notConfigured')"
+    />
 
-        <UAlert
-          v-if="problem"
-          color="error"
-          variant="subtle"
-          class="mt-6 rounded-2xl"
-          icon="i-pixelarticons-warning-box"
-          :description="problem"
-        />
-
-        <UAlert
-          v-if="data && !data.publishableKey"
-          color="warning"
-          variant="subtle"
-          class="mt-6 rounded-2xl"
-          icon="i-pixelarticons-warning-box"
-          :description="t('seller.notConfigured')"
-        />
-
-        <div v-else class="mt-8 space-y-6">
-          <div class="rounded-2xl border border-default p-5">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <p class="font-medium">{{ t('seller.account') }}</p>
-                <p class="mt-1 text-sm text-muted">{{ t(`seller.state.${state}`) }}</p>
-              </div>
-              <UBadge :color="STATE_COLOR[state]" variant="subtle">
-                {{ t(`seller.badge.${state}`) }}
-              </UBadge>
-            </div>
-
-            <!-- Selling never waits on this. Money owed before verification sits
-                 as pending and moves once the account can receive it. -->
-            <p class="mt-4 text-sm text-muted">{{ t('seller.deferred') }}</p>
-
-            <ul v-if="data?.account?.due?.length" class="mt-4 space-y-1 text-sm text-muted">
-              <li v-for="item in data.account.due" :key="item">— {{ item }}</li>
-            </ul>
+    <div v-else class="mt-8 space-y-6">
+      <div class="rounded-2xl border border-default p-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="font-medium">{{ t('seller.account') }}</p>
+            <p class="mt-1 text-sm text-muted">{{ t(`seller.state.${state}`) }}</p>
           </div>
-
-          <div v-if="!data?.account && !mounted" class="rounded-2xl border border-default p-5">
-            <p class="font-medium">{{ t('seller.country') }}</p>
-            <p class="mt-1 text-sm text-muted">{{ t('seller.countryHint') }}</p>
-
-            <div class="mt-4 flex flex-wrap items-center gap-3">
-              <USelect v-model="country" :items="countries" value-key="value" class="w-40" />
-              <UButton :loading="busy" @click="startOnboarding()">
-                {{ t('seller.start') }}
-              </UButton>
-            </div>
-          </div>
-
-          <UButton
-            v-else-if="!mounted"
-            :loading="busy"
-            variant="subtle"
-            @click="startOnboarding()"
-          >
-            {{ t('seller.resume') }}
-          </UButton>
-
-          <div ref="container" class="rounded-2xl"></div>
+          <UBadge :color="STATE_COLOR[state]" variant="subtle">
+            {{ t(`seller.badge.${state}`) }}
+          </UBadge>
         </div>
-      </section>
-    </div>
 
+        <!-- Selling never waits on this. Money owed before verification sits
+             as pending and moves once the account can receive it. -->
+        <p class="mt-4 text-sm text-muted">{{ t('seller.deferred') }}</p>
+
+        <ul v-if="data?.account?.due?.length" class="mt-4 space-y-1 text-sm text-muted">
+          <li v-for="item in data.account.due" :key="item">— {{ item }}</li>
+        </ul>
+      </div>
+
+      <div v-if="!data?.account && !mounted" class="rounded-2xl border border-default p-5">
+        <p class="font-medium">{{ t('seller.country') }}</p>
+        <p class="mt-1 text-sm text-muted">{{ t('seller.countryHint') }}</p>
+
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <USelect v-model="country" :items="countries" value-key="value" class="w-40" />
+          <UButton :loading="busy" @click="startOnboarding()">
+            {{ t('seller.start') }}
+          </UButton>
+        </div>
+      </div>
+
+      <UButton
+        v-else-if="!mounted"
+        :loading="busy"
+        variant="subtle"
+        @click="startOnboarding()"
+      >
+        {{ t('seller.resume') }}
+      </UButton>
+
+      <div ref="container" class="rounded-2xl"></div>
+    </div>
   </div>
 </template>

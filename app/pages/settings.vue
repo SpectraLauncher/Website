@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ layout: 'account' })
+
 import qrcode from 'qrcode-generator'
 
 const { t, locale } = useI18n()
@@ -37,17 +39,17 @@ async function run(key: string, fn: () => Promise<any>) {
 }
 
 const TABS = [
-  { id: 'profile', icon: 'i-pixelarticons-avatar-circle', label: 'account.profile' },
+  { id: 'profile', icon: 'i-pixelarticons-user', label: 'account.profile' },
   { id: 'security', icon: 'i-pixelarticons-shield', label: 'account.security' },
+  { id: 'sessions', icon: 'i-pixelarticons-devices', label: 'account.sessions' },
   { id: 'privacy', icon: 'i-pixelarticons-eye-closed', label: 'account.privacy' },
   { id: 'blocks', icon: 'i-pixelarticons-user-x', label: 'account.blocks' },
-  { id: 'connected', icon: 'i-pixelarticons-link', label: 'account.connected' },
   { id: 'notifications', icon: 'i-pixelarticons-bell', label: 'nav.account.notifications' },
-  { id: 'sessions', icon: 'i-pixelarticons-devices', label: 'account.sessions' },
+  { id: 'connected', icon: 'i-pixelarticons-link', label: 'account.connected' },
   { id: 'tokens', icon: 'i-pixelarticons-key', label: 'tokens.title' },
   { id: 'apps', icon: 'i-pixelarticons-archive', label: 'oauth.apps' },
+  { id: 'friends', icon: 'i-pixelarticons-users', label: 'friends.title' },
   { id: 'language', icon: 'i-pixelarticons-languages', label: 'account.language' },
-  { id: 'friends', icon: 'i-pixelarticons-users', label: 'friends.title' }
 ] as const
 
 const route = useRoute()
@@ -568,13 +570,6 @@ const label = (u: PublicUser) => u.username || u.name || '—'
 
 const pendingCount = computed(() => friends.value?.incoming?.length ?? 0)
 
-const navItems = computed<SideNavItem[]>(() => TABS.map(item => ({
-  id: item.id,
-  icon: item.icon,
-  label: t(item.label),
-  badge: item.id === 'friends' && pendingCount.value ? pendingCount.value : undefined,
-})))
-
 const signOut = async () => {
   await auth.signOut()
   await navigateTo(localePath('/'))
@@ -594,7 +589,29 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
 </script>
 
 <template>
-  <UiPageShell width="max-w-6xl">
+  <div>
+    <UiPageHeader :title="t('account.title')" :description="t('account.settingsIntro')">
+      <div class="flex flex-wrap gap-2 pb-1.5">
+        <UButton
+          v-if="profile.username"
+          :to="localePath(`/u/${profile.username}`)"
+          variant="subtle"
+          color="neutral"
+          size="lg"
+          icon="i-pixelarticons-external-link"
+          :label="t('account.viewProfile')"
+        />
+        <UButton
+          variant="subtle"
+          color="neutral"
+          size="lg"
+          icon="i-pixelarticons-logout"
+          :label="t('account.signOut')"
+          @click="signOut"
+        />
+      </div>
+    </UiPageHeader>
+
     <UiPanel class="mb-4 p-5 sm:p-6">
       <div class="flex flex-wrap items-center gap-5">
         <button type="button" class="group relative shrink-0 cursor-pointer" @click="pickAvatar">
@@ -618,7 +635,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
         <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadAvatar">
 
         <div class="min-w-0 flex-1">
-          <h1 class="truncate text-2xl font-semibold tracking-tight">{{ profile.name || profile.username || '—' }}</h1>
+          <p class="truncate text-xl font-bold tracking-tight text-highlighted">{{ profile.name || profile.username || '—' }}</p>
           <p v-if="profile.username" class="truncate font-mono text-sm text-muted">@{{ profile.username }}</p>
 
           <div class="mt-2 flex flex-wrap items-center gap-2">
@@ -633,27 +650,6 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
             />
           </div>
         </div>
-
-        <UButton
-          v-if="profile.username"
-          :to="localePath(`/u/${profile.username}`)"
-          variant="subtle"
-          color="neutral"
-          size="lg"
-          class="rounded-xl"
-          icon="i-pixelarticons-external-link"
-          :label="t('account.viewProfile')"
-        />
-
-        <UButton
-          variant="outline"
-          color="neutral"
-          size="lg"
-          class="rounded-xl"
-          icon="i-pixelarticons-logout"
-          :label="t('account.signOut')"
-          @click="signOut"
-        />
       </div>
     </UiPanel>
 
@@ -683,825 +679,847 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
       </template>
     </UAlert>
 
-    <div class="grid gap-4 lg:grid-cols-[240px_1fr]">
-      <UiSideNav v-model="tab" :items="navItems" />
+    <!-- The sub-sections of the account, one panel at a time. Eleven of them
+         open at once is the wall of switches this page used to be. -->
+    <nav class="-mx-4 mb-4 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+      <button
+        v-for="item in TABS"
+        :key="item.id"
+        type="button"
+        class="flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border px-3.5 text-sm transition-colors"
+        :class="tab === item.id
+          ? 'border-primary/40 bg-primary/10 font-bold text-primary'
+          : 'border-panel-line font-medium text-muted hover:border-zinc-600 hover:text-highlighted'"
+        :aria-current="tab === item.id ? 'page' : undefined"
+        @click="tab = item.id"
+      >
+        <UIcon :name="item.icon" class="size-4 shrink-0" />
+        {{ t(item.label) }}
+        <UBadge
+          v-if="item.id === 'friends' && pendingCount"
+          size="sm"
+          color="primary"
+          variant="subtle"
+          :label="String(pendingCount)"
+        />
+      </button>
+    </nav>
 
-      <UiPanel class="min-w-0 p-6 lg:p-8">
-        <template v-if="tab === 'profile'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.profile') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.uploadHint') }}</p>
+    <UiPanel class="p-6 lg:p-8">
+      <template v-if="tab === 'profile'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.profile') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.uploadHint') }}</p>
 
-          <div class="max-w-md space-y-4">
-            <UFormField :label="t('account.displayName')">
-              <UInput v-model="profile.name" size="lg" class="w-full" />
-            </UFormField>
+        <div class="max-w-md space-y-4">
+          <UFormField :label="t('account.displayName')">
+            <UInput v-model="profile.name" size="lg" class="w-full" />
+          </UFormField>
 
-            <UFormField :label="t('auth.username')" :error="usernameBlocked ? usernameMessage : undefined">
-              <UInput v-model="profile.username" size="lg" class="w-full" icon="i-pixelarticons-at-sign">
-                <template #trailing>
-                  <UIcon v-if="usernameState === 'checking'" name="i-pixelarticons-loader" class="size-4 animate-spin text-muted" />
-                  <UIcon v-else-if="usernameState === 'available'" name="i-pixelarticons-check" class="size-4 text-primary" />
-                </template>
-              </UInput>
-              <p v-if="usernameState === 'available'" class="mt-1.5 text-xs text-primary">{{ usernameMessage }}</p>
-            </UFormField>
-
-            <UFormField :label="t('account.bio')" :hint="`${profile.bio.length}/${BIO_LIMIT}`">
-              <UTextarea
-                v-model="profile.bio"
-                :maxlength="BIO_LIMIT"
-                :rows="4"
-                :placeholder="t('account.bioHint')"
-                class="w-full"
-              />
-            </UFormField>
-
-            <div>
-              <h3 class="mb-1 text-sm font-semibold">{{ t('account.links') }}</h3>
-              <p class="mb-3 text-xs text-muted">{{ t('account.linksHint') }}</p>
-              <div class="space-y-2">
-                <UFormField v-for="kind in LINK_KINDS" :key="kind" :label="t(`links.${kind}`)">
-                  <UInput
-                    v-model="links[kind]"
-                    :icon="LINK_ICONS[kind]"
-                    type="url"
-                    placeholder="https://"
-                    class="w-full"
-                  />
-                </UFormField>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 pt-1">
-              <UButton
-                color="neutral"
-                size="lg"
-                class="rounded-xl"
-                :loading="busy === 'profile'"
-                :disabled="usernameBlocked"
-                :label="t('account.save')"
-                @click="saveProfile"
-              />
-              <UButton
-                variant="ghost"
-                color="neutral"
-                size="lg"
-                class="rounded-xl"
-                icon="i-pixelarticons-upload"
-                :loading="busy === 'avatar'"
-                :label="t('account.upload')"
-                @click="pickAvatar"
-              />
-            </div>
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'security'">
-          <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('account.security') }}</h2>
-
-          <div class="max-w-md space-y-8">
-            <div>
-              <h3 class="mb-3 text-sm font-semibold">{{ t('account.changeEmail') }}</h3>
-              <div class="flex flex-wrap gap-2">
-                <UInput v-model="newEmail" type="email" size="lg" class="min-w-0 flex-1" :placeholder="t('account.newEmail')" />
-                <UButton
-                  color="neutral"
-                  size="lg"
-                  class="rounded-xl"
-                  :loading="busy === 'email'"
-                  :disabled="!newEmail"
-                  :label="t('account.changeEmail')"
-                  @click="changeEmail"
-                />
-              </div>
-            </div>
-
-            <div class="rounded-2xl border border-inset-line bg-inset p-5">
-              <h3 class="mb-1 text-sm font-semibold">{{ t('account.passkeys') }}</h3>
-              <p class="mb-4 text-xs text-muted">{{ t('account.passkeysHint') }}</p>
-
-              <ul v-if="passkeys.length" class="mb-4 space-y-2">
-                <li
-                  v-for="key in passkeys"
-                  :key="key.id"
-                  class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
-                >
-                  <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
-                  <div class="min-w-0 flex-1">
-                    <p class="truncate text-sm">{{ key.name || t('account.passkeyUnnamed') }}</p>
-                    <p class="text-xs text-dimmed">{{ new Date(key.createdAt).toLocaleDateString(locale) }}</p>
-                  </div>
-                  <UButton
-                    size="xs"
-                    variant="ghost"
-                    color="error"
-                    icon="i-pixelarticons-trash"
-                    :loading="busy === 'passkey:' + key.id"
-                    :aria-label="t('account.passkeyRemove')"
-                    @click="removePasskey(key.id)"
-                  />
-                </li>
-              </ul>
-
-              <div class="flex flex-wrap gap-2">
-                <UInput
-                  v-model="passkeyName"
-                  size="lg"
-                  class="min-w-0 flex-1"
-                  :placeholder="t('account.passkeyName')"
-                />
-                <UButton
-                  color="neutral"
-                  size="lg"
-                  class="rounded-xl"
-                  icon="i-pixelarticons-plus"
-                  :loading="busy === 'passkey'"
-                  :label="t('account.passkeyAdd')"
-                  @click="addPasskey"
-                />
-              </div>
-            </div>
-
-            <div>
-              <h3 class="mb-3 text-sm font-semibold">{{ t('account.changePassword') }}</h3>
-              <div class="space-y-2">
-                <UInput v-model="pw.current" type="password" autocomplete="current-password" size="lg" class="w-full" :placeholder="t('account.currentPassword')" />
-                <UInput v-model="pw.next" type="password" autocomplete="new-password" size="lg" class="w-full" :placeholder="t('account.newPassword')" />
-                <UButton
-                  color="neutral"
-                  size="lg"
-                  class="rounded-xl"
-                  :loading="busy === 'password'"
-                  :disabled="!pw.current || pw.next.length < 8"
-                  :label="t('account.changePassword')"
-                  @click="changePassword"
-                />
-              </div>
-            </div>
-
-            <div class="rounded-2xl border border-inset-line bg-inset p-5">
-              <div class="mb-1 flex items-center gap-2">
-                <h3 class="text-sm font-semibold">{{ t('account.twoFactor') }}</h3>
-                <UBadge
-                  size="sm"
-                  variant="subtle"
-                  :color="user?.twoFactorEnabled ? 'success' : 'neutral'"
-                  :label="user?.twoFactorEnabled ? t('account.on') : t('account.off')"
-                />
-              </div>
-              <p class="mb-4 text-xs/relaxed text-muted">{{ t('account.twoFactorHint') }}</p>
-
-              <template v-if="twoFa.uri">
-                <p class="mb-3 text-xs/relaxed text-muted">{{ t('account.scanHint') }}</p>
-                <div class="mb-4 w-fit rounded-xl bg-white p-3" v-html="qrSvg"></div>
-
-                <div v-if="twoFa.backup.length" class="mb-4">
-                  <p class="mb-2 text-xs text-dimmed">{{ t('account.backupCodes') }}</p>
-                  <div class="grid grid-cols-2 gap-1.5 font-mono text-xs">
-                    <span v-for="code in twoFa.backup" :key="code" class="rounded-lg bg-white/5 px-2 py-1.5">{{ code }}</span>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                  <UInput v-model="twoFa.code" inputmode="numeric" size="lg" placeholder="000000" class="w-32 font-mono" />
-                  <UButton color="neutral" size="lg" class="rounded-xl" :loading="busy === '2fa'" :label="t('auth.verify')" @click="confirm2fa" />
-                </div>
+          <UFormField :label="t('auth.username')" :error="usernameBlocked ? usernameMessage : undefined">
+            <UInput v-model="profile.username" size="lg" class="w-full" icon="i-pixelarticons-at-sign">
+              <template #trailing>
+                <UIcon v-if="usernameState === 'checking'" name="i-pixelarticons-loader" class="size-4 animate-spin text-muted" />
+                <UIcon v-else-if="usernameState === 'available'" name="i-pixelarticons-check" class="size-4 text-primary" />
               </template>
+            </UInput>
+            <p v-if="usernameState === 'available'" class="mt-1.5 text-xs text-primary">{{ usernameMessage }}</p>
+          </UFormField>
 
-              <div v-else class="flex flex-wrap gap-2">
-                <UInput v-model="twoFa.password" type="password" size="lg" class="min-w-0 flex-1" :placeholder="t('account.currentPassword')" />
-                <UButton
-                  v-if="user?.twoFactorEnabled"
-                  color="error"
-                  variant="subtle"
-                  size="lg"
-                  class="rounded-xl"
-                  :loading="busy === '2fa'"
-                  :disabled="!twoFa.password"
-                  :label="t('account.disable')"
-                  @click="disable2fa"
-                />
-                <UButton
-                  v-else
-                  color="neutral"
-                  size="lg"
-                  class="rounded-xl"
-                  :loading="busy === '2fa'"
-                  :disabled="!twoFa.password"
-                  :label="t('account.enable')"
-                  @click="enable2fa"
-                />
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'privacy'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.privacy') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.privacyHint') }}</p>
-
-          <div class="max-w-md">
-            <h3 class="mb-3 text-sm font-semibold">{{ t('account.friendsVisibility') }}</h3>
-
-            <div class="space-y-2">
-              <button
-                v-for="value in FRIENDS_VISIBILITY"
-                :key="value"
-                type="button"
-                class="flex w-full cursor-pointer items-start gap-3 rounded-2xl border p-4 text-left transition-colors"
-                :class="friendsVisibility === value
-                  ? 'border-zinc-400 bg-white/5'
-                  : 'border-inset-line bg-inset hover:border-zinc-600'"
-                :disabled="busy === 'privacy'"
-                @click="savePrivacy(value)"
-              >
-                <UIcon
-                  :name="friendsVisibility === value ? 'i-pixelarticons-checkbox-on' : 'i-pixelarticons-circle'"
-                  class="mt-0.5 size-4 shrink-0"
-                  :class="friendsVisibility === value ? 'text-primary' : 'text-dimmed'"
-                />
-                <span class="min-w-0">
-                  <span class="block text-sm font-medium">{{ t(`account.friendsVisibilityOptions.${value}.title`) }}</span>
-                  <span class="block text-xs/relaxed text-muted">{{ t(`account.friendsVisibilityOptions.${value}.body`) }}</span>
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <div class="mt-10 max-w-md rounded-2xl border border-error/40 bg-error/5 p-5">
-            <h3 class="mb-1 text-sm font-semibold">{{ t('account.close') }}</h3>
-            <p class="mb-4 text-xs text-muted">{{ t('account.closeHint') }}</p>
-
-            <div v-if="closure" class="space-y-4">
-              <UAlert
-                v-if="closure.blockers.length"
-                color="warning"
-                variant="subtle"
-                :title="t('account.closeBlocked')"
-              >
-                <template #description>
-                  <ul class="mt-1 list-inside list-disc text-xs">
-                    <li v-for="blocker in closure.blockers" :key="blocker.code + blocker.detail">
-                      {{ t(`account.closeBlockers.${blocker.code}`, { detail: blocker.detail }) }}
-                    </li>
-                  </ul>
-                </template>
-              </UAlert>
-
-              <template v-else>
-                <p class="text-xs text-muted">
-                  {{ t('account.closeFootprint', {
-                    projects: closure.footprint.projects,
-                    collections: closure.footprint.collections,
-                    comments: closure.footprint.comments,
-                  }) }}
-                </p>
-
-                <UInput
-                  v-model="closeConfirm"
-                  size="lg"
-                  class="w-full"
-                  :placeholder="t('account.closeConfirm', { username: user?.username })"
-                />
-
-                <UButton
-                  color="error"
-                  size="lg"
-                  class="rounded-xl"
-                  icon="i-pixelarticons-trash"
-                  :disabled="closeConfirm.trim().toLowerCase() !== (user?.username ?? '').toLowerCase()"
-                  :loading="busy === 'close'"
-                  :label="t('account.close')"
-                  @click="closeAccount"
-                />
-              </template>
-            </div>
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'notifications'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('nav.account.notifications') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.notificationsHint') }}</p>
-
-          <UAlert
-            v-if="!mailConfigured"
-            color="warning"
-            variant="subtle"
-            class="mb-5 rounded-2xl"
-            icon="i-pixelarticons-mail-delete"
-            :description="t('account.mailUnavailable')"
-          />
-
-          <div class="max-w-lg space-y-5">
-            <div
-              v-for="group in NOTIFICATION_GROUP_KEYS"
-              :key="group"
-              class="rounded-2xl border border-white/10 bg-white/5 p-4"
-            >
-              <h3 class="mb-1 text-sm font-semibold">{{ t(`account.groups.${group}`) }}</h3>
-              <p class="mb-3 text-xs text-muted">{{ t(`account.groupHints.${group}`) }}</p>
-              <UCheckboxGroup
-                v-if="prefs[group]"
-                v-model="prefs[group]"
-                :items="channelChoices"
-                value-key="value"
-                orientation="horizontal"
-                size="sm"
-              />
-            </div>
-
-            <UButton
-              color="neutral"
-              size="lg"
-              class="rounded-xl"
-              :loading="busy === 'prefs'"
-              :label="t('account.save')"
-              @click="savePrefs"
-            />
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'language'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.language') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.languageHint') }}</p>
-
-          <div class="max-w-xs space-y-4">
-            <USelect
-              v-model="chosenLocale"
-              :items="localeChoices"
-              value-key="value"
-              size="lg"
-              icon="i-pixelarticons-languages"
+          <UFormField :label="t('account.bio')" :hint="`${profile.bio.length}/${BIO_LIMIT}`">
+            <UTextarea
+              v-model="profile.bio"
+              :maxlength="BIO_LIMIT"
+              :rows="4"
+              :placeholder="t('account.bioHint')"
               class="w-full"
             />
+          </UFormField>
+
+          <div>
+            <h3 class="mb-1 text-sm font-semibold">{{ t('account.links') }}</h3>
+            <p class="mb-3 text-xs text-muted">{{ t('account.linksHint') }}</p>
+            <div class="space-y-2">
+              <UFormField v-for="kind in LINK_KINDS" :key="kind" :label="t(`links.${kind}`)">
+                <UInput
+                  v-model="links[kind]"
+                  :icon="LINK_ICONS[kind]"
+                  type="url"
+                  placeholder="https://"
+                  class="w-full"
+                />
+              </UFormField>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-1">
             <UButton
               color="neutral"
               size="lg"
               class="rounded-xl"
-              :loading="busy === 'locale'"
+              :loading="busy === 'profile'"
+              :disabled="usernameBlocked"
               :label="t('account.save')"
-              @click="saveLocale"
+              @click="saveProfile"
+            />
+            <UButton
+              variant="ghost"
+              color="neutral"
+              size="lg"
+              class="rounded-xl"
+              icon="i-pixelarticons-upload"
+              :loading="busy === 'avatar'"
+              :label="t('account.upload')"
+              @click="pickAvatar"
             />
           </div>
-        </template>
+        </div>
+      </template>
 
-        <template v-else-if="tab === 'blocks'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.blocks') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.blocksHint') }}</p>
+      <template v-else-if="tab === 'security'">
+        <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('account.security') }}</h2>
 
-          <div class="max-w-md space-y-4">
+        <div class="max-w-md space-y-8">
+          <div>
+            <h3 class="mb-3 text-sm font-semibold">{{ t('account.changeEmail') }}</h3>
             <div class="flex flex-wrap gap-2">
-              <UInput
-                v-model="blockName"
-                size="lg"
-                class="min-w-0 flex-1"
-                icon="i-pixelarticons-at-sign"
-                :placeholder="t('auth.username')"
-                @keyup.enter="addBlock"
-              />
+              <UInput v-model="newEmail" type="email" size="lg" class="min-w-0 flex-1" :placeholder="t('account.newEmail')" />
               <UButton
                 color="neutral"
                 size="lg"
                 class="rounded-xl"
-                :disabled="!blockName.trim()"
-                :loading="busy === 'block'"
-                :label="t('account.block')"
-                @click="addBlock"
+                :loading="busy === 'email'"
+                :disabled="!newEmail"
+                :label="t('account.changeEmail')"
+                @click="changeEmail"
               />
             </div>
+          </div>
 
-            <ul v-if="blocked.length" class="space-y-2">
+          <div class="rounded-2xl border border-inset-line bg-inset p-5">
+            <h3 class="mb-1 text-sm font-semibold">{{ t('account.passkeys') }}</h3>
+            <p class="mb-4 text-xs text-muted">{{ t('account.passkeysHint') }}</p>
+
+            <ul v-if="passkeys.length" class="mb-4 space-y-2">
               <li
-                v-for="person in blocked"
-                :key="person.id"
-                class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                v-for="key in passkeys"
+                :key="key.id"
+                class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
               >
-                <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
-                  <img v-if="person.image" :src="person.image" alt="" class="size-full object-cover">
-                  <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
-                </span>
-                <span class="min-w-0 flex-1 truncate text-sm">
-                  {{ person.username || person.name }}
-                </span>
+                <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm">{{ key.name || t('account.passkeyUnnamed') }}</p>
+                  <p class="text-xs text-dimmed">{{ new Date(key.createdAt).toLocaleDateString(locale) }}</p>
+                </div>
                 <UButton
                   size="xs"
                   variant="ghost"
-                  color="neutral"
-                  :loading="busy === 'block:' + person.id"
-                  :label="t('account.unblock')"
-                  @click="removeBlock(person.id)"
+                  color="error"
+                  icon="i-pixelarticons-trash"
+                  :loading="busy === 'passkey:' + key.id"
+                  :aria-label="t('account.passkeyRemove')"
+                  @click="removePasskey(key.id)"
                 />
               </li>
             </ul>
 
-            <p v-else-if="blocksLoaded" class="text-sm text-dimmed">{{ t('account.noBlocks') }}</p>
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'apps'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('oauth.apps') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('oauth.appsHint') }}</p>
-
-          <UAlert
-            v-if="freshSecret"
-            color="success"
-            variant="subtle"
-            class="mb-5 rounded-2xl"
-            icon="i-pixelarticons-key"
-            :title="t('tokens.copyNow')"
-          >
-            <template #description>
-              <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
-                {{ freshSecret }}
-              </code>
+            <div class="flex flex-wrap gap-2">
+              <UInput
+                v-model="passkeyName"
+                size="lg"
+                class="min-w-0 flex-1"
+                :placeholder="t('account.passkeyName')"
+              />
               <UButton
-                class="mt-2 rounded-lg"
-                size="xs"
-                variant="soft"
                 color="neutral"
-                :label="t('tokens.dismiss')"
-                @click="freshSecret = ''"
+                size="lg"
+                class="rounded-xl"
+                icon="i-pixelarticons-plus"
+                :loading="busy === 'passkey'"
+                :label="t('account.passkeyAdd')"
+                @click="addPasskey"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h3 class="mb-3 text-sm font-semibold">{{ t('account.changePassword') }}</h3>
+            <div class="space-y-2">
+              <UInput v-model="pw.current" type="password" autocomplete="current-password" size="lg" class="w-full" :placeholder="t('account.currentPassword')" />
+              <UInput v-model="pw.next" type="password" autocomplete="new-password" size="lg" class="w-full" :placeholder="t('account.newPassword')" />
+              <UButton
+                color="neutral"
+                size="lg"
+                class="rounded-xl"
+                :loading="busy === 'password'"
+                :disabled="!pw.current || pw.next.length < 8"
+                :label="t('account.changePassword')"
+                @click="changePassword"
+              />
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-inset-line bg-inset p-5">
+            <div class="mb-1 flex items-center gap-2">
+              <h3 class="text-sm font-semibold">{{ t('account.twoFactor') }}</h3>
+              <UBadge
+                size="sm"
+                variant="subtle"
+                :color="user?.twoFactorEnabled ? 'success' : 'neutral'"
+                :label="user?.twoFactorEnabled ? t('account.on') : t('account.off')"
+              />
+            </div>
+            <p class="mb-4 text-xs/relaxed text-muted">{{ t('account.twoFactorHint') }}</p>
+
+            <template v-if="twoFa.uri">
+              <p class="mb-3 text-xs/relaxed text-muted">{{ t('account.scanHint') }}</p>
+              <div class="mb-4 w-fit rounded-xl bg-white p-3" v-html="qrSvg"></div>
+
+              <div v-if="twoFa.backup.length" class="mb-4">
+                <p class="mb-2 text-xs text-dimmed">{{ t('account.backupCodes') }}</p>
+                <div class="grid grid-cols-2 gap-1.5 font-mono text-xs">
+                  <span v-for="code in twoFa.backup" :key="code" class="rounded-lg bg-white/5 px-2 py-1.5">{{ code }}</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <UInput v-model="twoFa.code" inputmode="numeric" size="lg" placeholder="000000" class="w-32 font-mono" />
+                <UButton color="neutral" size="lg" class="rounded-xl" :loading="busy === '2fa'" :label="t('auth.verify')" @click="confirm2fa" />
+              </div>
+            </template>
+
+            <div v-else class="flex flex-wrap gap-2">
+              <UInput v-model="twoFa.password" type="password" size="lg" class="min-w-0 flex-1" :placeholder="t('account.currentPassword')" />
+              <UButton
+                v-if="user?.twoFactorEnabled"
+                color="error"
+                variant="subtle"
+                size="lg"
+                class="rounded-xl"
+                :loading="busy === '2fa'"
+                :disabled="!twoFa.password"
+                :label="t('account.disable')"
+                @click="disable2fa"
+              />
+              <UButton
+                v-else
+                color="neutral"
+                size="lg"
+                class="rounded-xl"
+                :loading="busy === '2fa'"
+                :disabled="!twoFa.password"
+                :label="t('account.enable')"
+                @click="enable2fa"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'privacy'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.privacy') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.privacyHint') }}</p>
+
+        <div class="max-w-md">
+          <h3 class="mb-3 text-sm font-semibold">{{ t('account.friendsVisibility') }}</h3>
+
+          <div class="space-y-2">
+            <button
+              v-for="value in FRIENDS_VISIBILITY"
+              :key="value"
+              type="button"
+              class="flex w-full cursor-pointer items-start gap-3 rounded-2xl border p-4 text-left transition-colors"
+              :class="friendsVisibility === value
+                ? 'border-zinc-400 bg-white/5'
+                : 'border-inset-line bg-inset hover:border-zinc-600'"
+              :disabled="busy === 'privacy'"
+              @click="savePrivacy(value)"
+            >
+              <UIcon
+                :name="friendsVisibility === value ? 'i-pixelarticons-checkbox-on' : 'i-pixelarticons-circle'"
+                class="mt-0.5 size-4 shrink-0"
+                :class="friendsVisibility === value ? 'text-primary' : 'text-dimmed'"
+              />
+              <span class="min-w-0">
+                <span class="block text-sm font-medium">{{ t(`account.friendsVisibilityOptions.${value}.title`) }}</span>
+                <span class="block text-xs/relaxed text-muted">{{ t(`account.friendsVisibilityOptions.${value}.body`) }}</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-10 max-w-md rounded-2xl border border-error/40 bg-error/5 p-5">
+          <h3 class="mb-1 text-sm font-semibold">{{ t('account.close') }}</h3>
+          <p class="mb-4 text-xs text-muted">{{ t('account.closeHint') }}</p>
+
+          <div v-if="closure" class="space-y-4">
+            <UAlert
+              v-if="closure.blockers.length"
+              color="warning"
+              variant="subtle"
+              :title="t('account.closeBlocked')"
+            >
+              <template #description>
+                <ul class="mt-1 list-inside list-disc text-xs">
+                  <li v-for="blocker in closure.blockers" :key="blocker.code + blocker.detail">
+                    {{ t(`account.closeBlockers.${blocker.code}`, { detail: blocker.detail }) }}
+                  </li>
+                </ul>
+              </template>
+            </UAlert>
+
+            <template v-else>
+              <p class="text-xs text-muted">
+                {{ t('account.closeFootprint', {
+                  projects: closure.footprint.projects,
+                  collections: closure.footprint.collections,
+                  comments: closure.footprint.comments,
+                }) }}
+              </p>
+
+              <UInput
+                v-model="closeConfirm"
+                size="lg"
+                class="w-full"
+                :placeholder="t('account.closeConfirm', { username: user?.username })"
+              />
+
+              <UButton
+                color="error"
+                size="lg"
+                class="rounded-xl"
+                icon="i-pixelarticons-trash"
+                :disabled="closeConfirm.trim().toLowerCase() !== (user?.username ?? '').toLowerCase()"
+                :loading="busy === 'close'"
+                :label="t('account.close')"
+                @click="closeAccount"
               />
             </template>
-          </UAlert>
+          </div>
+        </div>
+      </template>
 
-          <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.authorized') }}</h3>
+      <template v-else-if="tab === 'notifications'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('nav.account.notifications') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.notificationsHint') }}</p>
 
-          <ul v-if="authorizations.length" class="mb-8 space-y-2">
+        <UAlert
+          v-if="!mailConfigured"
+          color="warning"
+          variant="subtle"
+          class="mb-5 rounded-2xl"
+          icon="i-pixelarticons-mail-delete"
+          :description="t('account.mailUnavailable')"
+        />
+
+        <div class="max-w-lg space-y-5">
+          <div
+            v-for="group in NOTIFICATION_GROUP_KEYS"
+            :key="group"
+            class="rounded-2xl border border-white/10 bg-white/5 p-4"
+          >
+            <h3 class="mb-1 text-sm font-semibold">{{ t(`account.groups.${group}`) }}</h3>
+            <p class="mb-3 text-xs text-muted">{{ t(`account.groupHints.${group}`) }}</p>
+            <UCheckboxGroup
+              v-if="prefs[group]"
+              v-model="prefs[group]"
+              :items="channelChoices"
+              value-key="value"
+              orientation="horizontal"
+              size="sm"
+            />
+          </div>
+
+          <UButton
+            color="neutral"
+            size="lg"
+            class="rounded-xl"
+            :loading="busy === 'prefs'"
+            :label="t('account.save')"
+            @click="savePrefs"
+          />
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'language'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.language') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.languageHint') }}</p>
+
+        <div class="max-w-xs space-y-4">
+          <USelect
+            v-model="chosenLocale"
+            :items="localeChoices"
+            value-key="value"
+            size="lg"
+            icon="i-pixelarticons-languages"
+            class="w-full"
+          />
+          <UButton
+            color="neutral"
+            size="lg"
+            class="rounded-xl"
+            :loading="busy === 'locale'"
+            :label="t('account.save')"
+            @click="saveLocale"
+          />
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'blocks'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.blocks') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.blocksHint') }}</p>
+
+        <div class="max-w-md space-y-4">
+          <div class="flex flex-wrap gap-2">
+            <UInput
+              v-model="blockName"
+              size="lg"
+              class="min-w-0 flex-1"
+              icon="i-pixelarticons-at-sign"
+              :placeholder="t('auth.username')"
+              @keyup.enter="addBlock"
+            />
+            <UButton
+              color="neutral"
+              size="lg"
+              class="rounded-xl"
+              :disabled="!blockName.trim()"
+              :loading="busy === 'block'"
+              :label="t('account.block')"
+              @click="addBlock"
+            />
+          </div>
+
+          <ul v-if="blocked.length" class="space-y-2">
             <li
-              v-for="app in authorizations"
-              :key="app.id"
-              class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+              v-for="person in blocked"
+              :key="person.id"
+              class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
             >
-              <UIcon name="i-pixelarticons-archive" class="size-4 shrink-0 text-muted" />
+              <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+                <img v-if="person.image" :src="person.image" alt="" class="size-full object-cover">
+                <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
+              </span>
+              <span class="min-w-0 flex-1 truncate text-sm">
+                {{ person.username || person.name }}
+              </span>
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="neutral"
+                :loading="busy === 'block:' + person.id"
+                :label="t('account.unblock')"
+                @click="removeBlock(person.id)"
+              />
+            </li>
+          </ul>
+
+          <p v-else-if="blocksLoaded" class="text-sm text-dimmed">{{ t('account.noBlocks') }}</p>
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'apps'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('oauth.apps') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('oauth.appsHint') }}</p>
+
+        <UAlert
+          v-if="freshSecret"
+          color="success"
+          variant="subtle"
+          class="mb-5 rounded-2xl"
+          icon="i-pixelarticons-key"
+          :title="t('tokens.copyNow')"
+        >
+          <template #description>
+            <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
+              {{ freshSecret }}
+            </code>
+            <UButton
+              class="mt-2 rounded-lg"
+              size="xs"
+              variant="soft"
+              color="neutral"
+              :label="t('tokens.dismiss')"
+              @click="freshSecret = ''"
+            />
+          </template>
+        </UAlert>
+
+        <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.authorized') }}</h3>
+
+        <ul v-if="authorizations.length" class="mb-8 space-y-2">
+          <li
+            v-for="app in authorizations"
+            :key="app.id"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+          >
+            <UIcon name="i-pixelarticons-archive" class="size-4 shrink-0 text-muted" />
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium">{{ app.name }}</p>
+              <p class="truncate text-xs text-dimmed">
+                {{ app.scopes.map(s => t(`tokens.scopes.${s}`)).join(', ') }}
+              </p>
+            </div>
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="error"
+              :loading="busy === 'app:' + app.id"
+              :label="t('oauth.revoke')"
+              @click="revokeApp(app.id)"
+            />
+          </li>
+        </ul>
+
+        <p v-else-if="appsLoaded" class="mb-8 text-sm text-dimmed">{{ t('oauth.noneAuthorized') }}</p>
+
+        <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.mine') }}</h3>
+
+        <ul v-if="clients.length" class="mb-6 space-y-2">
+          <li
+            v-for="client in clients"
+            :key="client.id"
+            class="rounded-xl border border-white/10 bg-white/5 p-4"
+          >
+            <div class="flex flex-wrap items-center gap-3">
               <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium">{{ app.name }}</p>
-                <p class="truncate text-xs text-dimmed">
-                  {{ app.scopes.map(s => t(`tokens.scopes.${s}`)).join(', ') }}
-                </p>
+                <p class="truncate text-sm font-medium">{{ client.name }}</p>
+                <p class="truncate font-mono text-xs text-dimmed">{{ client.id }}</p>
               </div>
               <UButton
                 size="xs"
                 variant="ghost"
-                color="error"
-                :loading="busy === 'app:' + app.id"
-                :label="t('oauth.revoke')"
-                @click="revokeApp(app.id)"
-              />
-            </li>
-          </ul>
-
-          <p v-else-if="appsLoaded" class="mb-8 text-sm text-dimmed">{{ t('oauth.noneAuthorized') }}</p>
-
-          <h3 class="mb-3 text-sm font-semibold">{{ t('oauth.mine') }}</h3>
-
-          <ul v-if="clients.length" class="mb-6 space-y-2">
-            <li
-              v-for="client in clients"
-              :key="client.id"
-              class="rounded-xl border border-white/10 bg-white/5 p-4"
-            >
-              <div class="flex flex-wrap items-center gap-3">
-                <div class="min-w-0 flex-1">
-                  <p class="truncate text-sm font-medium">{{ client.name }}</p>
-                  <p class="truncate font-mono text-xs text-dimmed">{{ client.id }}</p>
-                </div>
-                <UButton
-                  size="xs"
-                  variant="ghost"
-                  color="neutral"
-                  icon="i-pixelarticons-refresh"
-                  :loading="busy === 'rotate:' + client.id"
-                  :label="t('oauth.rotate')"
-                  @click="rotateClient(client.id)"
-                />
-                <UButton
-                  size="xs"
-                  variant="ghost"
-                  color="error"
-                  icon="i-pixelarticons-trash"
-                  :loading="busy === 'client:' + client.id"
-                  :aria-label="t('oauth.deleteClient')"
-                  @click="deleteClient(client.id)"
-                />
-              </div>
-              <p class="mt-2 break-all text-xs text-dimmed">
-                {{ client.redirectUris.join(' · ') }}
-              </p>
-              <p class="text-xs text-dimmed">
-                {{ t('oauth.tokenLife') }}: {{ lifetimeLabel(client.tokenDays) }}
-              </p>
-            </li>
-          </ul>
-
-          <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
-            <h3 class="text-sm font-semibold">{{ t('oauth.register') }}</h3>
-
-            <UFormField :label="t('tokens.name')">
-              <UInput v-model="clientDraft.name" class="w-full" :placeholder="t('oauth.namePlaceholder')" />
-            </UFormField>
-
-            <UFormField :label="t('oauth.redirects')" :help="t('oauth.redirectsHint')">
-              <UTextarea
-                v-model="clientDraft.redirectUris"
-                :rows="2"
-                class="w-full"
-                placeholder="https://example.com/callback"
-              />
-            </UFormField>
-
-            <UFormField :label="t('oauth.tokenLife')" :help="t('oauth.tokenLifeHint')">
-              <USelect
-                v-model="clientDraft.tokenDays"
-                :items="expiryChoices"
-                value-key="value"
-                class="w-full"
-              />
-            </UFormField>
-
-            <UFormField :label="t('oauth.maxScopes')">
-              <UCheckboxGroup
-                v-model="clientDraft.scopes"
-                :items="scopeChoices"
-                value-key="value"
-                size="sm"
-              />
-            </UFormField>
-
-            <UButton
-              color="neutral"
-              class="rounded-xl"
-              :disabled="!clientDraft.name.trim() || !clientDraft.scopes.length"
-              :loading="busy === 'client'"
-              :label="t('oauth.register')"
-              @click="createClient"
-            />
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'tokens'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('tokens.title') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('tokens.hint') }}</p>
-
-          <UAlert
-            v-if="freshToken"
-            color="success"
-            variant="subtle"
-            class="mb-5 rounded-2xl"
-            icon="i-pixelarticons-key"
-            :title="t('tokens.copyNow')"
-          >
-            <template #description>
-              <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
-                {{ freshToken }}
-              </code>
-              <UButton
-                class="mt-2 rounded-lg"
-                size="xs"
-                variant="soft"
                 color="neutral"
-                :label="t('tokens.dismiss')"
-                @click="freshToken = ''"
+                icon="i-pixelarticons-refresh"
+                :loading="busy === 'rotate:' + client.id"
+                :label="t('oauth.rotate')"
+                @click="rotateClient(client.id)"
               />
-            </template>
-          </UAlert>
-
-          <ul v-if="tokens.length" class="mb-6 space-y-2">
-            <li
-              v-for="token in tokens"
-              :key="token.id"
-              class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
-            >
-              <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium">
-                  {{ token.name }}
-                  <span class="font-mono text-xs text-dimmed">…{{ token.hint }}</span>
-                </p>
-                <p class="truncate text-xs text-dimmed">
-                  {{ token.scopes.length }} ·
-                  {{ token.lastUsed
-                    ? t('tokens.lastUsed', { when: new Date(token.lastUsed).toLocaleDateString(locale) })
-                    : t('tokens.neverUsed') }}
-                </p>
-              </div>
               <UButton
                 size="xs"
                 variant="ghost"
                 color="error"
                 icon="i-pixelarticons-trash"
-                :loading="busy === 'token:' + token.id"
-                :aria-label="t('tokens.revoke')"
-                @click="revokeAccessToken(token.id)"
-              />
-            </li>
-          </ul>
-
-          <p v-else-if="tokensLoaded" class="mb-6 text-sm text-dimmed">{{ t('tokens.none') }}</p>
-
-          <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
-            <h3 class="text-sm font-semibold">{{ t('tokens.create') }}</h3>
-
-            <UFormField :label="t('tokens.name')">
-              <UInput v-model="tokenDraft.name" class="w-full" :placeholder="t('tokens.namePlaceholder')" />
-            </UFormField>
-
-            <UFormField :label="t('tokens.expiry')">
-              <USelect
-                v-model="tokenDraft.expiresInDays"
-                :items="expiryChoices"
-                value-key="value"
-                class="w-full"
-              />
-            </UFormField>
-
-            <UFormField :label="t('tokens.scopesLabel')">
-              <UCheckboxGroup
-                v-model="tokenDraft.scopes"
-                :items="scopeChoices"
-                value-key="value"
-                size="sm"
-              />
-            </UFormField>
-
-            <UButton
-              color="neutral"
-              class="rounded-xl"
-              :disabled="!tokenDraft.scopes.length"
-              :loading="busy === 'token'"
-              :label="t('tokens.create')"
-              @click="createToken"
-            />
-          </div>
-        </template>
-
-        <template v-else-if="tab === 'sessions'">
-          <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.sessions') }}</h2>
-          <p class="mb-6 text-sm text-muted">{{ t('account.sessionsHint') }}</p>
-
-          <div class="space-y-3">
-            <div
-              v-for="item in sessions"
-              :key="item.token"
-              class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
-            >
-              <UIcon name="i-pixelarticons-devices" class="size-5 shrink-0 text-muted" />
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium">
-                  {{ describeAgent(item.userAgent) || t('account.unknownDevice') }}
-                  <UBadge
-                    v-if="item.token === currentToken"
-                    size="sm"
-                    variant="subtle"
-                    class="ml-1.5 align-middle"
-                    :label="t('account.thisDevice')"
-                  />
-                </p>
-                <p class="truncate text-xs text-muted">
-                  {{ item.ipAddress || '—' }} · {{ new Date(item.updatedAt).toLocaleString(locale) }}
-                </p>
-              </div>
-              <UButton
-                v-if="item.token !== currentToken"
-                size="xs"
-                variant="ghost"
-                color="error"
-                :loading="busy === 'session:' + item.token"
-                :label="t('account.revoke')"
-                @click="revokeSession(item.token)"
+                :loading="busy === 'client:' + client.id"
+                :aria-label="t('oauth.deleteClient')"
+                @click="deleteClient(client.id)"
               />
             </div>
-
-            <p v-if="sessionsLoaded && !sessions.length" class="text-sm text-dimmed">
-              {{ t('account.noSessions') }}
+            <p class="mt-2 break-all text-xs text-dimmed">
+              {{ client.redirectUris.join(' · ') }}
             </p>
+            <p class="text-xs text-dimmed">
+              {{ t('oauth.tokenLife') }}: {{ lifetimeLabel(client.tokenDays) }}
+            </p>
+          </li>
+        </ul>
 
+        <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
+          <h3 class="text-sm font-semibold">{{ t('oauth.register') }}</h3>
+
+          <UFormField :label="t('tokens.name')">
+            <UInput v-model="clientDraft.name" class="w-full" :placeholder="t('oauth.namePlaceholder')" />
+          </UFormField>
+
+          <UFormField :label="t('oauth.redirects')" :help="t('oauth.redirectsHint')">
+            <UTextarea
+              v-model="clientDraft.redirectUris"
+              :rows="2"
+              class="w-full"
+              placeholder="https://example.com/callback"
+            />
+          </UFormField>
+
+          <UFormField :label="t('oauth.tokenLife')" :help="t('oauth.tokenLifeHint')">
+            <USelect
+              v-model="clientDraft.tokenDays"
+              :items="expiryChoices"
+              value-key="value"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField :label="t('oauth.maxScopes')">
+            <UCheckboxGroup
+              v-model="clientDraft.scopes"
+              :items="scopeChoices"
+              value-key="value"
+              size="sm"
+            />
+          </UFormField>
+
+          <UButton
+            color="neutral"
+            class="rounded-xl"
+            :disabled="!clientDraft.name.trim() || !clientDraft.scopes.length"
+            :loading="busy === 'client'"
+            :label="t('oauth.register')"
+            @click="createClient"
+          />
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'tokens'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('tokens.title') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('tokens.hint') }}</p>
+
+        <UAlert
+          v-if="freshToken"
+          color="success"
+          variant="subtle"
+          class="mb-5 rounded-2xl"
+          icon="i-pixelarticons-key"
+          :title="t('tokens.copyNow')"
+        >
+          <template #description>
+            <code class="mt-2 block break-all rounded-lg bg-black/40 p-3 font-mono text-xs">
+              {{ freshToken }}
+            </code>
             <UButton
-              v-if="sessions.length > 1"
+              class="mt-2 rounded-lg"
+              size="xs"
               variant="soft"
+              color="neutral"
+              :label="t('tokens.dismiss')"
+              @click="freshToken = ''"
+            />
+          </template>
+        </UAlert>
+
+        <ul v-if="tokens.length" class="mb-6 space-y-2">
+          <li
+            v-for="token in tokens"
+            :key="token.id"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+          >
+            <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium">
+                {{ token.name }}
+                <span class="font-mono text-xs text-dimmed">…{{ token.hint }}</span>
+              </p>
+              <p class="truncate text-xs text-dimmed">
+                {{ token.scopes.length }} ·
+                {{ token.lastUsed
+                  ? t('tokens.lastUsed', { when: new Date(token.lastUsed).toLocaleDateString(locale) })
+                  : t('tokens.neverUsed') }}
+              </p>
+            </div>
+            <UButton
+              size="xs"
+              variant="ghost"
               color="error"
-              class="rounded-xl"
-              icon="i-pixelarticons-logout"
-              :loading="busy === 'sessions'"
-              :label="t('account.revokeOthers')"
-              @click="revokeOthers"
+              icon="i-pixelarticons-trash"
+              :loading="busy === 'token:' + token.id"
+              :aria-label="t('tokens.revoke')"
+              @click="revokeAccessToken(token.id)"
+            />
+          </li>
+        </ul>
+
+        <p v-else-if="tokensLoaded" class="mb-6 text-sm text-dimmed">{{ t('tokens.none') }}</p>
+
+        <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
+          <h3 class="text-sm font-semibold">{{ t('tokens.create') }}</h3>
+
+          <UFormField :label="t('tokens.name')">
+            <UInput v-model="tokenDraft.name" class="w-full" :placeholder="t('tokens.namePlaceholder')" />
+          </UFormField>
+
+          <UFormField :label="t('tokens.expiry')">
+            <USelect
+              v-model="tokenDraft.expiresInDays"
+              :items="expiryChoices"
+              value-key="value"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField :label="t('tokens.scopesLabel')">
+            <UCheckboxGroup
+              v-model="tokenDraft.scopes"
+              :items="scopeChoices"
+              value-key="value"
+              size="sm"
+            />
+          </UFormField>
+
+          <UButton
+            color="neutral"
+            class="rounded-xl"
+            :disabled="!tokenDraft.scopes.length"
+            :loading="busy === 'token'"
+            :label="t('tokens.create')"
+            @click="createToken"
+          />
+        </div>
+      </template>
+
+      <template v-else-if="tab === 'sessions'">
+        <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.sessions') }}</h2>
+        <p class="mb-6 text-sm text-muted">{{ t('account.sessionsHint') }}</p>
+
+        <div class="space-y-3">
+          <div
+            v-for="item in sessions"
+            :key="item.token"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+          >
+            <UIcon name="i-pixelarticons-devices" class="size-5 shrink-0 text-muted" />
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium">
+                {{ describeAgent(item.userAgent) || t('account.unknownDevice') }}
+                <UBadge
+                  v-if="item.token === currentToken"
+                  size="sm"
+                  variant="subtle"
+                  class="ml-1.5 align-middle"
+                  :label="t('account.thisDevice')"
+                />
+              </p>
+              <p class="truncate text-xs text-muted">
+                {{ item.ipAddress || '—' }} · {{ new Date(item.updatedAt).toLocaleString(locale) }}
+              </p>
+            </div>
+            <UButton
+              v-if="item.token !== currentToken"
+              size="xs"
+              variant="ghost"
+              color="error"
+              :loading="busy === 'session:' + item.token"
+              :label="t('account.revoke')"
+              @click="revokeSession(item.token)"
             />
           </div>
-        </template>
 
-        <template v-else-if="tab === 'connected'">
-          <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('account.connected') }}</h2>
+          <p v-if="sessionsLoaded && !sessions.length" class="text-sm text-dimmed">
+            {{ t('account.noSessions') }}
+          </p>
 
-          <div class="max-w-md space-y-2">
-            <div
-              v-for="id in (providerList?.providers ?? [])"
-              :key="id"
-              class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-3"
-            >
-              <UIcon :name="providerMeta(id).icon" class="size-5 shrink-0" />
-              <span class="flex-1 text-sm font-medium">{{ providerMeta(id).label }}</span>
-              <UBadge v-if="linked(id)" size="sm" variant="subtle" color="success" :label="t('account.linked')" />
-              <UButton
-                v-if="linked(id)"
-                variant="ghost"
-                color="neutral"
-                size="sm"
-                :loading="busy === 'link'"
-                :label="t('account.unlink')"
-                @click="unlink(id)"
-              />
-              <UButton
-                v-else
-                variant="subtle"
-                color="neutral"
-                size="sm"
-                :label="t('account.link')"
-                @click="link(id)"
-              />
-            </div>
+          <UButton
+            v-if="sessions.length > 1"
+            variant="soft"
+            color="error"
+            class="rounded-xl"
+            icon="i-pixelarticons-logout"
+            :loading="busy === 'sessions'"
+            :label="t('account.revokeOthers')"
+            @click="revokeOthers"
+          />
+        </div>
+      </template>
 
-            <p v-if="!(providerList?.providers ?? []).length" class="text-sm text-muted">—</p>
+      <template v-else-if="tab === 'connected'">
+        <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('account.connected') }}</h2>
+
+        <div class="max-w-md space-y-2">
+          <div
+            v-for="id in (providerList?.providers ?? [])"
+            :key="id"
+            class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-3"
+          >
+            <UIcon :name="providerMeta(id).icon" class="size-5 shrink-0" />
+            <span class="flex-1 text-sm font-medium">{{ providerMeta(id).label }}</span>
+            <UBadge v-if="linked(id)" size="sm" variant="subtle" color="success" :label="t('account.linked')" />
+            <UButton
+              v-if="linked(id)"
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              :loading="busy === 'link'"
+              :label="t('account.unlink')"
+              @click="unlink(id)"
+            />
+            <UButton
+              v-else
+              variant="subtle"
+              color="neutral"
+              size="sm"
+              :label="t('account.link')"
+              @click="link(id)"
+            />
           </div>
-        </template>
 
-        <template v-else>
-          <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('friends.title') }}</h2>
+          <p v-if="!(providerList?.providers ?? []).length" class="text-sm text-muted">—</p>
+        </div>
+      </template>
 
-          <div class="max-w-md space-y-6">
-            <form class="flex flex-wrap gap-2" @submit.prevent="addFriend">
-              <UInput v-model="friendQuery" size="lg" class="min-w-0 flex-1" :placeholder="t('friends.addPlaceholder')" />
-              <UButton
-                type="submit"
-                color="neutral"
-                size="lg"
-                class="rounded-xl"
-                :loading="busy === 'friend'"
-                :disabled="!friendQuery"
-                :label="t('friends.add')"
-              />
-            </form>
+      <template v-else>
+        <h2 class="mb-6 text-lg font-semibold tracking-tight">{{ t('friends.title') }}</h2>
 
-            <div v-if="friends?.incoming?.length">
-              <h3 class="mb-2 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('friends.incoming') }}</h3>
-              <div class="space-y-2">
-                <div
-                  v-for="req in friends.incoming"
-                  :key="req.id"
-                  class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
-                >
-                  <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
-                  <UButton size="sm" color="neutral" variant="subtle" :label="t('friends.accept')" @click="answer(req.id, 'accept')" />
-                  <UButton size="sm" color="neutral" variant="ghost" :label="t('friends.reject')" @click="answer(req.id, 'reject')" />
-                </div>
+        <div class="max-w-md space-y-6">
+          <form class="flex flex-wrap gap-2" @submit.prevent="addFriend">
+            <UInput v-model="friendQuery" size="lg" class="min-w-0 flex-1" :placeholder="t('friends.addPlaceholder')" />
+            <UButton
+              type="submit"
+              color="neutral"
+              size="lg"
+              class="rounded-xl"
+              :loading="busy === 'friend'"
+              :disabled="!friendQuery"
+              :label="t('friends.add')"
+            />
+          </form>
+
+          <div v-if="friends?.incoming?.length">
+            <h3 class="mb-2 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('friends.incoming') }}</h3>
+            <div class="space-y-2">
+              <div
+                v-for="req in friends.incoming"
+                :key="req.id"
+                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+              >
+                <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
+                <UButton size="sm" color="neutral" variant="subtle" :label="t('friends.accept')" @click="answer(req.id, 'accept')" />
+                <UButton size="sm" color="neutral" variant="ghost" :label="t('friends.reject')" @click="answer(req.id, 'reject')" />
               </div>
-            </div>
-
-            <div v-if="friends?.outgoing?.length">
-              <h3 class="mb-2 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('friends.outgoing') }}</h3>
-              <div class="space-y-2">
-                <div
-                  v-for="req in friends.outgoing"
-                  :key="req.id"
-                  class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
-                >
-                  <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
-                  <span class="text-xs text-dimmed">{{ t('friends.pending') }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div v-if="friends?.friends?.length" class="space-y-2">
-                <div
-                  v-for="friend in friends.friends"
-                  :key="friend.friendshipId"
-                  class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
-                >
-                  <img v-if="friend.image" :src="friend.image" alt="" class="size-8 rounded-full object-cover">
-                  <span
-                    v-else
-                    class="flex size-8 items-center justify-center rounded-full text-xs font-bold"
-                    :style="`background:hsl(${initialsAvatar(label(friend)).hue} 60% 30%)`"
-                  >{{ initialsAvatar(label(friend)).letter }}</span>
-
-                  <span class="flex-1 truncate text-sm">{{ label(friend) }}</span>
-
-                  <UButton
-                    size="sm"
-                    variant="ghost"
-                    color="neutral"
-                    icon="i-pixelarticons-avatar-circle-minus"
-                    :aria-label="t('friends.remove')"
-                    @click="removeFriend(friend.friendshipId)"
-                  />
-                </div>
-              </div>
-              <p v-else class="text-sm/relaxed text-muted">{{ t('friends.empty') }}</p>
             </div>
           </div>
-        </template>
-      </UiPanel>
-    </div>
+
+          <div v-if="friends?.outgoing?.length">
+            <h3 class="mb-2 text-xs uppercase tracking-[0.12em] text-dimmed">{{ t('friends.outgoing') }}</h3>
+            <div class="space-y-2">
+              <div
+                v-for="req in friends.outgoing"
+                :key="req.id"
+                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+              >
+                <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
+                <span class="text-xs text-dimmed">{{ t('friends.pending') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div v-if="friends?.friends?.length" class="space-y-2">
+              <div
+                v-for="friend in friends.friends"
+                :key="friend.friendshipId"
+                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+              >
+                <img v-if="friend.image" :src="friend.image" alt="" class="size-8 rounded-full object-cover">
+                <span
+                  v-else
+                  class="flex size-8 items-center justify-center rounded-full text-xs font-bold"
+                  :style="`background:hsl(${initialsAvatar(label(friend)).hue} 60% 30%)`"
+                >{{ initialsAvatar(label(friend)).letter }}</span>
+
+                <span class="flex-1 truncate text-sm">{{ label(friend) }}</span>
+
+                <UButton
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  icon="i-pixelarticons-avatar-circle-minus"
+                  :aria-label="t('friends.remove')"
+                  @click="removeFriend(friend.friendshipId)"
+                />
+              </div>
+            </div>
+            <p v-else class="text-sm/relaxed text-muted">{{ t('friends.empty') }}</p>
+          </div>
+        </div>
+      </template>
+    </UiPanel>
 
     <UAlert
       v-if="error"
@@ -1520,5 +1538,5 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
       :description="notice"
     />
 
-  </UiPageShell>
+  </div>
 </template>

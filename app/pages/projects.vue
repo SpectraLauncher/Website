@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'catalog' })
+definePageMeta({ middleware: 'catalog', layout: 'account' })
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -40,7 +40,7 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-6xl">
+  <div>
     <UiPageHeader :title="t('nav.account.projects')" :description="t('account.projectsIntro')">
       <div v-if="data?.projects.length" class="flex gap-8 pb-1.5">
         <UiStat :label="t('catalog.org.projects')" :value="count(data.projects.length)" />
@@ -93,5 +93,5 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
       <UIcon name="i-pixelarticons-package" class="mx-auto size-10 text-dimmed" />
       <p class="mt-3 text-sm text-muted">{{ t('account.noProjects') }}</p>
     </UiPanel>
-  </UiPageShell>
+  </div>
 </template>

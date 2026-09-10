@@ -1,12 +1,21 @@
 <script setup lang="ts">
 const props = defineProps<{ items: SideNavItem[] }>()
-const active = defineModel<string>({ required: true })
+// Optional: a sidebar whose every entry is a link is bound with :model-value
+// alone, and nothing ever writes back.
+const active = defineModel<string>({ default: '' })
 
 const sections = computed(() => groupSideNav(props.items))
 </script>
 
 <template>
   <nav class="flex gap-1 overflow-x-auto rounded-2xl border border-panel-line bg-panel p-2.5 lg:flex-col lg:overflow-x-visible">
+    <!-- Whose sidebar this is. Hidden on a narrow screen, where the nav is a
+         scrolling row of entries and a card would eat the whole first screen. -->
+    <div v-if="$slots.header" class="hidden lg:block">
+      <slot name="header" />
+      <div class="mx-1 mb-1.5 mt-2.5 h-px bg-inset-line"></div>
+    </div>
+
     <template v-for="section in sections" :key="section.title">
       <p
         v-if="section.title"

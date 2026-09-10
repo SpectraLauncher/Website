@@ -2545,7 +2545,8 @@
     "closeBlockers": {
       "sole_owner": "Jesteś jedynym właścicielem {detail} — przekaż ją albo usuń.",
       "has_sales": "{detail} zakończona sprzedaż musi pozostać przypisana."
-    }
+    },
+    "settingsIntro": "Konto, bezpieczeństwo, powiadomienia i klucze dla innych aplikacji."
   },
   "friends": {
     "title": "Znajomi",

@@ -2545,7 +2545,8 @@
     "closeBlockers": {
       "sole_owner": "You are the only owner of {detail} — hand it over or delete it first.",
       "has_sales": "{detail} completed sale(s) have to stay attributable."
-    }
+    },
+    "settingsIntro": "Account, security, notifications and the keys other apps use."
   },
   "friends": {
     "title": "Friends",

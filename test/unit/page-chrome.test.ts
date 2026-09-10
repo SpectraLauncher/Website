@@ -37,6 +37,9 @@ function nested(path: string): boolean {
   return false
 }
 
+// A page that names a layout is framed by it, so the bar is the layout's job.
+const layout = (source: string) => /definePageMeta\([^)]*\blayout\s*:\s*['"]([\w-]+)['"]/.exec(source)?.[1]
+
 it('kazda strona renderuje nawigacje', () => {
   const found = [...pages('app/pages')]
   expect(found.length).toBeGreaterThan(20)
@@ -45,8 +48,24 @@ it('kazda strona renderuje nawigacje', () => {
     if (BARE.includes(path) || nested(path)) continue
 
     const source = readFileSync(path, 'utf8')
+    const named = layout(source)
+
+    if (named) {
+      const file = `app/layouts/${named}.vue`
+      expect(existsSync(file), `${path} -> ${file}`).toBe(true)
+      expect(CHROME.some(tag => readFileSync(file, 'utf8').includes(tag)), file).toBe(true)
+      continue
+    }
+
     expect(CHROME.some(tag => source.includes(tag)), path).toBe(true)
   }
+})
+
+// A layout only reaches a page through <NuxtLayout>. Without it Nuxt renders the
+// page alone and every layout in the directory is dead weight nobody notices —
+// which is how nuxt.config's layoutTransition sat inert.
+it('app.vue renderuje layout', () => {
+  expect(readFileSync('app/app.vue', 'utf8')).toContain('<NuxtLayout>')
 })
 
 // A <NuxtPage /> inside a v-if is worse than a missing one: the child route
