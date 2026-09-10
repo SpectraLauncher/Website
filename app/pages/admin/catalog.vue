@@ -713,7 +713,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
         <li
           v-for="report in reports"
           :key="report.id"
-          class="rounded-2xl border border-inset-line bg-inset p-4"
+          class="rounded-2xl border border-raised-line bg-raised p-4"
         >
           <div class="mb-2 flex flex-wrap items-center gap-2 text-sm">
             <UBadge size="sm" variant="subtle" :label="t(`reports.reasons.${report.reason}`)" />
@@ -802,7 +802,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
         <li
           v-for="entry in queue"
           :key="entry.id"
-          class="flex flex-wrap items-center gap-3 rounded-2xl border border-inset-line bg-inset p-3"
+          class="flex flex-wrap items-center gap-3 rounded-2xl border border-raised-line bg-raised p-3"
         >
           <img
             v-if="entry.icon"
@@ -903,7 +903,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             />
           </div>
 
-          <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-inset-line bg-inset p-4">
+          <label class="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-raised-line bg-raised p-4">
             <input v-model="authorship" type="checkbox" class="mt-0.5 size-4 shrink-0 accent-primary">
             <span class="text-sm text-muted">{{ t('catalog.admin.authorship') }}</span>
           </label>
@@ -929,7 +929,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           class="rounded-2xl border border-panel-line bg-panel p-6"
         >
           <div class="mb-4 flex flex-wrap items-center gap-3">
-            <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-inset-line bg-inset">
+            <label class="relative grid size-12 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-xl border border-raised-line bg-raised">
               <img v-if="selected.icon" :src="selected.icon" alt="" class="size-full object-cover">
               <UIcon v-else name="i-pixelarticons-image-plus" class="size-5 text-dimmed" />
               <input
@@ -1038,7 +1038,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <li
                 v-for="key in DISCLOSURE_KEYS"
                 :key="key"
-                class="rounded-2xl border border-inset-line bg-inset p-3"
+                class="rounded-2xl border border-raised-line bg-raised p-3"
               >
                 <UCheckbox
                   :model-value="Boolean(disclosures[key])"
@@ -1153,7 +1153,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             <li
               v-for="image in gallery"
               :key="image.id"
-              class="flex flex-wrap items-center gap-3 rounded-2xl border border-inset-line bg-inset p-3"
+              class="flex flex-wrap items-center gap-3 rounded-2xl border border-raised-line bg-raised p-3"
             >
               <img :src="image.url" alt="" class="h-14 w-24 shrink-0 rounded-lg object-cover">
               <UInput
@@ -1204,7 +1204,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             <li
               v-for="version in selected.versions"
               :key="version.id"
-              class="rounded-2xl border border-inset-line bg-inset px-4 py-3"
+              class="rounded-2xl border border-raised-line bg-raised px-4 py-3"
             >
               <div class="flex flex-wrap items-center gap-2">
                 <span class="font-mono text-sm">{{ version.number }}</span>

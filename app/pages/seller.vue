@@ -141,7 +141,7 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
     />
 
     <div v-else class="mt-8 space-y-6">
-      <div class="rounded-2xl border border-default p-5">
+      <div class="rounded-2xl border border-panel-line bg-panel p-5">
         <div class="flex items-center justify-between gap-4">
           <div>
             <p class="font-medium">{{ t('seller.account') }}</p>
@@ -161,7 +161,7 @@ useSeoMeta({ title: () => t('seller.title'), robots: 'noindex' })
         </ul>
       </div>
 
-      <div v-if="!data?.account && !mounted" class="rounded-2xl border border-default p-5">
+      <div v-if="!data?.account && !mounted" class="rounded-2xl border border-panel-line bg-panel p-5">
         <p class="font-medium">{{ t('seller.country') }}</p>
         <p class="mt-1 text-sm text-muted">{{ t('seller.countryHint') }}</p>
 

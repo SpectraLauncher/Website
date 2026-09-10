@@ -76,7 +76,7 @@ useSeoMeta({ title: () => t('revenue.title'), robots: 'noindex' })
     />
 
     <div v-if="data" class="mt-8 grid gap-3 sm:grid-cols-2">
-      <div class="rounded-2xl border border-default p-4">
+      <div class="rounded-2xl border border-panel-line bg-panel p-4">
         <p class="text-sm text-muted">{{ t('revenue.pending') }}</p>
         <p class="mt-1 text-2xl font-semibold">{{ money(data.balance.pendingMinor) }}</p>
         <!-- Negative means a chargeback is still being worked off. Later
@@ -85,7 +85,7 @@ useSeoMeta({ title: () => t('revenue.title'), robots: 'noindex' })
         <p v-else class="mt-2 text-sm text-muted">{{ t('revenue.pendingHint') }}</p>
       </div>
 
-      <div class="rounded-2xl border border-default p-4">
+      <div class="rounded-2xl border border-panel-line bg-panel p-4">
         <p class="text-sm text-muted">{{ t('revenue.available') }}</p>
         <p class="mt-1 text-2xl font-semibold">{{ money(data.available) }}</p>
         <p class="mt-2 text-sm text-muted">
@@ -111,7 +111,7 @@ useSeoMeta({ title: () => t('revenue.title'), robots: 'noindex' })
 
     <p v-if="!data?.entries.length" class="mt-3 text-muted">{{ t('revenue.noEntries') }}</p>
 
-    <ul v-else class="mt-3 divide-y divide-default rounded-2xl border border-default">
+    <ul v-else class="mt-3 divide-y divide-raised-line rounded-2xl border border-panel-line bg-panel">
       <li v-for="entry in data.entries" :key="entry.id" class="flex items-center gap-3 p-4">
         <div class="flex-1">
           <p class="font-medium">{{ entry.title || t(`revenue.kind.${entry.kind}`) }}</p>

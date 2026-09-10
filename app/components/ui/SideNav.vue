@@ -18,7 +18,7 @@ const link = resolveComponent('NuxtLink')
          scrolling row of entries and a card would eat the whole first screen. -->
     <div v-if="$slots.header" class="hidden lg:block">
       <slot name="header" />
-      <div class="mx-1 mb-1.5 mt-2.5 h-px bg-inset-line"></div>
+      <div class="mx-1 mb-1.5 mt-2.5 h-px bg-raised-line"></div>
     </div>
 
     <template v-for="section in sections" :key="section.title">

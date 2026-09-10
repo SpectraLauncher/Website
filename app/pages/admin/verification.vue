@@ -76,7 +76,7 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
         class="rounded-2xl border border-panel-line bg-panel p-6"
       >
         <div class="flex flex-wrap items-center gap-3">
-          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-inset-line bg-inset">
+          <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl border border-raised-line bg-raised">
             <img v-if="item.subject.image" :src="item.subject.image" alt="" class="size-full object-cover">
             <UIcon
               v-else

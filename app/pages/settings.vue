@@ -795,7 +795,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
             </div>
           </div>
 
-          <div class="rounded-2xl border border-inset-line bg-inset p-5">
+          <div class="rounded-2xl border border-raised-line bg-raised p-5">
             <h3 class="mb-1 text-sm font-semibold">{{ t('account.passkeys') }}</h3>
             <p class="mb-4 text-xs text-muted">{{ t('account.passkeysHint') }}</p>
 
@@ -803,7 +803,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               <li
                 v-for="key in passkeys"
                 :key="key.id"
-                class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
               >
                 <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
                 <div class="min-w-0 flex-1">
@@ -858,7 +858,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
             </div>
           </div>
 
-          <div class="rounded-2xl border border-inset-line bg-inset p-5">
+          <div class="rounded-2xl border border-raised-line bg-raised p-5">
             <div class="mb-1 flex items-center gap-2">
               <h3 class="text-sm font-semibold">{{ t('account.twoFactor') }}</h3>
               <UBadge
@@ -877,7 +877,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               <div v-if="twoFa.backup.length" class="mb-4">
                 <p class="mb-2 text-xs text-dimmed">{{ t('account.backupCodes') }}</p>
                 <div class="grid grid-cols-2 gap-1.5 font-mono text-xs">
-                  <span v-for="code in twoFa.backup" :key="code" class="rounded-lg bg-white/5 px-2 py-1.5">{{ code }}</span>
+                  <span v-for="code in twoFa.backup" :key="code" class="rounded-lg border border-raised-line bg-raised px-2 py-1.5">{{ code }}</span>
                 </div>
               </div>
 
@@ -929,8 +929,8 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               type="button"
               class="flex w-full cursor-pointer items-start gap-3 rounded-2xl border p-4 text-left transition-colors"
               :class="friendsVisibility === value
-                ? 'border-zinc-400 bg-white/5'
-                : 'border-inset-line bg-inset hover:border-zinc-600'"
+                ? 'border-zinc-400 bg-raised'
+                : 'border-raised-line bg-raised hover:border-zinc-600'"
               :disabled="busy === 'privacy'"
               @click="savePrivacy(value)"
             >
@@ -1015,7 +1015,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <div
             v-for="group in NOTIFICATION_GROUP_KEYS"
             :key="group"
-            class="rounded-2xl border border-white/10 bg-white/5 p-4"
+            class="rounded-2xl border border-raised-line bg-raised p-4"
           >
             <h3 class="mb-1 text-sm font-semibold">{{ t(`account.groups.${group}`) }}</h3>
             <p class="mb-3 text-xs text-muted">{{ t(`account.groupHints.${group}`) }}</p>
@@ -1093,9 +1093,9 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
             <li
               v-for="person in blocked"
               :key="person.id"
-              class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+              class="flex items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
             >
-              <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-white/5">
+              <span class="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-raised-line bg-raised">
                 <img v-if="person.image" :src="person.image" alt="" class="size-full object-cover">
                 <UIcon v-else name="i-pixelarticons-user" class="size-4 text-dimmed" />
               </span>
@@ -1150,7 +1150,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <li
             v-for="app in authorizations"
             :key="app.id"
-            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-4"
           >
             <UIcon name="i-pixelarticons-archive" class="size-4 shrink-0 text-muted" />
             <div class="min-w-0 flex-1">
@@ -1178,7 +1178,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <li
             v-for="client in clients"
             :key="client.id"
-            class="rounded-xl border border-white/10 bg-white/5 p-4"
+            class="rounded-xl border border-raised-line bg-raised p-4"
           >
             <div class="flex flex-wrap items-center gap-3">
               <div class="min-w-0 flex-1">
@@ -1213,7 +1213,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           </li>
         </ul>
 
-        <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
+        <div class="max-w-lg space-y-4 rounded-2xl border border-raised-line bg-raised p-5">
           <h3 class="text-sm font-semibold">{{ t('oauth.register') }}</h3>
 
           <UFormField :label="t('tokens.name')">
@@ -1289,7 +1289,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <li
             v-for="token in tokens"
             :key="token.id"
-            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-4"
           >
             <UIcon name="i-pixelarticons-key" class="size-4 shrink-0 text-muted" />
             <div class="min-w-0 flex-1">
@@ -1318,7 +1318,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
 
         <p v-else-if="tokensLoaded" class="mb-6 text-sm text-dimmed">{{ t('tokens.none') }}</p>
 
-        <div class="max-w-lg space-y-4 rounded-2xl border border-inset-line bg-inset p-5">
+        <div class="max-w-lg space-y-4 rounded-2xl border border-raised-line bg-raised p-5">
           <h3 class="text-sm font-semibold">{{ t('tokens.create') }}</h3>
 
           <UFormField :label="t('tokens.name')">
@@ -1362,7 +1362,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <div
             v-for="item in sessions"
             :key="item.token"
-            class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+            class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-4"
           >
             <UIcon name="i-pixelarticons-devices" class="size-5 shrink-0 text-muted" />
             <div class="min-w-0 flex-1">
@@ -1415,7 +1415,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
           <div
             v-for="id in (providerList?.providers ?? [])"
             :key="id"
-            class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-3"
+            class="flex items-center gap-3 rounded-2xl border border-raised-line bg-raised px-4 py-3"
           >
             <UIcon :name="providerMeta(id).icon" class="size-5 shrink-0" />
             <span class="flex-1 text-sm font-medium">{{ providerMeta(id).label }}</span>
@@ -1466,7 +1466,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               <div
                 v-for="req in friends.incoming"
                 :key="req.id"
-                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+                class="flex items-center gap-3 rounded-2xl border border-raised-line bg-raised px-4 py-2.5"
               >
                 <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
                 <UButton size="sm" color="neutral" variant="subtle" :label="t('friends.accept')" @click="answer(req.id, 'accept')" />
@@ -1481,7 +1481,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               <div
                 v-for="req in friends.outgoing"
                 :key="req.id"
-                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+                class="flex items-center gap-3 rounded-2xl border border-raised-line bg-raised px-4 py-2.5"
               >
                 <span class="flex-1 truncate text-sm">{{ label(req.user) }}</span>
                 <span class="text-xs text-dimmed">{{ t('friends.pending') }}</span>
@@ -1494,7 +1494,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
               <div
                 v-for="friend in friends.friends"
                 :key="friend.friendshipId"
-                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset px-4 py-2.5"
+                class="flex items-center gap-3 rounded-2xl border border-raised-line bg-raised px-4 py-2.5"
               >
                 <img v-if="friend.image" :src="friend.image" alt="" class="size-8 rounded-full object-cover">
                 <span

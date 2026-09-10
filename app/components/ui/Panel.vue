@@ -13,7 +13,7 @@ const tag = computed(() => (props.to ? resolveComponent('NuxtLink') : 'div'))
     :to="to"
     class="block rounded-2xl border transition-colors"
     :class="[
-      inset ? 'border-inset-line bg-inset' : 'border-panel-line bg-panel',
+      inset ? 'border-raised-line bg-raised' : 'border-panel-line bg-panel',
       to && 'hover:border-zinc-600',
     ]"
   >

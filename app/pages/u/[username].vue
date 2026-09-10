@@ -234,7 +234,7 @@ useSchemaOrg(computed(() => (data.value
   <UiPageShell>
     <template v-if="error || !data">
       <UiPanel class="mx-auto max-w-lg p-10 text-center">
-        <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-inset-line bg-inset">
+        <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-raised-line bg-raised">
           <UIcon name="i-pixelarticons-avatar-circle-x" class="size-6 text-muted" />
         </span>
         <h1 class="mt-4 text-2xl font-bold tracking-tight text-highlighted">{{ t('profile.notFound') }}</h1>
@@ -317,7 +317,7 @@ useSchemaOrg(computed(() => (data.value
                 v-for="badge in data.badges"
                 :key="badge.slug"
                 :to="localePath(`/badges/${badge.slug}`)"
-                class="inline-flex h-8 items-center gap-2 rounded-full border border-inset-line bg-inset px-3 text-xs font-semibold text-muted transition-colors hover:border-zinc-600 hover:text-highlighted"
+                class="inline-flex h-8 items-center gap-2 rounded-full border border-raised-line bg-raised px-3 text-xs font-semibold text-muted transition-colors hover:border-zinc-600 hover:text-highlighted"
                 :title="badge.description || badge.name"
               >
                 <img v-if="badge.image" :src="badge.image" :alt="''" class="size-4 object-contain">
@@ -339,7 +339,7 @@ useSchemaOrg(computed(() => (data.value
           </div>
         </div>
 
-        <nav class="flex gap-1 overflow-x-auto border-t border-inset-line px-3">
+        <nav class="flex gap-1 overflow-x-auto border-t border-raised-line px-3">
           <button
             v-for="id in TABS"
             :key="id"
@@ -406,7 +406,7 @@ useSchemaOrg(computed(() => (data.value
                   v-for="friend in data.friends"
                   :key="friend.friendshipId"
                   :to="localePath(`/u/${friend.username}`)"
-                  class="flex items-center gap-3 rounded-xl border border-inset-line bg-inset px-4 py-3 transition-colors hover:border-zinc-600"
+                  class="flex items-center gap-3 rounded-xl border border-raised-line bg-raised px-4 py-3 transition-colors hover:border-zinc-600"
                 >
                   <span class="relative shrink-0">
                     <img v-if="friend.image" :src="friend.image" alt="" class="size-9 rounded-full object-cover">
@@ -450,7 +450,7 @@ useSchemaOrg(computed(() => (data.value
               <span class="text-right font-semibold text-default">{{ row.v }}</span>
             </div>
 
-            <p v-if="data.user.mcUuid" class="mt-3 break-all border-t border-inset-line pt-3 font-mono text-[11px] text-dimmed">
+            <p v-if="data.user.mcUuid" class="mt-3 break-all border-t border-raised-line pt-3 font-mono text-[11px] text-dimmed">
               {{ data.user.mcUuid }}
             </p>
           </UiPanel>
@@ -463,7 +463,7 @@ useSchemaOrg(computed(() => (data.value
               <div
                 v-for="cape in capes"
                 :key="cape.key"
-                class="overflow-hidden rounded-lg border border-inset-line bg-inset"
+                class="overflow-hidden rounded-lg border border-raised-line bg-raised"
                 :title="cape.name"
               >
                 <img :src="cape.thumb" :alt="cape.name" class="block w-full [image-rendering:pixelated]">
@@ -488,7 +488,7 @@ useSchemaOrg(computed(() => (data.value
             </div>
             <button
               type="button"
-              class="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              class="mb-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-left transition-colors hover:border-zinc-600"
               @click="copy(give)"
             >
               <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ give }}</code>
@@ -498,7 +498,7 @@ useSchemaOrg(computed(() => (data.value
             <p class="mb-1.5 text-xs text-dimmed">{{ t('profile.renderApi') }}</p>
             <button
               type="button"
-              class="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              class="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-left transition-colors hover:border-zinc-600"
               @click="copy(renderUrl)"
             >
               <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ renderUrl }}</code>
@@ -518,7 +518,7 @@ useSchemaOrg(computed(() => (data.value
 
             <button
               type="button"
-              class="mb-3 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-inset-line bg-inset px-3 py-2 text-left transition-colors hover:border-zinc-600"
+              class="mb-3 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-left transition-colors hover:border-zinc-600"
               @click="copy(profileUrl)"
             >
               <code class="min-w-0 flex-1 truncate font-mono text-xs text-muted">{{ profileUrl }}</code>

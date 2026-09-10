@@ -118,7 +118,7 @@ const VISIBILITIES = computed(() =>
 
     <UAlert v-if="error" color="error" variant="subtle" class="mb-4 rounded-2xl" :description="error" />
 
-    <div v-if="creating" class="mb-6 rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+    <div v-if="creating" class="mb-6 rounded-2xl border border-panel-line bg-panel p-6">
       <div class="grid gap-3 sm:grid-cols-2">
         <UInput v-model="draft.title" :placeholder="t('collections.titlePlaceholder')" />
         <USelect v-model="draft.visibility" :items="VISIBILITIES" value-key="value" />
@@ -145,7 +145,7 @@ const VISIBILITIES = computed(() =>
       <li
         v-for="collection in ordered"
         :key="collection.id"
-        class="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
+        class="flex flex-wrap items-center gap-4 rounded-2xl border border-panel-line bg-panel p-4"
       >
         <UIcon
           :name="collection.kind === 'favourites' ? 'i-pixelarticons-star' : 'i-pixelarticons-bookmark'"
@@ -172,7 +172,7 @@ const VISIBILITIES = computed(() =>
       </li>
     </ul>
 
-    <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
+    <p v-else-if="loaded" class="rounded-2xl border border-panel-line bg-panel p-10 text-center text-sm text-dimmed">
       {{ t('collections.empty') }}
     </p>
   </div>

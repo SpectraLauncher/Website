@@ -383,7 +383,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
             <div
               v-for="figure in KEY_FIGURES"
               :key="figure.label"
-              class="rounded-2xl border border-inset-line bg-inset p-4"
+              class="rounded-2xl border border-raised-line bg-raised p-4"
             >
               <div class="mb-2 flex items-center gap-2 text-dimmed">
                 <UIcon :name="figure.icon" class="size-4" />
@@ -396,7 +396,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
 
           <template v-if="stats?.activeSeries?.length">
             <h3 class="mb-3 mt-8 text-sm font-semibold">Aktywne instalacje — 30 dni</h3>
-            <div class="flex h-32 items-end gap-1 rounded-2xl border border-inset-line bg-inset p-4">
+            <div class="flex h-32 items-end gap-1 rounded-2xl border border-raised-line bg-raised p-4">
               <div
                 v-for="point in stats.activeSeries"
                 :key="point.label"
@@ -424,7 +424,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                 { title: 'Używane funkcje', rows: stats.features }
               ]"
               :key="group.title"
-              class="rounded-2xl border border-inset-line bg-inset p-5"
+              class="rounded-2xl border border-raised-line bg-raised p-5"
             >
               <h3 class="mb-3 text-sm font-semibold">{{ group.title }}</h3>
 
@@ -459,7 +459,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                   { label: 'W magazynie', value: bytes(stats.shares.overview.storedBytes) }
                 ]"
                 :key="figure.label"
-                class="rounded-2xl border border-inset-line bg-inset p-4"
+                class="rounded-2xl border border-raised-line bg-raised p-4"
               >
                 <p class="font-mono text-2xl font-semibold">{{ figure.value }}</p>
                 <p class="text-xs text-muted">{{ figure.label }}</p>
@@ -467,7 +467,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
             </div>
 
             <h3 class="mb-3 text-sm font-semibold">Ostatnie</h3>
-            <div class="overflow-x-auto rounded-2xl border border-inset-line bg-inset">
+            <div class="overflow-x-auto rounded-2xl border border-raised-line bg-raised">
               <table class="w-full min-w-[620px] text-left text-xs">
                 <thead class="text-dimmed">
                   <tr class="border-b border-white/10">
@@ -513,10 +513,10 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
               <div
                 v-for="badge in badges"
                 :key="badge.slug"
-                class="flex items-center gap-3 rounded-2xl border border-inset-line bg-inset p-4"
+                class="flex items-center gap-3 rounded-2xl border border-raised-line bg-raised p-4"
               >
                 <img v-if="badge.image" :src="badge.image" :alt="badge.name" class="size-10 shrink-0 rounded-xl object-contain">
-                <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl border border-inset-line bg-inset">
+                <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl border border-raised-line bg-raised">
                   <UIcon name="i-pixelarticons-trophy" class="size-5 text-primary" />
                 </span>
 
@@ -546,21 +546,21 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
             </div>
 
             <div class="space-y-6">
-              <div class="rounded-2xl border border-inset-line bg-inset p-5">
+              <div class="rounded-2xl border border-raised-line bg-raised p-5">
                 <h3 class="mb-4 text-sm font-semibold">{{ badgeEditing ? 'Edytuj odznakę' : 'Nowa odznaka' }}</h3>
 
                 <div class="space-y-2">
                   <UInput v-model="badgeForm.slug" size="sm" class="w-full font-mono" placeholder="slug, np. og" :disabled="badgeEditing" />
                   <UInput v-model="badgeForm.name" size="sm" class="w-full" placeholder="nazwa" />
                   <UTextarea v-model="badgeForm.description" :rows="2" size="sm" class="w-full" placeholder="opis" />
-                  <div class="flex items-center gap-3 rounded-xl border border-inset-line bg-inset p-2">
+                  <div class="flex items-center gap-3 rounded-xl border border-raised-line bg-raised p-2">
                     <img
                       v-if="badgeForm.image"
                       :src="badgeForm.image"
                       alt=""
                       class="size-12 shrink-0 rounded-lg object-contain"
                     >
-                    <span v-else class="grid size-12 shrink-0 place-items-center rounded-lg border border-inset-line bg-inset">
+                    <span v-else class="grid size-12 shrink-0 place-items-center rounded-lg border border-raised-line bg-raised">
                       <UIcon name="i-pixelarticons-image" class="size-5 text-dimmed" />
                     </span>
 
@@ -629,7 +629,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                 </div>
               </div>
 
-              <div class="rounded-2xl border border-inset-line bg-inset p-5">
+              <div class="rounded-2xl border border-raised-line bg-raised p-5">
                 <h3 class="mb-4 text-sm font-semibold">Przyznaj ręcznie</h3>
 
                 <div class="space-y-2">
@@ -696,7 +696,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
             placeholder="nick, e-mail albo konto Minecraft"
           />
 
-          <div class="overflow-x-auto rounded-2xl border border-inset-line bg-inset">
+          <div class="overflow-x-auto rounded-2xl border border-raised-line bg-raised">
             <table class="w-full min-w-[760px] text-left text-sm">
               <thead class="text-xs text-dimmed">
                 <tr class="border-b border-white/10">

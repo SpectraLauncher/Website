@@ -23,7 +23,7 @@ const versions = computed(() => gameVersionRange(props.hit.gameVersions))
         <span
           v-for="category in hit.categories.slice(0, 5)"
           :key="category"
-          class="inline-flex items-center gap-1.5 rounded-md border border-inset-line bg-inset px-2 py-0.5 text-xs font-semibold text-muted"
+          class="inline-flex items-center gap-1.5 rounded-md border border-raised-line bg-raised px-2 py-0.5 text-xs font-semibold text-muted"
         >
           <IconCategory :name="category" />
           {{ t(`catalog.categoryNames.${category}`) }}
@@ -45,7 +45,7 @@ const versions = computed(() => gameVersionRange(props.hit.gameVersions))
       class="inline-flex h-7 shrink-0 items-center rounded-full px-3 text-xs font-bold"
       :class="hit.price > 0
         ? 'bg-primary font-mono text-white'
-        : 'border border-inset-line bg-inset text-muted'"
+        : 'border border-raised-line bg-raised text-muted'"
     >{{ price(hit.price) }}</span>
   </UiPanel>
 </template>

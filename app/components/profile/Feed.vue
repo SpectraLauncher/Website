@@ -29,7 +29,7 @@ function detail(event: ProfileEvent): string {
   <UiPanel class="overflow-hidden">
     <h2 class="px-5 pb-3 pt-4 text-base font-bold text-highlighted">{{ t('profile.feed.title') }}</h2>
 
-    <p v-if="!events.length" class="border-t border-inset-line px-5 py-8 text-center text-sm text-muted">
+    <p v-if="!events.length" class="border-t border-raised-line px-5 py-8 text-center text-sm text-muted">
       {{ t('profile.feed.empty') }}
     </p>
 
@@ -37,13 +37,13 @@ function detail(event: ProfileEvent): string {
       v-for="(event, index) in events"
       :key="`${event.kind}-${event.at}-${index}`"
       :to="localePath(event.path)"
-      class="flex flex-wrap items-start gap-3 border-t border-inset-line px-5 py-3 transition-colors hover:bg-white/5"
+      class="flex flex-wrap items-start gap-3 border-t border-raised-line px-5 py-3 transition-colors hover:bg-white/5"
     >
       <span
         class="grid size-8 shrink-0 place-items-center rounded-lg border"
         :class="MARKS[event.kind].tint
           ? 'border-primary/40 bg-primary/10 text-primary'
-          : 'border-inset-line bg-inset text-muted'"
+          : 'border-raised-line bg-raised text-muted'"
       >
         <UIcon :name="MARKS[event.kind].icon" class="size-4" />
       </span>

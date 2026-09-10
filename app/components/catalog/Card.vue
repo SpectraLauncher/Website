@@ -23,7 +23,7 @@ const { count, when, price } = useCatalogFormat()
         class="inline-flex h-6 shrink-0 items-center rounded-full px-2.5 text-[11px] font-bold"
         :class="hit.price > 0
           ? 'bg-primary font-mono text-white'
-          : 'border border-inset-line bg-inset text-muted'"
+          : 'border border-raised-line bg-raised text-muted'"
       >{{ price(hit.price) }}</span>
     </span>
 
@@ -33,7 +33,7 @@ const { count, when, price } = useCatalogFormat()
       <span
         v-for="category in hit.categories.slice(0, 3)"
         :key="category"
-        class="inline-flex items-center gap-1.5 rounded-md border border-inset-line bg-inset px-2 py-0.5 text-xs font-semibold text-muted"
+        class="inline-flex items-center gap-1.5 rounded-md border border-raised-line bg-raised px-2 py-0.5 text-xs font-semibold text-muted"
       >
         <IconCategory :name="category" />
         {{ t(`catalog.categoryNames.${category}`) }}
@@ -42,7 +42,7 @@ const { count, when, price } = useCatalogFormat()
 
     <span class="flex-1"></span>
 
-    <span class="mt-4 flex items-center justify-between gap-3 border-t border-inset-line pt-3 text-xs text-dimmed">
+    <span class="mt-4 flex items-center justify-between gap-3 border-t border-raised-line pt-3 text-xs text-dimmed">
       <span class="text-default">{{ t('catalog.downloads', { n: count(hit.downloads) }) }}</span>
       <span>{{ when(hit.updated) }}</span>
     </span>

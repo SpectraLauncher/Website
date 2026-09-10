@@ -44,11 +44,11 @@ useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
     </UiPageHeader>
 
     <div class="mt-8 grid gap-4 sm:grid-cols-2">
-      <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+      <div class="rounded-2xl border border-panel-line bg-panel p-6">
         <p class="text-sm text-dimmed">{{ t('account.views') }}</p>
         <p class="mt-1 text-3xl font-semibold">{{ count(data?.totals.views ?? 0) }}</p>
       </div>
-      <div class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm">
+      <div class="rounded-2xl border border-panel-line bg-panel p-6">
         <p class="text-sm text-dimmed">{{ t('catalog.downloads', { n: '' }).trim() }}</p>
         <p class="mt-1 text-3xl font-semibold">{{ count(data?.totals.downloads ?? 0) }}</p>
       </div>
@@ -58,7 +58,7 @@ useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
       <li
         v-for="project in data.projects"
         :key="project.id"
-        class="rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm"
+        class="rounded-2xl border border-panel-line bg-panel p-5"
       >
         <div class="flex flex-wrap items-baseline gap-3">
           <NuxtLink :to="localePath(project.path)" class="min-w-0 flex-1 truncate font-semibold hover:underline">
@@ -82,7 +82,7 @@ useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
       </li>
     </ul>
 
-    <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
+    <div v-else class="mt-10 rounded-2xl border border-panel-line bg-panel p-12 text-center">
       <UIcon name="i-pixelarticons-chart-line" class="mx-auto size-10 text-dimmed" />
       <p class="mt-3 text-sm text-muted">{{ t('account.noProjects') }}</p>
     </div>

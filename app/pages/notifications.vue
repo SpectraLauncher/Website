@@ -56,7 +56,7 @@ function line(item: NotificationItem): string {
         v-for="item in items"
         :key="item.id"
         class="flex items-start gap-3 rounded-2xl border p-4 transition-colors"
-        :class="item.read ? 'border-white/10 bg-white/[0.02]' : 'border-primary/30 bg-primary/5'"
+        :class="item.read ? 'border-panel-line bg-panel' : 'border-primary/30 bg-primary/5'"
       >
         <UIcon :name="notificationIcon(item.kind)" class="mt-0.5 size-5 shrink-0 text-muted" />
 
@@ -84,7 +84,7 @@ function line(item: NotificationItem): string {
       </li>
     </ul>
 
-    <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
+    <p v-else-if="loaded" class="rounded-2xl border border-panel-line bg-panel p-10 text-center text-sm text-dimmed">
       {{ t('notifications.empty') }}
     </p>
   </div>

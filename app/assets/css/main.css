@@ -7,13 +7,19 @@
    tokens rather than overrides of --ui-bg, which every other page reads.
 
    To add one: a --color-<name> here becomes bg-<name>, border-<name> and
-   text-<name> in a template. */
+   text-<name> in a template — so the name must not be one Tailwind already
+   owns. `inset` was, and it quietly repainted every `ring ring-inset` in
+   app.config.ts the colour of a panel, which is how the checkboxes in the token
+   form became invisible. test/unit/theme-tokens.test.ts holds that line.
+
+   The lift from panel to raised keeps the panel's hue rather than adding blue:
+   a surface that reads bluer than the one under it looks like a mistake. */
 @theme {
   --color-page: #0a0c10;
   --color-panel: #0e1216;
   --color-panel-line: #1c2229;
-  --color-inset: #111620;
-  --color-inset-line: #1e2531;
+  --color-raised: #141a1f;
+  --color-raised-line: #1e242c;
 }
 
 

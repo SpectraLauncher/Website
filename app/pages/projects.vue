@@ -50,7 +50,7 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
 
     <UiPanel v-if="data?.projects.length" class="overflow-x-auto">
       <div class="min-w-[680px]">
-        <div class="grid grid-cols-[minmax(0,2.4fr)_1fr_0.9fr_0.9fr] gap-4 border-b border-inset-line px-5 py-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">
+        <div class="grid grid-cols-[minmax(0,2.4fr)_1fr_0.9fr_0.9fr] gap-4 border-b border-raised-line px-5 py-3 text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">
           <span>{{ t('catalog.org.projects') }}</span>
           <span>{{ t('catalog.statusLabel') }}</span>
           <span class="text-right">{{ t('catalog.downloadsLabel') }}</span>
@@ -61,7 +61,7 @@ useSeoMeta({ title: () => t('nav.account.projects'), robots: 'noindex' })
           v-for="project in data.projects"
           :key="project.id"
           :to="localePath(project.path)"
-          class="grid grid-cols-[minmax(0,2.4fr)_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-inset-line px-5 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
+          class="grid grid-cols-[minmax(0,2.4fr)_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-raised-line px-5 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
         >
           <span class="flex min-w-0 items-center gap-3">
             <CatalogThumb :src="project.icon" fallback="i-pixelarticons-package" class="size-10" />

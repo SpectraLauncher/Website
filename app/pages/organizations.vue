@@ -26,9 +26,9 @@ useSeoMeta({ title: () => t('nav.account.organizations'), robots: 'noindex' })
       <li v-for="org in data.organizations" :key="org.id">
         <NuxtLink
           :to="localePath(`/org/${org.slug}`)"
-          class="flex items-center gap-4 rounded-3xl border border-zinc-600/50 bg-black/30 p-5 backdrop-blur-sm transition-colors hover:border-zinc-500"
+          class="flex items-center gap-4 rounded-2xl border border-panel-line bg-panel p-5 transition-colors hover:border-zinc-600"
         >
-          <span class="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <span class="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
             <img v-if="org.logo" :src="org.logo" alt="" class="size-full object-cover">
             <UIcon v-else name="i-pixelarticons-users" class="size-5 text-dimmed" />
           </span>
@@ -43,7 +43,7 @@ useSeoMeta({ title: () => t('nav.account.organizations'), robots: 'noindex' })
       </li>
     </ul>
 
-    <div v-else class="mt-10 rounded-3xl border border-zinc-600/50 bg-black/30 p-12 text-center backdrop-blur-sm">
+    <div v-else class="mt-10 rounded-2xl border border-panel-line bg-panel p-12 text-center">
       <UIcon name="i-pixelarticons-users" class="mx-auto size-10 text-dimmed" />
       <p class="mt-3 text-sm text-muted">{{ t('account.noOrganizations') }}</p>
     </div>

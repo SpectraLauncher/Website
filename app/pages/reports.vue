@@ -109,7 +109,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
       <li
         v-for="report in reports"
         :key="report.id"
-        class="rounded-2xl border border-white/10 bg-white/[0.02] p-4"
+        class="rounded-2xl border border-panel-line bg-panel p-4"
       >
         <div class="flex flex-wrap items-center gap-2 text-sm">
           <UBadge size="sm" variant="subtle" :label="t(`reports.reasons.${report.reason}`)" />
@@ -142,13 +142,13 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
           @click="openThread(report)"
         />
 
-        <div v-if="open === report.id" class="mt-3 border-t border-white/10 pt-3">
+        <div v-if="open === report.id" class="mt-3 border-t border-raised-line pt-3">
           <ul v-if="messages.length" class="mb-3 space-y-2">
             <li
               v-for="message in messages"
               :key="message.id"
-              class="rounded-xl border border-white/10 p-3"
-              :class="message.staff ? 'bg-white/5' : ''"
+              class="rounded-xl border border-raised-line p-3"
+              :class="message.staff ? 'bg-raised' : ''"
             >
               <div class="flex flex-wrap items-center gap-2 text-xs">
                 <span class="font-medium">
@@ -184,7 +184,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
       </li>
     </ul>
 
-    <p v-else-if="loaded" class="rounded-2xl border border-white/10 p-10 text-center text-sm text-dimmed">
+    <p v-else-if="loaded" class="rounded-2xl border border-panel-line bg-panel p-10 text-center text-sm text-dimmed">
       {{ t('reports.noneMine') }}
     </p>
   </div>

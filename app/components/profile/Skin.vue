@@ -73,7 +73,7 @@ const fallback = computed(() =>
     :class="expanded ? 'w-64 sm:w-80' : 'w-40'"
   >
     <div
-      class="relative overflow-hidden rounded-2xl border border-inset-line bg-inset transition-[height] duration-300"
+      class="relative overflow-hidden rounded-2xl border border-raised-line bg-raised transition-[height] duration-300"
       :class="expanded ? 'h-[26rem] sm:h-[32rem]' : 'h-64'"
     >
       <SkinViewer

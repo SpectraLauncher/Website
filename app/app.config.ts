@@ -81,6 +81,21 @@ export default defineAppConfig({
       }
     },
 
+    // A form control nobody can see is not a matter of taste. The default box
+    // is a 14px square whose only edge is `ring-accented` - zinc-700, which on
+    // a flat panel is a rumour. It gets a fill and a visible edge instead.
+    checkbox: {
+      slots: {
+        base: 'ring-zinc-500 bg-white/5'
+      }
+    },
+
+    checkboxGroup: {
+      slots: {
+        fieldset: 'gap-y-1.5'
+      }
+    },
+
     badge: {
       slots: {
         base: 'font-medium inline-flex items-center rounded-lg backdrop-blur-md'
