@@ -90,6 +90,14 @@ export default defineAppConfig({
       }
     },
 
+    // Same reason as the checkbox above: the default dot is a ring of zinc-700
+    // on a flat panel, which is a rumour rather than a control.
+    radioGroup: {
+      slots: {
+        base: 'ring-zinc-500 bg-white/5'
+      }
+    },
+
     checkboxGroup: {
       slots: {
         fieldset: 'gap-y-1.5'

@@ -380,8 +380,19 @@ const channelChoices = computed(() =>
 const { locales: allLocales, setLocale } = useI18n()
 const chosenLocale = ref(locale.value)
 
+// English names come from Intl rather than a table to maintain: adding a locale
+// to nuxt.config is enough for it to appear here, named and in the right place.
+// The region comes off the locale's own language tag, which is what picks a flag.
+const languageNames = new Intl.DisplayNames(['en'], { type: 'language' })
+
 const localeChoices = computed(() =>
-  allLocales.value.map(item => ({ value: item.code, label: item.name || item.code })))
+  allLocales.value
+    .map(item => ({
+      value: item.code,
+      label: languageNames.of(item.code) || item.name || item.code,
+      region: String(item.language ?? '').split('-')[1] || item.code,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, 'en')))
 
 const saveLocale = () => run('locale', async () => {
   await $fetch('/api/me/locale', { method: 'PATCH', body: { locale: chosenLocale.value } })
@@ -681,7 +692,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
 
     <!-- The sub-sections of the account, one panel at a time. Eleven of them
          open at once is the wall of switches this page used to be. -->
-    <nav class="-mx-4 mb-4 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+    <nav class="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
       <button
         v-for="item in TABS"
         :key="item.id"
@@ -1044,15 +1055,20 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
         <h2 class="mb-1 text-lg font-semibold tracking-tight">{{ t('account.language') }}</h2>
         <p class="mb-6 text-sm text-muted">{{ t('account.languageHint') }}</p>
 
-        <div class="max-w-xs space-y-4">
-          <USelect
+        <div class="max-w-sm space-y-5">
+          <URadioGroup
             v-model="chosenLocale"
             :items="localeChoices"
             value-key="value"
             size="lg"
-            icon="i-pixelarticons-languages"
-            class="w-full"
-          />
+          >
+            <template #label="{ item }">
+              <span class="flex items-center gap-2.5">
+                <IconFlag :region="(item as { region: string }).region" />
+                {{ (item as { label: string }).label }}
+              </span>
+            </template>
+          </URadioGroup>
           <UButton
             color="neutral"
             size="lg"
