@@ -3284,7 +3284,8 @@
         "archived": "archived",
         "rejected": "rejected",
         "removed": "removed",
-        "pending": "Pending"
+        "pending": "Pending",
+        "private": "private"
       },
       "price": "Price in cents (0 = free)",
       "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free.",
@@ -3598,7 +3599,8 @@
       "payoutNote": "Money reaches your payout account after a holding period. You can sell before verification finishes.",
       "freeNote": "This project is free. Anyone can download the files without paying."
     },
-    "free": "Free"
+    "free": "Free",
+    "statusLabel": "Status"
   },
   "verification": {
     "title": "Verification",

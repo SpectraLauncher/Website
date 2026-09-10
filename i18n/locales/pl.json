@@ -3284,7 +3284,8 @@
         "archived": "archiwum",
         "rejected": "odrzucony",
         "removed": "usunięty",
-        "pending": "Oczekuje"
+        "pending": "Oczekuje",
+        "private": "prywatny"
       },
       "price": "Cena w groszach (0 = darmowy)",
       "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym.",
@@ -3598,7 +3599,8 @@
       "payoutNote": "Pieniądze trafiają na twoje konto do wypłat po okresie karencji. Sprzedawać możesz, zanim weryfikacja się skończy.",
       "freeNote": "Projekt jest darmowy. Każdy może pobrać pliki bez płacenia."
     },
-    "free": "Za darmo"
+    "free": "Za darmo",
+    "statusLabel": "Status"
   },
   "verification": {
     "title": "Weryfikacja",
