@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
       .map(shortProject)
     : []
 
-  const feed = await profileFeed(user.id, activity, showCatalog)
+  const feed = await profileFeed(user.id, showCatalog)
 
   const { friendsVisibility, presence, lastSeen: _raw, ...safe } = user
 

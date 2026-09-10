@@ -6,88 +6,113 @@ const g = globalThis as Record<string, unknown>
 
 afterEach(() => { delete g.q })
 
-const day = (date: string, seconds: number, launches = 1) => ({ day: date, launches, seconds })
+const at = (iso: string) => Date.parse(iso)
+
+/** Answers each of the four queries by the table it names. */
+function db(rows: {
+  version?: unknown[]
+  project?: unknown[]
+  comment?: unknown[]
+  member?: unknown[]
+}) {
+  return vi.fn(async (sql: string) => {
+    if (sql.includes('FROM version v')) return rows.version ?? []
+    if (sql.includes('FROM project_comment')) return rows.comment ?? []
+    if (sql.includes('FROM project')) return rows.project ?? []
+    return rows.member ?? []
+  })
+}
+
+const RELEASE = {
+  number: '1.2.0',
+  created: at('2026-09-03T12:00:00Z'),
+  game_versions: ['1.21.1'],
+  loaders: ['neoforge'],
+  title: 'MKT Essentials',
+  slug: 'mkt-essentials',
+  type: 'mod',
+}
 
 describe('feed profilu', () => {
   it('bez katalogu nie pyta bazy o nic', async () => {
-    const q = vi.fn()
+    const q = db({})
     g.q = q
 
-    const feed = await profileFeed('u1', [day('2026-09-01', 3600)], false)
-
+    expect(await profileFeed('u1', false)).toEqual([])
     expect(q).not.toHaveBeenCalled()
-    expect(feed).toHaveLength(1)
-    expect(feed[0]!.kind).toBe('play')
   })
 
-  it('pomija dni bez rozgrywki', async () => {
-    g.q = vi.fn()
-
-    const feed = await profileFeed('u1', [day('2026-09-01', 0), day('2026-09-02', 60)], false)
-
-    expect(feed).toHaveLength(1)
-    expect(feed[0]).toMatchObject({ kind: 'play', seconds: 60 })
-  })
-
-  it('miesza wydania z graniem i sortuje od najnowszego', async () => {
-    const at = (iso: string) => Date.parse(iso)
-
-    g.q = vi.fn(async (sql: string) => {
-      if (sql.includes('FROM version v')) {
-        return [{
-          number: '1.2.0',
-          created: at('2026-09-03T12:00:00Z'),
-          game_versions: ['1.21.1'],
-          loaders: ['neoforge'],
-          title: 'MKT Essentials',
-          slug: 'mkt-essentials',
-          type: 'mod',
-        }]
-      }
-      if (sql.includes('FROM project')) {
-        return [{
-          title: 'MKT Essentials',
-          slug: 'mkt-essentials',
-          type: 'mod',
-          published: at('2026-08-01T09:00:00Z'),
-        }]
-      }
-      return [{
+  it('sortuje wszystkie zrodla od najnowszego', async () => {
+    g.q = db({
+      version: [RELEASE],
+      project: [{
+        title: 'MKT Essentials',
+        slug: 'mkt-essentials',
+        type: 'mod',
+        published: at('2026-08-01T09:00:00Z'),
+      }],
+      comment: [{
+        body: 'dziala na 200 graczach',
+        created: at('2026-09-05T08:00:00Z'),
+        title: 'Terralith',
+        slug: 'terralith',
+        type: 'mod',
+      }],
+      member: [{
         name: 'Stardust',
         slug: 'stardust',
         role: 'owner',
         createdAt: at('2026-07-01T09:00:00Z'),
-      }]
+      }],
     })
 
-    const feed = await profileFeed('u1', [day('2026-09-02', 7200)], true)
+    const feed = await profileFeed('u1', true)
 
-    expect(feed.map(e => e.kind)).toEqual(['release', 'play', 'publish', 'org'])
-    expect(feed[0]).toMatchObject({ kind: 'release', path: '/mod/mkt-essentials', version: '1.2.0' })
+    expect(feed.map(e => e.kind)).toEqual(['comment', 'release', 'publish', 'org'])
+    expect(feed[1]).toMatchObject({ path: '/mod/mkt-essentials', version: '1.2.0' })
+  })
+
+  it('nie zna wpisu o graniu', async () => {
+    g.q = db({ version: [RELEASE] })
+
+    const feed = await profileFeed('u1', true)
+
+    expect(feed.map(e => e.kind)).toEqual(['release'])
+  })
+
+  it('sciaga dlugi komentarz do jednej linii', async () => {
+    g.q = db({
+      comment: [{
+        body: `  wielo\n  linijkowy   ${'a'.repeat(200)}`,
+        created: at('2026-09-05T08:00:00Z'),
+        title: 'Terralith',
+        slug: 'terralith',
+        type: 'mod',
+      }],
+    })
+
+    const [event] = await profileFeed('u1', true)
+
+    expect(event!.kind).toBe('comment')
+    const { excerpt } = event as Extract<typeof event, { kind: 'comment' }>
+    expect(excerpt).toHaveLength(140)
+    expect(excerpt.endsWith('…')).toBe(true)
+    expect(excerpt.startsWith('wielo linijkowy ')).toBe(true)
   })
 
   it('nie przepuszcza wpisu bez sensownej daty', async () => {
-    g.q = vi.fn(async (sql: string) => (sql.includes('FROM version v')
-      ? [{
-          number: '1.0.0',
-          created: null,
-          game_versions: [],
-          loaders: [],
-          title: 'X',
-          slug: 'x',
-          type: 'mod',
-        }]
-      : []))
+    g.q = db({ version: [{ ...RELEASE, created: null }] })
 
-    expect(await profileFeed('u1', [], true)).toEqual([])
+    expect(await profileFeed('u1', true)).toEqual([])
   })
 
   it('tnie do dwunastu wpisow', async () => {
-    g.q = vi.fn()
+    const many = Array.from({ length: 12 }, (_, i) => ({
+      ...RELEASE,
+      created: at('2026-09-03T12:00:00Z') + i,
+    }))
+    g.q = db({ version: many, project: [], comment: [], member: [] })
 
-    const days = Array.from({ length: 30 }, (_, i) =>
-      day(`2026-09-${String(i + 1).padStart(2, '0')}`, 60))
-
-    expect(await profileFeed('u1', days, false)).toHaveLength(12)
+    expect(await profileFeed('u1', true)).toHaveLength(12)
   })
 })

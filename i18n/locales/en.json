@@ -2603,7 +2603,7 @@
       "release": "Released",
       "publish": "Published",
       "org": "Joined",
-      "play": "Played"
+      "comment": "Commented on"
     },
     "tabs": {
       "overview": "Overview",
