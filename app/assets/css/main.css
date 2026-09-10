@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* Flat surfaces for the pages rebuilt from docs/references: the catalog
+   listings, /settings, a public profile and the admin panel. The rest of the
+   site still uses the glass treatment over /bg.webp, so these are their own
+   tokens rather than overrides of --ui-bg, which every other page reads.
+
+   To add one: a --color-<name> here becomes bg-<name>, border-<name> and
+   text-<name> in a template. */
+@theme {
+  --color-page: #0a0c10;
+  --color-panel: #0e1216;
+  --color-panel-line: #1c2229;
+  --color-inset: #111620;
+  --color-inset-line: #1e2531;
+}
+
+
 :root {
   color-scheme: dark;
 }
