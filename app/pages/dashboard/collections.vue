@@ -20,7 +20,7 @@ useHead({ title: () => t('nav.account.collections') })
 
 watchEffect(() => {
   if (import.meta.client && !session.value.isPending && !session.value.data) {
-    navigateTo(localePath('/login'))
+    navigateTo(localePath('/auth/login'))
   }
 })
 

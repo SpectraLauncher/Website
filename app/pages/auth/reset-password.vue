@@ -47,7 +47,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.resetDoneTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t('auth.resetDone') }}</p>
               <UButton
-                :to="localePath('/login')"
+                :to="localePath('/auth/login')"
                 block
                 size="lg"
                 color="neutral"
@@ -65,7 +65,7 @@ useSeoMeta({ title: () => `${t('auth.resetTitle')}`, robots: 'noindex, nofollow'
               <h1 class="mt-4 text-2xl font-semibold tracking-tight">{{ t('auth.resetTitle') }}</h1>
               <p class="mt-2 text-sm/relaxed text-muted">{{ t('auth.resetNoToken') }}</p>
               <UButton
-                :to="localePath('/login')"
+                :to="localePath('/auth/login')"
                 block
                 size="lg"
                 color="neutral"

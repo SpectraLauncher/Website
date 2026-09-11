@@ -228,7 +228,7 @@ useSchemaOrg(computed(() => [
             <h2 class="mb-4 text-3xl font-semibold tracking-tight">{{ t('launcherPage.accountTitle') }}</h2>
             <p class="mb-7 max-w-[46ch] text-muted">{{ t('launcherPage.accountSub') }}</p>
             <UButton
-              :to="localePath('/login')"
+              :to="localePath('/auth/login')"
               size="lg"
               color="neutral"
               class="rounded-xl"

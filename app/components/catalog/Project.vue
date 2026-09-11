@@ -164,7 +164,7 @@ watch(() => props.project.id, () => {
 })
 
 async function toggleFollow() {
-  if (!session.value.data) return await navigateTo(localePath('/login'))
+  if (!session.value.data) return await navigateTo(localePath('/auth/login'))
 
   const next = !following.value
   followBusy.value = true

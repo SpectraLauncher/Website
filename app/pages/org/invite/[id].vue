@@ -75,7 +75,7 @@ useSeoMeta({ title: () => t('catalog.org.inviteTitle'), robots: 'noindex' })
         <UButton
           class="mt-6"
           size="lg"
-          :to="localePath({ path: '/login', query: { next: route.fullPath } })"
+          :to="localePath({ path: '/auth/login', query: { next: route.fullPath } })"
           :label="t('catalog.org.signIn')"
         />
       </template>

@@ -212,7 +212,7 @@ defineExpose({ items })
                     </UDropdownMenu>
                     <UButton
                         v-else
-                        :to="localePath('/login')"
+                        :to="localePath('/auth/login')"
                         :label="t('nav.login')"
                         variant="solid"
                         color="neutral"
@@ -294,7 +294,7 @@ defineExpose({ items })
                             </template>
                             <UButton
                                 v-else
-                                :to="localePath('/login')"
+                                :to="localePath('/auth/login')"
                                 :label="t('nav.login')"
                                 variant="solid"
                                 color="neutral"

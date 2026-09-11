@@ -29,7 +29,7 @@ watchEffect(() => {
   if (!import.meta.client || session.value.isPending) return
 
   if (!session.value.data) {
-    navigateTo(`${localePath('/login')}?next=${encodeURIComponent(localePath('/launcher/auth'))}`)
+    navigateTo(`${localePath('/auth/login')}?next=${encodeURIComponent(localePath('/launcher/auth'))}`)
   }
 })
 

@@ -31,7 +31,7 @@ export function gateRoute(endpoint: string) {
         ?? 404
 
       if (status === 401) {
-        return navigateTo({ path: localePath('/login'), query: { next: to.fullPath } })
+        return navigateTo({ path: localePath('/auth/login'), query: { next: to.fullPath } })
       }
 
       throw createError({ statusCode: 404, fatal: true })

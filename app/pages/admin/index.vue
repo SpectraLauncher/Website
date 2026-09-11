@@ -74,7 +74,7 @@ const notice = ref('')
 const denied = ref(false)
 
 watch(denied, (lost) => {
-  if (lost) navigateTo({ path: localePath('/login'), query: { next: localePath('/admin') } })
+  if (lost) navigateTo({ path: localePath('/auth/login'), query: { next: localePath('/admin') } })
 })
 
 async function run(key: string, fn: () => Promise<any>) {

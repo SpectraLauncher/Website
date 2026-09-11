@@ -130,7 +130,7 @@ const when = (ms: number) => new Date(ms).toLocaleString(locale.value)
     </div>
 
     <p v-else class="mb-6 text-sm text-muted">
-      <NuxtLink :to="localePath('/login')" class="text-primary hover:underline">
+      <NuxtLink :to="localePath('/auth/login')" class="text-primary hover:underline">
         {{ t('catalog.signInToComment') }}
       </NuxtLink>
     </p>

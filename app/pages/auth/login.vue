@@ -135,7 +135,7 @@ async function verify() {
 
 async function forgot() {
   const res = await run(() => auth.requestPasswordReset(
-    { email: form.email, redirectTo: `${location.origin}${localePath('/reset-password')}` },
+    { email: form.email, redirectTo: `${location.origin}${localePath('/auth/reset-password')}` },
     { headers: captchaHeaders.value }
   ))
   if (!res?.error) sent.value = t('auth.resetSent')

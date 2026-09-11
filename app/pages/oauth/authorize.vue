@@ -22,7 +22,7 @@ const busy = ref('')
 
 watchEffect(() => {
   if (import.meta.client && !session.value.isPending && !session.value.data) {
-    navigateTo({ path: localePath('/login'), query: { next: route.fullPath } })
+    navigateTo({ path: localePath('/auth/login'), query: { next: route.fullPath } })
   }
 })
 

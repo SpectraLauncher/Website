@@ -42,8 +42,8 @@ const ACCOUNT_PATHS = [
 
 const PRIVATE_PATHS = [
   '/admin',
-  '/login',
-  '/reset-password',
+  '/auth/login',
+  '/auth/reset-password',
   '/secret',
   '/launcher/auth',
   '/s/',
@@ -148,6 +148,18 @@ export default defineNuxtConfig({
     name: 'Spectra',
     description: 'The modern desktop launcher for modded Minecraft, plus free browser tools for players and server owners.',
     defaultLocale: 'en'
+  },
+
+  // /login and /reset-password moved under /auth. They are linked from
+  // password-reset e-mails and from outside this site, so the old addresses keep
+  // answering. A route rule rather than a stub page, so the redirect does not put
+  // files back into app/pages that this move exists to clear out — and the
+  // non-default locale is prefixed, so each address needs its twin named too.
+  routeRules: {
+    '/login': { redirect: { to: '/auth/login', statusCode: 301 } },
+    '/pl/login': { redirect: { to: '/pl/auth/login', statusCode: 301 } },
+    '/reset-password': { redirect: { to: '/auth/reset-password', statusCode: 301 } },
+    '/pl/reset-password': { redirect: { to: '/pl/auth/reset-password', statusCode: 301 } },
   },
 
   robots: {

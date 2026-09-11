@@ -76,7 +76,7 @@ useSeoMeta({ title: () => `${t('secret.title')}`, robots: 'noindex, nofollow' })
           <template v-else-if="!signedIn">
             <p class="mt-6 text-sm text-muted">{{ t('secret.signIn') }}</p>
             <UButton
-              :to="localePath('/login')"
+              :to="localePath('/auth/login')"
               class="mt-4 rounded-xl"
               size="lg"
               color="neutral"

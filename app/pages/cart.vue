@@ -227,7 +227,7 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
                   color="neutral"
                   class="rounded-xl"
                   :label="t('cart.signIn')"
-                  :to="localePath('/login') + `?next=${encodeURIComponent(localePath('/cart'))}`"
+                  :to="localePath('/auth/login') + `?next=${encodeURIComponent(localePath('/cart'))}`"
                 />
               </div>
             </div>
