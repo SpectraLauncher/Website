@@ -8,7 +8,7 @@ import { r2Delete, useR2 } from './r2'
 // leaves its pictures in the bucket forever and the bill grows quietly.
 //
 // To add a context: one entry here and the matching column on the table.
-export const IMAGE_CONTEXTS = ['project', 'version', 'organization', 'user', 'report'] as const
+export const IMAGE_CONTEXTS = ['project', 'version', 'organization', 'user', 'report', 'post'] as const
 export type ImageContext = typeof IMAGE_CONTEXTS[number]
 
 export function isImageContext(value: unknown): value is ImageContext {
@@ -90,6 +90,7 @@ export async function orphanedImages(limit = 200): Promise<ImageRow[]> {
            WHEN 'organization' THEN NOT EXISTS (SELECT 1 FROM organization o WHERE o.id = i.subject_id)
            WHEN 'user'         THEN NOT EXISTS (SELECT 1 FROM "user" u WHERE u.id = i.subject_id)
            WHEN 'report'       THEN NOT EXISTS (SELECT 1 FROM report r WHERE r.id = i.subject_id)
+           WHEN 'post'         THEN NOT EXISTS (SELECT 1 FROM post p WHERE p.id = i.subject_id)
            ELSE FALSE
          END
          -- or the project is still there and nothing in it points at the image
@@ -99,6 +100,16 @@ export async function orphanedImages(limit = 200): Promise<ImageRow[]> {
          -- Only once it has had an hour to be referenced. An image is uploaded
          -- before the description that mentions it is saved, and a sweep in
          -- between would delete the picture out from under the author.
+         -- or the post still exists and neither its body nor its cover
+         -- mentions the image any more: a picture cut out of an article, a
+         -- cover swapped for another.
+         OR (i.context = 'post' AND i.created < $2
+             AND EXISTS (SELECT 1 FROM post p WHERE p.id = i.subject_id)
+             AND NOT EXISTS (
+               SELECT 1 FROM post p
+               WHERE p.id = i.subject_id
+                 AND (p.body::text LIKE '%' || i.object_key || '%'
+                      OR COALESCE(p.cover, '') LIKE '%' || i.object_key || '%')))
          OR (i.context = 'project' AND i.created < $2
              AND EXISTS (SELECT 1 FROM project p WHERE p.id = i.subject_id)
              AND NOT EXISTS (

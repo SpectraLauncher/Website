@@ -4069,7 +4069,8 @@
         "social": "Społeczność i udostępnianie",
         "account": "Konto",
         "oauth": "Tokeny i aplikacje",
-        "compat": "Zgodność i pomocnicze"
+        "compat": "Zgodność i pomocnicze",
+        "news": "Aktualności"
       }
     }
   },
@@ -4507,10 +4508,14 @@
     "list": "Lista",
     "code": "Kod",
     "link": "Link",
-    "image": "Wstaw obraz",
+    "image": "Wstaw zdjęcie",
     "video": "Wstaw film",
     "insert": "Wstaw",
-    "notYoutube": "To nie jest adres z YouTube."
+    "notYoutube": "To nie jest adres z YouTube.",
+    "bulletList": "Lista punktowana",
+    "orderedList": "Lista numerowana",
+    "blockquote": "Cytat",
+    "dropHint": "Upuść zdjęcie w dowolnym miejscu"
   },
   "seller": {
     "title": "Sprzedaż",

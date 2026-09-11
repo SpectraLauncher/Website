@@ -3,6 +3,7 @@ import { usePool } from '../utils/db'
 import { runSchemaMigrations } from '../utils/migrations'
 import { ensureAccountIssuer, ensureAdminRole, ensureSchema } from '../utils/schema'
 import { ensureCatalogSchema } from '../utils/schema-catalog'
+import { ensurePostSchema } from '../utils/schema-post'
 import { backfillUsernames } from '../utils/username'
 
 export default defineNitroPlugin(async () => {
@@ -27,6 +28,7 @@ export default defineNitroPlugin(async () => {
     await runMigrations()
     await ensureSchema()
     await ensureCatalogSchema()
+    await ensurePostSchema()
 
     // After the baseline, never before: a step that alters a table needs the
     // table to be there.

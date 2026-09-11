@@ -4069,7 +4069,8 @@
         "social": "Social and sharing",
         "account": "Account",
         "oauth": "Tokens and applications",
-        "compat": "Compatibility and helpers"
+        "compat": "Compatibility and helpers",
+        "news": "News"
       }
     }
   },
@@ -4507,10 +4508,14 @@
     "list": "List",
     "code": "Code",
     "link": "Link",
-    "image": "Insert an image",
+    "image": "Insert a picture",
     "video": "Insert a video",
     "insert": "Insert",
-    "notYoutube": "That is not a YouTube address."
+    "notYoutube": "That is not a YouTube address.",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "blockquote": "Quote",
+    "dropHint": "Drop a picture anywhere"
   },
   "seller": {
     "title": "Selling",

@@ -13,7 +13,7 @@ export interface ApiEndpoint {
 }
 
 export const API_GROUPS = [
-  'catalog', 'projects', 'collections', 'social', 'account', 'oauth', 'compat',
+  'catalog', 'projects', 'collections', 'social', 'account', 'oauth', 'compat', 'news',
 ] as const
 
 export type ApiGroup = typeof API_GROUPS[number]
@@ -81,6 +81,10 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'DELETE /api/verification/{id}', group: 'account', auth: 'session', summary: 'Withdraw an application' },
   { route: 'GET /api/u/{username}', group: 'account', auth: 'none', summary: 'A public profile' },
   { route: 'GET /api/users', group: 'social', auth: 'session', summary: 'Search people by name' },
+  { route: 'GET /api/news', group: 'news', auth: 'none', summary: 'Published articles, newest first' },
+  { route: 'GET /api/news/{slug}', group: 'news', auth: 'none', summary: 'One article, rendered' },
+  { route: 'POST /api/news/subscribe', group: 'news', auth: 'none', summary: 'Put an address on the newsletter' },
+  { route: 'POST /api/news/unsubscribe', group: 'news', auth: 'none', summary: 'Take an address off it, with the token from the e-mail' },
   { route: 'PATCH /api/me/profile', group: 'account', auth: 'session', summary: 'Change your bio and links' },
   { route: 'POST /api/me/avatar', group: 'account', auth: 'session', summary: 'Upload an avatar' },
   { route: 'PATCH /api/me/locale', group: 'account', auth: 'session', summary: 'Set your language' },

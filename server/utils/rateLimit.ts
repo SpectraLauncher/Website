@@ -106,6 +106,11 @@ export function limitFor(path: string, method: string): { name: string, limit: n
     return { name: 'notifications', limit: 900 }
   }
 
+  // Anybody may read the blog and anybody may post the subscribe form, so the
+  // whole prefix is budgeted per address — a shared counter would let one
+  // abuser lock the form for everyone.
+  if (path.startsWith('/api/news/')) return { name: 'news', limit: 30 }
+
   if (path === '/api/telemetry') return { name: 'telemetry', limit: 30 }
   if (path.startsWith('/api/mc-')) return { name: 'mojang', limit: 60 }
   if (method === 'GET' && SHARE_CODE.test(path)) return { name: 'share-get', limit: 20 }
