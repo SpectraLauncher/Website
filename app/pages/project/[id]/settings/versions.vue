@@ -22,6 +22,7 @@ interface Analysis {
 const route = useRoute()
 const { t, locale } = useI18n()
 const { ask } = useConfirm()
+const localePath = useLocalePath()
 
 const id = computed(() => String(route.params.id ?? ''))
 const { project, refresh } = useProjectEditor(id)
@@ -314,6 +315,14 @@ const loaderOptions = computed(() =>
               · {{ t('catalog.fileCount', version.files.length, { n: version.files.length }) }}
             </span>
           </span>
+          <UButton
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="i-pixelarticons-edit"
+            :aria-label="t('catalog.version.edit')"
+            :to="localePath(`/project/${id}/settings/version/${version.id}`)"
+          />
           <UButton
             size="xs"
             variant="ghost"

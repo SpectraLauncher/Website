@@ -16,9 +16,10 @@ interface MenuContext {
  * The row menu, shared by the versions list and the version page so the two
  * cannot offer different things for the same version.
  *
- * Editing is one entry rather than Modrinth's three: metadata, details and
- * files are one form here, and three items opening the same page would be a
- * menu pretending to be more than it is.
+ * Editing is one entry rather than Modrinth's three: the number, the name, the
+ * channel, the loaders, the game versions and the changelog are one form here,
+ * and three items opening it at three anchors would be a menu pretending to be
+ * more than it is. Files are not in it because a file is a new version.
  */
 export function useVersionMenu(context: () => MenuContext) {
   const { t } = useI18n()
@@ -71,13 +72,13 @@ export function useVersionMenu(context: () => MenuContext) {
       {
         label: t('catalog.version.edit'),
         icon: 'i-pixelarticons-edit',
-        to: localePath(`/project/${projectId}/settings/versions`),
+        to: localePath(`/project/${projectId}/settings/version/${version.id}`),
       },
       {
         label: t('catalog.version.remove'),
         icon: 'i-pixelarticons-trash',
         color: 'error' as const,
-        to: localePath(`/project/${projectId}/settings/versions`),
+        to: localePath(`/project/${projectId}/settings/version/${version.id}`),
       },
     ]]
   }

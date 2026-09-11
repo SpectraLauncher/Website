@@ -3631,7 +3631,14 @@
       "more": "More options",
       "linkCopied": "Link copied.",
       "idCopied": "ID copied.",
-      "noChanges": "No changelog for this version."
+      "noChanges": "No changelog for this version.",
+      "editTitle": "Edit version",
+      "editHint": "The number, the name, what it runs on and what changed. Files are not edited here — a file is a new version.",
+      "save": "Save changes",
+      "saved": "Saved.",
+      "back": "Back to versions",
+      "filesReadOnly": "Files belong to the version as it was uploaded. To change them, publish a new version.",
+      "removeHint": "The version and its files go for good. Anybody who already downloaded it keeps their copy; nobody can get it again."
     }
   },
   "verification": {

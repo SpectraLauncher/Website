@@ -3631,7 +3631,14 @@
       "more": "Więcej opcji",
       "linkCopied": "Link skopiowany.",
       "idCopied": "ID skopiowane.",
-      "noChanges": "Ta wersja nie ma changelogu."
+      "noChanges": "Ta wersja nie ma changelogu.",
+      "editTitle": "Edytuj wersję",
+      "editHint": "Numer, nazwa, na czym działa i co się zmieniło. Plików nie edytuje się tutaj — plik to nowa wersja.",
+      "save": "Zapisz zmiany",
+      "saved": "Zapisano.",
+      "back": "Wróć do wersji",
+      "filesReadOnly": "Pliki należą do wersji w takiej postaci, w jakiej ją wgrano. Żeby je zmienić, opublikuj nową wersję.",
+      "removeHint": "Wersja i jej pliki znikają na dobre. Kto już ją pobrał, ma swoją kopię; nikt nie pobierze jej ponownie."
     }
   },
   "verification": {

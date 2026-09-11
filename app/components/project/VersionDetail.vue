@@ -82,7 +82,7 @@ function size(bytes: number) {
             variant="subtle"
             icon="i-pixelarticons-edit"
             :aria-label="t('catalog.version.edit')"
-            :to="localePath(`/project/${projectId}/settings/versions`)"
+            :to="localePath(`/project/${projectId}/settings/version/${version.id}`)"
           />
           <UDropdownMenu :items="menu(version)" :content="{ align: 'end' }">
             <UButton
