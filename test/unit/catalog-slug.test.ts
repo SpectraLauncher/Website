@@ -67,6 +67,10 @@ describe('blacklista nadaza za trasami', () => {
     const segments = readdirSync('app/pages', { withFileTypes: true })
       .map(e => (e.isDirectory() ? e.name : e.name.replace(/\.vue$/, '')))
       .filter(name => name !== 'index')
+      // A parameter is not a literal segment, so there is no such address to
+      // reserve. The addresses [type] actually serves are the project-type
+      // prefixes, and the test below reserves every one of them.
+      .filter(name => !name.startsWith('['))
 
     expect(segments.length).toBeGreaterThan(5)
     for (const segment of segments) {
