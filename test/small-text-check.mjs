@@ -1,6 +1,6 @@
 // node --experimental-strip-types test/small-text-check.mjs
 import assert from 'node:assert/strict'
-import { SMALL_CAPS, toSmallCaps, fromSmallCaps } from '../app/utils/smallText.ts'
+import { SMALL_CAPS, toSmallCaps, fromSmallCaps } from '../app/utils/mc/smallText.ts'
 
 assert.equal(SMALL_CAPS.length, 26, 'caly alfabet')
 assert.equal(new Set(SMALL_CAPS.map(c => c.small)).size, 26, 'zadnych duplikatow')

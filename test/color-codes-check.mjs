@@ -1,6 +1,6 @@
 // node --experimental-strip-types test/color-codes-check.mjs
 import assert from 'node:assert/strict'
-import { MC_COLORS, runsToCodes } from '../app/utils/mcColors.ts'
+import { MC_COLORS, runsToCodes } from '../app/utils/mc/mcColors.ts'
 
 const c = code => MC_COLORS.find(x => x.code === code)
 const run = (text, extra = {}) => ({ text, ...extra })

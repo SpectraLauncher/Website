@@ -1,6 +1,6 @@
 // node --experimental-strip-types test/coords-check.mjs
 import assert from 'node:assert/strict'
-import { toNether, toOverworld, distances, chunkInfo, tpCommand } from '../app/utils/coords.ts'
+import { toNether, toOverworld, distances, chunkInfo, tpCommand } from '../app/utils/mc/coords.ts'
 
 // Y nie jest skalowane
 assert.deepEqual(toNether({ x: 1000, y: 64, z: -800 }), { x: 125, y: 64, z: -100 })

@@ -1,6 +1,6 @@
 // node --experimental-strip-types test/circle-gen-check.mjs
 import assert from 'node:assert/strict'
-import { buildLayer, totalBlocks, layerCount, dimensions } from '../app/utils/circleGen.ts'
+import { buildLayer, totalBlocks, layerCount, dimensions } from '../app/utils/mc/circleGen.ts'
 
 const opts = (over = {}) => ({ shape: 'circle', width: 9, height: 9, style: 'thin', ...over })
 

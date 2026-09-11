@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import {
   RANK_STYLES, STYLE_SPECS, RANK_ICONS, ICON_PALETTE, RANK_PRESETS, ICON_MODES,
   iconById, tagLayout, shadowFallback, defaultRankTag, applyPreset, MAX_LABEL
-} from '../app/utils/rankTag.ts'
+} from '../app/utils/mc/rankTag.ts'
 import { TOOLS } from '../app/utils/tools.ts'
 
 const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8'))

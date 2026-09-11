@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import {
   emptySegment, segmentToJson, segmentsToJson, tellrawCommand, DEFAULT_TIMES
-} from '../app/utils/tellraw.ts'
+} from '../app/utils/mc/tellraw.ts'
 
 const seg = (over = {}) => ({ ...emptySegment('hi'), ...over })
 

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import {
   quatFromEuler, argbInt, namespaced, textComponent, displayNbt, displayCommand,
   defaultDisplay, DISPLAY_PRESETS, DEFAULT_BACKGROUND, MAX_CHAT
-} from '../app/utils/displayEntity.ts'
-import { emptySegment } from '../app/utils/tellraw.ts'
+} from '../app/utils/mc/displayEntity.ts'
+import { emptySegment } from '../app/utils/mc/tellraw.ts'
 
 const near = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-6, `${msg}: ${a} != ${b}`)
 

@@ -5,7 +5,7 @@ import {
   POTIONS, POTION_VARIANTS, POTION_ITEMS, potionByKey, potionCommand, formatDuration,
   itemDuration, roman, availableVariants, itemsFor, hasEffects, variantIngredient,
   potionTexture, ingredientTexture, INGREDIENTS
-} from '../app/utils/potions.ts'
+} from '../app/utils/mc/potions.ts'
 
 const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).potion
 const pl = JSON.parse(readFileSync(new URL('../i18n/locales/pl.json', import.meta.url), 'utf8')).potion

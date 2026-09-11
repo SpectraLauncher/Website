@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import {
   totalXpForLevel, xpToNextLevel, levelFromXp, xpBetweenLevels, bottlesFor, XP_SOURCES
-} from '../app/utils/xp.ts'
+} from '../app/utils/mc/xp.ts'
 
 // znane wartosci z gry
 assert.equal(totalXpForLevel(0), 0)

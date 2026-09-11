@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import {
   HEAD_VERSIONS, HEAD_MODES, HEAD_TARGETS, MAX_STACK,
   clampAmount, uuidToIntArray, texturesJson, headCommand, headFileName
-} from '../app/utils/playerHead.ts'
+} from '../app/utils/mc/playerHead.ts'
 import { TOOLS } from '../app/utils/tools.ts'
 
 const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8'))

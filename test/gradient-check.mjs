@@ -1,6 +1,6 @@
 // node --experimental-strip-types test/gradient-check.mjs
 import assert from 'node:assert/strict'
-import { sample, mix, gradientChars, toGradientCode } from '../app/utils/gradient.ts'
+import { sample, mix, gradientChars, toGradientCode } from '../app/utils/mc/gradient.ts'
 
 // konce rampy trafiaja dokladnie w podane kolory
 assert.equal(sample(['#FF0000', '#0000FF'], 0), '#FF0000')

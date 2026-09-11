@@ -1,7 +1,7 @@
 // node --experimental-strip-types test/motd-check.mjs
 import assert from 'node:assert/strict'
-import { motdRaw, motdProperties, visibleLength, isOverflowing, parseMotd, MOTD_LINE_LENGTH } from '../app/utils/motd.ts'
-import { MC_COLORS } from '../app/utils/mcColors.ts'
+import { motdRaw, motdProperties, visibleLength, isOverflowing, parseMotd, MOTD_LINE_LENGTH } from '../app/utils/mc/motd.ts'
+import { MC_COLORS } from '../app/utils/mc/mcColors.ts'
 
 const c = code => MC_COLORS.find(x => x.code === code)
 

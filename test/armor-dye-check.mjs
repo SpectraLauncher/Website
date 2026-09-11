@@ -2,8 +2,8 @@
 import assert from 'node:assert/strict'
 import {
   DYES, mixDyes, matchColor, dyeCommand, UNDYED
-} from '../app/utils/armorDye.ts'
-import { toHex, fromHex, toRgb } from '../app/utils/rgb.ts'
+} from '../app/utils/mc/armorDye.ts'
+import { toHex, fromHex, toRgb } from '../app/utils/mc/rgb.ts'
 
 assert.equal(DYES.length, 16, '16 barwnikow')
 

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import {
   uuidHash, rawColor, setBrightness, locatorColor, locatorColorLegacy,
   rgbToHsb, hsbToRgb, isUuid, dashUuid
-} from '../app/utils/locatorColor.ts'
-import { toHex, toRgb } from '../app/utils/rgb.ts'
+} from '../app/utils/mc/locatorColor.ts'
+import { toHex, toRgb } from '../app/utils/mc/rgb.ts'
 
 // Notch — wektor podawany przez inne kalkulatory tego samego algorytmu
 const NOTCH = '069a79f4-44e9-4726-a5be-fca90e38aaf5'

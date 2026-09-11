@@ -6,7 +6,7 @@ import {
   boxFaces, capeFaces, capeScale, CAPE_LAYOUTS, partGeometry, isLegacySkin, skinFileName,
   stripLegacyHat, LEGACY_HAT, normaliseQuery, capeTextureUrl, isEquipped,
   HEAD_CROP, HEAD_OVERLAY_CROP
-} from '../app/utils/skin.ts'
+} from '../app/utils/mc/skin.ts'
 import { TOOLS } from '../app/utils/tools.ts'
 
 const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8'))

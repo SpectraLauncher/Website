@@ -1,7 +1,7 @@
 // node --experimental-strip-types test/banner-check.mjs
 import assert from 'node:assert/strict'
-import { BANNER_PATTERNS, BANNER_COLORS, BANNER_W, BANNER_H, maskAt, patternById } from '../app/utils/bannerPatterns.ts'
-import { bannerGive, legacyColorId, BANNER_PRESETS } from '../app/utils/bannerCommand.ts'
+import { BANNER_PATTERNS, BANNER_COLORS, BANNER_W, BANNER_H, maskAt, patternById } from '../app/utils/mc/bannerPatterns.ts'
+import { bannerGive, legacyColorId, BANNER_PRESETS } from '../app/utils/mc/bannerCommand.ts'
 
 assert.equal(BANNER_COLORS.length, 16, '16 barwnikow')
 assert.equal(new Set(BANNER_PATTERNS.map(p => p.id)).size, BANNER_PATTERNS.length, 'unikalne id')

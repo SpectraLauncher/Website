@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import {
   colorSequence, buildFrames, frameToText, frameCount, renderTemplate, DEFAULT_TEMPLATE
-} from '../app/utils/textAnimation.ts'
+} from '../app/utils/mc/textAnimation.ts'
 
 const stops = ['#C4F454', '#A554B6']
 const opts = (over = {}) => ({ text: 'Spectra', stops, style: 'bounce', format: 'amp_hex', ...over })

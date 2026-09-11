@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {
   flagsFor, javaCommand, buildScript, scriptName, estimateRam,
   MAX_PLAYERS, MAX_MODS, AIKAR_EXTREME_MIN_GB, VECTOR_FLAG, ZGENERATIONAL_FLAG
-} from '../app/utils/startFile.ts'
+} from '../app/utils/mc/startFile.ts'
 
 const opts = (over = {}) => ({
   jar: 'server.jar', ramGb: 4, preset: 'aikar', os: 'unix', gui: false, restart: false, ...over

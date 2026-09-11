@@ -4,7 +4,7 @@ import {
   TICKS_PER_DAY, ticksToSeconds, ticksToDuration, durationToTicks, mcDays,
   dayTick, tickToClock, clockToTick, phaseAt, canSleep, mobsSpawn,
   TIME_PRESETS, perDay, REAL_SECONDS_PER_DAY
-} from '../app/utils/ticks.ts'
+} from '../app/utils/mc/ticks.ts'
 
 // podstawy
 assert.equal(ticksToSeconds(20), 1)

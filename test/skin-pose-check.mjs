@@ -1,9 +1,9 @@
 // node --experimental-strip-types test/skin-pose-check.mjs
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { POSES, CROPS, RENDER_CROPS, PIVOTS, LIMB_SEGMENTS, BENDABLE, mitreFor, mitreOffset, poseById, isRenderCrop, posedParts, cameraFor } from '../app/utils/skinPose.ts'
-import { renderSkin } from '../app/utils/skinRender.ts'
-import { PARTS, SKIN_SIZE, boxFaces } from '../app/utils/skin.ts'
+import { POSES, CROPS, RENDER_CROPS, PIVOTS, LIMB_SEGMENTS, BENDABLE, mitreFor, mitreOffset, poseById, isRenderCrop, posedParts, cameraFor } from '../app/utils/mc/skinPose.ts'
+import { renderSkin } from '../app/utils/mc/skinRender.ts'
+import { PARTS, SKIN_SIZE, boxFaces } from '../app/utils/mc/skin.ts'
 
 const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8'))
 

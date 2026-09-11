@@ -6,7 +6,7 @@ const page = readFileSync('app/pages/tools/skin-poses.vue', 'utf8')
 const route = readFileSync('server/routes/render/[type]/[player]/[crop].get.ts', 'utf8')
 
 function poseCount(): number {
-  const source = readFileSync('app/utils/skinPose.ts', 'utf8')
+  const source = readFileSync('app/utils/mc/skinPose.ts', 'utf8')
   const block = /export const POSES[^=]*=\s*\[([\s\S]*?)\n\]/.exec(source)
   return block ? (block[1]!.match(/\bid:/g) ?? []).length : 0
 }
