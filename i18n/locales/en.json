@@ -4630,7 +4630,7 @@
     "removeAsk": "Delete this permanently?",
     "send": "Send to {n}",
     "sendAsk": "Send this to everyone on the list? It cannot be taken back.",
-    "sentTo": "Sent to {n}.",
+    "sentTo": "On its way to {n}.",
     "subscribers": "Subscribers",
     "noSubscribers": "Nobody has subscribed yet.",
     "noPosts": "Nothing here yet.",

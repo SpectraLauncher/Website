@@ -1,5 +1,6 @@
 
 import { sweepOrphans } from './images'
+import { deliverIssue } from './newsletter'
 import { deliverNotificationMail } from './notification-copy'
 import { registerJob } from './queue'
 import { transferForSale } from './transfers'
@@ -33,6 +34,17 @@ export function registerJobHandlers() {
   registerJob('transfer', async (payload) => {
     const saleId = String(payload.saleId ?? '')
     if (saleId) await transferForSale(saleId)
+  })
+
+  // One job per address rather than one per issue: a list of a few hundred is
+  // more SMTP than a request can hold, and a bounce retries that address alone.
+  registerJob('newsletter', async (payload) => {
+    await deliverIssue(
+      String(payload.postId ?? ''),
+      String(payload.email ?? ''),
+      String(payload.token ?? ''),
+      String(payload.origin ?? ''),
+    )
   })
 
   registerJob('cleanup', async () => {

@@ -11,7 +11,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const origin = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
-  const delivered = await sendIssue(post, origin)
-
-  return { delivered }
+  return { queued: await sendIssue(post, origin) }
 })

@@ -88,11 +88,11 @@ const send = () => run('send', async () => {
   })
   if (!ok) return
 
-  const { delivered } = await $fetch<{ delivered: number }>(
+  const { queued } = await $fetch<{ queued: number }>(
     `/api/admin/newsletter/${props.post.id}/send`, { method: 'POST' })
 
-  toast.add({ title: t('posts.sentTo', { n: delivered }), icon: 'i-pixelarticons-check' })
-  emit('saved', { ...props.post, sent: Date.now(), recipients: delivered })
+  toast.add({ title: t('posts.sentTo', { n: queued }), icon: 'i-pixelarticons-check' })
+  emit('saved', { ...props.post, sent: Date.now(), recipients: queued })
 })
 </script>
 

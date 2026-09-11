@@ -1,6 +1,8 @@
 import { renderPostDoc } from '../../shared/utils/post-doc'
-import { exec, one, q } from './db'
+import { one, q } from './db'
 import { newId } from './ids'
+import { enqueue } from './queue'
+import { postById } from './posts'
 import type { PostRow } from './posts'
 
 export interface SubscriberRow {
@@ -91,9 +93,11 @@ function escapeHtml(value: string): string {
 /**
  * Send an issue to everyone on the list.
  *
- * Marks the issue sent before the first message leaves, so a second click while
+ * Marks the issue sent before the first job is queued, so a second click while
  * the first is still going cannot send it twice — a duplicate newsletter is not
- * something an apology fixes. One address failing does not stop the rest.
+ * something an apology fixes. The sending itself goes to the queue: a few
+ * hundred SMTP round trips do not belong in a request, and a job per address
+ * means one bad mailbox retries alone.
  */
 export async function sendIssue(post: PostRow, origin: string): Promise<number> {
   if (post.sent) throw createError({ statusCode: 409, statusMessage: 'already sent' })
@@ -106,20 +110,23 @@ export async function sendIssue(post: PostRow, origin: string): Promise<number> 
   )
   if (!claimed) throw createError({ statusCode: 409, statusMessage: 'already sent' })
 
-  let delivered = 0
-
   for (const row of list) {
-    const mail = renderIssue(post, { origin, token: row.token })
-
-    try {
-      await sendMail(row.email, mail.subject, mail.html)
-      delivered++
-    }
-    catch (e) {
-      console.error('[newsletter] send', row.email, e)
-    }
+    await enqueue('newsletter', {
+      postId: post.id,
+      email: row.email,
+      token: row.token,
+      origin,
+    })
   }
 
-  await exec('UPDATE post SET recipients = $2 WHERE id = $1', [post.id, delivered])
-  return delivered
+  return list.length
+}
+
+/** One issue to one address. Throwing is what puts the job back in the line. */
+export async function deliverIssue(postId: string, email: string, token: string, origin: string) {
+  const post = await postById(postId)
+  if (!post || !email) return
+
+  const mail = renderIssue(post, { origin, token })
+  await sendMail(email, mail.subject, mail.html)
 }
