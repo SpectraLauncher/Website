@@ -23,10 +23,11 @@ const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 
 // A bar per day, scaled to the busiest day in the window, so a quiet project
 // still shows its shape instead of a flat line.
-function bars(series: Array<{ views: number }>) {
-  const peak = Math.max(1, ...series.map(point => point.views))
-  return series.map(point => Math.max(2, Math.round((point.views / peak) * 100)))
-}
+// Two hues rather than one: downloads and views are different things and the
+// page was drawing only one of them. The pair is validated against the chart
+// surface for colour-vision deficiency — a blue and an amber, which stay apart
+// under protanopia, deuteranopia and tritanopia alike.
+const SERIES = { downloads: '#0284c7', views: '#c2830c' }
 
 useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
 </script>
@@ -69,15 +70,17 @@ useSeoMeta({ title: () => t('nav.account.analytics'), robots: 'noindex' })
           </span>
         </div>
 
-        <div v-if="project.series.length" class="mt-3 flex h-12 items-end gap-0.5">
-          <span
-            v-for="(height, index) in bars(project.series)"
-            :key="index"
-            class="flex-1 rounded-sm bg-primary/60"
-            :style="{ height: `${height}%` }"
-            :title="`${project.series[index]!.day}: ${project.series[index]!.views}`"
-          />
-        </div>
+        <UiTimeChart
+          v-if="project.series.length"
+          class="mt-3"
+          :days="project.series.map(point => point.day)"
+          :series="[
+            { key: 'downloads', label: t('catalog.downloadsLabel'), color: SERIES.downloads,
+              values: project.series.map(point => point.downloads) },
+            { key: 'views', label: t('account.views'), color: SERIES.views,
+              values: project.series.map(point => point.views) },
+          ]"
+        />
         <p v-else class="mt-2 text-xs text-dimmed">{{ t('account.noData') }}</p>
       </li>
     </ul>

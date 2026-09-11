@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
   const versions = await versionsOf(project!.id)
   const files = await filesForVersions(versions.map(v => v.id))
   const deps = await dependenciesForVersions(versions.map(v => v.id))
+  const dependents = await dependentsOf(project!.id)
   const gallery = await galleryOf(project!.id)
   const owner = await projectOwner(project!.owner_id, project!.org_id)
 
@@ -39,6 +40,7 @@ export default defineEventHandler(async (event) => {
       ...fullProject(project!, versions, files, deps),
       owner,
       following,
+      dependents,
       favourited,
       price,
       currency: project!.currency,

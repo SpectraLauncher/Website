@@ -49,6 +49,7 @@ export interface CatalogProjectData {
   owned?: boolean
   follows: number
   following?: boolean
+  dependents?: DependentProject[]
   favourited?: boolean
   owner?: {
     kind: 'user' | 'organization'
@@ -330,6 +331,7 @@ async function toggleFollow() {
       <div class="flex min-w-0 flex-col gap-4">
         <slot name="sidebar" />
         <ProjectSidebar :project="project" />
+        <ProjectDependents :dependents="project.dependents ?? []" />
       </div>
     </div>
   </div>

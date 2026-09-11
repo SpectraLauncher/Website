@@ -3653,7 +3653,9 @@
       "noMatch": "No version matches those filters.",
       "clear": "Clear filters",
       "showing": "{n} of {total}"
-    }
+    },
+    "dependents": "Used by",
+    "dependentsHint": "Projects that list this one as a dependency."
   },
   "verification": {
     "title": "Verification",

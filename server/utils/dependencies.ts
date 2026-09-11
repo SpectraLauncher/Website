@@ -1,5 +1,6 @@
 
 import type { ProjectType } from '../../shared/utils/catalog-types'
+import { LISTED_STATUSES } from '../../shared/utils/catalog-types'
 import { exec, q } from './db'
 import { newId } from './ids'
 import type { PackFile } from './mod-manifest'
@@ -109,4 +110,40 @@ function present(row: DependencyRow & {
     versionNumber: row.version_number,
     external: row.external,
   }
+}
+
+export interface DependentProject {
+  id: string
+  slug: string
+  type: ProjectType
+  title: string
+  icon: string | null
+  downloads: number
+}
+
+/**
+ * The projects whose versions depend on this one.
+ *
+ * The other side of a dependency, and the only way an author of a library can
+ * see what their work carries. A dependency is recorded either against the
+ * project or against one exact version of it, so both shapes have to be asked
+ * about; DISTINCT because a project depending on four of our versions is still
+ * one project.
+ *
+ * Listed projects only: an unpublished project depending on this one is not
+ * news anybody outside it may have.
+ */
+export async function dependentsOf(projectId: string, limit = 20): Promise<DependentProject[]> {
+  return await q<DependentProject>(
+    `SELECT DISTINCT p.id, p.slug, p.type, p.title, p.icon, p.downloads
+     FROM version_dependency d
+     JOIN version v ON v.id = d.version_id
+     JOIN project p ON p.id = v.project_id
+     WHERE p.id <> $1
+       AND p.status = ANY($3)
+       AND (d.project_id = $1 OR d.depends_on IN (SELECT id FROM version WHERE project_id = $1))
+     ORDER BY p.downloads DESC
+     LIMIT $2`,
+    [projectId, limit, LISTED_STATUSES],
+  )
 }

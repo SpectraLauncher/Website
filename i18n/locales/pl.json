@@ -3653,7 +3653,9 @@
       "noMatch": "Żadna wersja nie pasuje do tych filtrów.",
       "clear": "Wyczyść filtry",
       "showing": "{n} z {total}"
-    }
+    },
+    "dependents": "Używane przez",
+    "dependentsHint": "Projekty, które wskazują ten jako zależność."
   },
   "verification": {
     "title": "Weryfikacja",
