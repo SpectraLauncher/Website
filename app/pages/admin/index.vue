@@ -51,6 +51,8 @@ const NAV = [
   { id: 'catalog', icon: 'i-pixelarticons-package', label: 'Katalog', group: 'Treść', to: '/admin/catalog' },
   { id: 'verification', icon: 'i-pixelarticons-check-double', label: 'Weryfikacja', group: 'Treść', to: '/admin/verification' },
   { id: 'shares', icon: 'i-pixelarticons-archive', label: 'Paczki', group: 'Treść' },
+  { id: 'posts', icon: 'i-pixelarticons-article', label: 'Artykuły', group: 'Treść', to: '/admin/posts' },
+  { id: 'newsletter', icon: 'i-pixelarticons-mail', label: 'Newsletter', group: 'Treść', to: '/admin/posts?kind=newsletter' },
   { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie' },
   { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie' },
   { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje' },

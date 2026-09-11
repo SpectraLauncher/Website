@@ -9,6 +9,20 @@ export default defineSitemapEventHandler(async () => {
     _i18nTransform: true,
   }))
 
+  const articles = await q<{ slug: string, updated: string }>(
+    `SELECT slug, updated FROM post
+     WHERE kind = 'article' AND status = 'published' AND slug IS NOT NULL
+     ORDER BY published DESC`)
+    .catch(() => [] as Array<{ slug: string, updated: string }>)
+
+  entries.push(...articles.map(article => ({
+    loc: `/news/${article.slug}`,
+    changefreq: 'monthly' as const,
+    priority: 0.6,
+    lastmod: new Date(Number(article.updated)).toISOString(),
+    _i18nTransform: true,
+  })))
+
   if (!catalogIsIndexable()) return entries
 
   const projects = await q<{ slug: string, type: ProjectType, updated: string }>(

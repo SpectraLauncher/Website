@@ -45,6 +45,7 @@ const PRIVATE_PATHS = [
   '/auth/login',
   '/auth/reset-password',
   '/secret',
+  '/news/unsubscribe',
   '/launcher/auth',
   '/s/',
   ...ACCOUNT_PATHS,

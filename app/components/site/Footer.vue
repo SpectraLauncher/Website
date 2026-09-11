@@ -6,7 +6,8 @@ const LEGAL = [
   { key: 'terms.title', to: '/terms' },
   { key: 'privacy.title', to: '/privacy' },
   { key: 'legal.title', to: '/legal' },
-  { key: 'docs.title', to: '/docs' }
+  { key: 'docs.title', to: '/docs' },
+  { key: 'news.title', to: '/news' }
 ]
 </script>
 
