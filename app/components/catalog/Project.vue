@@ -227,11 +227,21 @@ async function toggleFollow() {
                offering the button anyway only produces a 402. An admin keeps the
                button as well as the price, because they can reach the file for
                moderation without having bought it. -->
+          <!-- A project that ships for several game versions or loaders offers
+               the choice here rather than making somebody read the table. A paid
+               one nobody owns keeps the plain button: there is nothing to pick
+               between until it is bought. -->
+          <ProjectDownloadPicker
+            v-if="primaryFile && canDownload && !needsBuying"
+            :versions="project.versions"
+            :path="project.path"
+            :fallback-file-id="primaryFile.id"
+          />
           <UButton
-            v-if="primaryFile && canDownload"
+            v-else-if="primaryFile && canDownload"
             size="lg"
-            :color="needsBuying ? 'neutral' : 'primary'"
-            :variant="needsBuying ? 'subtle' : 'solid'"
+            color="neutral"
+            variant="subtle"
             icon="i-pixelarticons-download"
             :label="t('catalog.download')"
             :to="`/api/catalog/download/${primaryFile.id}`"
