@@ -12,6 +12,7 @@ export const NOTIFICATION_GROUPS = {
   packs: ['instance_invite', 'instance_update'],
   projects: ['project_approved', 'project_rejected', 'project_removed', 'project_message'],
   comments: ['project_comment', 'comment_reply'],
+  follows: ['project_updated'],
   moderation: ['report_received', 'report_closed'],
 } as const
 
@@ -35,6 +36,9 @@ export const DEFAULT_PREFS: Record<NotificationGroup, NotificationChannel[]> = {
   packs: ['site'],
   projects: ['site', 'email'],
   comments: ['site'],
+  // Site only: following a hundred projects would otherwise be a hundred
+  // e-mails, and the bell is where somebody goes looking for this.
+  follows: ['site'],
   moderation: ['site', 'email'],
 }
 

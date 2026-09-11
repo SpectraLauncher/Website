@@ -2523,7 +2523,8 @@
       "packs": "Modpacki",
       "projects": "Twoje projekty",
       "comments": "Komentarze",
-      "moderation": "Moderacja"
+      "moderation": "Moderacja",
+      "follows": "Obserwowane projekty"
     },
     "groupHints": {
       "social": "Zaproszenia do znajomych i ich akceptacje.",
@@ -3708,7 +3709,8 @@
     "mailBody": "Otwórz Spectra, aby zobaczyć szczegóły.",
     "mailCta": "Otwórz Spectra",
     "report_received": "Nowe zgłoszenie czeka na sprawdzenie",
-    "report_closed": "Twoje zgłoszenie zostało rozpatrzone"
+    "report_closed": "Twoje zgłoszenie zostało rozpatrzone",
+    "project_updated": "{project} wydał {version}"
   },
   "collections": {
     "create": "Nowa kolekcja",

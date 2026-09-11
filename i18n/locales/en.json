@@ -2523,7 +2523,8 @@
       "packs": "Modpacks",
       "projects": "Your projects",
       "comments": "Comments",
-      "moderation": "Moderation"
+      "moderation": "Moderation",
+      "follows": "Projects you follow"
     },
     "groupHints": {
       "social": "Friend requests and accepted invites.",
@@ -3708,7 +3709,8 @@
     "mailBody": "Open Spectra to see the details.",
     "mailCta": "Open Spectra",
     "report_received": "A new report needs review",
-    "report_closed": "Your report has been reviewed"
+    "report_closed": "Your report has been reviewed",
+    "project_updated": "{project} released {version}"
   },
   "collections": {
     "create": "New collection",

@@ -26,3 +26,28 @@ export function projectRouteParts(param: unknown): ProjectRouteParts {
     ? { tab: 'versions', versionId: second }
     : { tab: first, versionId: '' }
 }
+
+/**
+ * Where this page should have been opened, or null when it already is there.
+ *
+ * A slug is unique across every project type, so `/mod/<a-shader>` resolves — it
+ * just resolves under the wrong prefix, with the wrong icon and the wrong name
+ * in the breadcrumb, and search engines see one project at six addresses. The
+ * project's own path is the answer; the tab or version being viewed rides along
+ * so the redirect lands on the same content rather than the description.
+ */
+export function canonicalProjectPath(
+  prefix: string,
+  canonicalPath: string,
+  parts: ProjectRouteParts,
+): string | null {
+  if (!canonicalPath || canonicalPath.startsWith(`/${prefix}/`)) return null
+
+  const tail = parts.versionId
+    ? `/version/${parts.versionId}`
+    : parts.tab
+      ? `/${parts.tab}`
+      : ''
+
+  return `${canonicalPath}${tail}`
+}

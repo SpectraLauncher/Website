@@ -25,10 +25,16 @@ const { data, error } = await useFetch<{
 
 const project = computed(() => data.value?.project ?? null)
 
+// The URL says which type this is; the project says which type it is. When they
+// disagree the project wins and the address is corrected, permanently, so the
+// same project cannot be indexed once per prefix.
+const canonical = canonicalProjectPath(info!.prefix, data.value?.project.path ?? '', parts.value)
+if (canonical) await navigateTo(localePath(canonical), { redirectCode: 301, replace: true })
+
 // Only a schematic has a preview and a bill of materials, and both are read out
 // of the newest version's meta at upload.
 const schematicMeta = computed(() =>
-  (info!.type === 'schematic' ? project.value?.versions[0]?.meta : null) ?? null)
+  (project.value?.type === 'schematic' ? project.value.versions[0]?.meta : null) ?? null)
 
 const previewUrl = computed(() => {
   const url = schematicMeta.value?.preview

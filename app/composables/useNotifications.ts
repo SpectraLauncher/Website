@@ -36,6 +36,7 @@ export const NOTIFICATION_ICONS: Record<string, string> = {
   project_removed: 'i-pixelarticons-trash',
   project_message: 'i-pixelarticons-scale',
   project_comment: 'i-pixelarticons-message',
+  project_updated: 'i-pixelarticons-arrow-up-box',
   comment_reply: 'i-pixelarticons-reply',
   report_received: 'i-pixelarticons-flag',
   report_closed: 'i-pixelarticons-flag',

@@ -1,6 +1,7 @@
 
 import type { H3Event } from 'h3'
 import type { ProjectRow } from './catalog'
+import { isListed } from '../../shared/utils/catalog-types'
 import { isAdmin } from './admin'
 import { q } from './db'
 import { isOrgMember, orgMembers } from './organization'
@@ -74,4 +75,30 @@ export async function notifyComment(input: {
 // shared address should not stop a second person commenting.
 export function commentRateLimit(event: H3Event, userId: string) {
   return rateLimit(event, { key: `comment:${userId}`, limit: 10, windowMs: 60_000 })
+}
+
+/**
+ * Tell everyone following a project that it has a new version.
+ *
+ * Only for a project the public can actually see: a version added to a draft or
+ * to something under moderation is not news, and announcing it would leak that
+ * the project exists. The author gets nothing — notifyOthers drops the actor.
+ */
+export async function notifyFollowers(project: ProjectRow, input: {
+  actorId: string
+  version: string
+}) {
+  if (!isListed(project.status)) return []
+
+  const followers = await q<{ user_id: string }>(
+    'SELECT user_id FROM project_follow WHERE project_id = $1',
+    [project.id],
+  )
+
+  return await notifyOthers(followers.map(row => row.user_id), {
+    kind: 'project_updated',
+    actorId: input.actorId,
+    projectId: project.id,
+    data: { version: input.version },
+  })
 }

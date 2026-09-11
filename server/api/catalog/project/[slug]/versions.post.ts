@@ -57,6 +57,11 @@ export default defineEventHandler(async (event) => {
     attached.push(row)
   }
 
+  // The follow button collected these people; this is the thing it collected
+  // them for. After the files are attached, so nobody is told about a release
+  // they cannot download yet.
+  await notifyFollowers(project, { actorId: user.id, version: version.number })
+
   setResponseStatus(event, 201)
   return { version: shortVersion(version, attached) }
 })
