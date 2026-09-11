@@ -1,4 +1,5 @@
 
+import type { ProjectType } from '../../shared/utils/catalog-types'
 import { exec, q } from './db'
 import { newId } from './ids'
 import type { PackFile } from './mod-manifest'
@@ -54,6 +55,16 @@ export async function replaceDependencies(versionId: string, files: PackFile[]) 
 }
 
 export async function dependenciesOf(versionId: string) {
+  return (await dependenciesForVersions([versionId])).get(versionId) ?? []
+}
+
+export type VersionDependency = Awaited<ReturnType<typeof dependenciesForVersions>> extends
+  Map<string, Array<infer T>> ? T : never
+
+export async function dependenciesForVersions(versionIds: string[]) {
+  const out = new Map<string, ReturnType<typeof present>[]>()
+  if (!versionIds.length) return out
+
   const rows = await q<DependencyRow & {
     project_slug: string | null
     project_type: string | null
@@ -66,19 +77,36 @@ export async function dependenciesOf(versionId: string) {
      FROM version_dependency d
      LEFT JOIN version v ON v.id = d.depends_on
      LEFT JOIN project p ON p.id = COALESCE(d.project_id, v.project_id)
-     WHERE d.version_id = $1
+     WHERE d.version_id = ANY($1)
      ORDER BY p.title NULLS LAST, d.id`,
-    [versionId],
+    [versionIds],
   )
 
-  return rows.map(row => ({
+  for (const row of rows) {
+    const list = out.get(row.version_id) ?? []
+    list.push(present(row))
+    out.set(row.version_id, list)
+  }
+
+  return out
+}
+
+function present(row: DependencyRow & {
+  project_slug: string | null
+  project_type: string | null
+  project_title: string | null
+  version_number: string | null
+}) {
+  return {
     id: row.id,
     kind: row.kind,
+    // A dependency we host can be linked to; one that lives somewhere else can
+    // only be named, and the page has to say which it is looking at.
     hosted: Boolean(row.depends_on || row.project_id),
     slug: row.project_slug,
-    type: row.project_type,
+    type: row.project_type as ProjectType | null,
     title: row.project_title,
     versionNumber: row.version_number,
     external: row.external,
-  }))
+  }
 }

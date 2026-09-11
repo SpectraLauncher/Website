@@ -167,6 +167,8 @@ function size(bytes: number) {
       </p>
     </section>
 
+    <ProjectDependencies :dependencies="version.dependencies ?? []" />
+
     <section>
       <h3 class="mb-3 text-base font-bold text-highlighted">{{ t('catalog.version.changes') }}</h3>
       <!-- eslint-disable-next-line vue/no-v-html -- markdown-it runs with html:false -->

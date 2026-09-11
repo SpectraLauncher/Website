@@ -19,6 +19,7 @@ export interface CatalogVersion {
   changelog?: string
   meta: Record<string, any>
   files: CatalogVersionFile[]
+  dependencies?: CatalogDependency[]
 }
 
 export interface CatalogProjectData {

@@ -3639,7 +3639,20 @@
       "saved": "Zapisano.",
       "back": "Wróć do wersji",
       "filesReadOnly": "Pliki należą do wersji w takiej postaci, w jakiej ją wgrano. Żeby je zmienić, opublikuj nową wersję.",
-      "removeHint": "Wersja i jej pliki znikają na dobre. Kto już ją pobrał, ma swoją kopię; nikt nie pobierze jej ponownie."
+      "removeHint": "Wersja i jej pliki znikają na dobre. Kto już ją pobrał, ma swoją kopię; nikt nie pobierze jej ponownie.",
+      "dependencies": "Zależności",
+      "required": "Wymagane",
+      "optional": "Opcjonalne",
+      "incompatible": "Niekompatybilne",
+      "embedded": "Wbudowane",
+      "external": "Spoza Spectry",
+      "noDependencies": "Ta wersja nie potrzebuje niczego więcej.",
+      "filterGame": "Dowolna wersja gry",
+      "filterLoader": "Dowolna platforma",
+      "filterChannel": "Dowolny kanał",
+      "noMatch": "Żadna wersja nie pasuje do tych filtrów.",
+      "clear": "Wyczyść filtry",
+      "showing": "{n} z {total}"
     }
   },
   "verification": {

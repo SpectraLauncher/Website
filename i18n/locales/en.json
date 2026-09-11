@@ -3639,7 +3639,20 @@
       "saved": "Saved.",
       "back": "Back to versions",
       "filesReadOnly": "Files belong to the version as it was uploaded. To change them, publish a new version.",
-      "removeHint": "The version and its files go for good. Anybody who already downloaded it keeps their copy; nobody can get it again."
+      "removeHint": "The version and its files go for good. Anybody who already downloaded it keeps their copy; nobody can get it again.",
+      "dependencies": "Dependencies",
+      "required": "Required",
+      "optional": "Optional",
+      "incompatible": "Incompatible",
+      "embedded": "Embedded",
+      "external": "Not hosted here",
+      "noDependencies": "This version needs nothing else.",
+      "filterGame": "Any game version",
+      "filterLoader": "Any platform",
+      "filterChannel": "Any channel",
+      "noMatch": "No version matches those filters.",
+      "clear": "Clear filters",
+      "showing": "{n} of {total}"
     }
   },
   "verification": {

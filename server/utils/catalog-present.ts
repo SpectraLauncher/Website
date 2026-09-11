@@ -69,7 +69,12 @@ export function shortProject(row: ProjectRow) {
   }
 }
 
-export function fullProject(row: ProjectRow, versions: VersionRow[], files: FileRow[]) {
+export function fullProject(
+  row: ProjectRow,
+  versions: VersionRow[],
+  files: FileRow[],
+  deps?: Map<string, unknown[]>,
+) {
   const byVersion = new Map<string, FileRow[]>()
   for (const file of files) {
     const list = byVersion.get(file.version_id) ?? []
@@ -90,6 +95,9 @@ export function fullProject(row: ProjectRow, versions: VersionRow[], files: File
     published: row.published === null ? null : num(row.published),
     // fullVersion rather than shortVersion: the project page has a changelog
     // tab, and a changelog nobody sends is a tab with nothing in it.
-    versions: versions.map(v => fullVersion(v, byVersion.get(v.id) ?? [])),
+    versions: versions.map(v => ({
+      ...fullVersion(v, byVersion.get(v.id) ?? []),
+      dependencies: deps?.get(v.id) ?? [],
+    })),
   }
 }

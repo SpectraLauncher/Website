@@ -15,3 +15,16 @@ export interface CatalogHit {
   price: number
   updated: number
 }
+
+/** One entry in a version's dependency list, as the project endpoint sends it. */
+export interface CatalogDependency {
+  id: string
+  kind: string
+  /** True when the dependency is a project here and can be linked to. */
+  hosted: boolean
+  slug: string | null
+  type: ProjectType | null
+  title: string | null
+  versionNumber: string | null
+  external: Record<string, any> | null
+}
