@@ -5,10 +5,10 @@ const { t, locale } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
 
-const id = computed(() => String(route.params.id ?? ''))
+const slug = computed(() => String(route.params.slug ?? ''))
 const versionId = computed(() => String(route.params.version ?? ''))
 
-const { project, refresh, may } = useProjectEditor(id)
+const { project, refresh, may } = useProjectEditor(slug)
 
 const busy = ref('')
 const problem = ref('')
@@ -119,7 +119,7 @@ async function remove() {
   try {
     await $fetch(`${path.value}/versions/${encodeURIComponent(versionId.value)}`, { method: 'DELETE' })
     await refresh()
-    await router.push(localePath(`/project/${id.value}/settings/versions`))
+    await router.push(localePath(`/project/${slug.value}/settings/versions`))
   }
   catch (e: any) { problem.value = e?.data?.statusMessage || t('auth.genericError') }
   finally { busy.value = '' }
@@ -131,7 +131,7 @@ useSeoMeta({ title: () => t('catalog.version.editTitle'), robots: 'noindex' })
 <template>
   <div class="space-y-5">
     <NuxtLink
-      :to="localePath(`/project/${id}/settings/versions`)"
+      :to="localePath(`/${type}/${slug}/settings/versions`)"
       class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-highlighted"
     >
       <UIcon name="i-pixelarticons-chevron-left" class="size-4" />

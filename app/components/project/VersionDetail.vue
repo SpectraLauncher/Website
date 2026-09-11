@@ -4,7 +4,6 @@ import type { CatalogVersion } from '~/components/catalog/Project.vue'
 const props = defineProps<{
   version: CatalogVersion
   path: string
-  projectId: string
   projectTitle: string
   environment: string[]
   canEdit: boolean
@@ -13,7 +12,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const localePath = useLocalePath()
 const { count, when } = useCatalogFormat()
-const menu = useVersionMenu(() => ({ path: props.path, projectId: props.projectId, canEdit: props.canEdit }))
+const menu = useVersionMenu(() => ({ path: props.path, canEdit: props.canEdit }))
 
 const CHANNEL_COLOR: Record<string, 'success' | 'warning' | 'error'> = {
   release: 'success',
@@ -82,7 +81,7 @@ function size(bytes: number) {
             variant="subtle"
             icon="i-pixelarticons-edit"
             :aria-label="t('catalog.version.edit')"
-            :to="localePath(`/project/${projectId}/settings/version/${version.id}`)"
+            :to="localePath(`${path}/settings/version/${version.id}`)"
           />
           <UDropdownMenu :items="menu(version)" :content="{ align: 'end' }">
             <UButton

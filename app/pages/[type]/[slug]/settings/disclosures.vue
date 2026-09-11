@@ -2,8 +2,8 @@
 const route = useRoute()
 const { t } = useI18n()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { project, refresh } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { project, refresh } = useProjectEditor(slug)
 
 const busy = ref(false)
 const saved = ref(false)

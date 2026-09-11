@@ -252,7 +252,7 @@ async function toggleFollow() {
             color="neutral"
             icon="i-pixelarticons-edit"
             :label="t('catalog.editProject')"
-            :to="localePath(`/project/${project.id}/settings`)"
+            :to="localePath(`${project.path}/settings`)"
           />
         </div>
       </header>
@@ -296,7 +296,6 @@ async function toggleFollow() {
             v-if="openVersion"
             :version="openVersion"
             :path="project.path"
-            :project-id="project.id"
             :project-title="project.title"
             :environment="project.environment"
             :can-edit="canEdit"
@@ -305,7 +304,6 @@ async function toggleFollow() {
             v-else
             :versions="project.versions"
             :path="project.path"
-            :project-id="project.id"
             :can-edit="canEdit"
           />
         </template>

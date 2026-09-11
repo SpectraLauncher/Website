@@ -21,8 +21,8 @@ const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { project, refresh: refreshProject } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { project, refresh: refreshProject } = useProjectEditor(slug)
 
 const busy = ref('')
 const problem = ref('')
@@ -32,14 +32,14 @@ const path = computed(() => `/api/catalog/project/${encodeURIComponent(project.v
 const request = useRequestFetch()
 
 const { data, refresh } = await useAsyncData(
-  `project-members:${id.value}`,
+  `project-members:${slug.value}`,
   () => request<{
     members: Member[]
     owner: { kind: 'user' | 'organization', slug: string | null, name: string | null, image: string | null } | null
     inherited: Inherited[]
     mine: ProjectPermission[]
     isOwner: boolean
-  }>(`/api/catalog/project/${encodeURIComponent(id.value)}/members`),
+  }>(`/api/catalog/project/${encodeURIComponent(slug.value)}/members`),
   { watch: [id] },
 )
 

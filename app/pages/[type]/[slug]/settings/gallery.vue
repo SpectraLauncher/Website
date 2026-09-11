@@ -3,8 +3,8 @@ const route = useRoute()
 const { t } = useI18n()
 const { ask } = useConfirm()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { data, project, refresh } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { data, project, refresh } = useProjectEditor(slug)
 
 const busy = ref('')
 const problem = ref('')

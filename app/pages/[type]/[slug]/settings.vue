@@ -5,10 +5,11 @@ const route = useRoute()
 const { t } = useI18n()
 const localePath = useLocalePath()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { data, error, status, project, refresh, may } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const type = computed(() => String(route.params.type ?? ''))
+const { data, error, status, project, refresh, may } = useProjectEditor(slug)
 
-const base = computed(() => `/project/${id.value}/settings`)
+const base = computed(() => `/${type.value}/${slug.value}/settings`)
 
 // Modrinth's order, and for the same reason: what the project is, then what it
 // says about itself, then what it ships, then who works on it. Moderation-facing

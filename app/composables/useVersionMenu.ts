@@ -8,7 +8,6 @@ export function useVersionLink(path: () => string) {
 
 interface MenuContext {
   path: string
-  projectId: string
   canEdit: boolean
 }
 
@@ -34,7 +33,7 @@ export function useVersionMenu(context: () => MenuContext) {
   }
 
   return (version: CatalogVersion): DropdownMenuItem[][] => {
-    const { canEdit, projectId } = context()
+    const { canEdit } = context()
     const primary = version.files.find(file => file.primary) ?? version.files[0]
     const to = localePath(link(version))
 
@@ -72,13 +71,13 @@ export function useVersionMenu(context: () => MenuContext) {
       {
         label: t('catalog.version.edit'),
         icon: 'i-pixelarticons-edit',
-        to: localePath(`/project/${projectId}/settings/version/${version.id}`),
+        to: localePath(`${context().path}/settings/version/${version.id}`),
       },
       {
         label: t('catalog.version.remove'),
         icon: 'i-pixelarticons-trash',
         color: 'error' as const,
-        to: localePath(`/project/${projectId}/settings/version/${version.id}`),
+        to: localePath(`${context().path}/settings/version/${version.id}`),
       },
     ]]
   }

@@ -2,8 +2,8 @@
 const route = useRoute()
 const { t } = useI18n()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { data, project, refresh } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { data, project, refresh } = useProjectEditor(slug)
 
 const busy = ref(false)
 const saved = ref(false)
@@ -27,22 +27,18 @@ async function save(body: Record<string, unknown>) {
   finally { busy.value = false }
 }
 
-const license = ref<string | null>(null)
-const licenseUrl = ref('')
+const description = ref('')
 
 watchEffect(() => {
-  if (!project.value) return
-  license.value = project.value.license
-  licenseUrl.value = project.value.licenseUrl ?? ''
+  if (project.value) description.value = project.value.description
 })
 
-const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: value })))
 </script>
 
 <template>
   <div class="rounded-2xl border border-panel-line bg-panel p-6">
-    <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.license') }}</h2>
-    <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.license') }}</p>
+    <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.description') }}</h2>
+    <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.description') }}</p>
 
     <UAlert
       v-if="problem"
@@ -53,28 +49,19 @@ const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: val
       :description="problem"
     />
 
-    <div class="space-y-4">
-      <UFormField :label="t('catalog.license')">
-        <USelect
-          v-model="license"
-          :items="licenseOptions"
-          value-key="value"
-          :placeholder="t('catalog.admin.license')"
-          class="w-full"
-        />
-      </UFormField>
-
-      <UFormField :label="t('catalog.licenseUrl')" :help="t('catalog.settingsHint.licenseUrl')">
-        <UInput v-model="licenseUrl" class="w-full" placeholder="https://" />
-      </UFormField>
-    </div>
+    <UiMarkdownEditor
+      v-model="description"
+      :rows="24"
+      :upload-to="`/api/catalog/project/${encodeURIComponent(project?.slug ?? '')}/image`"
+      :placeholder="t('catalog.descriptionPlaceholder')"
+    />
 
     <div class="mt-5 flex items-center gap-3">
       <UButton
         class="rounded-xl"
         :label="t('account.save')"
         :loading="busy"
-        @click="save({ license, licenseUrl })"
+        @click="save({ description })"
       />
       <span v-if="saved" class="text-sm text-primary">{{ t('account.saved') }}</span>
     </div>

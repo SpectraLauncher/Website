@@ -24,8 +24,8 @@ const { t, locale } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { project, refresh } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { project, refresh } = useProjectEditor(slug)
 
 const busy = ref('')
 const problem = ref('')
@@ -321,7 +321,7 @@ const loaderOptions = computed(() =>
             color="neutral"
             icon="i-pixelarticons-edit"
             :aria-label="t('catalog.version.edit')"
-            :to="localePath(`/project/${id}/settings/version/${version.id}`)"
+            :to="localePath(`/${type}/${slug}/settings/version/${version.id}`)"
           />
           <UButton
             size="xs"

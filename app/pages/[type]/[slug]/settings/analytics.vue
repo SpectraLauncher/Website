@@ -2,7 +2,7 @@
 const route = useRoute()
 const { t, locale } = useI18n()
 
-const id = computed(() => String(route.params.id ?? ''))
+const slug = computed(() => String(route.params.slug ?? ''))
 
 interface Row { id: string, title: string, views: number, downloads: number }
 
@@ -10,7 +10,7 @@ const { data, status } = await useFetch<{
   days: number
   projects: Row[]
   totals: { views: number, downloads: number }
-}>(() => `/api/catalog/me/analytics?project=${encodeURIComponent(id.value)}`)
+}>(() => `/api/catalog/me/analytics?project=${encodeURIComponent(slug.value)}`)
 
 const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 </script>

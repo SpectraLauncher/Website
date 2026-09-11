@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-const page = readFileSync('app/pages/project/[id]/settings/pricing.vue', 'utf8')
-const shell = readFileSync('app/pages/project/[id]/settings.vue', 'utf8')
+const page = readFileSync('app/pages/[type]/[slug]/settings/pricing.vue', 'utf8')
+const shell = readFileSync('app/pages/[type]/[slug]/settings.vue', 'utf8')
 const editor = readFileSync('server/api/catalog/project/[slug]/editor.get.ts', 'utf8')
 
 describe('zakladka z cena', () => {

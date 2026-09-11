@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
+const router = useRouter()
+const localePath = useLocalePath()
 const { t } = useI18n()
 
-const id = computed(() => String(route.params.id ?? ''))
-const { data, project, refresh } = useProjectEditor(id)
+const slug = computed(() => String(route.params.slug ?? ''))
+const { data, project, refresh } = useProjectEditor(slug)
 
 const busy = ref(false)
 const saved = ref(false)
@@ -12,12 +14,24 @@ const problem = ref('')
 async function save(body: Record<string, unknown>) {
   busy.value = true
   problem.value = ''
+
+  // The address of this page is built from the slug, so changing the slug moves
+  // the page out from under whoever is standing on it. Remembering what it was
+  // is what lets us follow it rather than 404 on the next render.
+  const was = project.value!.slug
+
   try {
-    await $fetch(`/api/catalog/project/${encodeURIComponent(project.value!.slug)}`, {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(was)}`, {
       method: 'PATCH',
       body,
     })
     await refresh()
+
+    const now = project.value?.slug
+    if (now && now !== was) {
+      await router.replace(localePath(`/${route.params.type}/${now}/settings`))
+    }
+
     saved.value = true
     setTimeout(() => (saved.value = false), 4000)
   }
