@@ -1,20 +1,3 @@
-export default defineNuxtRouteMiddleware(async (to) => {
-  const localePath = useLocalePath()
-
-  try {
-    await $fetch('/api/catalog/gate', {
-      headers: import.meta.server ? useRequestHeaders(['cookie']) : undefined,
-    })
-  }
-  catch (e) {
-    const status = (e as { statusCode?: number, status?: number }).statusCode
-      ?? (e as { status?: number }).status
-      ?? 404
-
-    if (status === 401) {
-      return navigateTo({ path: localePath('/login'), query: { next: to.fullPath } })
-    }
-
-    throw createError({ statusCode: 404, fatal: true })
-  }
-})
+// The catalog is closed while NUXT_PUBLIC_CATALOG_PUBLIC is off: the server
+// serves it to the admin alone and answers 404 to everyone else.
+export default gateRoute('/api/catalog/gate')

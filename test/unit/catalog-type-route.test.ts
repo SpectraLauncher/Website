@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -47,5 +47,33 @@ describe('nieznany segment nie jest typem', () => {
 
     const clashes = CATALOG_TYPES.filter(entry => taken.includes(entry.prefix))
     expect(clashes.map(entry => entry.prefix)).toEqual([])
+  })
+})
+
+// The catalog gate and the admin gate were copies of each other, and a copy is
+// one edit away from two gates that disagree about what a 401 means. They read
+// from one place now; this keeps them there.
+describe('bramy tras', () => {
+  // A comment explaining why 403 is the wrong answer is not itself a 403.
+  const gate = readFileSync('app/utils/routeGate.ts', 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '')
+
+  it.each(['admin', 'catalog'])('middleware %s idzie przez wspolna brame', (name) => {
+    const source = readFileSync(`app/middleware/${name}.ts`, 'utf8')
+
+    expect(source).toContain('gateRoute(')
+    expect(source).not.toContain('createError')
+    expect(source).not.toContain('navigateTo')
+  })
+
+  it('brama odroznia 401 od reszty i nigdy nie mowi 403', () => {
+    expect(gate).toContain('status === 401')
+    expect(gate).toContain('statusCode: 404')
+    expect(gate).not.toContain('403')
+  })
+
+  it('brama dokłada ciasteczka przy renderze na serwerze', () => {
+    expect(gate).toContain("useRequestHeaders(['cookie'])")
   })
 })
