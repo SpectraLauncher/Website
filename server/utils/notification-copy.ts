@@ -14,8 +14,8 @@ interface Context {
 // on the notification list itself.
 function destination(kind: string, context: Context): string {
   if (context.path) return context.path
-  if (kind.startsWith('friend')) return '/settings?tab=friends'
-  return '/notifications'
+  if (kind.startsWith('friend')) return '/dashboard/settings?tab=friends'
+  return '/dashboard/notifications'
 }
 
 // The subject is the same sentence the bell shows, so the two never drift.

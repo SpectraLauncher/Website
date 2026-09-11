@@ -47,7 +47,7 @@ describe('czlonkowie projektu', () => {
 })
 
 describe('moje zgloszenia', () => {
-  const page = readFileSync('app/pages/reports.vue', 'utf8')
+  const page = readFileSync('app/pages/dashboard/reports.vue', 'utf8')
 
   it('strona jest za flaga katalogu i poza indeksem', () => {
     expect(page).toContain(`middleware: 'catalog'`)

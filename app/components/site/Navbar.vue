@@ -186,7 +186,7 @@ defineExpose({ items })
                         color="primary"
                     >
                         <UButton
-                            :to="localePath('/notifications')"
+                            :to="localePath('/dashboard/notifications')"
                             icon="i-pixelarticons-bell"
                             variant="ghost"
                             color="neutral"

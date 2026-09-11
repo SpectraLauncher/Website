@@ -70,7 +70,7 @@ describe('publiczna konfiguracja runtime', () => {
 
 describe('klucz publiczny Stripe idzie przez API', () => {
   const status = readFileSync('server/api/seller/status.get.ts', 'utf8')
-  const page = readFileSync('app/pages/seller.vue', 'utf8')
+  const page = readFileSync('app/pages/dashboard/seller.vue', 'utf8')
 
   it('serwer czyta go z srodowiska przy zadaniu', () => {
     expect(status).toContain('process.env.STRIPE_PUBLISHABLE_KEY')

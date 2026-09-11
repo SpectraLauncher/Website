@@ -18,9 +18,9 @@ watchEffect(() => {
 const TABS = [
   { id: 'overview', to: '', icon: 'i-pixelarticons-gear' },
   { id: 'members', to: '/members', icon: 'i-pixelarticons-users' },
-  { id: 'projects', to: '/projects', icon: 'i-pixelarticons-package' },
+  { id: 'projects', to: '/dashboard/projects', icon: 'i-pixelarticons-package' },
   { id: 'split', to: '/split', icon: 'i-pixelarticons-coin' },
-  { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line' },
+  { id: 'analytics', to: '/dashboard/analytics', icon: 'i-pixelarticons-chart-line' },
 ]
 
 const tabs = computed<SideNavItem[]>(() => TABS.map(tab => ({

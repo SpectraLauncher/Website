@@ -94,7 +94,7 @@ async function leave() {
   problem.value = ''
   try {
     await $fetch(`/api/org/${encodeURIComponent(slug.value)}/leave`, { method: 'POST' })
-    await navigateTo(localePath('/organizations'))
+    await navigateTo(localePath('/dashboard/organizations'))
   }
   catch (e: any) {
     problem.value = e?.data?.statusMessage || t('auth.genericError')

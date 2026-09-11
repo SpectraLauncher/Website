@@ -18,16 +18,16 @@ export interface AccountEntry {
 
 export const ACCOUNT_ENTRIES: AccountEntry[] = [
   { id: 'profile', icon: 'i-pixelarticons-user', label: 'nav.account.profile', path: name => `/u/${name}` },
-  { id: 'notifications', icon: 'i-pixelarticons-bell', label: 'nav.account.notifications', path: '/notifications' },
-  { id: 'projects', icon: 'i-pixelarticons-package', label: 'nav.account.projects', path: '/projects', catalog: true },
-  { id: 'collections', icon: 'i-pixelarticons-bookmark', label: 'nav.account.collections', path: '/collections', catalog: true },
-  { id: 'organizations', icon: 'i-pixelarticons-users', label: 'nav.account.organizations', path: '/organizations', catalog: true },
-  { id: 'library', icon: 'i-pixelarticons-library', label: 'nav.account.library', path: '/library', catalog: true },
-  { id: 'analytics', icon: 'i-pixelarticons-chart-line', label: 'nav.account.analytics', path: '/analytics', catalog: true },
-  { id: 'revenue', icon: 'i-pixelarticons-chart', label: 'nav.account.revenue', path: '/revenue', catalog: true },
-  { id: 'seller', icon: 'i-pixelarticons-wallet', label: 'nav.account.seller', path: '/seller', catalog: true },
-  { id: 'reports', icon: 'i-pixelarticons-flag', label: 'reports.mine', path: '/reports', catalog: true },
-  { id: 'settings', icon: 'i-pixelarticons-gear', label: 'nav.account.settings', path: '/settings' },
+  { id: 'notifications', icon: 'i-pixelarticons-bell', label: 'nav.account.notifications', path: '/dashboard/notifications' },
+  { id: 'projects', icon: 'i-pixelarticons-package', label: 'nav.account.projects', path: '/dashboard/projects', catalog: true },
+  { id: 'collections', icon: 'i-pixelarticons-bookmark', label: 'nav.account.collections', path: '/dashboard/collections', catalog: true },
+  { id: 'organizations', icon: 'i-pixelarticons-users', label: 'nav.account.organizations', path: '/dashboard/organizations', catalog: true },
+  { id: 'library', icon: 'i-pixelarticons-library', label: 'nav.account.library', path: '/dashboard/library', catalog: true },
+  { id: 'analytics', icon: 'i-pixelarticons-chart-line', label: 'nav.account.analytics', path: '/dashboard/analytics', catalog: true },
+  { id: 'revenue', icon: 'i-pixelarticons-chart', label: 'nav.account.revenue', path: '/dashboard/revenue', catalog: true },
+  { id: 'seller', icon: 'i-pixelarticons-wallet', label: 'nav.account.seller', path: '/dashboard/seller', catalog: true },
+  { id: 'reports', icon: 'i-pixelarticons-flag', label: 'reports.mine', path: '/dashboard/reports', catalog: true },
+  { id: 'settings', icon: 'i-pixelarticons-gear', label: 'nav.account.settings', path: '/dashboard/settings' },
 ]
 
 export interface AccountViewer {

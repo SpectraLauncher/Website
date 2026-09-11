@@ -101,7 +101,7 @@ async function startPayment() {
           // it has to be the order page and its token.
           confirmParams: {
             return_url: signedIn.value
-              ? `${location.origin}${localePath('/library')}`
+              ? `${location.origin}${localePath('/dashboard/library')}`
               : `${location.origin}${localePath('/order')}/${orderToken.value}`,
           },
           redirect: 'if_required',
@@ -169,7 +169,7 @@ useSeoMeta({ title: () => t('cart.title'), robots: 'noindex' })
           <UButton
             v-if="signedIn"
             class="mt-4 rounded-xl"
-            :to="localePath('/library')"
+            :to="localePath('/dashboard/library')"
             :label="t('cart.toLibrary')"
           />
           <UButton

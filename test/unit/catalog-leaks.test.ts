@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -112,8 +112,23 @@ describe('statusy: widoczny z linku to nie to samo co widoczny na liscie', () =>
 describe('strony konta sa prywatne niezaleznie od flagi', () => {
   const accountPaths = arrayLiteral(nuxtConfig, 'ACCOUNT_PATHS')
 
-  it.each(['/settings', '/notifications', '/library', '/projects', '/organizations',
-    '/analytics', '/revenue', '/collections', '/account'])('%s jest w ACCOUNT_PATHS', (path) => {
+  // Naming each page here meant the list could fall behind the directory. It
+  // reads the directory instead, so a page added to the account panel is
+  // private the day it appears or this fails.
+  it('kazda strona panelu konta jest pokryta przez ACCOUNT_PATHS', () => {
+    const pages = readdirSync('app/pages/dashboard')
+      .filter(name => name.endsWith('.vue'))
+      .map(name => `/dashboard/${name.replace(/\.vue$/, '')}`)
+
+    expect(pages.length).toBeGreaterThan(5)
+
+    for (const page of pages) {
+      const covered = accountPaths.some(prefix => page === prefix || page.startsWith(`${prefix}/`))
+      expect(covered, `${page} nie jest zadna ze sciezek ACCOUNT_PATHS`).toBe(true)
+    }
+  })
+
+  it.each(['/account', '/cart'])('%s jest w ACCOUNT_PATHS', (path) => {
     expect(accountPaths).toContain(path)
   })
 

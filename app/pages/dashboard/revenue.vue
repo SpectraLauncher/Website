@@ -104,7 +104,7 @@ useSeoMeta({ title: () => t('revenue.title'), robots: 'noindex' })
 
     <p class="mt-6 text-sm text-muted">
       {{ t('revenue.sellerHint') }}
-      <NuxtLink :to="localePath('/seller')" class="underline">{{ t('revenue.sellerLink') }}</NuxtLink>
+      <NuxtLink :to="localePath('/dashboard/seller')" class="underline">{{ t('revenue.sellerLink') }}</NuxtLink>
     </p>
 
     <h2 class="mt-10 text-lg font-semibold">{{ t('revenue.ledger') }}</h2>

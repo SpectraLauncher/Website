@@ -75,7 +75,7 @@ async function remove(projectId: string) {
             class="mt-4 rounded-xl"
             variant="ghost"
             color="neutral"
-            :to="localePath('/collections')"
+            :to="localePath('/dashboard/collections')"
             :label="t('nav.account.collections')"
           />
         </div>

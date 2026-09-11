@@ -71,7 +71,7 @@ async function destroy() {
   problem.value = ''
   try {
     await $fetch(`/api/org/${encodeURIComponent(slug.value)}`, { method: 'DELETE' })
-    await navigateTo(localePath('/organizations'))
+    await navigateTo(localePath('/dashboard/organizations'))
   }
   catch (e: any) {
     problem.value = e?.data?.statusMessage || e?.message || t('catalog.org.saveFailed')

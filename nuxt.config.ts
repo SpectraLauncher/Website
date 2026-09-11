@@ -33,9 +33,11 @@ const CATALOG_PATHS = [
 // One person's own pages. These never belong in a sitemap, whatever the catalog
 // flag says, so they are listed apart from the paths that open with it.
 const ACCOUNT_PATHS = [
-  '/account', '/settings', '/notifications', '/library', '/collections', '/cart',
-  '/projects', '/organizations', '/analytics', '/revenue', '/verification', '/seller',
-  '/reports', '/oauth', '/order'
+  // Everything behind the account panel now lives under one prefix, and both
+  // consumers of this list - robots.disallow and sitemap.exclude - match by
+  // prefix, so the eleven pages under it need naming once.
+  '/dashboard',
+  '/account', '/cart', '/oauth', '/order',
 ]
 
 const PRIVATE_PATHS = [
