@@ -5,7 +5,7 @@ const localePath = useLocalePath()
 const auth = useAuthClient()
 const { data: release } = useLauncherVersion()
 
-const { data: config } = await useFetch<{ providers: string[], turnstileSiteKey: string }>('/api/auth-providers')
+const { data: config } = await useAuthProviders()
 
 const PROVIDER_META: Record<string, { icon: string, label: string }> = {
   discord: { icon: 'i-simple-icons-discord', label: 'Discord' },

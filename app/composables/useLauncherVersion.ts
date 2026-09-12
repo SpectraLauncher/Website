@@ -33,7 +33,7 @@ const FALLBACK: LauncherVersion = {
 
 export function useLauncherVersion() {
   return useFetch<LauncherVersion>('/api/version', {
-    key: 'launcher-version',
+    key: dataKeys.launcherVersion(),
     lazy: true,
     default: () => FALLBACK
   })

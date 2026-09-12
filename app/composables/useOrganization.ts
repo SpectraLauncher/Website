@@ -46,7 +46,7 @@ export interface OrgPayload {
 // request by slug is what makes them share one fetch instead of four, and what
 // lets a tab refresh a change the next tab will see.
 export function useOrganization(slug: MaybeRefOrGetter<string>) {
-  const key = computed(() => `org:${toValue(slug)}`)
+  const key = computed(() => dataKeys.org(toValue(slug)))
 
   // During SSR a plain $fetch sends no cookies, so the session is missing and the
   // author's own page comes back 401 — which the payload then carries into the

@@ -527,7 +527,7 @@ const disable2fa = () => run('2fa', async () => {
   return res
 })
 
-const { data: providerList } = await useFetch<{ providers: string[] }>('/api/auth-providers')
+const { data: providerList } = await useAuthProviders()
 const accounts = ref<any[]>([])
 
 const loadAccounts = async () => {

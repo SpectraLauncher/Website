@@ -32,7 +32,7 @@ const path = computed(() => `/api/catalog/project/${encodeURIComponent(project.v
 const request = useRequestFetch()
 
 const { data, refresh } = await useAsyncData(
-  `project-members:${slug.value}`,
+  dataKeys.projectMembers(slug.value),
   () => request<{
     members: Member[]
     owner: { kind: 'user' | 'organization', slug: string | null, name: string | null, image: string | null } | null

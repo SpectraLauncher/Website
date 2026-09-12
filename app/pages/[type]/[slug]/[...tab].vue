@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CatalogProjectData } from '~/types/catalog'
+import type { CatalogProjectData, GalleryImage } from '~/types/catalog'
 
 definePageMeta({ middleware: 'catalog' })
 
@@ -19,9 +19,12 @@ const parts = computed(() => projectRouteParts(route.params.tab))
 const { data, error } = await useFetch<{
   project: CatalogProjectData
   listed: boolean
-  gallery: Array<{ id: string, url: string, title: string, featured: boolean }>
+  gallery: GalleryImage[]
 }>(
-  () => `/api/catalog/project/${encodeURIComponent(slug.value)}`)
+  () => `/api/catalog/project/${encodeURIComponent(slug.value)}`,
+  // Named, so a save in the settings area can mark this stale instead of
+  // leaving the open tab showing the old title.
+  { key: dataKeys.project(slug.value), watch: [slug] })
 
 const project = computed(() => data.value?.project ?? null)
 

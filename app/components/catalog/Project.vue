@@ -31,7 +31,7 @@ const account = computed(() => (session.value.data?.user as { id?: string } | un
 const request = useRequestFetch()
 
 const { data: editor } = await useAsyncData(
-  `project-editable:${props.project.id}`,
+  dataKeys.projectEditable(props.project.id),
   async () => {
     if (session.value.isPending || !account.value) return null
 
