@@ -21,6 +21,7 @@ const GATED_DIRS = [
 // here only because the tests below pin that they really do call one.
 const GATES = [
   'requireCatalogWrite(event)',
+  'requireModeration(event)',
   'requireCatalogRead(event)',
   'requireAdmin(event)',
   'memberContext(event)',

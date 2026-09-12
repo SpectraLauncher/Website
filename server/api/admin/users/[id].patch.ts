@@ -10,9 +10,15 @@ export default defineEventHandler(async (event) => {
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing id' })
 
   const body = await readBody<{ name?: string, username?: string, banned?: boolean }>(event) ?? {}
-  const target = await one<{ id: string, username: string | null }>(
-    'SELECT id, username FROM "user" WHERE id = $1', [id])
+  const target = await one<{ id: string, username: string | null, role: string | null }>(
+    'SELECT id, username, role FROM "user" WHERE id = $1', [id])
   if (!target) throw createError({ statusCode: 404, statusMessage: 'no such user' })
+
+  // Standing at or above you on the ladder is out of reach, so two admins cannot
+  // ban each other and nobody below the top can touch the owner.
+  if (target.id !== staff.id && staffRank(target) >= staffRank(staff)) {
+    throw createError({ statusCode: 409, statusMessage: 'that account outranks you' })
+  }
 
   if (body.username !== undefined) {
     const username = String(body.username).trim().toLowerCase()

@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-  await requireCatalogWrite(event)
+  await requireModeration(event)
 
   return {
     flagged: await flaggedFiles(50),

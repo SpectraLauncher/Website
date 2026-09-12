@@ -75,7 +75,7 @@ describe('co trafia do dziennika', () => {
   it('kazda trasa admina ma brame', () => {
     const open = walk('server/api/admin')
       .filter(file => file.endsWith('.ts'))
-      .filter(file => !/require(Admin|CatalogWrite|CatalogRead)\(event\)/.test(read(file)))
+      .filter(file => !/require(Admin|Owner|Staff|Moderation|CatalogWrite|CatalogRead)\(event\)/.test(read(file)))
       .map(slash)
 
     expect(open).toEqual([])

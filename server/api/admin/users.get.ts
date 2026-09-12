@@ -14,13 +14,14 @@ export default defineEventHandler(async (event) => {
     image: string | null
     emailVerified: boolean
     banned: boolean | null
+    role: string | null
     mcUsername: string | null
     createdAt: string
     lastSeen: string | null
     friends: number
     shares: number
   }>(
-    `SELECT u.id, u.name, u.username, u.email, u.image, u."emailVerified", u.banned,
+    `SELECT u.id, u.name, u.username, u.email, u.image, u."emailVerified", u.banned, u.role,
             u."mcUsername", u."createdAt", u."lastSeen",
             (SELECT count(*)::int FROM friendship f
               WHERE f.status = 'accepted' AND (f.requester_id = u.id OR f.addressee_id = u.id)) AS friends,

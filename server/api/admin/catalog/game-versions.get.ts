@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await requireCatalogWrite(event)
+  await requireModeration(event)
 
   const versions = await minecraftVersions()
   return {

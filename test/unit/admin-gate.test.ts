@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { bootstrapAdminEmails, isAdmin, isAdminEmail, parseAdminEmails } from '../../server/utils/admin'
+import { bootstrapAdminEmails, isAdminEmail, parseAdminEmails } from '../../server/utils/admin'
+import { isAdmin } from '../../shared/utils/staff-roles'
 
 // Deliberately duplicates part of test/admin-gate-check.mjs: this is the smoke
 // test for the whole vitest harness — importing from server/utils, the
@@ -9,6 +10,10 @@ import { bootstrapAdminEmails, isAdmin, isAdminEmail, parseAdminEmails } from '.
 describe('brama admina', () => {
   it('otwiera sie na roli, nie na adresie', () => {
     expect(isAdmin({ role: 'admin' })).toBe(true)
+    // owner stoi nad adminem, wiec przechodzi te same bramy
+    expect(isAdmin({ role: 'owner' })).toBe(true)
+    // moderator stoi nizej: moderuje katalog i nie siega po reszte panelu
+    expect(isAdmin({ role: 'moderator' })).toBe(false)
     expect(isAdmin({ role: 'user' })).toBe(false)
     expect(isAdmin(null)).toBe(false)
   })

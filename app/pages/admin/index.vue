@@ -33,6 +33,7 @@ interface AdminUser {
   image: string | null
   emailVerified: boolean
   banned: boolean
+  role: string | null
   mcUsername: string | null
   createdAt: number
   lastSeen: number | null
@@ -42,25 +43,59 @@ interface AdminUser {
 
 const me = computed(() => session.value.data?.user as any)
 
+const ROLE_LABEL: Record<string, string> = {
+  owner: 'właściciel',
+  admin: 'admin',
+  moderator: 'moderator',
+}
+
+// reka-ui treats an empty string as "nothing selected" and reopens the list, so
+// "no role" travels as its own word and is translated back at the edge.
+const NO_ROLE = 'none'
+
+const ROLE_OPTIONS = [
+  { label: '— brak —', value: NO_ROLE },
+  { label: ROLE_LABEL.moderator!, value: 'moderator' },
+  { label: ROLE_LABEL.admin!, value: 'admin' },
+  { label: ROLE_LABEL.owner!, value: 'owner' },
+]
+
+const setRole = (user: AdminUser, next: string) => run(`role:${user.id}`, async () => {
+  const role = next === NO_ROLE ? '' : next
+
+  const res = await $fetch<{ user: { role: string | null } }>(
+    `/api/admin/users/${user.id}/role`, { method: 'PATCH', body: { role } })
+
+  user.role = res.user.role
+  notice.value = `${user.username ?? user.email}: ${ROLE_LABEL[role] ?? 'bez roli'}`
+})
+
 // Registry: one entry per section of the panel. An entry with `to` opens its
 // own page instead of switching the tab, so the whole panel reads from one
 // list. Adding a section is a line here plus a branch in the body below.
+// `need` is the lowest role the section is offered to. Leaving a section out of
+// the list is not what protects it — every route checks again — it is what stops
+// the panel offering a moderator a door that answers 404.
 const NAV = [
-  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd', group: 'Platforma' },
-  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria', group: 'Platforma' },
-  { id: 'catalog', icon: 'i-pixelarticons-package', label: 'Katalog', group: 'Treść', to: '/admin/catalog' },
-  { id: 'verification', icon: 'i-pixelarticons-check-double', label: 'Weryfikacja', group: 'Treść', to: '/admin/verification' },
-  { id: 'shares', icon: 'i-pixelarticons-archive', label: 'Paczki', group: 'Treść' },
-  { id: 'posts', icon: 'i-pixelarticons-article', label: 'Artykuły', group: 'Treść', to: '/admin/posts' },
-  { id: 'newsletter', icon: 'i-pixelarticons-mail', label: 'Newsletter', group: 'Treść', to: '/admin/posts?kind=newsletter' },
-  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie' },
-  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie' },
-  { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje' },
-  { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit' },
-] as const satisfies readonly SideNavItem[]
+  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd', group: 'Platforma', need: 'admin' },
+  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria', group: 'Platforma', need: 'admin' },
+  { id: 'catalog', icon: 'i-pixelarticons-package', label: 'Katalog', group: 'Treść', to: '/admin/catalog', need: 'moderator' },
+  { id: 'verification', icon: 'i-pixelarticons-check-double', label: 'Weryfikacja', group: 'Treść', to: '/admin/verification', need: 'moderator' },
+  { id: 'shares', icon: 'i-pixelarticons-archive', label: 'Paczki', group: 'Treść', need: 'admin' },
+  { id: 'posts', icon: 'i-pixelarticons-article', label: 'Artykuły', group: 'Treść', to: '/admin/posts', need: 'admin' },
+  { id: 'newsletter', icon: 'i-pixelarticons-mail', label: 'Newsletter', group: 'Treść', to: '/admin/posts?kind=newsletter', need: 'admin' },
+  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie', need: 'admin' },
+  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie', need: 'admin' },
+  { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje', need: 'admin' },
+  { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit', need: 'admin' },
+] as const
 
-const navItems = computed<SideNavItem[]>(() =>
-  NAV.map(item => ({ ...item, to: item.to ? localePath(item.to) : undefined })))
+const { data: staff } = await useFetch<{ role: string | null }>('/api/admin/session')
+const role = computed(() => staff.value?.role ?? null)
+
+const navItems = computed<SideNavItem[]>(() => NAV
+  .filter(item => atLeast({ role: role.value }, item.need))
+  .map(({ need: _need, ...item }) => ({ ...item, to: item.to ? localePath(item.to) : undefined })))
 
 const tab = ref<string>('overview')
 
@@ -705,6 +740,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                 <tr class="border-b border-white/10">
                   <th class="px-4 py-3 font-medium">Konto</th>
                   <th class="px-4 py-3 font-medium">Minecraft</th>
+                  <th class="px-4 py-3 font-medium">Rola</th>
                   <th class="px-4 py-3 text-right font-medium">Znajomi</th>
                   <th class="px-4 py-3 text-right font-medium">Paczki</th>
                   <th class="px-4 py-3 font-medium">Dołączył</th>
@@ -730,12 +766,38 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                       <div class="min-w-0">
                         <div class="flex items-center gap-1.5">
                           <span class="truncate font-medium">{{ user.name || user.username || '—' }}</span>
+                          <UIcon
+                            v-if="isOwner(user)"
+                            name="i-pixelarticons-crown"
+                            class="size-4 shrink-0 text-amber-400"
+                            :title="ROLE_LABEL.owner"
+                          />
+                          <UBadge
+                            v-else-if="user.role"
+                            size="sm"
+                            variant="subtle"
+                            :color="user.role === 'admin' ? 'primary' : 'neutral'"
+                            :label="ROLE_LABEL[user.role] ?? user.role"
+                          />
                           <UIcon v-if="user.emailVerified" name="i-pixelarticons-check-double" class="size-3.5 shrink-0 text-primary" />
                           <UBadge v-if="user.banned" size="sm" color="error" variant="subtle" label="ban" />
                         </div>
                         <p class="truncate text-xs text-dimmed">{{ user.email }}</p>
                       </div>
                     </div>
+                  </td>
+
+                  <td class="px-4 py-3">
+                    <USelect
+                      v-if="isOwner({ role })"
+                      :model-value="user.role ?? NO_ROLE"
+                      :items="ROLE_OPTIONS"
+                      size="xs"
+                      class="w-32"
+                      :loading="busy === `role:${user.id}`"
+                      @update:model-value="setRole(user, String($event))"
+                    />
+                    <span v-else class="text-xs text-dimmed">{{ user.role ? ROLE_LABEL[user.role] : '—' }}</span>
                   </td>
 
                   <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>

@@ -73,9 +73,9 @@ describe('odwolanie wraca do kolejki', () => {
 })
 
 describe('kolejka nie omija straznika', () => {
-  it('endpoint kolejki wymaga uprawnien do zapisu w katalogu', () => {
+  it('endpoint kolejki wymaga roli moderatora', () => {
     const source = readFileSync('server/api/admin/catalog/queue.get.ts', 'utf8')
-    expect(source).toContain('requireCatalogWrite(event)')
+    expect(source).toContain('requireModeration(event)')
   })
 
   it('zgloszenie wymaga zalogowania i dostepu do projektu', () => {

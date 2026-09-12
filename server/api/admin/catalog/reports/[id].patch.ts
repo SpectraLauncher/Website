@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-  const moderator = await requireCatalogWrite(event)
+  const moderator = await requireModeration(event)
 
   const report = await reportById(String(getRouterParam(event, 'id') ?? ''))
   if (!report) throw createError({ statusCode: 404, statusMessage: 'no such report' })

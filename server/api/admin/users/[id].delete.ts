@@ -5,9 +5,13 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing id' })
 
-  const user = await one<{ id: string, username: string | null, email: string | null }>(
-    'SELECT id, username, email FROM "user" WHERE id = $1', [id])
+  const user = await one<{ id: string, username: string | null, email: string | null, role: string | null }>(
+    'SELECT id, username, email, role FROM "user" WHERE id = $1', [id])
   if (!user) throw createError({ statusCode: 404, statusMessage: 'no such user' })
+
+  if (user.id !== staff.id && staffRank(user) >= staffRank(staff)) {
+    throw createError({ statusCode: 409, statusMessage: 'that account outranks you' })
+  }
 
   await deleteAccount(id)
 

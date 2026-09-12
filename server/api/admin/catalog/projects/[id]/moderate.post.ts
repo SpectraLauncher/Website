@@ -11,7 +11,7 @@ const NOTIFICATION = {
 } as const
 
 export default defineEventHandler(async (event) => {
-  const moderator = await requireCatalogWrite(event)
+  const moderator = await requireModeration(event)
 
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'id') ?? ''))
   if (!project) throw createError({ statusCode: 404, statusMessage: 'no such project' })

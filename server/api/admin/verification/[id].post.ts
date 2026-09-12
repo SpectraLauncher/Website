@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const moderator = await requireCatalogWrite(event)
+  const moderator = await requireModeration(event)
 
   const row = await requestById(String(getRouterParam(event, 'id') ?? ''))
   if (!row) throw createError({ statusCode: 404, statusMessage: 'no such application' })

@@ -1,11 +1,37 @@
 // node --experimental-strip-types test/admin-gate-check.mjs
 import assert from 'node:assert/strict'
-import { parseAdminEmails, isAdminEmail, isAdmin } from '../server/utils/admin.ts'
+import { parseAdminEmails, isAdminEmail } from '../server/utils/admin.ts'
+import { isAdmin, isOwner, isStaff, canModerate } from '../shared/utils/staff-roles.ts'
 
 // --- the gate: a column, nothing else -------------------------------------
 
 assert.ok(isAdmin({ role: 'admin' }), 'rola admin otwiera panel')
+assert.ok(isAdmin({ role: 'owner' }), 'owner jest ponad adminem, wiec tez')
+assert.ok(!isAdmin({ role: 'moderator' }), 'moderator nie siega po konta i finanse')
 assert.ok(!isAdmin({ role: 'user' }), 'zwykla rola nie')
+
+// --- drabina rol ----------------------------------------------------------
+
+assert.ok(canModerate({ role: 'moderator' }), 'moderator moderuje')
+assert.ok(canModerate({ role: 'admin' }), 'admin tez')
+assert.ok(canModerate({ role: 'owner' }), 'owner tez')
+assert.ok(!canModerate({ role: 'user' }), 'zwykly uzytkownik nie')
+
+assert.ok(isOwner({ role: 'owner' }))
+assert.ok(!isOwner({ role: 'admin' }), 'admin nie rozdaje rol — inaczej awansuje siebie')
+assert.ok(!isOwner({ role: 'moderator' }))
+
+for (const role of ['moderator', 'admin', 'owner']) {
+  assert.ok(isStaff({ role }), `${role} nalezy do zespolu`)
+}
+assert.ok(!isStaff({ role: 'user' }))
+assert.ok(!isStaff({}))
+assert.ok(!isStaff(null))
+
+// nieznana rola nie jest nikim wiecej niz zwykly uzytkownik
+for (const role of ['staff', 'ADMIN', 'owner ', 'superadmin', '']) {
+  assert.ok(!isStaff({ role }), `nieznana rola przeszla: ${JSON.stringify(role)}`)
+}
 assert.ok(!isAdmin({ role: null }), 'brak roli nie')
 assert.ok(!isAdmin({}), 'brak pola nie')
 assert.ok(!isAdmin(null))

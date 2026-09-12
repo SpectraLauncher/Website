@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await requireCatalogWrite(event)
+  await requireModeration(event)
 
   const query = getQuery(event)
   const days = Math.min(Math.max(Number(query.days) || 30, 1), 365)

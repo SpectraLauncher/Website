@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-  await requireCatalogWrite(event)
+  await requireModeration(event)
 
   const query = getQuery(event)
   const status = isReportStatus(query.status) ? query.status : 'open'

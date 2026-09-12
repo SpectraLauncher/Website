@@ -99,7 +99,7 @@ describe('zamkniecie zgloszenia', () => {
   const source = readFileSync('server/api/admin/catalog/reports/[id].patch.ts', 'utf8')
 
   it('tylko moderator', () => {
-    expect(source).toContain('requireCatalogWrite(event)')
+    expect(source).toContain('requireModeration(event)')
   })
 
   it('nie da sie zamknac na open', () => {

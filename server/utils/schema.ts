@@ -342,13 +342,15 @@ export async function ensureAdminRole(): Promise<number> {
   const pool = usePool()
   await pool.query('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS role TEXT')
 
+  // Anybody already on the ladder means the database has been set up; only a
+  // database with no staff at all gets one promoted from the address list.
   const existing = await pool.query<{ n: number }>(
-    `SELECT count(*)::int AS n FROM "user" WHERE role = 'admin'`)
+    `SELECT count(*)::int AS n FROM "user" WHERE role IN ('owner', 'admin', 'moderator')`)
   if (existing.rows[0]!.n > 0) return 0
 
   const emails = bootstrapAdminEmails()
   const promoted = await pool.query(
-    `UPDATE "user" SET role = 'admin' WHERE lower(email) = ANY($1)`, [emails])
+    `UPDATE "user" SET role = 'owner' WHERE lower(email) = ANY($1)`, [emails])
 
   if (!promoted.rowCount) {
     console.warn('[db] no admin account yet and none of ADMIN_EMAILS ('
