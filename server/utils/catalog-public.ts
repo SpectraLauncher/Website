@@ -16,7 +16,8 @@ export function listParam(value: unknown): string[] | undefined {
 }
 
 // An unlisted project opens for anyone holding the address. A draft, a rejected
-// project or a removed one opens only for whoever owns it, and for an admin —
+// project or a removed one opens only for whoever owns it and for whoever
+// moderates it — a pending project is exactly what a moderator is here to read —
 // and "does not open" means 404, never 403, like the rest of the panel.
 export async function visibleProject(
   project: ProjectRow | undefined,
@@ -25,7 +26,7 @@ export async function visibleProject(
   if (!project) return false
   if (isLinkable(project.status)) return true
   if (!viewer) return false
-  if (isAdmin(viewer)) return true
+  if (canModerate(viewer)) return true
   if (project.owner_id && project.owner_id === viewer.id) return true
   if (project.org_id && viewer.id) return Boolean(await isOrgMember(project.org_id, viewer.id))
   return false

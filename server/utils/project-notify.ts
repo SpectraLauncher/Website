@@ -2,7 +2,7 @@
 import type { H3Event } from 'h3'
 import type { ProjectRow } from './catalog'
 import { isListed } from '../../shared/utils/catalog-types'
-import { isAdmin } from '../../shared/utils/staff-roles'
+import { canModerate } from '../../shared/utils/staff-roles'
 import { q } from './db'
 import { isOrgMember, orgMembers } from './organization'
 import { commentById } from './project-thread'
@@ -15,7 +15,7 @@ export async function canSeeThread(
   project: ProjectRow,
   viewer: { id: string, role?: string | null },
 ): Promise<boolean> {
-  if (isAdmin(viewer)) return true
+  if (canModerate(viewer)) return true
   if (project.owner_id && project.owner_id === viewer.id) return true
   if (project.org_id) return Boolean(await isOrgMember(project.org_id, viewer.id))
   return false

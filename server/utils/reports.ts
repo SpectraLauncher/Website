@@ -1,6 +1,6 @@
 
 import type { H3Event } from 'h3'
-import { isAdmin } from '../../shared/utils/staff-roles'
+import { canModerate } from '../../shared/utils/staff-roles'
 import { projectPath } from '../../shared/utils/catalog-types'
 import { exec, one, q } from './db'
 import { newId } from './ids'
@@ -204,7 +204,7 @@ export async function reportForViewer(event: H3Event): Promise<ReportRow> {
   const report = await reportById(String(getRouterParam(event, 'id') ?? ''))
   if (!report) throw createError({ statusCode: 404, statusMessage: 'no such report' })
 
-  if (!isAdmin(user) && report.reporter_id !== user.id) {
+  if (!canModerate(user) && report.reporter_id !== user.id) {
     throw createError({ statusCode: 404, statusMessage: 'no such report' })
   }
 

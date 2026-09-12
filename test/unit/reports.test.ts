@@ -131,7 +131,9 @@ describe('zgloszenie ma wlasny watek', () => {
 
   it('watek widzi zglaszajacy i moderacja, nikt wiecej', () => {
     expect(module).toContain('report.reporter_id !== user.id')
-    expect(module).toContain('isAdmin(user)')
+    // Moderation, not administration: working a report is a moderator's job, so
+    // isAdmin here would hand them a queue they cannot open.
+    expect(module).toContain('canModerate(user)')
   })
 
   it('obcy dostaje taka sama odpowiedz jak przy nieistniejacym zgloszeniu', () => {

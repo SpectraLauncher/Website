@@ -20,9 +20,17 @@ export function catalogIsPublic(): boolean {
 
 // Catalog read access. Returns the signed-in user, or null once the catalog is
 // public — at that point anonymous readers are allowed too.
+//
+// While it is shut, reading is open to anyone on the team rather than to admins
+// alone: a moderator whose whole job is the review queue has to be able to open
+// the projects in it, and gating this on isAdmin made the role unusable — the
+// queue listed rows that every one of them answered 404 for.
 export async function requireCatalogRead(event: H3Event) {
   if (catalogIsPublic()) return await optionalUser(event)
-  return await requireAdmin(event)
+
+  const user = await requireUser(event)
+  if (!canModerate(user)) throw createError({ statusCode: 404, statusMessage: 'not found' })
+  return user
 }
 
 // Catalog write access. Stays admin-only even after reads open up — open upload
