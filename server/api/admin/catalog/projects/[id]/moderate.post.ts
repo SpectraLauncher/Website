@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     ? String(body.body ?? '').trim().slice(0, MAX_BODY)
     : cleanBody(body.body)
 
-  if (decision === 'approve' && body.force !== true) {
+  if (decision === 'approve' && body.force !== true && (await platformPolicy()).scanGate) {
     const blocking = await blockingScanIssues(project.id)
     if (blocking) {
       throw createError({

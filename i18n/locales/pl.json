@@ -4672,5 +4672,45 @@
       "post": "Artykuły",
       "newsletter": "Newsletter"
     }
+  },
+  "platform": {
+    "title": "Ustawienia platformy",
+    "lead": "Polityka, role i przełącznik, który zatrzymuje stronę.",
+    "ownerOnly": "Zmieniać może tylko właściciel. Podejrzeć możesz.",
+    "review": "Polityka recenzji",
+    "reviewHint": "Dotyczy każdego nowego zgłoszenia.",
+    "knobs": {
+      "submissions": {
+        "label": "Przyjmuj zgłoszenia",
+        "hint": "Wyłączone — autor nie wyśle projektu do recenzji. To, co już jest w kolejce, zostaje."
+      },
+      "scanGate": {
+        "label": "Wymagaj czystego skanu",
+        "hint": "Włączone — projektu z oflagowanym lub nieprzeskanowanym plikiem nie da się zatwierdzić bez świadomego wymuszenia."
+      }
+    },
+    "roles": "Role zespołu",
+    "rolesHint": "Rolę ma konto, więc rozdaje się ją na liście kont.",
+    "manageRoles": "Konta",
+    "roleNames": {
+      "owner": "Właściciel",
+      "admin": "Admin",
+      "moderator": "Moderator"
+    },
+    "roleScopes": {
+      "owner": "Wszystko i jako jedyny rozdaje role.",
+      "admin": "Konta, odznaki, Discord, artykuły i newsletter.",
+      "moderator": "Kolejka, zgłoszenia, weryfikacja i skany."
+    },
+    "flags": "Flagi funkcji",
+    "flagsHint": "Ustawiane przy budowaniu obrazu, nie tutaj.",
+    "catalogFlag": "Publiczny katalog",
+    "catalogFlagHint": "Zapiekane przy budowaniu celowo, żeby otwarcie katalogu na świat zostało świadomym przebudowaniem.",
+    "open": "Otwarty",
+    "closed": "Zamknięty",
+    "maintenance": "Tryb konserwacji",
+    "maintenanceHint": "Przełącza platformę w tryb tylko do odczytu. Pobieranie działa; wgrywanie, zakupy i każdy inny zapis stoją. Logowanie i ten panel zostają otwarte, żeby dało się to wyłączyć.",
+    "maintenanceOn": "Włącz tryb konserwacji",
+    "maintenanceOff": "Wróć do normalnej pracy"
   }
 }

@@ -4672,5 +4672,45 @@
       "post": "Articles",
       "newsletter": "Newsletter"
     }
+  },
+  "platform": {
+    "title": "Platform settings",
+    "lead": "Policy, roles and the switch that stops the site.",
+    "ownerOnly": "Only the owner can change these. You can see them.",
+    "review": "Review policy",
+    "reviewHint": "Applies to every new submission.",
+    "knobs": {
+      "submissions": {
+        "label": "Accept submissions",
+        "hint": "When off, authors cannot send a project to review. Everything already in the queue stays there."
+      },
+      "scanGate": {
+        "label": "Require a clean scan",
+        "hint": "When on, a project with a flagged or unscanned file cannot be approved without deliberately forcing it."
+      }
+    },
+    "roles": "Staff roles",
+    "rolesHint": "A role is something an account has, so it is handed out in the accounts list.",
+    "manageRoles": "Accounts",
+    "roleNames": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "moderator": "Moderator"
+    },
+    "roleScopes": {
+      "owner": "Everything, and the only one who hands out roles.",
+      "admin": "Accounts, badges, Discord, articles and the newsletter.",
+      "moderator": "The queue, reports, verification and scans."
+    },
+    "flags": "Feature flags",
+    "flagsHint": "Set when the image is built, not here.",
+    "catalogFlag": "Public catalog",
+    "catalogFlagHint": "Baked at build time on purpose, so opening the catalog to the world stays a deliberate rebuild.",
+    "open": "Open",
+    "closed": "Closed",
+    "maintenance": "Maintenance mode",
+    "maintenanceHint": "Puts the platform in read-only mode. Downloads keep working; uploads, purchases and every other write stop. Signing in and this panel stay open, so it can be switched back off.",
+    "maintenanceOn": "Enable maintenance mode",
+    "maintenanceOff": "Back to normal"
   }
 }

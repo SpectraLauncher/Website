@@ -10,6 +10,10 @@ export default defineEventHandler(async (event) => {
 
   rateLimit(event, { key: `submit:${user.id}`, limit: 5, windowMs: 60_000 })
 
+  if (!(await platformPolicy()).submissions) {
+    throw createError({ statusCode: 503, statusMessage: 'submissions are closed right now' })
+  }
+
   if (!isSubmittable(project.status)) {
     throw createError({ statusCode: 409, statusMessage: 'this project cannot be submitted' })
   }
