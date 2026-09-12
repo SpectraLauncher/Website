@@ -115,3 +115,24 @@ describe('bramy po stronie serwera', () => {
     }
   })
 })
+
+// The upgrade path, which is the part that only bites once and bites in
+// production: the database already has an admin from before roles existed.
+describe('pierwszy wlasciciel', () => {
+  const source = readFileSync('server/utils/schema.ts', 'utf8')
+
+  it('brama stoi na wlascicielu, nie na dowolnej roli', () => {
+    // Gating on "any staff" would see the existing admin, promote nobody, and
+    // leave the deployment with no owner — and only an owner appoints one.
+    expect(source).toMatch(/count\(\*\)::int AS n FROM "user" WHERE role = 'owner'/)
+    expect(source).not.toMatch(/role IN \('owner', 'admin', 'moderator'\)/)
+  })
+
+  it('promuje z listy adresow na wlasciciela', () => {
+    expect(source).toMatch(/UPDATE "user" SET role = 'owner' WHERE lower\(email\) = ANY\(\$1\)/)
+  })
+
+  it('podpowiedz w logu nadaje wlasciciela, nie admina', () => {
+    expect(source).toMatch(/SET role = 'owner' WHERE username/)
+  })
+})

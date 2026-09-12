@@ -342,10 +342,12 @@ export async function ensureAdminRole(): Promise<number> {
   const pool = usePool()
   await pool.query('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS role TEXT')
 
-  // Anybody already on the ladder means the database has been set up; only a
-  // database with no staff at all gets one promoted from the address list.
+  // The gate is the owner, not staff in general. A database that already had an
+  // admin from before roles existed has nobody at the top, and only the owner
+  // hands out roles or moves platform policy — so gating on "any staff" would
+  // leave that deployment permanently unable to appoint one.
   const existing = await pool.query<{ n: number }>(
-    `SELECT count(*)::int AS n FROM "user" WHERE role IN ('owner', 'admin', 'moderator')`)
+    `SELECT count(*)::int AS n FROM "user" WHERE role = 'owner'`)
   if (existing.rows[0]!.n > 0) return 0
 
   const emails = bootstrapAdminEmails()
@@ -353,9 +355,9 @@ export async function ensureAdminRole(): Promise<number> {
     `UPDATE "user" SET role = 'owner' WHERE lower(email) = ANY($1)`, [emails])
 
   if (!promoted.rowCount) {
-    console.warn('[db] no admin account yet and none of ADMIN_EMAILS ('
+    console.warn('[db] no owner yet and none of ADMIN_EMAILS ('
       + `${emails.join(', ')}) matches a registered address. Sign up with one of them, or run:`
-      + `\n      UPDATE "user" SET role = 'admin' WHERE username = '<your-username>';`)
+      + `\n      UPDATE "user" SET role = 'owner' WHERE username = '<your-username>';`)
   }
   return promoted.rowCount ?? 0
 }
