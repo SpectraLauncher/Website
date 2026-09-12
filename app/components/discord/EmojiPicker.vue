@@ -1,11 +1,5 @@
 <script setup lang="ts">
-
-export interface GuildEmoji {
-  id: string
-  name: string
-  animated: boolean
-  markup: string
-}
+import type { GuildEmoji } from '~/types/discord'
 
 const props = defineProps<{
   emojis: GuildEmoji[]

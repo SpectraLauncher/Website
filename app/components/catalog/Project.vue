@@ -1,63 +1,5 @@
 <script setup lang="ts">
-export interface CatalogVersionFile {
-  id: string
-  filename: string
-  size: number
-  hashes: { sha1: string, sha512: string }
-  primary: boolean
-}
-
-export interface CatalogVersion {
-  id: string
-  number: string
-  name: string
-  channel: string
-  gameVersions: string[]
-  loaders: string[]
-  downloads: number
-  created: number
-  changelog?: string
-  meta: Record<string, any>
-  files: CatalogVersionFile[]
-  dependencies?: CatalogDependency[]
-}
-
-export interface CatalogProjectData {
-  id: string
-  slug: string
-  type: string
-  path: string
-  title: string
-  summary: string
-  description: string
-  icon: string | null
-  license: string | null
-  licenseUrl: string | null
-  links: Record<string, string>
-  disclosures: DisclosureMap
-  categories: string[]
-  loaders: string[]
-  gameVersions: string[]
-  environment?: string[]
-  downloads: number
-  created: number
-  updated: number
-  versions: CatalogVersion[]
-  price?: number
-  canDownload?: boolean
-  currency?: string
-  owned?: boolean
-  follows: number
-  following?: boolean
-  dependents?: DependentProject[]
-  favourited?: boolean
-  owner?: {
-    kind: 'user' | 'organization'
-    slug: string | null
-    name: string | null
-    image: string | null
-  } | null
-}
+import type { CatalogProjectData, GalleryImage } from '~/types/catalog'
 
 const props = defineProps<{
   project: CatalogProjectData
@@ -67,7 +9,7 @@ const props = defineProps<{
   tab?: string
   /** Set by the address /<type>/<slug>/version/<id>. */
   versionId?: string
-  gallery?: Array<{ id: string, url: string, title: string, featured: boolean }>
+  gallery?: GalleryImage[]
 }>()
 
 const { t, locale } = useI18n()

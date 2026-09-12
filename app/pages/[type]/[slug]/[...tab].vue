@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CatalogProjectData } from '~/components/catalog/Project.vue'
+import type { CatalogProjectData } from '~/types/catalog'
 
 definePageMeta({ middleware: 'catalog' })
 

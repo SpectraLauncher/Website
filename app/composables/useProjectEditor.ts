@@ -1,4 +1,4 @@
-import type { CatalogProjectData } from '~/components/catalog/Project.vue'
+import type { CatalogProjectData } from '~/types/catalog'
 
 export interface ProjectEditorPayload {
   project: CatalogProjectData & {

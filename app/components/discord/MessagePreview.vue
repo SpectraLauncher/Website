@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import type { EmbedDraft } from './DiscordEmbedBuilder.vue'
-import type { RowDraft } from './DiscordComponentsBuilder.vue'
+import type { EmbedDraft } from '~/types/discord'
+import type { RowDraft } from '~/types/discord'
 
 const props = defineProps<{
   content: string

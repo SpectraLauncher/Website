@@ -38,3 +38,6 @@ test/fixtures/*.nbt
 test/fixtures/*.litematic
 test/fixtures/*.schem
 test/fixtures/*.schematic
+
+# Design references: multi-megabyte source material, not part of the build.
+docs/

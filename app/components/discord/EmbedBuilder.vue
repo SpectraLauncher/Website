@@ -1,19 +1,5 @@
 <script setup lang="ts">
-
-export interface EmbedField { name: string, value: string, inline: boolean }
-
-export interface EmbedDraft {
-  title: string
-  description: string
-  url: string
-  color: string
-  author: { name: string, url: string, icon_url: string }
-  footer: { text: string, icon_url: string }
-  image: { url: string }
-  thumbnail: { url: string }
-  fields: EmbedField[]
-  timestamp: boolean
-}
+import type { EmbedDraft, EmbedField } from '~/types/discord'
 
 const embed = defineModel<EmbedDraft>({ required: true })
 

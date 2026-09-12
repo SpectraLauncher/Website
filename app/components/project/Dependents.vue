@@ -1,12 +1,5 @@
 <script setup lang="ts">
-export interface DependentProject {
-  id: string
-  slug: string
-  type: ProjectType
-  title: string
-  icon: string | null
-  downloads: number
-}
+import type { DependentProject } from '~/types/catalog'
 
 defineProps<{ dependents: DependentProject[] }>()
 

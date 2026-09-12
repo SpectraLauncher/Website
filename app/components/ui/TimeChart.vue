@@ -1,5 +1,5 @@
 <script setup lang="ts">
-export interface TimeSeries {
+interface TimeSeries {
   key: string
   label: string
   /** Validated against the dark chart surface — see the note in SERIES_COLORS. */

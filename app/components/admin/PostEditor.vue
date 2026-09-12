@@ -1,17 +1,5 @@
 <script setup lang="ts">
-export interface AdminPost {
-  id: string
-  kind: 'article' | 'newsletter'
-  slug: string | null
-  title: string
-  summary: string
-  body: Record<string, any>
-  cover: string | null
-  status: string
-  published: number | null
-  sent: number | null
-  recipients: number
-}
+import type { AdminPost } from '~/types/post'
 
 const props = defineProps<{ post: AdminPost, recipientCount?: number }>()
 const emit = defineEmits<{ saved: [AdminPost], removed: [string] }>()

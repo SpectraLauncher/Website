@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminPost } from '~/components/admin/PostEditor.vue'
+import type { AdminPost } from '~/types/post'
 
 definePageMeta({ middleware: 'admin' })
 

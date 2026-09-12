@@ -1,18 +1,5 @@
 <script setup lang="ts">
-
-import type { GuildEmoji } from './DiscordEmojiPicker.vue'
-
-export interface ComponentDraft {
-  type: number
-  style?: number
-  label?: string
-  custom_id?: string
-  url?: string
-  emoji?: { id?: string, name?: string, animated?: boolean }
-  placeholder?: string
-  options?: { label: string, value: string, description?: string }[]
-}
-export interface RowDraft { type: 1, components: ComponentDraft[] }
+import type { ComponentDraft, GuildEmoji, RowDraft } from '~/types/discord'
 
 const rows = defineModel<RowDraft[]>({ required: true })
 

@@ -1,4 +1,4 @@
-import type { CatalogVersion } from '~/components/catalog/Project.vue'
+import type { CatalogVersion } from '~/types/catalog'
 import type { DropdownMenuItem } from '@nuxt/ui'
 
 /** Where a single version lives, given the project's own address. */

@@ -1,6 +1,6 @@
 
-import type { EmbedDraft } from '~/components/discord/EmbedBuilder.vue'
-import type { RowDraft } from '~/components/discord/ComponentsBuilder.vue'
+import type { EmbedDraft } from '~/types/discord'
+import type { RowDraft } from '~/types/discord'
 
 export const DEFAULT_EMBED_COLOR = '#5865f2'
 

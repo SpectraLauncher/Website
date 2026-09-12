@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CatalogProjectData } from '~/components/catalog/Project.vue'
+import type { CatalogProjectData } from '~/types/catalog'
 
 // The five cards Modrinth puts beside a project, in the same order and for the
 // same reason: compatibility is the first question, links are the second, and
