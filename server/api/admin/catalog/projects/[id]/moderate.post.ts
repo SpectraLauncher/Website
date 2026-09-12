@@ -53,6 +53,15 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  await recordStaffAction({
+    actor: moderator,
+    action: `project.${decision}`,
+    subjectKind: 'project',
+    subjectId: project.id,
+    summary: `${project.title || project.slug} → ${status}`,
+    meta: { slug: project.slug, type: project.type, from: project.status, to: status, forced: body.force === true },
+  })
+
   await notifyOwners(project, {
     kind: NOTIFICATION[decision as keyof typeof NOTIFICATION],
     actorId: moderator.id,

@@ -31,6 +31,15 @@ export default defineEventHandler(async (event) => {
     moderatorId: moderator.id,
   })
 
+  await recordStaffAction({
+    actor: moderator,
+    action: `report.${body.status}`,
+    subjectKind: 'report',
+    subjectId: report.id,
+    summary: `${report.item_type} ${report.item_id} → ${body.status}`,
+    meta: { itemType: report.item_type, itemId: report.item_id, reason: report.reason },
+  })
+
   // The person who reported it hears what happened; without that, reporting
   // feels like shouting into a hole and people stop doing it.
   if (report.reporter_id) {

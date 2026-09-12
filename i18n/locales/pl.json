@@ -4651,5 +4651,26 @@
     "unsubscribeNoToken": "W tym linku brakuje tokenu. Użyj tego ze stopki wiadomości.",
     "unsubscribeConfirm": "Wypisz mnie",
     "unsubscribed": "Nie ma cię już na liście."
+  },
+  "audit": {
+    "title": "Dziennik działań",
+    "lead": "Każde działanie zespołu, zapisane raz i nigdy nieedytowane.",
+    "when": "Czas",
+    "who": "Osoba",
+    "what": "Działanie",
+    "source": "Źródło",
+    "empty": "Nic tu jeszcze nie ma.",
+    "newer": "Nowsze",
+    "older": "Starsze",
+    "groups": {
+      "all": "Wszystko",
+      "project": "Projekty",
+      "report": "Zgłoszenia",
+      "user": "Konta",
+      "verification": "Weryfikacja",
+      "badge": "Odznaki",
+      "post": "Artykuły",
+      "newsletter": "Newsletter"
+    }
   }
 }

@@ -20,5 +20,14 @@ export default defineEventHandler(async (event) => {
   }
 
   await decideRequest(row, body.approve, moderator.id, note)
+
+  await recordStaffAction({
+    actor: moderator,
+    action: body.approve ? 'verification.approve' : 'verification.reject',
+    subjectKind: 'user',
+    subjectId: row.user_id ?? row.org_id ?? '',
+    summary: `wniosek ${row.id} → ${body.approve ? 'przyjęty' : 'odrzucony'}`,
+  })
+
   return { request: publicRequest((await requestById(row.id))!) }
 })

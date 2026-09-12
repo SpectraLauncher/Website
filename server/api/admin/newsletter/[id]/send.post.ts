@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  const staff = await requireAdmin(event)
 
   const post = await postById(String(getRouterParam(event, 'id') ?? ''))
   if (!post || post.kind !== 'newsletter') {
@@ -11,5 +11,16 @@ export default defineEventHandler(async (event) => {
   }
 
   const origin = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
-  return { queued: await sendIssue(post, origin) }
+  const queued = await sendIssue(post, origin)
+
+  await recordStaffAction({
+    actor: staff,
+    action: 'newsletter.send',
+    subjectKind: 'post',
+    subjectId: post.id,
+    summary: `„${post.title}" do ${queued} odbiorców`,
+    meta: { recipients: queued },
+  })
+
+  return { queued }
 })

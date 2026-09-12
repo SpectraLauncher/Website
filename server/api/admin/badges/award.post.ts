@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  const staff = await requireAdmin(event)
 
   const { slug, username, revoke: remove } = await readBody<{
     slug?: string, username?: string, revoke?: boolean
@@ -13,6 +13,15 @@ export default defineEventHandler(async (event) => {
   const badge = String(slug ?? '').toLowerCase()
   if (remove) await revoke(user.id, badge)
   else await award(user.id, badge)
+
+  await recordStaffAction({
+    actor: staff,
+    action: remove ? 'badge.revoke' : 'badge.award',
+    subjectKind: 'user',
+    subjectId: user.id,
+    summary: `${badge} ${remove ? 'zdjęta z' : 'przyznana'} ${String(username ?? '').trim()}`,
+    meta: { badge },
+  })
 
   return { ok: true }
 })

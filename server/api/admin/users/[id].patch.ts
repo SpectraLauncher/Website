@@ -4,13 +4,14 @@ const MAX_LENGTH = 30
 const SHAPE = /^[a-z0-9_.]+$/
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  const staff = await requireAdmin(event)
 
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing id' })
 
   const body = await readBody<{ name?: string, username?: string, banned?: boolean }>(event) ?? {}
-  const target = await one<{ id: string }>('SELECT id FROM "user" WHERE id = $1', [id])
+  const target = await one<{ id: string, username: string | null }>(
+    'SELECT id, username FROM "user" WHERE id = $1', [id])
   if (!target) throw createError({ statusCode: 404, statusMessage: 'no such user' })
 
   if (body.username !== undefined) {
@@ -38,6 +39,14 @@ export default defineEventHandler(async (event) => {
     const banned = !!body.banned
     await exec('UPDATE "user" SET banned = $1 WHERE id = $2', [banned, id])
     if (banned) await exec('DELETE FROM session WHERE "userId" = $1', [id])
+
+    await recordStaffAction({
+      actor: staff,
+      action: banned ? 'user.ban' : 'user.unban',
+      subjectKind: 'user',
+      subjectId: id,
+      summary: `${target.username ?? id} ${banned ? 'zablokowany' : 'odblokowany'}`,
+    })
   }
 
   const user = await one(

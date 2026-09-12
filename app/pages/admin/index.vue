@@ -56,6 +56,7 @@ const NAV = [
   { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie' },
   { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie' },
   { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje' },
+  { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit' },
 ] as const satisfies readonly SideNavItem[]
 
 const navItems = computed<SideNavItem[]>(() =>

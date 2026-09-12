@@ -4651,5 +4651,26 @@
     "unsubscribeNoToken": "This link is missing its token. Use the one at the bottom of the message.",
     "unsubscribeConfirm": "Unsubscribe me",
     "unsubscribed": "You are off the list."
+  },
+  "audit": {
+    "title": "Audit log",
+    "lead": "Every staff action, written once and never edited.",
+    "when": "Time",
+    "who": "Staff",
+    "what": "Action",
+    "source": "Source",
+    "empty": "Nothing recorded yet.",
+    "newer": "Newer",
+    "older": "Older",
+    "groups": {
+      "all": "Everything",
+      "project": "Projects",
+      "report": "Reports",
+      "user": "Accounts",
+      "verification": "Verification",
+      "badge": "Badges",
+      "post": "Articles",
+      "newsletter": "Newsletter"
+    }
   }
 }
