@@ -6,6 +6,7 @@ const { ask } = useConfirm()
 const localePath = useLocalePath()
 
 const slug = computed(() => String(route.params.slug ?? ''))
+const type = computed(() => String(route.params.type ?? ''))
 const versionId = computed(() => String(route.params.version ?? ''))
 
 const { project, refresh, may } = useProjectEditor(slug)
@@ -119,7 +120,9 @@ async function remove() {
   try {
     await $fetch(`${path.value}/versions/${encodeURIComponent(versionId.value)}`, { method: 'DELETE' })
     await refresh()
-    await router.push(localePath(`/project/${slug.value}/settings/versions`))
+    // The settings live under the project's own prefix; /project/<slug> is only
+    // ever a redirect to the canonical address and has no settings beneath it.
+    await router.push(localePath(`/${type.value}/${slug.value}/settings/versions`))
   }
   catch (e: any) { problem.value = e?.data?.statusMessage || t('auth.genericError') }
   finally { busy.value = '' }
