@@ -3317,7 +3317,13 @@
       "review": "Sprawdź",
       "refresh": "Odśwież",
       "waiting": "{days} d",
-      "delete": "Usuń"
+      "delete": "Usuń",
+      "assignToMe": "Przypisz do mnie",
+      "mine": "Moje",
+      "checksPass": "Wszystko na miejscu",
+      "flagged": "{n} oflagowanych",
+      "slaLate": "Po terminie",
+      "slaSoon": "Termin blisko"
     },
     "filters": "Filtry",
     "clearFilters": "Wyczyść filtry",

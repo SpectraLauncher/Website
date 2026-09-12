@@ -811,3 +811,46 @@ export async function queueCounts(): Promise<QueueCounts> {
     draft: by.get('draft') ?? 0,
   }
 }
+
+/** How many versions each of these projects has. One query, not one per row. */
+export async function versionCounts(ids: string[]): Promise<Record<string, number>> {
+  if (!ids.length) return {}
+
+  const rows = await q<{ project_id: string, n: number }>(
+    `SELECT project_id, count(*)::int AS n FROM version
+     WHERE project_id = ANY($1) GROUP BY project_id`, [ids])
+
+  return Object.fromEntries(rows.map(row => [row.project_id, row.n]))
+}
+
+/** Files in each project that a scan is unhappy about, or has not seen yet. */
+export async function flaggedCounts(ids: string[]): Promise<Record<string, number>> {
+  if (!ids.length) return {}
+
+  const rows = await q<{ project_id: string, n: number }>(
+    `SELECT v.project_id, count(*)::int AS n
+     FROM version_file f
+     JOIN version v ON v.id = f.version_id
+     WHERE v.project_id = ANY($1)
+       AND (f.scan_verdict IS NULL OR f.scan_verdict <> 'clean')
+     GROUP BY v.project_id`, [ids])
+
+  return Object.fromEntries(rows.map(row => [row.project_id, row.n]))
+}
+
+/** Who has each of these submissions open, when anybody does. */
+export async function reviewersOf(
+  ids: string[],
+): Promise<Record<string, { id: string, username: string | null, at: number } | null>> {
+  if (!ids.length) return {}
+
+  const rows = await q<{ id: string, reviewer_id: string, username: string | null, reviewer_at: string }>(
+    `SELECT p.id, p.reviewer_id, u.username, p.reviewer_at
+     FROM project p JOIN "user" u ON u.id = p.reviewer_id
+     WHERE p.id = ANY($1) AND p.reviewer_id IS NOT NULL`, [ids])
+
+  return Object.fromEntries(rows.map(row => [
+    row.id,
+    { id: row.reviewer_id, username: row.username, at: Number(row.reviewer_at) },
+  ]))
+}

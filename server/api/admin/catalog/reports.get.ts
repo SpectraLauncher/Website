@@ -23,6 +23,8 @@ export default defineEventHandler(async (event) => {
       reporter: reporters[i]
         ? { username: reporters[i]!.username, name: reporters[i]!.name }
         : null,
+      // A day for anything claiming the file is dangerous, three for the rest.
+      sla: slaState(row.reason, Number(row.created)),
     })),
     total: list.total,
     open: await openReportCount(),

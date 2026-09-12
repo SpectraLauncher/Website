@@ -515,6 +515,15 @@ export async function ensureCatalogSchema() {
     ALTER TABLE project ADD COLUMN IF NOT EXISTS disclosures JSONB NOT NULL DEFAULT '{}'
   `)
 
+  // Who is looking at this submission right now. Not a lock — a second
+  // moderator can still decide it — just the answer to "is somebody already on
+  // this", which is the whole reason two people open the same queue.
+  await pool.query(`
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS reviewer_id TEXT
+      REFERENCES "user"(id) ON DELETE SET NULL;
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS reviewer_at BIGINT;
+  `)
+
   await pool.query(`
     -- The two or three categories shown before the rest. A subset of categories
     -- rather than a separate vocabulary, so nothing can be featured that the

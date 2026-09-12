@@ -20,11 +20,35 @@ export default defineEventHandler(async (event) => {
 
   const owners = await Promise.all(list.hits.map(row => projectOwner(row.owner_id, row.org_id)))
 
+  // Two batched queries rather than two per row: what the queue needs beyond
+  // the project itself is how many versions it has and whether anything in it
+  // failed a scan.
+  const ids = list.hits.map(row => row.id)
+  const [versions, flagged, reviewers] = await Promise.all([
+    versionCounts(ids),
+    flaggedCounts(ids),
+    reviewersOf(ids),
+  ])
+
   return {
     hits: list.hits.map((row, i) => ({
       ...shortProject(row),
       waiting: Date.now() - num(row.created),
       owner: owners[i] ?? null,
+      // The same rules the author saw before submitting, so a moderator is not
+      // reading a second opinion about the same project.
+      checks: checklistState({
+        summary: row.summary,
+        description: row.description,
+        icon: row.icon,
+        license: row.license,
+        categories: row.categories,
+        links: row.links,
+        disclosures: row.disclosures,
+        versions: Array.from({ length: versions[row.id] ?? 0 }),
+      }),
+      flagged: flagged[row.id] ?? 0,
+      reviewer: reviewers[row.id] ?? null,
     })),
     total: list.total,
     offset: list.offset,

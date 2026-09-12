@@ -86,6 +86,7 @@ describe('bramy po stronie serwera', () => {
       'server/api/admin/catalog/game-versions.get.ts',
       'server/api/admin/catalog/projects.get.ts',
       'server/api/admin/catalog/projects/[id].get.ts',
+      'server/api/admin/catalog/projects/[id]/claim.post.ts',
       'server/api/admin/catalog/projects/[id]/moderate.post.ts',
       'server/api/admin/catalog/queue.get.ts',
       'server/api/admin/catalog/reports.get.ts',

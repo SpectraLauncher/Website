@@ -5,6 +5,11 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const { ask } = useConfirm()
 
+// Whose claim is whose: the button reads "mine" for one person and their name
+// for everybody else.
+const session = useAuthSession()
+const me = computed(() => session.value.data?.user as { id?: string } | undefined)
+
 interface ShortProject {
   id: string
   slug: string
@@ -114,9 +119,29 @@ interface QueueEntry {
   icon: string | null
   waiting: number
   owner: { kind: string, slug: string | null, name: string | null, image: string | null } | null
+  checks: Record<ChecklistItem, boolean>
+  /** Files a scan is unhappy about, or has not seen yet. */
+  flagged: number
+  reviewer: { id: string, username: string | null, at: number } | null
 }
 
 const queue = ref<QueueEntry[]>([])
+
+// The chips are the required half of the author's own checklist: a moderator
+// reading a different list from the one the author filled in is how a project
+// gets bounced for something nobody asked for.
+const missingOf = (entry: QueueEntry) => REQUIRED.filter(item => !entry.checks?.[item])
+
+const claim = (entry: QueueEntry) => run(`claim:${entry.id}`, async () => {
+  const mine = entry.reviewer?.id === me.value?.id
+
+  const { reviewer } = await $fetch<{ reviewer: QueueEntry['reviewer'] }>(
+    `/api/admin/catalog/projects/${entry.id}/claim`,
+    { method: 'POST', body: { claim: !mine } },
+  )
+
+  entry.reviewer = reviewer
+})
 const queueCounts = ref({ pending: 0, rejected: 0, draft: 0 })
 const queueStatus = ref('pending')
 
@@ -316,6 +341,7 @@ interface ReportEntry {
   created: number
   target: { label: string, path: string } | null
   reporter: { username: string | null, name: string | null } | null
+  sla: { remaining: number, late: boolean, soon: boolean }
 }
 
 const reports = ref<ReportEntry[]>([])
@@ -727,6 +753,14 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             </NuxtLink>
             <span v-else class="text-dimmed">{{ t('reports.gone') }}</span>
             <span class="flex-1"></span>
+            <UBadge
+              v-if="report.sla?.late || report.sla?.soon"
+              size="sm"
+              variant="subtle"
+              :color="report.sla.late ? 'error' : 'warning'"
+              :icon="report.sla.late ? 'i-pixelarticons-clock' : 'i-pixelarticons-hourglass'"
+              :label="t(report.sla.late ? 'catalog.admin.slaLate' : 'catalog.admin.slaSoon')"
+            />
             <span class="text-xs text-dimmed">
               {{ report.reporter?.username || t('notifications.someone') }}
             </span>
@@ -817,12 +851,52 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               <template v-if="entry.owner"> · {{ entry.owner.name || entry.owner.slug }}</template>
             </p>
           </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <UBadge
+              v-if="entry.flagged"
+              variant="subtle"
+              size="sm"
+              color="error"
+              icon="i-pixelarticons-shield"
+              :label="t('catalog.admin.flagged', { n: entry.flagged })"
+            />
+            <UBadge
+              v-for="item in missingOf(entry)"
+              :key="item"
+              variant="subtle"
+              size="sm"
+              color="warning"
+              :label="t(`checklist.items.${item}.label`)"
+            />
+            <UBadge
+              v-if="!missingOf(entry).length && !entry.flagged"
+              variant="subtle"
+              size="sm"
+              color="success"
+              icon="i-pixelarticons-check"
+              :label="t('catalog.admin.checksPass')"
+            />
+          </div>
+
           <UBadge
             variant="subtle"
             size="sm"
             :color="waitingDays(entry.waiting) >= 7 ? 'error' : 'neutral'"
             :label="t('catalog.admin.waiting', { days: waitingDays(entry.waiting) })"
           />
+
+          <UButton
+            size="xs"
+            :variant="entry.reviewer ? 'subtle' : 'ghost'"
+            :color="entry.reviewer?.id === me?.id ? 'primary' : 'neutral'"
+            :loading="busy === `claim:${entry.id}`"
+            :icon="entry.reviewer ? 'i-pixelarticons-user' : 'i-pixelarticons-user-plus'"
+            :label="entry.reviewer
+              ? (entry.reviewer.id === me?.id ? t('catalog.admin.mine') : (entry.reviewer.username ?? '—'))
+              : t('catalog.admin.assignToMe')"
+            @click="claim(entry)"
+          />
+
           <UButton
             size="xs"
             variant="subtle"

@@ -3317,7 +3317,13 @@
       "review": "Review",
       "refresh": "Refresh",
       "waiting": "{days} d",
-      "delete": "Delete"
+      "delete": "Delete",
+      "assignToMe": "Assign to me",
+      "mine": "Mine",
+      "checksPass": "All checks pass",
+      "flagged": "{n} flagged",
+      "slaLate": "Late",
+      "slaSoon": "Due soon"
     },
     "filters": "Filters",
     "clearFilters": "Clear filters",

@@ -39,3 +39,39 @@ export function isReportStatus(value: unknown): value is ReportStatus {
 export function isReportOpen(status: string): boolean {
   return status === 'open'
 }
+
+/**
+ * How long a report may sit before it is late.
+ *
+ * A day for anything claiming the file is dangerous, three for the rest. The
+ * deadline is not an alarm anybody is paged by — it is what sorts the queue and
+ * turns a row red, so the oldest genuinely urgent thing is the one on top.
+ */
+export const SLA_MS: Record<string, number> = {
+  malicious: 24 * 60 * 60 * 1000,
+}
+
+export const DEFAULT_SLA_MS = 72 * 60 * 60 * 1000
+
+export function slaFor(reason: string): number {
+  return SLA_MS[reason] ?? DEFAULT_SLA_MS
+}
+
+export interface SlaState {
+  /** Milliseconds left; negative once the deadline has passed. */
+  remaining: number
+  late: boolean
+  /** Past three quarters of the window — worth looking at before it is late. */
+  soon: boolean
+}
+
+export function slaState(reason: string, created: number, now = Date.now()): SlaState {
+  const budget = slaFor(reason)
+  const remaining = created + budget - now
+
+  return {
+    remaining,
+    late: remaining <= 0,
+    soon: remaining > 0 && remaining < budget * 0.25,
+  }
+}
