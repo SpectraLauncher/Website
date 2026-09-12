@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { tellrawCommand } from '~/utils/tellraw'
+import { tellrawCommand } from '~/utils/mc/tellraw'
 
 const localePath = useLocalePath()
 

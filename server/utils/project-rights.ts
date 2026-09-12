@@ -2,7 +2,7 @@ import type { H3Event } from 'h3'
 
 
 import type { ProjectRow } from './catalog'
-import { isAdmin } from './admin'
+import { isAdmin } from '../../shared/utils/staff-roles'
 import { exec, one, q } from './db'
 import { orgStanding } from './organization'
 import {

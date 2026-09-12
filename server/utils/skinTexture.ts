@@ -1,4 +1,4 @@
-import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, stripLegacyHat } from '~/utils/skin'
+import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, stripLegacyHat } from '~/utils/mc/skin'
 
 import { inflateSync } from 'node:zlib'
 

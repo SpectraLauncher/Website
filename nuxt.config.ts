@@ -70,6 +70,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
 
+  // Nuxt scans app/utils one level deep. The Minecraft tool helpers live in
+  // app/utils/mc, and everything that uses them does so unqualified — without
+  // this they are undefined at runtime and every /tools page answers 500, while
+  // the build itself stays green.
+  imports: {
+    dirs: ['utils/**'],
+  },
+
   runtimeConfig: {
     adminEmails: process.env.ADMIN_EMAILS || '',
 

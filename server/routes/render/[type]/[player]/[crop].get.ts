@@ -1,5 +1,5 @@
-import { POSES, CROPS, isRenderCrop, poseById } from '~/utils/skinPose'
-import { EFFECT_IDS, LIGHT_IDS, isEffectId, isLightId } from '~/utils/skinStyle'
+import { POSES, CROPS, isRenderCrop, poseById } from '~/utils/mc/skinPose'
+import { EFFECT_IDS, LIGHT_IDS, isEffectId, isLightId } from '~/utils/mc/skinStyle'
 
 const MIN_SIZE = 32
 const MAX_SIZE = 1024

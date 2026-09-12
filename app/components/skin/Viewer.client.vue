@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import {
   PARTS, SKIN_SIZE, OVERLAY_INFLATE, boxFaces, capeFaces, capeScale, partGeometry,
   type SkinModel, type UvRect
-} from '~/utils/skin'
-import { PIVOTS } from '~/utils/skinPose'
+} from '~/utils/mc/skin'
+import { PIVOTS } from '~/utils/mc/skinPose'
 
 const props = withDefaults(defineProps<{
   skin: HTMLCanvasElement | null

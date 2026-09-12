@@ -5,7 +5,7 @@ import { betterAuth } from 'better-auth'
 import { bearer, captcha, oneTimeToken, organization, twoFactor, username } from 'better-auth/plugins'
 import { createTransport } from 'nodemailer'
 
-import { isAdmin } from './admin'
+import { isAdmin } from '../../shared/utils/staff-roles'
 import { catalogIsPublic } from './catalog-gate'
 import { usePool } from './db'
 import { uniqueUsername } from './username'

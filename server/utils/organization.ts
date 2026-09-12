@@ -2,7 +2,7 @@
 import { type ProjectRow, num } from './catalog'
 import { LISTED_STATUSES, projectPath } from '../../shared/utils/catalog-types'
 import type { H3Event } from 'h3'
-import { isAdmin } from './admin'
+import { isAdmin } from '../../shared/utils/staff-roles'
 import { exec, one, q } from './db'
 
 export interface OrgRow {

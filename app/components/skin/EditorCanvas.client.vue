@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SKIN_SIZE, type SkinModel } from '~/utils/skin'
-import { brushCells, line, skinRegions } from '~/utils/skinEdit'
+import { SKIN_SIZE, type SkinModel } from '~/utils/mc/skin'
+import { brushCells, line, skinRegions } from '~/utils/mc/skinEdit'
 
 const props = defineProps<{
   source: HTMLCanvasElement | null

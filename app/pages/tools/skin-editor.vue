@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/skin'
-import { PALETTES, brushCells, fill, mirrorMap, shadeChannel, skinRegions, type EditorTool } from '~/utils/skinEdit'
+import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/mc/skin'
+import { PALETTES, brushCells, fill, mirrorMap, shadeChannel, skinRegions, type EditorTool } from '~/utils/mc/skinEdit'
 
 const localePath = useLocalePath()
 const { t, tm, rt } = useI18n()

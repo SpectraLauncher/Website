@@ -3,7 +3,7 @@ import {
   SKIN_SIZE, LEGACY_COPIES, HEAD_CROP, HEAD_OVERLAY_CROP,
   capeTextureUrl, isEquipped, isLegacySkin, modCapeUrl, normaliseQuery, skinFileName, stripLegacyHat,
   type CapeEntry, type CapeSource, type OwnedCape, type SkinProfile, type UvRect
-} from '~/utils/skin'
+} from '~/utils/mc/skin'
 
 const localePath = useLocalePath()
 

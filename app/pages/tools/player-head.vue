@@ -3,12 +3,12 @@ import {
   SKIN_SIZE, LEGACY_COPIES, HEAD_CROP, HEAD_OVERLAY_CROP,
   isLegacySkin, normaliseQuery, stripLegacyHat,
   type SkinProfile, type UvRect
-} from '~/utils/skin'
+} from '~/utils/mc/skin'
 import {
   HEAD_MODES, HEAD_TARGETS, HEAD_VERSIONS, MAX_STACK,
   clampAmount, headCommand, headFileName, texturesJson,
   type HeadMode, type HeadVersion
-} from '~/utils/playerHead'
+} from '~/utils/mc/playerHead'
 
 const localePath = useLocalePath()
 

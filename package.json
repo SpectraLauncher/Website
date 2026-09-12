@@ -53,7 +53,8 @@
     "check:fetch": "node test/fetch-check.mjs",
     "check:i18n": "node test/i18n-keys-check.mjs",
     "check:insert": "node test/insert-check.mjs",
-    "fixtures": "python test/fixtures/make.py"
+    "fixtures": "python test/fixtures/make.py",
+    "check:imports": "node --experimental-strip-types test/imports-check.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.2",

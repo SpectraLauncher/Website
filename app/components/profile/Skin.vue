@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SkinAnimation } from '~/utils/skin'
+import type { SkinAnimation } from '~/utils/mc/skin'
 
 const props = defineProps<{
   name: string

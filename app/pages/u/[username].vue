@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { headCommand, HEAD_VERSIONS, type HeadVersion } from '~/utils/playerHead'
-import { capeTextureUrl, modCapeUrl, type CapeSource } from '~/utils/skin'
+import { headCommand, HEAD_VERSIONS, type HeadVersion } from '~/utils/mc/playerHead'
+import { capeTextureUrl, modCapeUrl, type CapeSource } from '~/utils/mc/skin'
 
 const route = useRoute()
 const localePath = useLocalePath()

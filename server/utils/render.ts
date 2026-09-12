@@ -1,6 +1,6 @@
-import { poseById, type RenderCrop } from '~/utils/skinPose'
-import { renderSkin } from '~/utils/skinRender'
-import type { EffectId, LightId } from '~/utils/skinStyle'
+import { poseById, type RenderCrop } from '~/utils/mc/skinPose'
+import { renderSkin } from '~/utils/mc/skinRender'
+import type { EffectId, LightId } from '~/utils/mc/skinStyle'
 
 const cachedSkinTexture = defineCachedFunction(
   async (url: string) => {

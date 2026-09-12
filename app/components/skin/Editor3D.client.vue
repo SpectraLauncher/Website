@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import {
   PARTS, SKIN_SIZE, OVERLAY_INFLATE, boxFaces, partGeometry,
   type SkinModel, type UvRect
-} from '~/utils/skin'
-import { texelFromUv } from '~/utils/skinEdit'
+} from '~/utils/mc/skin'
+import { texelFromUv } from '~/utils/mc/skinEdit'
 
 const props = defineProps<{
   source: HTMLCanvasElement | null

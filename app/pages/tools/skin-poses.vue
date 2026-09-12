@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { normaliseQuery, type SkinProfile } from '~/utils/skin'
-import { POSES, RENDER_CROPS, type RenderCrop } from '~/utils/skinPose'
-import { EFFECT_IDS, LIGHTS, LIGHT_IDS, type EffectId, type LightId } from '~/utils/skinStyle'
+import { normaliseQuery, type SkinProfile } from '~/utils/mc/skin'
+import { POSES, RENDER_CROPS, type RenderCrop } from '~/utils/mc/skinPose'
+import { EFFECT_IDS, LIGHTS, LIGHT_IDS, type EffectId, type LightId } from '~/utils/mc/skinStyle'
 
 const localePath = useLocalePath()
 

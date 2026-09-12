@@ -26,6 +26,18 @@ function* walk(dir) {
   }
 }
 
+// This walk is recursive, so it only tells the truth if Nuxt scans nested
+// directories too — and by default it does not. app/utils/mc went unscanned for
+// a whole restructure: the build stayed green, every /tools page answered 500 at
+// run time, and this check said everything was visible.
+const nuxtConfig = fs.readFileSync('nuxt.config.ts', 'utf8')
+if (!/imports:\s*\{[^}]*dirs:\s*\[[^\]]*'utils\/\*\*'/s.test(nuxtConfig)) {
+  console.error('nuxt.config.ts nie ma imports.dirs z "utils/**", a ten test chodzi rekurencyjnie.')
+  console.error('Bez tego zagniezdzone utils nie sa auto-importowane, a strony,')
+  console.error('ktore ich uzywaja, wywalaja sie dopiero w runtime.')
+  process.exit(1)
+}
+
 const problems = []
 
 // Dwa pliki eksportujace ta sama nazwe do jednego kontekstu to cichy wybor za
