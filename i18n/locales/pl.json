@@ -4712,5 +4712,31 @@
     "maintenanceHint": "Przełącza platformę w tryb tylko do odczytu. Pobieranie działa; wgrywanie, zakupy i każdy inny zapis stoją. Logowanie i ten panel zostają otwarte, żeby dało się to wyłączyć.",
     "maintenanceOn": "Włącz tryb konserwacji",
     "maintenanceOff": "Wróć do normalnej pracy"
+  },
+  "finance": {
+    "title": "Finanse",
+    "lead": "Obrót, prowizja platformy i to, co należy się twórcom.",
+    "figures": {
+      "gross": "Obrót",
+      "fee": "Prowizja",
+      "pending": "Do wypłaty",
+      "transferred": "Wypłacone"
+    },
+    "figureHints": {
+      "gross": "co zapłacili kupujący",
+      "fee": "nasza część",
+      "pending": "sprzedane, jeszcze nieprzelane",
+      "transferred": "na kontach twórców"
+    },
+    "perMonth": "Obrót miesięcznie",
+    "sales": "{n} sprzedaży",
+    "noSales": "Nie ma jeszcze opłaconych sprzedaży.",
+    "payouts": "Wnioski o wypłatę",
+    "creator": "Twórca",
+    "requested": "Złożony",
+    "status": "Status",
+    "amount": "Kwota",
+    "noPayouts": "Nikt jeszcze nie poprosił o wypłatę.",
+    "export": "Eksport CSV"
   }
 }

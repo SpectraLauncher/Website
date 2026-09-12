@@ -88,6 +88,7 @@ const NAV = [
   { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie', need: 'admin' },
   { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje', need: 'admin' },
   { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit', need: 'admin' },
+  { id: 'finance', icon: 'i-pixelarticons-coin', label: 'Finanse', group: 'Platforma', to: '/admin/finance', need: 'admin' },
   { id: 'settings', icon: 'i-pixelarticons-sliders', label: 'Ustawienia', group: 'Platforma', to: '/admin/settings', need: 'admin' },
 ] as const
 

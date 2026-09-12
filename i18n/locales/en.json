@@ -4712,5 +4712,31 @@
     "maintenanceHint": "Puts the platform in read-only mode. Downloads keep working; uploads, purchases and every other write stop. Signing in and this panel stay open, so it can be switched back off.",
     "maintenanceOn": "Enable maintenance mode",
     "maintenanceOff": "Back to normal"
+  },
+  "finance": {
+    "title": "Finance",
+    "lead": "Gross volume, the platform fee and what creators are owed.",
+    "figures": {
+      "gross": "Gross volume",
+      "fee": "Platform fee",
+      "pending": "Owed",
+      "transferred": "Paid out"
+    },
+    "figureHints": {
+      "gross": "what buyers paid",
+      "fee": "our cut of it",
+      "pending": "sold, not yet moved",
+      "transferred": "on creators’ accounts"
+    },
+    "perMonth": "Gross volume per month",
+    "sales": "{n} sales",
+    "noSales": "No paid sales yet.",
+    "payouts": "Payout requests",
+    "creator": "Creator",
+    "requested": "Requested",
+    "status": "Status",
+    "amount": "Amount",
+    "noPayouts": "Nobody has asked for a payout yet.",
+    "export": "Export CSV"
   }
 }
