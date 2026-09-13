@@ -101,20 +101,44 @@ const TONES = [
 
 const insertCallout = (tone: 'info' | 'warn' | 'success') => chain().toggleCallout(tone).run()
 
-// The address is asked for rather than typed into the document, so a link is one
-// step and an author cannot leave half of one behind.
-function setLink() {
-  const previous = editor.value?.getAttributes('link').href ?? ''
-  const href = window.prompt(t('editor.linkPrompt'), previous)
-  if (href === null) return
+// The address is asked for in a dialog rather than typed into the document, so a
+// link is one step and an author cannot leave half of one behind.
+//
+// Not window.prompt for the same reasons useConfirm exists: it blocks the page,
+// cannot be styled, and some browsers offer to suppress every later one. Local
+// rather than a shared composable because this is the only place that asks for
+// a line of text back.
+const linkOpen = ref(false)
+const linkHref = ref('')
+const linkInput = useTemplateRef<{ inputRef?: HTMLInputElement }>('linkInput')
 
-  if (!href.trim()) {
+function askForLink() {
+  linkHref.value = String(editor.value?.getAttributes('link').href ?? '')
+  linkOpen.value = true
+  nextTick(() => linkInput.value?.inputRef?.focus())
+}
+
+function applyLink() {
+  const href = linkHref.value.trim()
+  linkOpen.value = false
+
+  // An empty address is how a link is taken off the selected words.
+  if (!href) {
     chain().extendMarkRange('link').unsetLink().run()
     return
   }
 
-  chain().extendMarkRange('link').setLink({ href: href.trim() }).run()
+  chain().extendMarkRange('link').setLink({ href }).run()
 }
+
+const linkValid = computed(() => {
+  const href = linkHref.value.trim()
+  if (!href) return true
+
+  // The renderer refuses anything that is not http(s) or a path of ours, so say
+  // so here rather than dropping it silently on save.
+  return /^https?:\/\//i.test(href) || href.startsWith('/')
+})
 
 const active = (id: string) => Boolean(editor.value?.isActive(id))
 </script>
@@ -149,7 +173,7 @@ const active = (id: string) => Boolean(editor.value?.isActive(id))
         icon="i-pixelarticons-link"
         :aria-label="t('editor.link')"
         :title="t('editor.link')"
-        @click="setLink"
+        @click="askForLink"
       />
 
       <span class="mx-1 h-5 w-px bg-raised-line"></span>
@@ -239,5 +263,40 @@ const active = (id: string) => Boolean(editor.value?.isActive(id))
     </div>
 
     <EditorContent :editor="editor" />
+
+    <UModal v-model:open="linkOpen" :title="t('editor.link')">
+      <template #body>
+        <UFormField
+          :label="t('editor.linkAddress')"
+          :help="t('editor.linkHelp')"
+          :error="linkValid ? undefined : t('editor.linkInvalid')"
+        >
+          <UInput
+            ref="linkInput"
+            v-model="linkHref"
+            size="lg"
+            class="w-full"
+            placeholder="https://"
+            @keydown.enter.prevent="linkValid && applyLink()"
+          />
+        </UFormField>
+      </template>
+
+      <template #footer>
+        <div class="flex w-full justify-end gap-2">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            :label="t('catalog.cancel')"
+            @click="linkOpen = false"
+          />
+          <UButton
+            :disabled="!linkValid"
+            :label="t(linkHref.trim() ? 'editor.linkApply' : 'editor.linkRemove')"
+            @click="applyLink"
+          />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>

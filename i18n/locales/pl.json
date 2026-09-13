@@ -4532,7 +4532,6 @@
     "heading2": "Nagłówek",
     "heading3": "Podnagłówek",
     "codeBlock": "Blok kodu",
-    "linkPrompt": "Adres linku (puste = usuń)",
     "divider": "Linia",
     "undo": "Cofnij",
     "redo": "Ponów",
@@ -4540,7 +4539,12 @@
       "info": "Uwaga",
       "warn": "Ostrzeżenie",
       "success": "Warto wiedzieć"
-    }
+    },
+    "linkAddress": "Adres",
+    "linkHelp": "Adres w sieci albo ścieżka na tej stronie zaczynająca się od /.",
+    "linkInvalid": "Musi zaczynać się od http://, https:// albo /.",
+    "linkApply": "Wstaw link",
+    "linkRemove": "Usuń link"
   },
   "seller": {
     "title": "Sprzedaż",

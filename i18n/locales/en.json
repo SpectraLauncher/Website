@@ -4532,7 +4532,6 @@
     "heading2": "Heading",
     "heading3": "Subheading",
     "codeBlock": "Code block",
-    "linkPrompt": "Address of the link (empty to remove it)",
     "divider": "Divider",
     "undo": "Undo",
     "redo": "Redo",
@@ -4540,7 +4539,12 @@
       "info": "Note",
       "warn": "Warning",
       "success": "Good to know"
-    }
+    },
+    "linkAddress": "Address",
+    "linkHelp": "An address on the web, or a path on this site starting with /.",
+    "linkInvalid": "Has to start with http://, https:// or /.",
+    "linkApply": "Add link",
+    "linkRemove": "Remove link"
   },
   "seller": {
     "title": "Selling",
