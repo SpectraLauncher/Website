@@ -15,6 +15,8 @@ interface Context {
 function destination(kind: string, context: Context): string {
   if (context.path) return context.path
   if (kind.startsWith('friend')) return '/dashboard/settings?tab=friends'
+  // The invitation is answered on the notifications page, not read there.
+  if (kind === 'staff_invite') return '/dashboard/notifications'
   return '/dashboard/notifications'
 }
 

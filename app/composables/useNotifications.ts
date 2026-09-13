@@ -40,6 +40,7 @@ export const NOTIFICATION_ICONS: Record<string, string> = {
   comment_reply: 'i-pixelarticons-reply',
   report_received: 'i-pixelarticons-flag',
   report_closed: 'i-pixelarticons-flag',
+  staff_invite: 'i-pixelarticons-shield',
 }
 
 export function notificationIcon(kind: string): string {

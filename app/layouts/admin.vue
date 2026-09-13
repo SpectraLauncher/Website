@@ -36,7 +36,10 @@ const ROLE_LABEL: Record<string, string> = {
 </script>
 
 <template>
-  <UiPageShell width="max-w-7xl">
+  <!-- Wider than the rest of the site on purpose: the panel is tables and an
+       editor, and at max-w-7xl the sidebar plus a list left about 300px to write
+       an article in. -->
+  <UiPageShell width="max-w-[1680px]">
     <div class="grid gap-4 lg:grid-cols-[240px_1fr] lg:items-start">
       <UiSideNav :model-value="current" :items="items">
         <template #header>

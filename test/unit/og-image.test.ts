@@ -26,6 +26,14 @@ describe('karta do udostepniania', () => {
     expect(source).toMatch(/portrait: true/)
   })
 
+  it('nic nie ustawia og:image obok wygenerowanej karty', () => {
+    // useSeoMeta({ ogImage }) writes the tag directly and beats defineOgImage,
+    // so the preview was the bare skin render with no name on it.
+    for (const file of [PROJECT, PROFILE]) {
+      expect(read(file), file).not.toMatch(/^\s*ogImage:/m)
+    }
+  })
+
   it('render postaci ma adres bezwzgledny', () => {
     // origin comes from useRequestURL, so the server can fetch its own route
     expect(read(PROFILE)).toMatch(/renderUrl = computed\(\(\) => \(mc\.value \? `\$\{origin\}/)

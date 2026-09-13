@@ -212,7 +212,6 @@ useSeoMeta({
   ogDescription: () => seoDescription.value,
   ogType: 'profile',
   ogUrl: () => profileUrl.value,
-  ogImage: () => renderUrl.value || undefined,
   robots: () => (data.value ? 'index, follow' : 'noindex'),
 })
 
@@ -234,14 +233,24 @@ defineOgImage('Entity', {
   kind: () => t('profile.player'),
   image: () => renderUrl.value || undefined,
   portrait: true,
-  facts: () => (data.value
-    ? [
-        { value: String(data.value.badges?.length ?? 0), label: t('profile.badges') },
-        ...(data.value.user.mcUsername
-          ? [{ value: data.value.user.mcUsername, label: 'Minecraft' }]
-          : []),
-      ]
-    : []),
+  // What the profile page itself leads with, so the card and the page agree.
+  facts: () => {
+    if (!data.value) return []
+
+    const stats = data.value.stats
+    const out: Array<{ value: string, label: string }> = []
+
+    if (stats.packs) out.push({ value: count(stats.packs), label: t('profile.statPacks') })
+    if (stats.downloads) out.push({ value: count(stats.downloads), label: t('profile.statDownloads') })
+    if (data.value.badges?.length) {
+      out.push({ value: String(data.value.badges.length), label: t('profile.badges') })
+    }
+    if (!out.length && data.value.user.mcUsername) {
+      out.push({ value: data.value.user.mcUsername, label: 'Minecraft' })
+    }
+
+    return out
+  },
 })
 
 useSchemaOrg(computed(() => (data.value

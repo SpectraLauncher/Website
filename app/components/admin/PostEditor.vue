@@ -96,9 +96,9 @@ const send = () => run('send', async () => {
 </script>
 
 <template>
-  <div class="grid gap-5 xl:grid-cols-[1fr_280px] xl:items-start">
+  <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
     <div class="flex min-w-0 flex-col gap-4">
-    <div class="grid gap-3 sm:grid-cols-2">
+    <div class="grid gap-4 lg:grid-cols-2">
       <UFormField :label="t('posts.title')">
         <UInput v-model="draft.title" size="lg" class="w-full" />
       </UFormField>
@@ -128,7 +128,7 @@ const send = () => run('send', async () => {
     </UFormField>
 
       <UFormField :label="t('posts.body')">
-        <UiRichEditor v-model="draft.body" :upload-to="`${path}/image`" :rows="18" />
+        <UiRichEditor v-model="draft.body" :upload-to="`${path}/image`" :rows="24" />
       </UFormField>
     </div>
 

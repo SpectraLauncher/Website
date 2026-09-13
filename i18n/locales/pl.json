@@ -3740,7 +3740,8 @@
     "mailCta": "Otwórz Spectra",
     "report_received": "Nowe zgłoszenie czeka na sprawdzenie",
     "report_closed": "Twoje zgłoszenie zostało rozpatrzone",
-    "project_updated": "{project} wydał {version}"
+    "project_updated": "{project} wydał {version}",
+    "staff_invite": "{actor} zaprosił cię do zespołu moderacji"
   },
   "collections": {
     "create": "Nowa kolekcja",
@@ -4667,7 +4668,8 @@
     "noPosts": "Jeszcze nic tu nie ma.",
     "sentAlready": "Wysłane {date} do {n}.",
     "uploadCover": "Wgraj okładkę",
-    "state": "Stan"
+    "state": "Stan",
+    "allPosts": "Wszystkie ({n})"
   },
   "news": {
     "title": "Aktualności",
@@ -4682,7 +4684,8 @@
     "unsubscribeHint": "Przestaniesz dostawać newsletter. Artykuły zostają na stronie.",
     "unsubscribeNoToken": "W tym linku brakuje tokenu. Użyj tego ze stopki wiadomości.",
     "unsubscribeConfirm": "Wypisz mnie",
-    "unsubscribed": "Nie ma cię już na liście."
+    "unsubscribed": "Nie ma cię już na liście.",
+    "readAll": "Czytaj aktualności"
   },
   "audit": {
     "title": "Dziennik działań",
@@ -4770,5 +4773,31 @@
     "amount": "Kwota",
     "noPayouts": "Nikt jeszcze nie poprosił o wypłatę.",
     "export": "Eksport CSV"
+  },
+  "staff": {
+    "inviteTitle": "Zaproś do zespołu",
+    "inviteHint": "Znajdź konto po nicku i wyślij ofertę. Dostanie maila i powiadomienie w aplikacji niezależnie od swoich ustawień, a rolę dostaje dopiero, kiedy zaakceptuje.",
+    "nick": "Nick",
+    "role": "Rola",
+    "invite": "Wyślij zaproszenie",
+    "ownerOnly": "Do zespołu zaprasza wyłącznie właściciel.",
+    "sent": "Zaproszenie wysłane do {name}.",
+    "pending": "Czekają na odpowiedź ({n})",
+    "invitedBy": "zaprosił {who}",
+    "expires": "wygasa {date}",
+    "revoke": "Wycofaj",
+    "revokeAsk": "Wycofać to zaproszenie?",
+    "history": "Rozpatrzone",
+    "status": {
+      "accepted": "przyjęte",
+      "declined": "odrzucone",
+      "revoked": "wycofane"
+    },
+    "yours": "Masz zaproszenie do zespołu moderacji",
+    "yoursBody": "{who} proponuje ci rolę {role}. Po przyjęciu dostajesz moderacyjną część panelu; w każdej chwili można cię z niej zdjąć.",
+    "accept": "Dołącz do zespołu",
+    "decline": "Nie, dziękuję",
+    "accepted": "Jesteś w zespole.",
+    "declined": "Zaproszenie odrzucone."
   }
 }

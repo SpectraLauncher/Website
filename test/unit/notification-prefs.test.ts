@@ -4,6 +4,7 @@ import { NOTIFICATION_ICONS } from '../../app/composables/useNotifications'
 import {
   DEFAULT_PREFS,
   NOTIFICATION_GROUPS,
+  ALWAYS_MAILED,
   NOTIFICATION_GROUP_KEYS,
   cleanPrefs,
   groupOf,
@@ -11,10 +12,19 @@ import {
 } from '../../shared/utils/notification-prefs'
 
 describe('grupy powiadomien', () => {
-  // A kind with no group cannot be configured, so its mail cannot be turned off.
-  it('kazdy rodzaj powiadomienia nalezy do jakiejs grupy', () => {
-    for (const kind of Object.keys(NOTIFICATION_ICONS)) {
-      expect(groupOf(kind), kind).not.toBeNull()
+  // A kind with no group cannot be configured. That is a mistake everywhere
+  // except for the handful that are deliberately not a choice — so the two
+  // lists have to be each other's exact complement, and a kind added without a
+  // group shows up here rather than quietly ignoring somebody's settings.
+  it('rodzaj bez grupy jest tylko ten, ktory z zalozenia nie podlega ustawieniom', () => {
+    const ungrouped = Object.keys(NOTIFICATION_ICONS).filter(kind => groupOf(kind) === null)
+
+    expect(ungrouped.sort()).toEqual([...ALWAYS_MAILED].sort())
+  })
+
+  it('to, co zawsze idzie mailem, ma swoja ikone', () => {
+    for (const kind of ALWAYS_MAILED) {
+      expect(NOTIFICATION_ICONS[kind], kind).toBeTruthy()
     }
   })
 

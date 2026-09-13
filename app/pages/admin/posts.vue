@@ -77,39 +77,31 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
       </div>
     </UiPageHeader>
 
-    <div class="grid gap-4 lg:grid-cols-[300px_1fr] lg:items-start">
-      <UiPanel class="overflow-hidden">
-        <button
-          v-for="post in posts"
-          :key="post.id"
-          type="button"
-          class="flex w-full cursor-pointer flex-col gap-1 border-b border-raised-line px-4 py-3 text-left transition-colors last:border-b-0"
-          :class="openId === post.id ? 'bg-white/10' : 'hover:bg-white/5'"
-          @click="openId = post.id"
-        >
-          <span class="truncate font-semibold text-highlighted">
-            {{ post.title || t('posts.draft') }}
-          </span>
-          <span class="flex flex-wrap items-center gap-2 text-xs text-dimmed">
-            <UBadge
-              size="sm"
-              variant="subtle"
-              :color="post.status === 'published' ? 'success' : 'neutral'"
-              :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
-            />
-            <template v-if="kind === 'newsletter'">
-              {{ post.sent ? t('posts.sent', { n: post.recipients }) : t('posts.unsent') }}
-            </template>
-            <template v-else>{{ when(post.published) }}</template>
-          </span>
-        </button>
+    <!-- Writing gets the whole width. The list is one click away rather than a
+         column permanently taking a third of the page — at 300px of editor an
+         article could not be written at all. -->
+    <template v-if="open">
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <UButton
+          color="neutral"
+          variant="subtle"
+          icon="i-pixelarticons-arrow-left"
+          :label="t('posts.allPosts', { n: posts.length })"
+          @click="openId = null"
+        />
 
-        <p v-if="!posts.length" class="p-8 text-center text-sm text-dimmed">
-          {{ t('posts.noPosts') }}
-        </p>
-      </UiPanel>
+        <USelectMenu
+          v-if="posts.length > 1"
+          :model-value="openId"
+          value-key="id"
+          label-key="label"
+          :items="posts.map(post => ({ id: post.id, label: post.title || t('posts.draft') }))"
+          class="min-w-56"
+          @update:model-value="openId = String($event)"
+        />
+      </div>
 
-      <UiPanel v-if="open" class="p-5 sm:p-6">
+      <UiPanel class="p-5 sm:p-6">
         <AdminPostEditor
           :key="open.id"
           :post="open"
@@ -118,11 +110,56 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
           @removed="removed"
         />
       </UiPanel>
+    </template>
+
+    <template v-else>
+      <div v-if="posts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <UiPanel
+          v-for="post in posts"
+          :key="post.id"
+          class="flex cursor-pointer flex-col overflow-hidden text-left transition-colors hover:border-zinc-600"
+          @click="openId = post.id"
+        >
+          <img
+            v-if="post.cover"
+            :src="post.cover"
+            alt=""
+            class="aspect-[16/9] w-full object-cover"
+          >
+          <div
+            v-else
+            class="grid aspect-[16/9] w-full place-items-center border-b border-panel-line bg-raised text-dimmed"
+          >
+            <UIcon name="i-pixelarticons-article" class="size-7" />
+          </div>
+
+          <div class="flex flex-1 flex-col gap-2 p-4">
+            <span class="truncate font-semibold text-highlighted">
+              {{ post.title || t('posts.draft') }}
+            </span>
+            <p v-if="post.summary" class="line-clamp-2 text-sm text-muted">{{ post.summary }}</p>
+
+            <span class="mt-auto flex flex-wrap items-center gap-2 pt-1 text-xs text-dimmed">
+              <UBadge
+                size="sm"
+                variant="subtle"
+                :color="post.status === 'published' ? 'success' : 'neutral'"
+                :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
+              />
+              <template v-if="kind === 'newsletter'">
+                {{ post.sent ? t('posts.sent', { n: post.recipients }) : t('posts.unsent') }}
+              </template>
+              <template v-else>{{ when(post.published) }}</template>
+            </span>
+          </div>
+        </UiPanel>
+      </div>
 
       <UiPanel v-else class="p-12 text-center">
         <UIcon name="i-pixelarticons-article" class="mx-auto size-10 text-dimmed" />
         <p class="mt-3 text-sm text-muted">{{ t('posts.noPosts') }}</p>
       </UiPanel>
-    </div>
+    </template>
+
   </div>
 </template>

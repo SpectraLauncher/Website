@@ -9,6 +9,7 @@ export type NotificationKind =
   | 'project_approved' | 'project_rejected' | 'project_removed' | 'project_message'
   | 'project_comment' | 'comment_reply' | 'project_updated'
   | 'report_received' | 'report_closed'
+  | 'staff_invite'
 
 export type Status = 'online' | 'in_game' | 'dnd' | 'offline'
 

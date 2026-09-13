@@ -3740,7 +3740,8 @@
     "mailCta": "Open Spectra",
     "report_received": "A new report needs review",
     "report_closed": "Your report has been reviewed",
-    "project_updated": "{project} released {version}"
+    "project_updated": "{project} released {version}",
+    "staff_invite": "{actor} invited you to the moderation team"
   },
   "collections": {
     "create": "New collection",
@@ -4667,7 +4668,8 @@
     "noPosts": "Nothing here yet.",
     "sentAlready": "Sent {date} to {n}.",
     "uploadCover": "Upload a cover",
-    "state": "State"
+    "state": "State",
+    "allPosts": "All ({n})"
   },
   "news": {
     "title": "News",
@@ -4682,7 +4684,8 @@
     "unsubscribeHint": "You will stop getting the newsletter. Articles stay on the site.",
     "unsubscribeNoToken": "This link is missing its token. Use the one at the bottom of the message.",
     "unsubscribeConfirm": "Unsubscribe me",
-    "unsubscribed": "You are off the list."
+    "unsubscribed": "You are off the list.",
+    "readAll": "Read the news"
   },
   "audit": {
     "title": "Audit log",
@@ -4770,5 +4773,31 @@
     "amount": "Amount",
     "noPayouts": "Nobody has asked for a payout yet.",
     "export": "Export CSV"
+  },
+  "staff": {
+    "inviteTitle": "Invite to the team",
+    "inviteHint": "Find the account by its nick and send an offer. They get an e-mail and a notice in the app whatever their settings say, and the role is only theirs once they accept.",
+    "nick": "Nick",
+    "role": "Role",
+    "invite": "Send invitation",
+    "ownerOnly": "Only the owner can invite people to the team.",
+    "sent": "Invitation sent to {name}.",
+    "pending": "Waiting for an answer ({n})",
+    "invitedBy": "invited by {who}",
+    "expires": "expires {date}",
+    "revoke": "Withdraw",
+    "revokeAsk": "Withdraw this invitation?",
+    "history": "Answered",
+    "status": {
+      "accepted": "accepted",
+      "declined": "declined",
+      "revoked": "withdrawn"
+    },
+    "yours": "You have been invited to the moderation team",
+    "yoursBody": "{who} offered you the {role} role. Accepting gives you the moderation part of the panel; you can be taken off it at any time.",
+    "accept": "Join the team",
+    "decline": "No thanks",
+    "accepted": "You are on the team now.",
+    "declined": "Invitation declined."
   }
 }

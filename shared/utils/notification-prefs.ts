@@ -63,7 +63,19 @@ export function cleanPrefs(raw: unknown): NotificationPrefs {
   return out
 }
 
+/**
+ * Kinds that ignore the preferences entirely.
+ *
+ * Preferences are about noise. An invitation to the team is a question that
+ * needs an answer and expires if it does not get one — the same reason a
+ * password reset is not something anybody opts out of. Deliberately a short
+ * list: everything else stays the account's choice.
+ */
+export const ALWAYS_MAILED: readonly string[] = ['staff_invite']
+
 export function wantsEmail(prefs: NotificationPrefs, kind: string): boolean {
+  if (ALWAYS_MAILED.includes(kind)) return true
+
   const group = groupOf(kind)
   if (!group) return false
   return (prefs[group] ?? DEFAULT_PREFS[group]).includes('email')

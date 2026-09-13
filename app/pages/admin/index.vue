@@ -51,26 +51,6 @@ const ROLE_LABEL: Record<string, string> = {
   moderator: 'moderator',
 }
 
-// reka-ui treats an empty string as "nothing selected" and reopens the list, so
-// "no role" travels as its own word and is translated back at the edge.
-const NO_ROLE = 'none'
-
-const ROLE_OPTIONS = [
-  { label: '— brak —', value: NO_ROLE },
-  { label: ROLE_LABEL.moderator!, value: 'moderator' },
-  { label: ROLE_LABEL.admin!, value: 'admin' },
-  { label: ROLE_LABEL.owner!, value: 'owner' },
-]
-
-const setRole = (user: AdminUser, next: string) => run(`role:${user.id}`, async () => {
-  const role = next === NO_ROLE ? '' : next
-
-  const res = await $fetch<{ user: { role: string | null } }>(
-    `/api/admin/users/${user.id}/role`, { method: 'PATCH', body: { role } })
-
-  user.role = res.user.role
-  notice.value = `${user.username ?? user.email}: ${ROLE_LABEL[role] ?? 'bez roli'}`
-})
 
 // Registry: one entry per section of the panel. An entry with `to` opens its
 // own page instead of switching the tab, so the whole panel reads from one
@@ -698,6 +678,8 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
         </template>
 
         <template v-else>
+          <AdminStaffInvites class="mb-6" :can-invite="isOwner({ role })" />
+
           <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
             <h2 class="text-lg font-semibold tracking-tight">
               Użytkownicy
@@ -778,17 +760,22 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                   <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>
 
                   <td class="px-4 py-3">
-                    <USelect
-                      v-if="isOwner({ role })"
-                      :model-value="user.role ?? NO_ROLE"
-                      :items="ROLE_OPTIONS"
-                      size="xs"
-                      class="w-32"
-                      :loading="busy === `role:${user.id}`"
-                      @update:model-value="setRole(user, String($event))"
+                    <UIcon
+                      v-if="isOwner(user)"
+                      name="i-pixelarticons-crown"
+                      class="size-4 text-amber-400"
+                      :title="ROLE_LABEL.owner"
                     />
-                    <span v-else class="text-xs text-dimmed">{{ user.role ? ROLE_LABEL[user.role] : '—' }}</span>
+                    <UBadge
+                      v-else-if="user.role"
+                      size="sm"
+                      variant="subtle"
+                      :color="isAdmin(user) ? 'primary' : 'neutral'"
+                      :label="ROLE_LABEL[user.role] ?? user.role"
+                    />
+                    <span v-else class="text-xs text-dimmed">—</span>
                   </td>
+
                   <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.friends) }}</td>
                   <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.shares) }}</td>
                   <td class="px-4 py-3 text-xs text-muted">{{ date(user.createdAt) }}</td>

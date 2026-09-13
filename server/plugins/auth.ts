@@ -4,6 +4,7 @@ import { runSchemaMigrations } from '../utils/migrations'
 import { ensureAccountIssuer, ensureAdminRole, ensureSchema } from '../utils/schema'
 import { ensureCatalogSchema } from '../utils/schema-catalog'
 import { ensureAuditSchema } from '../utils/schema-audit'
+import { ensureStaffSchema } from '../utils/schema-staff'
 import { ensurePostSchema } from '../utils/schema-post'
 import { backfillUsernames } from '../utils/username'
 
@@ -31,6 +32,7 @@ export default defineNitroPlugin(async () => {
     await ensureCatalogSchema()
     await ensurePostSchema()
     await ensureAuditSchema()
+    await ensureStaffSchema()
 
     // After the baseline, never before: a step that alters a table needs the
     // table to be there.

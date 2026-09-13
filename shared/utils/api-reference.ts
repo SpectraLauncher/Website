@@ -90,6 +90,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'PATCH /api/me/locale', group: 'account', auth: 'session', summary: 'Set your language' },
   { route: 'GET /api/me/notifications', group: 'account', auth: 'session', summary: 'Your notification preferences' },
   { route: 'PATCH /api/me/notifications', group: 'account', auth: 'session', summary: 'Change which notifications reach you, and how' },
+  { route: 'GET /api/me/staff-invite', group: 'account', auth: 'session', summary: 'An open invitation to the moderation team, if you have one' },
+  { route: 'POST /api/me/staff-invite', group: 'account', auth: 'session', summary: 'Accept or decline it' },
   { route: 'GET /api/me/limits', group: 'account', auth: 'session', summary: 'How much of each account limit you have used' },
   { route: 'GET /api/me/blocks', group: 'account', auth: 'session', summary: 'People you have blocked' },
   { route: 'POST /api/me/blocks', group: 'account', auth: 'session', summary: 'Block somebody' },

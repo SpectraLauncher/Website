@@ -35,6 +35,8 @@ function line(item: NotificationItem): string {
 </script>
 
 <template>
+  <AccountStaffInvite class="mb-4" />
+
   <div>
     <UiPageHeader :title="t('nav.account.notifications')">
       <div class="flex items-center gap-2 pb-1.5">
