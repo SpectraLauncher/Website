@@ -40,8 +40,8 @@ withDefaults(defineProps<{
     <div class="flex h-full w-full flex-col justify-between p-16">
       <div class="flex w-full flex-col">
         <div v-if="kind" class="flex items-center">
-          <div class="flex h-2 w-16 rounded-full bg-[#7c5cff]" />
-          <div class="ml-4 flex text-2xl font-semibold uppercase tracking-widest text-[#7c5cff]">
+          <div class="flex h-2 w-16 rounded-full bg-[#0084d1]" />
+          <div class="ml-4 flex text-2xl font-semibold uppercase tracking-widest text-[#0084d1]">
             {{ kind }}
           </div>
         </div>

@@ -16,7 +16,7 @@ withDefaults(defineProps<{
     style="font-family: Inter, sans-serif"
   >
     <div class="flex w-full flex-col">
-      <div class="flex h-2 w-40 rounded-full bg-[#7c5cff]" />
+      <div class="flex h-2 w-40 rounded-full bg-[#0084d1]" />
       <div class="mt-10 flex text-7xl font-bold leading-tight tracking-tight">
         {{ title }}
       </div>
