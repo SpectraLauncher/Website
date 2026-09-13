@@ -262,6 +262,10 @@ const active = (id: string) => Boolean(editor.value?.isActive(id))
       <span class="ml-auto pr-1.5 text-xs text-dimmed">{{ t('editor.dropHint') }}</span>
     </div>
 
+    <div class="border-b border-raised-line px-3 py-1.5">
+      <UiUploadHint id="postImage" />
+    </div>
+
     <EditorContent :editor="editor" />
 
     <UModal v-model:open="linkOpen" :title="t('editor.link')">

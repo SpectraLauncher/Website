@@ -12,6 +12,8 @@ export async function storeProjectImage(event: H3Event, options: {
   accepted: string[]
   maxBytes: number
   fit?: 'cover' | 'contain' | 'inside'
+  /** Keep the animation when the source has one and the surface wants it. */
+  animated?: boolean
   // Recorded so the sweep can find this object again once its subject is gone.
   context?: ImageContext
   subjectId?: string | null
@@ -22,7 +24,10 @@ export async function storeProjectImage(event: H3Event, options: {
 
   const contentType = String(getHeader(event, 'content-type') || '').split(';')[0]!.trim()
   if (!options.accepted.includes(contentType)) {
-    throw createError({ statusCode: 415, statusMessage: 'png, jpeg or webp only' })
+    throw createError({
+      statusCode: 415,
+      statusMessage: `${acceptedLabel(options.accepted)} only`,
+    })
   }
 
   const body = await readRawBody(event, false)
@@ -31,7 +36,11 @@ export async function storeProjectImage(event: H3Event, options: {
     throw createError({ statusCode: 413, statusMessage: 'image too large' })
   }
 
-  const image = await reencodeWebp(body, { size: options.size, fit: options.fit ?? 'cover' })
+  const image = await reencodeWebp(body, {
+    size: options.size,
+    fit: options.fit ?? 'cover',
+    animated: options.animated,
+  })
 
   try {
     await r2Put(r2, options.key, image, 'image/webp')

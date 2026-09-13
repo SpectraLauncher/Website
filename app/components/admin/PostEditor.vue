@@ -220,10 +220,12 @@ const send = () => run('send', async () => {
           <input
             ref="cover"
             type="file"
-            accept="image/png,image/jpeg,image/webp"
+            :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
             class="hidden"
             @change="uploadCover(($event.target as HTMLInputElement).files?.[0])"
           >
+
+          <UiUploadHint id="postImage" />
         </div>
       </UFormField>
 

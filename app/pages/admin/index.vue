@@ -605,6 +605,8 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                     @change="uploadBadgeImage"
                   >
 
+                  <UiUploadHint id="badge" class="mt-1.5" />
+
                   <USelect
                     v-model="badgeForm.rule"
                     size="sm"

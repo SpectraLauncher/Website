@@ -332,6 +332,9 @@ export async function ensureSchema() {
 
     ALTER TABLE oauth_client ADD COLUMN IF NOT EXISTS token_days INTEGER NOT NULL DEFAULT 30;
     ALTER TABLE "user" ADD COLUMN IF NOT EXISTS links JSONB NOT NULL DEFAULT '{}';
+    -- The wide picture behind a profile, the way a project wears its feature
+    -- image. Null is the normal state and the page falls back to the site's own.
+    ALTER TABLE "user" ADD COLUMN IF NOT EXISTS banner TEXT;
   `)
 }
 

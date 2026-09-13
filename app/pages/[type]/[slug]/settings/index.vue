@@ -106,9 +106,10 @@ async function uploadIcon(event: Event) {
         >
           <UIcon name="i-pixelarticons-camera" class="size-4" />
           {{ uploading ? t('catalog.org.uploading') : t('catalog.uploadIcon') }}
-          <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadIcon">
+          <input type="file" :accept="acceptAttribute(MOVING_IMAGE_TYPES)" class="hidden" @change="uploadIcon">
         </label>
         <p class="mt-1.5 text-xs text-dimmed">{{ t('catalog.settingsHint.icon') }}</p>
+        <UiUploadHint id="projectIcon" class="mt-1" />
       </div>
     </div>
 

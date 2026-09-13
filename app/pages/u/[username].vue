@@ -21,6 +21,7 @@ interface PublicUser {
 interface Profile {
   user: PublicUser & {
     createdAt: string
+    banner: string | null
     mcUsername: string | null
     mcUuid: string | null
     bio: string | null
@@ -270,7 +271,7 @@ useSchemaOrg(computed(() => (data.value
 </script>
 
 <template>
-  <UiPageShell>
+  <UiPageShell :backdrop="data?.user.banner ?? null">
     <template v-if="error || !data">
       <UiPanel class="mx-auto max-w-lg p-10 text-center">
         <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-raised-line bg-raised">

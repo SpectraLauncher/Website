@@ -1,5 +1,5 @@
 const MAX_BYTES = 8 * 1024 * 1024
-const ACCEPTED = ['image/webp', 'image/png', 'image/jpeg', 'image/gif']
+
 
 // A picture inside an article or an issue. Same store, same ownership record and
 // the same sweep as a project's: recorded against the post, so when the post
@@ -14,7 +14,8 @@ export default defineEventHandler(async (event) => {
     key: `post/${post.id}/${newId()}.webp`,
     size: 1600,
     fit: 'inside',
-    accepted: ACCEPTED,
+    accepted: [...MOVING_IMAGE_TYPES],
+    animated: true,
     maxBytes: MAX_BYTES,
     context: 'post',
     subjectId: post.id,

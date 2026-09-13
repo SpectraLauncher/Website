@@ -2,7 +2,7 @@
 import { r2Delete, r2Put, useR2 } from '../../../utils/r2'
 
 const MAX_BYTES = 512 * 1024
-const ACCEPTED = ['image/webp', 'image/png', 'image/jpeg']
+const ACCEPTED = [...STILL_IMAGE_TYPES]
 const STALE = ['png', 'jpg', 'jpeg']
 const SIZE = 256
 

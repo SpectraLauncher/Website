@@ -87,6 +87,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'POST /api/news/unsubscribe', group: 'news', auth: 'none', summary: 'Take an address off it, with the token from the e-mail' },
   { route: 'PATCH /api/me/profile', group: 'account', auth: 'session', summary: 'Change your bio and links' },
   { route: 'POST /api/me/avatar', group: 'account', auth: 'session', summary: 'Upload an avatar' },
+  { route: 'POST /api/me/banner', group: 'account', auth: 'session', summary: 'Upload the picture behind your profile' },
+  { route: 'DELETE /api/me/banner', group: 'account', auth: 'session', summary: 'Take it off again' },
   { route: 'PATCH /api/me/locale', group: 'account', auth: 'session', summary: 'Set your language' },
   { route: 'GET /api/me/notifications', group: 'account', auth: 'session', summary: 'Your notification preferences' },
   { route: 'PATCH /api/me/notifications', group: 'account', auth: 'session', summary: 'Change which notifications reach you, and how' },

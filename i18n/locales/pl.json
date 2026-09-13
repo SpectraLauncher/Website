@@ -2547,7 +2547,12 @@
       "sole_owner": "Jesteś jedynym właścicielem {detail} — przekaż ją albo usuń.",
       "has_sales": "{detail} zakończona sprzedaż musi pozostać przypisana."
     },
-    "settingsIntro": "Konto, bezpieczeństwo, powiadomienia i klucze dla innych aplikacji."
+    "settingsIntro": "Konto, bezpieczeństwo, powiadomienia i klucze dla innych aplikacji.",
+    "bannerHint": "Zdjęcie za twoim profilem. Najlepiej szerokie — mniej więcej 1600×420. Animowany GIF zostaje ruchomy.",
+    "bannerRemove": "Usuń",
+    "bannerUploaded": "Baner zapisany.",
+    "bannerUnsupported": "Tylko png, jpeg, webp albo gif.",
+    "bannerTooBig": "To zdjęcie ma ponad 6 MB."
   },
   "friends": {
     "title": "Znajomi",
@@ -4799,5 +4804,10 @@
     "decline": "Nie, dziękuję",
     "accepted": "Jesteś w zespole.",
     "declined": "Zaproszenie odrzucone."
+  },
+  "images": {
+    "square": "Najlepiej {size} px, kwadrat — inne proporcje zostaną przycięte. Do {mb}, {types}.",
+    "longest": "Najlepiej dłuższy bok {size} px; proporcje zostają zachowane. Do {mb}, {types}.",
+    "animated": "Animowany GIF zostaje ruchomy."
   }
 }

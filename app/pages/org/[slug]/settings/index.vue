@@ -107,6 +107,7 @@ async function destroy() {
           {{ busy === 'logo' ? t('catalog.org.uploading') : t('catalog.org.uploadLogo') }}
           <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadLogo">
         </label>
+        <UiUploadHint id="orgLogo" class="mt-1.5" />
       </div>
 
       <div class="space-y-4">

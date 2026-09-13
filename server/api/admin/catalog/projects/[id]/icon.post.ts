@@ -1,5 +1,5 @@
 const MAX_BYTES = 4 * 1024 * 1024
-const ACCEPTED = ['image/webp', 'image/png', 'image/jpeg']
+
 
 export default defineEventHandler(async (event) => {
   await requireCatalogWrite(event)
@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
   const url = await storeProjectImage(event, {
     key: `catalog/icons/${project.id}.webp`,
     size: 256,
-    accepted: ACCEPTED,
+    accepted: [...MOVING_IMAGE_TYPES],
+    animated: true,
     maxBytes: MAX_BYTES,
     context: 'project',
     subjectId: project.id,

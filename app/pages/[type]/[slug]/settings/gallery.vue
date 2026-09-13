@@ -171,11 +171,13 @@ async function saveOrder() {
       <input
         type="file"
         multiple
-        accept="image/png,image/jpeg,image/webp"
+        :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
         class="hidden"
         @change="upload"
       >
     </label>
+
+    <UiUploadHint id="projectGallery" class="mt-2" />
 
     <p class="mt-3 text-xs text-dimmed">
       {{ over ? t('catalog.dropHere') : t('catalog.dropHint') }}

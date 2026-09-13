@@ -2547,7 +2547,12 @@
       "sole_owner": "You are the only owner of {detail} — hand it over or delete it first.",
       "has_sales": "{detail} completed sale(s) have to stay attributable."
     },
-    "settingsIntro": "Account, security, notifications and the keys other apps use."
+    "settingsIntro": "Account, security, notifications and the keys other apps use.",
+    "bannerHint": "The picture behind your profile. Wide works best — 1600×420 or so. An animated GIF keeps moving.",
+    "bannerRemove": "Remove",
+    "bannerUploaded": "Banner saved.",
+    "bannerUnsupported": "png, jpeg, webp or gif only.",
+    "bannerTooBig": "That image is over 6 MB."
   },
   "friends": {
     "title": "Friends",
@@ -4799,5 +4804,10 @@
     "decline": "No thanks",
     "accepted": "You are on the team now.",
     "declined": "Invitation declined."
+  },
+  "images": {
+    "square": "Best at {size} px, square — anything else is cropped to fit. Up to {mb}, {types}.",
+    "longest": "Best with the longer side at {size} px; the shape is kept. Up to {mb}, {types}.",
+    "animated": "An animated GIF keeps moving."
   }
 }

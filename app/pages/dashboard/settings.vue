@@ -57,7 +57,7 @@ const requested = String(route.query.tab ?? '')
 const tab = ref<string>(
   TABS.some(t => t.id === requested) ? requested : 'profile')
 
-const profile = reactive({ name: '', username: '', image: '', bio: '' })
+const profile = reactive({ name: '', username: '', image: '', banner: '', bio: '' })
 const links = reactive<Record<string, string>>({})
 
 watch(user, (u) => {
@@ -65,6 +65,7 @@ watch(user, (u) => {
   profile.name = u.name ?? ''
   profile.username = u.username ?? ''
   profile.image = u.image ?? ''
+  profile.banner = (u as { banner?: string | null }).banner ?? ''
   profile.bio = u.bio ?? ''
   for (const kind of LINK_KINDS) links[kind] = (u.links ?? {})[kind] ?? ''
 }, { immediate: true })
@@ -159,6 +160,41 @@ async function uploadAvatar(event: Event) {
     notice.value = t('account.avatarUploaded')
   })
 }
+
+const bannerInput = useTemplateRef<HTMLInputElement>('bannerInput')
+
+// Sent as it came, unlike the avatar: the server bounds the width, keeps the
+// shape and — for a GIF — the animation, none of which a canvas in the browser
+// would survive.
+async function uploadBanner(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+
+  if (!(MOVING_IMAGE_TYPES as readonly string[]).includes(file.type)) {
+    error.value = t('account.bannerUnsupported')
+    return
+  }
+
+  if (file.size > 6 * 1024 * 1024) {
+    error.value = t('account.bannerTooBig')
+    return
+  }
+
+  await run('banner', async () => {
+    const { url } = await $fetch<{ url: string }>('/api/me/banner', {
+      method: 'POST',
+      body: file,
+      headers: { 'content-type': file.type },
+    })
+    profile.banner = url
+    notice.value = t('account.bannerUploaded')
+  })
+}
+
+const removeBanner = () => run('banner', async () => {
+  await $fetch('/api/me/banner', { method: 'DELETE' })
+  profile.banner = ''
+})
 
 const saveProfile = () => run('profile', async () => {
   if (usernameBlocked.value) {
@@ -623,8 +659,51 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
       </div>
     </UiPageHeader>
 
-    <UiPanel class="mb-4 p-5 sm:p-6">
-      <div class="flex flex-wrap items-center gap-5">
+    <UiPanel class="mb-4 overflow-hidden">
+      <!-- Shown the way the profile shows it: a band across the top, with the
+           avatar sitting over its lower edge. -->
+      <button
+        type="button"
+        class="group relative block h-36 w-full cursor-pointer sm:h-44"
+        @click="bannerInput?.click()"
+      >
+        <img
+          v-if="profile.banner"
+          :src="profile.banner"
+          alt=""
+          class="h-full w-full object-cover"
+        >
+        <span
+          v-else
+          class="grid h-full w-full place-items-center border-b border-dashed border-raised-line bg-raised text-dimmed"
+        >
+          <UIcon name="i-pixelarticons-image" class="size-7" />
+        </span>
+
+        <span class="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+          <UIcon
+            :name="busy === 'banner' ? 'i-pixelarticons-loader' : 'i-pixelarticons-camera'"
+            class="size-6"
+            :class="busy === 'banner' && 'animate-spin'"
+          />
+        </span>
+      </button>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-panel-line px-5 py-2.5">
+        <UiUploadHint id="banner" />
+        <UButton
+          v-if="profile.banner"
+          size="xs"
+          color="neutral"
+          variant="ghost"
+          icon="i-pixelarticons-close"
+          :loading="busy === 'banner'"
+          :label="t('account.bannerRemove')"
+          @click="removeBanner"
+        />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-5 p-5 sm:p-6">
         <button type="button" class="group relative shrink-0 cursor-pointer" @click="pickAvatar">
           <img
             v-if="profile.image"
@@ -645,9 +724,18 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
 
         <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" @change="uploadAvatar">
 
+        <input
+          ref="bannerInput"
+          type="file"
+          :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
+          class="hidden"
+          @change="uploadBanner"
+        >
+
         <div class="min-w-0 flex-1">
           <p class="truncate text-xl font-bold tracking-tight text-highlighted">{{ profile.name || profile.username || '—' }}</p>
           <p v-if="profile.username" class="truncate font-mono text-sm text-muted">@{{ profile.username }}</p>
+          <UiUploadHint id="avatar" class="mt-1.5" />
 
           <div class="mt-2 flex flex-wrap items-center gap-2">
             <span class="truncate text-sm text-muted">{{ user?.email }}</span>

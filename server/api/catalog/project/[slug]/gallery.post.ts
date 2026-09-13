@@ -1,5 +1,5 @@
 const MAX_BYTES = 8 * 1024 * 1024
-const ACCEPTED = ['image/webp', 'image/png', 'image/jpeg']
+
 const MAX_IMAGES = 20
 
 export default defineEventHandler(async (event) => {
@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
     key: `catalog/gallery/${project.id}/${id}.webp`,
     size: 1280,
     fit: 'inside',
-    accepted: ACCEPTED,
+    accepted: [...MOVING_IMAGE_TYPES],
+    animated: true,
     maxBytes: MAX_BYTES,
     context: 'project',
     subjectId: project.id,
