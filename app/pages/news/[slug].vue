@@ -50,11 +50,14 @@ useSeoMeta({
         {{ article.summary }}
       </p>
 
+      <!-- Its own height: the cover is stored bounded to 1600px on the longer
+           side and otherwise untouched, so the shape is the author's. A fixed
+           box here cropped the top and bottom off everything taller than 3:1. -->
       <img
         v-if="article.cover"
         :src="article.cover"
         alt=""
-        class="mt-7 aspect-[3/1] w-full rounded-2xl border border-panel-line object-cover"
+        class="mt-7 h-auto w-full rounded-2xl border border-panel-line"
       >
 
       <!-- eslint-disable-next-line vue/no-v-html -- the server builds this from

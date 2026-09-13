@@ -207,11 +207,13 @@ const send = () => run('send', async () => {
 
       <UFormField v-if="isArticle" :label="t('posts.cover')">
         <div class="flex flex-col gap-3">
+          <!-- The true shape, not a card's: this is where the author decides
+               whether the picture they picked is the right one. -->
           <img
             v-if="draft.cover"
             :src="draft.cover"
             alt=""
-            class="aspect-[16/9] w-full rounded-xl border border-raised-line object-cover"
+            class="h-auto w-full rounded-xl border border-raised-line"
           >
           <div
             v-else

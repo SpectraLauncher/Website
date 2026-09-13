@@ -66,3 +66,32 @@ describe('favicona strony', () => {
     expect(read('nuxt.config.ts')).toMatch(/rel: 'icon'[^}]*key: 'favicon'/)
   })
 })
+
+// A cover is stored bounded on its longer side and otherwise untouched, so the
+// shape belongs to whoever uploaded it. A fixed box on the article page cropped
+// the top and bottom off anything taller than 3:1.
+describe('okladka artykulu', () => {
+  it('na stronie artykulu ma wlasna wysokosc', () => {
+    const page = readFileSync('app/pages/news/[slug].vue', 'utf8')
+    const cover = /<img[\s\S]*?article\.cover[\s\S]*?>/.exec(page)?.[0] ?? ''
+
+    expect(cover).toContain('h-auto')
+    expect(cover).not.toContain('object-cover')
+    expect(cover).not.toMatch(/aspect-\[/)
+  })
+
+  it('podglad w edytorze pokazuje ten sam ksztalt', () => {
+    const editor = readFileSync('app/components/admin/PostEditor.vue', 'utf8')
+    const preview = /<img[\s\S]*?draft\.cover[\s\S]*?>/.exec(editor)?.[0] ?? ''
+
+    expect(preview).toContain('h-auto')
+    expect(preview).not.toContain('object-cover')
+  })
+
+  // Cards in a grid are the other case: they share a height or the grid breaks.
+  it('kafelki na listach nadal przycinaja', () => {
+    for (const file of ['app/pages/news/index.vue', 'app/components/home/NewsSection.vue']) {
+      expect(readFileSync(file, 'utf8'), file).toMatch(/aspect-\[[\d/]+\] w-full object-cover/)
+    }
+  })
+})
