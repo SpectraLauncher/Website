@@ -38,7 +38,6 @@ describe('tlo strony projektu', () => {
   it('naglowek projektu jest jedynym miejscem, ktore je zamawia', () => {
     expect(projectPage()).not.toContain('<ProjectBackdrop')
     expect(header).toContain('<ProjectBackdrop :gallery="gallery" />')
-    expect(component).toContain('bg-cover bg-center')
   })
 
   // A stock photograph on every project that never picked one is worse than no
@@ -53,10 +52,10 @@ describe('tlo strony projektu', () => {
     expect(component).toContain('v-if="url"')
   })
 
-  // Tailwind resolves its arbitrary values when it builds, so a runtime URL has
-  // to go through style, not through a class.
-  it('obraz idzie przez style, bo klasa nie zna go przy buildzie', () => {
-    expect(component).toContain('backgroundImage')
+  // Tailwind resolves its arbitrary values when it builds, so a runtime URL can
+  // never be a class. It is an <img> src now rather than a background.
+  it('adres nie trafia do klasy, bo klasa nie zna go przy buildzie', () => {
+    expect(component).toContain(':src="url"')
     expect(component).not.toMatch(/bg-\[url\(\$\{/)
   })
 })
