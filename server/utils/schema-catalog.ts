@@ -115,10 +115,17 @@ export async function ensureCatalogSchema() {
       url        TEXT NOT NULL,
       title      TEXT NOT NULL DEFAULT '',
       ordering   INTEGER NOT NULL DEFAULT 0,
-      featured   BOOLEAN NOT NULL DEFAULT FALSE,
       created    BIGINT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_gallery_project ON project_gallery (project_id, ordering);
+  `)
+
+  // A gallery image used to be tickable as the project's banner. A project
+  // uploads its banner as itself now, so the tick and the partial unique index
+  // that kept it to one are both gone.
+  await pool.query(`
+    DROP INDEX IF EXISTS uniq_gallery_featured;
+    ALTER TABLE project_gallery DROP COLUMN IF EXISTS featured;
   `)
 
   // The organization foreign key is applied separately, because that table is
@@ -519,9 +526,7 @@ export async function ensureCatalogSchema() {
   //
   // It used to be whichever gallery image an author had ticked as featured,
   // which asked them to put a 1920x560 banner into a list of screenshots — where
-  // it then also showed up as a screenshot. The gallery keeps its own job; a
-  // project with no banner of its own still falls back to the featured image so
-  // nothing that already had one lost it.
+  // it then also showed up as a screenshot. The gallery keeps its own job.
   await pool.query(`
     ALTER TABLE project ADD COLUMN IF NOT EXISTS banner TEXT
   `)

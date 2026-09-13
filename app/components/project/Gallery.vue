@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  gallery: Array<{ id: string, url: string, title: string, featured: boolean }>
+  gallery: Array<{ id: string, url: string, title: string }>
 }>()
 
 const { t } = useI18n()
@@ -9,7 +9,7 @@ const shown = ref<number | null>(null)
 
 // Featured first, because that is the one the author chose to represent it.
 const images = computed(() =>
-  [...props.gallery].sort((a, b) => Number(b.featured) - Number(a.featured)))
+  [...props.gallery])
 </script>
 
 <template>

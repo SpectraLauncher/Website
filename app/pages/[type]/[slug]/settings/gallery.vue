@@ -13,7 +13,7 @@ const shown = ref<number | null>(null)
 const path = computed(() => `/api/catalog/project/${encodeURIComponent(project.value?.slug ?? '')}`)
 
 // The working copy, so dragging reorders instantly and the request follows.
-const images = ref<Array<{ id: string, url: string, title: string, featured: boolean }>>([])
+const images = ref<Array<{ id: string, url: string, title: string }>>([])
 
 watchEffect(() => {
   images.value = [...(data.value?.gallery ?? [])]
@@ -199,17 +199,6 @@ async function saveOrder() {
         <div class="mb-2 flex items-center gap-2">
           <UIcon name="i-pixelarticons-drag-and-drop" class="size-4 shrink-0 cursor-grab text-dimmed" />
           <span class="flex-1 text-xs text-dimmed">{{ index + 1 }}</span>
-          <UButton
-            size="xs"
-            :variant="image.featured ? 'subtle' : 'ghost'"
-            :color="image.featured ? 'primary' : 'neutral'"
-            class="rounded-lg"
-            icon="i-pixelarticons-star"
-            :loading="busy === image.id"
-            :aria-label="t('catalog.featured')"
-            :title="t('catalog.featured')"
-            @click="patch(image.id, { featured: !image.featured })"
-          />
           <UButton
             size="xs"
             variant="ghost"

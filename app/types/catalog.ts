@@ -85,5 +85,4 @@ export interface GalleryImage {
   id: string
   url: string
   title: string
-  featured: boolean
 }

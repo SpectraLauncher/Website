@@ -233,7 +233,6 @@ interface GalleryImage {
   url: string
   title: string
   ordering: number
-  featured: boolean
 }
 
 const gallery = ref<GalleryImage[]>([])
@@ -519,7 +518,7 @@ async function saveImage(image: GalleryImage) {
   try {
     await $fetch(`/api/admin/catalog/gallery/${image.id}`, {
       method: 'PATCH',
-      body: { title: image.title, featured: image.featured },
+      body: { title: image.title },
     })
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
@@ -1228,14 +1227,6 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
                 class="min-w-40 flex-1"
                 :placeholder="t('catalog.admin.imageTitle')"
                 @blur="saveImage(image)"
-              />
-              <UButton
-                size="xs"
-                :variant="image.featured ? 'solid' : 'ghost'"
-                color="neutral"
-                icon="i-pixelarticons-star"
-                :aria-label="t('catalog.admin.featured')"
-                @click="image.featured = !image.featured; saveImage(image)"
               />
               <UButton
                 size="xs"

@@ -7,7 +7,7 @@ export interface ProjectEditorPayload {
     ownerId: string | null
     orgId: string | null
   }
-  gallery: Array<{ id: string, url: string, title: string, featured: boolean }>
+  gallery: Array<{ id: string, url: string, title: string }>
   permissions: ProjectPermission[]
   pricing: { rateBps: number, minFeeMinor: number, minPriceMinor: number }
 }

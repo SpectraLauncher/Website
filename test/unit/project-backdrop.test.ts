@@ -37,14 +37,15 @@ describe('tlo strony projektu', () => {
   // once for every type rather than each page rendering it for itself.
   it('naglowek projektu jest jedynym miejscem, ktore je zamawia', () => {
     expect(projectPage()).not.toContain('<ProjectBackdrop')
-    expect(header).toContain('<ProjectBackdrop :banner="project.banner" :gallery="gallery" />')
+    expect(header).toContain('<ProjectBackdrop :banner="project.banner" />')
   })
 
-  // A stock photograph on every project that never picked one is worse than no
-  // band at all: it makes them all look like the same project.
-  it('wybor obrazu zostaje przy projekcie', () => {
-    expect(picker).toContain('entry.featured')
-    expect(picker).toContain('<UiBackdrop')
+  // A gallery image used to be tickable as the banner, which put a 1920x560
+  // picture into a list of screenshots and showed it as one.
+  it('galeria nie jest juz zrodlem baneru', () => {
+    expect(picker).not.toContain('featured')
+    expect(picker).not.toContain('gallery')
+    expect(picker).toContain('<UiBackdrop :image="banner" />')
   })
 
   it('bez wyroznionego obrazu nie ma pasa', () => {

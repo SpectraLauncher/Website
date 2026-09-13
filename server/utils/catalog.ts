@@ -157,8 +157,8 @@ export async function filesForVersions(versionIds: Array<string | number>): Prom
 }
 
 export async function galleryOf(projectId: string | number) {
-  return await q<{ id: string, url: string, title: string, ordering: number, featured: boolean }>(
-    `SELECT id, url, title, ordering, featured FROM project_gallery
+  return await q<{ id: string, url: string, title: string, ordering: number }>(
+    `SELECT id, url, title, ordering FROM project_gallery
      WHERE project_id = $1 ORDER BY ordering, id`, [projectId])
 }
 
@@ -694,7 +694,6 @@ export interface GalleryImage {
   url: string
   title: string
   ordering: number
-  featured: boolean
 }
 
 export async function addGalleryImage(
@@ -706,7 +705,7 @@ export async function addGalleryImage(
   const row = await one<GalleryImage>(
     `INSERT INTO project_gallery (id, project_id, url, ordering, created)
      VALUES ($1, $2, $3, $4, $5)
-     RETURNING id, url, title, ordering, featured`,
+     RETURNING id, url, title, ordering`,
     [id, projectId, url, ordering, Date.now()],
   )
   return row!
@@ -714,51 +713,16 @@ export async function addGalleryImage(
 
 const GALLERY_PATCH = `UPDATE project_gallery
    SET title = COALESCE($2, title),
-       ordering = COALESCE($3, ordering),
-       featured = COALESCE($4, featured)
+       ordering = COALESCE($3, ordering)
    WHERE id = $1
-   RETURNING id, url, title, ordering, featured`
+   RETURNING id, url, title, ordering`
 
-// Featuring is exclusive: a project has one featured image or none, because the
-// project page uses it as its backdrop and two would make that depend on which
-// row came back first. A partial unique index enforces it.
-//
-// Which is why marking one takes a transaction rather than a single clever
-// statement. Postgres checks a unique index as each row is written, so any one
-// command that both sets the new flag and clears the old one has a moment with
-// two rows featured and trips over its own index. Two statements, one
-// transaction: nothing outside sees the gap.
 export async function updateGalleryImage(id: string, patch: {
   title?: string
   ordering?: number
-  featured?: boolean
 }): Promise<GalleryImage | undefined> {
-  const values = [id, patch.title ?? null, patch.ordering ?? null, patch.featured ?? null]
-
   // sql-safe: GALLERY_PATCH is a constant statement with its own $n parameters
-  if (patch.featured !== true) return await one<GalleryImage>(GALLERY_PATCH, values)
-
-  const client = await usePool().connect()
-  try {
-    await client.query('BEGIN')
-    await client.query(
-      `UPDATE project_gallery SET featured = FALSE
-       WHERE featured AND id <> $1
-         AND project_id = (SELECT project_id FROM project_gallery WHERE id = $1)`,
-      [id],
-    )
-    // sql-safe: GALLERY_PATCH is a constant statement with its own $n parameters
-    const res = await client.query<GalleryImage>(GALLERY_PATCH, values)
-    await client.query('COMMIT')
-    return res.rows[0]
-  }
-  catch (e) {
-    await client.query('ROLLBACK').catch(() => {})
-    throw e
-  }
-  finally {
-    client.release()
-  }
+  return await one<GalleryImage>(GALLERY_PATCH, [id, patch.title ?? null, patch.ordering ?? null])
 }
 
 export async function removeGalleryImage(id: string) {
