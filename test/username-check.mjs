@@ -16,6 +16,11 @@ const cases = [
   ['Zoë Müller', 'zoe_muller'],
   ['  ..Bob.. ', 'bob'],
   ['UPPER Case', 'upper_case'],
+  // A space is the ordinary case, not an edge one: most people sign up with
+  // their name. It becomes an underscore, so the profile is /u/colleen_lagura
+  // while the account still displays "colleen lagura".
+  ['colleen lagura', 'colleen_lagura'],
+  ['  Colleen   Lagura  ', 'colleen_lagura'],
   ['ok.name_1', 'ok.name_1'],
   ['Ørsted Æther', 'orsted_aether'],
   // Too short, or nothing survives the Latin filter — these still need an

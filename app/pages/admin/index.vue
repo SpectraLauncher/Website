@@ -820,6 +820,19 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                       </template>
 
                       <template v-else>
+                        <!-- A new tab: the list is long and losing your place in
+                             it to look at one profile is worse than a tab. -->
+                        <UButton
+                          v-if="user.username"
+                          size="xs"
+                          variant="ghost"
+                          color="neutral"
+                          icon="i-pixelarticons-external-link"
+                          aria-label="Profil publiczny"
+                          title="Profil publiczny"
+                          target="_blank"
+                          :to="localePath(`/u/${user.username}`)"
+                        />
                         <UButton size="xs" variant="ghost" color="neutral" icon="i-pixelarticons-pencil" aria-label="Edytuj" @click="startEdit(user)" />
                         <UButton
                           size="xs"

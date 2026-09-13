@@ -55,6 +55,13 @@ const username = computed(() => String(route.params.username ?? ''))
 
 const { data, error } = await useFetch<Profile>(() => `/api/u/${encodeURIComponent(username.value)}`)
 
+// The panel below says "no such person" either way; this makes the answer say it
+// too. robots already keeps it out of search, but a link checker, an uptime probe
+// and anything reading the status saw 200 for every address anybody typed.
+if (import.meta.server && !data.value) {
+  setResponseStatus(useRequestEvent()!, 404)
+}
+
 const label = (u: PublicUser) => u.username || u.name || '—'
 const mc = computed(() => data.value?.user.mcUsername ?? '')
 

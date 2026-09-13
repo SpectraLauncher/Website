@@ -3,6 +3,10 @@ export default defineEventHandler(async (event) => {
   const me = await requireUser(event)
   const now = Date.now()
 
+  // The address is built here, the way share.post.ts builds it, so the launcher
+  // does not have to know the shape of our URLs or hardcode our domain.
+  const site = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
+
   const rows = await q<any>(
     `SELECT code, instance_id, name, mc_version, loader, mods, revision, created, expires,
             downloads, size
@@ -22,6 +26,7 @@ export default defineEventHandler(async (event) => {
   return {
     shares: rows.map(s => ({
       ...s,
+      url: `${site}/s/${s.code}`,
       created: Number(s.created),
       expires: Number(s.expires),
       size: Number(s.size),
