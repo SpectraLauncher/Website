@@ -2611,7 +2611,9 @@
       "overview": "Overview",
       "projects": "Projects",
       "friends": "Friends"
-    }
+    },
+    "player": "Player",
+    "badges": "Badges"
   },
   "share": {
     "metaTitle": "{name} — shared modpack",

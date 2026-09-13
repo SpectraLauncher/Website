@@ -2611,7 +2611,9 @@
       "overview": "Przegląd",
       "projects": "Projekty",
       "friends": "Znajomi"
-    }
+    },
+    "player": "Gracz",
+    "badges": "Odznaki"
   },
   "share": {
     "metaTitle": "{name} — udostępniona paczka",

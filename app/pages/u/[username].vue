@@ -216,9 +216,32 @@ useSeoMeta({
   robots: () => (data.value ? 'index, follow' : 'noindex'),
 })
 
-defineOgImage('Spectra', {
+// The head crop rather than the full render: at favicon size a whole standing
+// figure is four legible pixels.
+const headUrl = computed(() => (mc.value ? `${origin}/render/default/${mc.value}/head?size=64` : ''))
+
+// A player's own face is a better mark for their page than our logo, and the
+// browser keeps showing it while the tab is open.
+useHead({
+  link: () => (headUrl.value
+    ? [{ rel: 'icon', type: 'image/png', href: headUrl.value, key: 'favicon' }]
+    : []),
+})
+
+defineOgImage('Entity', {
   title: () => (data.value ? label(data.value.user) : t('profile.notFound')),
   description: () => seoDescription.value,
+  kind: () => t('profile.player'),
+  image: () => renderUrl.value || undefined,
+  portrait: true,
+  facts: () => (data.value
+    ? [
+        { value: String(data.value.badges?.length ?? 0), label: t('profile.badges') },
+        ...(data.value.user.mcUsername
+          ? [{ value: data.value.user.mcUsername, label: 'Minecraft' }]
+          : []),
+      ]
+    : []),
 })
 
 useSchemaOrg(computed(() => (data.value

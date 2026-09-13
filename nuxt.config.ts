@@ -225,7 +225,9 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#05080f' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        // Keyed so a page can replace it rather than add a second one: a project
+        // page wears the project's icon and a profile wears the player's head.
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', key: 'favicon' }
       ]
     }
   }

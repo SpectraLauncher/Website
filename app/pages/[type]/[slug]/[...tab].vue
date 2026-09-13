@@ -51,6 +51,34 @@ useSeoMeta({
   ogDescription: () => project.value?.summary ?? '',
   robots: () => (project.value && data.value?.listed !== false ? 'index, follow' : 'noindex'),
 })
+
+// The project's own icon, so a tab full of projects is told apart by the icons
+// rather than by nine identical Spectra marks.
+useHead({
+  link: () => (project.value?.icon
+    ? [{ rel: 'icon', href: project.value.icon, key: 'favicon' }]
+    : []),
+})
+
+// Before this the card was the raw icon file — a square logo cropped to a wide
+// frame, with no title on it. The picture is a column beside the text now.
+const { count } = useCatalogFormat()
+
+defineOgImage('Entity', {
+  title: () => project.value?.title ?? t('catalog.notFound'),
+  description: () => project.value?.summary || markdownExcerpt(project.value?.description ?? ''),
+  kind: () => t(`catalog.${info!.key}.title`),
+  image: () => project.value?.icon || undefined,
+  facts: () => (project.value
+    ? [
+        { value: count(project.value.downloads), label: t('catalog.downloadsLabel') },
+        { value: count(project.value.follows), label: t('catalog.followers') },
+        ...(project.value.gameVersions.length
+          ? [{ value: project.value.gameVersions[project.value.gameVersions.length - 1]!, label: 'Minecraft' }]
+          : []),
+      ]
+    : []),
+})
 </script>
 
 <template>
