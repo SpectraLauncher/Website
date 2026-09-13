@@ -53,6 +53,13 @@ const NODES: Record<string, (node: PostNode, inner: string) => string> = {
     return `<${tag}>${inner}</${tag}>`
   },
 
+  // A boxed aside. The tone is matched against a fixed list rather than printed,
+  // so an author cannot put an arbitrary class on the page.
+  callout: (node, inner) => {
+    const tone = CALLOUT_TONES.has(String(node.attrs?.tone)) ? String(node.attrs?.tone) : 'info'
+    return `<div class="callout" data-tone="${tone}">${inner}</div>`
+  },
+
   image: (node) => {
     const src = safeAssetUrl(node.attrs?.src)
     if (!src) return ''
@@ -62,8 +69,13 @@ const NODES: Record<string, (node: PostNode, inner: string) => string> = {
   },
 }
 
+const CALLOUT_TONES = new Set(['info', 'warn', 'success'])
+
 const MARKS: Record<string, (inner: string, attrs?: Record<string, unknown>) => string> = {
   bold: inner => `<strong>${inner}</strong>`,
+  // StarterKit binds Ctrl+U whether or not the toolbar offers it, and formatting
+  // that vanishes on save is worse than formatting nobody asked for.
+  underline: inner => `<u>${inner}</u>`,
   italic: inner => `<em>${inner}</em>`,
   strike: inner => `<s>${inner}</s>`,
   code: inner => `<code>${inner}</code>`,

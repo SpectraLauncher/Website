@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AdminPost } from '~/types/post'
 
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const route = useRoute()
 const localePath = useLocalePath()
@@ -59,7 +59,7 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
 </script>
 
 <template>
-  <UiPageShell width="max-w-6xl">
+  <div class="min-w-0">
     <UiPageHeader
       :title="t(kind === 'article' ? 'posts.articles' : 'posts.newsletter')"
       :description="kind === 'newsletter'
@@ -67,14 +67,6 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
         : undefined"
     >
       <div class="flex flex-wrap gap-2 pb-1.5">
-        <UButton
-          variant="subtle"
-          color="neutral"
-          size="lg"
-          icon="i-pixelarticons-arrow-left"
-          :label="t('catalog.admin.backToPanel')"
-          :to="localePath('/admin')"
-        />
         <UButton
           size="lg"
           icon="i-pixelarticons-plus"
@@ -132,5 +124,5 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
         <p class="mt-3 text-sm text-muted">{{ t('posts.noPosts') }}</p>
       </UiPanel>
     </div>
-  </UiPageShell>
+  </div>
 </template>

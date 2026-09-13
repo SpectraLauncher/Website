@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -43,20 +43,11 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-4xl">
+  <div class="min-w-0">
     <UiPageHeader
       :title="t('verification.queueTitle')"
       :description="t('verification.queueCount', { n: data?.requests.length ?? 0 })"
     >
-      <UButton
-        variant="ghost"
-        color="neutral"
-        size="lg"
-        class="mb-1.5"
-        icon="i-pixelarticons-arrow-left"
-        :label="t('catalog.admin.backToPanel')"
-        :to="localePath('/admin')"
-      />
     </UiPageHeader>
 
 
@@ -146,5 +137,5 @@ useSeoMeta({ title: () => t('verification.queueTitle'), robots: 'noindex' })
       <UIcon name="i-pixelarticons-inbox" class="mx-auto size-10 text-dimmed" />
       <p class="mt-3 text-sm text-muted">{{ t('verification.queueEmpty') }}</p>
     </div>
-  </UiPageShell>
+  </div>
 </template>

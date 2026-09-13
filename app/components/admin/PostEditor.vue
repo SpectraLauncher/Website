@@ -19,6 +19,17 @@ const draft = reactive({
 const busy = ref('')
 const cover = useTemplateRef<HTMLInputElement>('cover')
 
+// An address nobody typed is the normal case: it follows the title until the
+// author edits it, and then it stops moving — a published address that keeps
+// rewriting itself breaks every link anybody shared.
+const slugPinned = ref(Boolean(props.post.slug))
+
+watch(() => draft.title, (title) => {
+  if (!slugPinned.value) draft.slug = normalizeSlug(title.slice(0, 80))
+})
+
+const slugProblemNow = computed(() => (draft.slug ? slugProblem(draft.slug) : null))
+
 const path = computed(() => `/api/admin/posts/${props.post.id}`)
 const isArticle = computed(() => props.post.kind === 'article')
 
@@ -85,18 +96,30 @@ const send = () => run('send', async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="grid gap-5 xl:grid-cols-[1fr_280px] xl:items-start">
+    <div class="flex min-w-0 flex-col gap-4">
     <div class="grid gap-3 sm:grid-cols-2">
       <UFormField :label="t('posts.title')">
         <UInput v-model="draft.title" size="lg" class="w-full" />
       </UFormField>
 
-      <UFormField v-if="isArticle" :label="t('posts.address')">
-        <UInput v-model="draft.slug" size="lg" class="w-full" :placeholder="t('posts.title').toLowerCase()">
-          <template #leading>
-            <span class="font-mono text-xs text-dimmed">/news/</span>
-          </template>
-        </UInput>
+      <UFormField
+        v-if="isArticle"
+        :label="t('posts.address')"
+        :error="slugProblemNow ? t(`catalog.slugProblems.${slugProblemNow}`) : undefined"
+      >
+        <!-- The prefix sits beside the field, not in its leading slot: that slot
+             is sized for an icon, so "/news/" ran underneath the text. -->
+        <div class="flex items-center gap-2">
+          <span class="shrink-0 font-mono text-sm text-dimmed">/news/</span>
+          <UInput
+            v-model="draft.slug"
+            size="lg"
+            class="flex-1"
+            :placeholder="t('posts.title').toLowerCase()"
+            @update:model-value="slugPinned = true"
+          />
+        </div>
       </UFormField>
     </div>
 
@@ -104,37 +127,30 @@ const send = () => run('send', async () => {
       <UTextarea v-model="draft.summary" :rows="2" class="w-full" />
     </UFormField>
 
-    <UFormField v-if="isArticle" :label="t('posts.cover')">
-      <div class="flex flex-wrap items-center gap-3">
-        <img
-          v-if="draft.cover"
-          :src="draft.cover"
-          alt=""
-          class="h-20 w-36 rounded-xl border border-raised-line object-cover"
-        >
-        <UButton
-          color="neutral"
-          variant="subtle"
-          icon="i-pixelarticons-image-plus"
-          :loading="busy === 'cover'"
-          :label="t('posts.uploadCover')"
-          @click="cover?.click()"
-        />
-        <input
-          ref="cover"
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          class="hidden"
-          @change="uploadCover(($event.target as HTMLInputElement).files?.[0])"
-        >
-      </div>
-    </UFormField>
+      <UFormField :label="t('posts.body')">
+        <UiRichEditor v-model="draft.body" :upload-to="`${path}/image`" :rows="18" />
+      </UFormField>
+    </div>
 
-    <UFormField :label="t('posts.body')">
-      <UiRichEditor v-model="draft.body" :upload-to="`${path}/image`" :rows="16" />
-    </UFormField>
+    <aside class="flex flex-col gap-4 xl:sticky xl:top-24">
+      <UiPanel inset class="flex flex-col gap-3 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-semibold uppercase tracking-[0.09em] text-dimmed">
+            {{ t('posts.state') }}
+          </span>
+          <UBadge
+            size="sm"
+            variant="subtle"
+            :color="post.status === 'published' ? 'success' : 'neutral'"
+            :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
+          />
+        </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+        <p v-if="isArticle && post.published" class="text-xs text-muted">
+          {{ when(post.published) }}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2">
       <UButton
         icon="i-pixelarticons-check"
         :loading="busy === 'save'"
@@ -174,8 +190,45 @@ const send = () => run('send', async () => {
         {{ t('posts.sentAlready', { date: when(post.sent!), n: post.recipients }) }}
       </span>
 
+        </div>
+      </UiPanel>
+
+      <UFormField v-if="isArticle" :label="t('posts.cover')">
+        <div class="flex flex-col gap-3">
+          <img
+            v-if="draft.cover"
+            :src="draft.cover"
+            alt=""
+            class="aspect-[16/9] w-full rounded-xl border border-raised-line object-cover"
+          >
+          <div
+            v-else
+            class="grid aspect-[16/9] w-full place-items-center rounded-xl border border-dashed border-raised-line text-dimmed"
+          >
+            <UIcon name="i-pixelarticons-image" class="size-7" />
+          </div>
+
+          <UButton
+            block
+            color="neutral"
+            variant="subtle"
+            icon="i-pixelarticons-image-plus"
+            :loading="busy === 'cover'"
+            :label="t('posts.uploadCover')"
+            @click="cover?.click()"
+          />
+          <input
+            ref="cover"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            class="hidden"
+            @change="uploadCover(($event.target as HTMLInputElement).files?.[0])"
+          >
+        </div>
+      </UFormField>
+
       <UButton
-        class="ml-auto"
+        block
         color="error"
         variant="ghost"
         icon="i-pixelarticons-trash"
@@ -183,6 +236,6 @@ const send = () => run('send', async () => {
         :label="t('posts.remove')"
         @click="remove"
       />
-    </div>
+    </aside>
   </div>
 </template>

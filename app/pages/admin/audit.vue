@@ -12,7 +12,7 @@ interface AuditEntry {
   created: number
 }
 
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -71,17 +71,9 @@ useSeoMeta({ title: () => t('audit.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-6xl">
+  <div class="min-w-0">
     <UiPageHeader :title="t('audit.title')" :description="t('audit.lead')">
       <div class="flex flex-wrap gap-2 pb-1.5">
-        <UButton
-          variant="subtle"
-          color="neutral"
-          size="lg"
-          icon="i-pixelarticons-arrow-left"
-          :label="t('catalog.admin.backToPanel')"
-          :to="localePath('/admin')"
-        />
       </div>
     </UiPageHeader>
 
@@ -162,5 +154,5 @@ useSeoMeta({ title: () => t('audit.title'), robots: 'noindex' })
         @click="page++"
       />
     </div>
-  </UiPageShell>
+  </div>
 </template>

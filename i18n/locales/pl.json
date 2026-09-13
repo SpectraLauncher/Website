@@ -3661,7 +3661,14 @@
       "showing": "{n} z {total}"
     },
     "dependents": "Używane przez",
-    "dependentsHint": "Projekty, które wskazują ten jako zależność."
+    "dependentsHint": "Projekty, które wskazują ten jako zależność.",
+    "slugProblems": {
+      "too-short": "Za krótki — minimum 3 znaki.",
+      "too-long": "Za długi.",
+      "reserved": "To słowo jest jedną z naszych tras. Wybierz inne.",
+      "numeric": "Same cyfry czytają się jak id.",
+      "id-shaped": "To wygląda jak id, nie jak adres."
+    }
   },
   "verification": {
     "title": "Weryfikacja",
@@ -4521,7 +4528,19 @@
     "bulletList": "Lista punktowana",
     "orderedList": "Lista numerowana",
     "blockquote": "Cytat",
-    "dropHint": "Upuść zdjęcie w dowolnym miejscu"
+    "dropHint": "Upuść zdjęcie w dowolnym miejscu",
+    "heading2": "Nagłówek",
+    "heading3": "Podnagłówek",
+    "codeBlock": "Blok kodu",
+    "linkPrompt": "Adres linku (puste = usuń)",
+    "divider": "Linia",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "callout": {
+      "info": "Uwaga",
+      "warn": "Ostrzeżenie",
+      "success": "Warto wiedzieć"
+    }
   },
   "seller": {
     "title": "Sprzedaż",
@@ -4641,7 +4660,8 @@
     "noSubscribers": "Nikt się jeszcze nie zapisał.",
     "noPosts": "Jeszcze nic tu nie ma.",
     "sentAlready": "Wysłane {date} do {n}.",
-    "uploadCover": "Wgraj okładkę"
+    "uploadCover": "Wgraj okładkę",
+    "state": "Stan"
   },
   "news": {
     "title": "Aktualności",

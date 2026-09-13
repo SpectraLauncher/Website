@@ -22,7 +22,7 @@ const dropping = ref(false)
 
 onMounted(() => {
   editor.value = new Editor({
-    extensions: [StarterKit, PostImage],
+    extensions: [StarterKit, PostImage, Callout],
     content: doc.value,
     editorProps: {
       attributes: {
@@ -72,16 +72,49 @@ function drop(event: DragEvent) {
 
 // pixelarticons draws no B, I or S, and a letter in its own weight is what
 // every editor uses for those anyway. The rest keep icons.
-const MARKS = [
-  { id: 'bold', letter: 'B', class: 'font-extrabold', run: () => editor.value?.chain().focus().toggleBold().run() },
-  { id: 'italic', letter: 'I', class: 'font-serif italic', run: () => editor.value?.chain().focus().toggleItalic().run() },
-  { id: 'strike', letter: 'S', class: 'line-through', run: () => editor.value?.chain().focus().toggleStrike().run() },
-  { id: 'code', icon: 'i-pixelarticons-code', run: () => editor.value?.chain().focus().toggleCode().run() },
-  { id: 'heading', icon: 'i-pixelarticons-heading-2', run: () => editor.value?.chain().focus().toggleHeading({ level: 2 }).run() },
-  { id: 'bulletList', icon: 'i-pixelarticons-list', run: () => editor.value?.chain().focus().toggleBulletList().run() },
-  { id: 'orderedList', icon: 'i-pixelarticons-bulletlist', run: () => editor.value?.chain().focus().toggleOrderedList().run() },
-  { id: 'blockquote', icon: 'i-pixelarticons-quote-text-inline', run: () => editor.value?.chain().focus().toggleBlockquote().run() },
+//
+// To add a button: one entry in the group it belongs to, plus an `editor.<id>`
+// string in both locales.
+const chain = () => editor.value!.chain().focus()
+
+const BLOCKS = [
+  { id: 'heading2', icon: 'i-pixelarticons-heading-2', active: () => editor.value?.isActive('heading', { level: 2 }), run: () => chain().toggleHeading({ level: 2 }).run() },
+  { id: 'heading3', icon: 'i-pixelarticons-heading-3', active: () => editor.value?.isActive('heading', { level: 3 }), run: () => chain().toggleHeading({ level: 3 }).run() },
+  { id: 'bulletList', icon: 'i-pixelarticons-list', run: () => chain().toggleBulletList().run() },
+  { id: 'orderedList', icon: 'i-pixelarticons-bulletlist', run: () => chain().toggleOrderedList().run() },
+  { id: 'blockquote', icon: 'i-pixelarticons-quote-text-inline', run: () => chain().toggleBlockquote().run() },
+  { id: 'codeBlock', icon: 'i-pixelarticons-code', run: () => chain().toggleCodeBlock().run() },
 ]
+
+const MARKS = [
+  { id: 'bold', letter: 'B', class: 'font-extrabold', run: () => chain().toggleBold().run() },
+  { id: 'italic', letter: 'I', class: 'font-serif italic', run: () => chain().toggleItalic().run() },
+  { id: 'strike', letter: 'S', class: 'line-through', run: () => chain().toggleStrike().run() },
+  { id: 'code', icon: 'i-pixelarticons-terminal', run: () => chain().toggleCode().run() },
+]
+
+const TONES = [
+  { id: 'info', icon: 'i-pixelarticons-info-box' },
+  { id: 'warn', icon: 'i-pixelarticons-alert' },
+  { id: 'success', icon: 'i-pixelarticons-check' },
+] as const
+
+const insertCallout = (tone: 'info' | 'warn' | 'success') => chain().toggleCallout(tone).run()
+
+// The address is asked for rather than typed into the document, so a link is one
+// step and an author cannot leave half of one behind.
+function setLink() {
+  const previous = editor.value?.getAttributes('link').href ?? ''
+  const href = window.prompt(t('editor.linkPrompt'), previous)
+  if (href === null) return
+
+  if (!href.trim()) {
+    chain().extendMarkRange('link').unsetLink().run()
+    return
+  }
+
+  chain().extendMarkRange('link').setLink({ href: href.trim() }).run()
+}
 
 const active = (id: string) => Boolean(editor.value?.isActive(id))
 </script>
@@ -109,7 +142,55 @@ const active = (id: string) => Boolean(editor.value?.isActive(id))
         <span v-if="mark.letter" class="w-4 text-sm" :class="mark.class">{{ mark.letter }}</span>
       </UButton>
 
+      <UButton
+        size="xs"
+        color="neutral"
+        :variant="active('link') ? 'subtle' : 'ghost'"
+        icon="i-pixelarticons-link"
+        :aria-label="t('editor.link')"
+        :title="t('editor.link')"
+        @click="setLink"
+      />
+
       <span class="mx-1 h-5 w-px bg-raised-line"></span>
+
+      <UButton
+        v-for="block in BLOCKS"
+        :key="block.id"
+        size="xs"
+        color="neutral"
+        :variant="(block.active ? block.active() : active(block.id)) ? 'subtle' : 'ghost'"
+        :icon="block.icon"
+        :aria-label="t(`editor.${block.id}`)"
+        :title="t(`editor.${block.id}`)"
+        @click="block.run()"
+      />
+
+      <span class="mx-1 h-5 w-px bg-raised-line"></span>
+
+      <UButton
+        v-for="tone in TONES"
+        :key="tone.id"
+        size="xs"
+        color="neutral"
+        :variant="editor?.isActive('callout', { tone: tone.id }) ? 'subtle' : 'ghost'"
+        :icon="tone.icon"
+        :aria-label="t(`editor.callout.${tone.id}`)"
+        :title="t(`editor.callout.${tone.id}`)"
+        @click="insertCallout(tone.id)"
+      />
+
+      <span class="mx-1 h-5 w-px bg-raised-line"></span>
+
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="ghost"
+        icon="i-pixelarticons-minus"
+        :aria-label="t('editor.divider')"
+        :title="t('editor.divider')"
+        @click="chain().setHorizontalRule().run()"
+      />
 
       <UButton
         size="xs"
@@ -130,6 +211,29 @@ const active = (id: string) => Boolean(editor.value?.isActive(id))
         class="hidden"
         @change="upload(($event.target as HTMLInputElement).files?.[0])"
       >
+
+      <span class="mx-1 h-5 w-px bg-raised-line"></span>
+
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="ghost"
+        icon="i-pixelarticons-undo"
+        :disabled="!editor?.can().undo()"
+        :aria-label="t('editor.undo')"
+        :title="t('editor.undo')"
+        @click="chain().undo().run()"
+      />
+      <UButton
+        size="xs"
+        color="neutral"
+        variant="ghost"
+        icon="i-pixelarticons-redo"
+        :disabled="!editor?.can().redo()"
+        :aria-label="t('editor.redo')"
+        :title="t('editor.redo')"
+        @click="chain().redo().run()"
+      />
 
       <span class="ml-auto pr-1.5 text-xs text-dimmed">{{ t('editor.dropHint') }}</span>
     </div>

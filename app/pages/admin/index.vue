@@ -1,7 +1,9 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const localePath = useLocalePath()
+const route = useRoute()
+const router = useRouter()
 const auth = useAuthClient()
 const session = useAuthSession()
 
@@ -73,33 +75,20 @@ const setRole = (user: AdminUser, next: string) => run(`role:${user.id}`, async 
 // Registry: one entry per section of the panel. An entry with `to` opens its
 // own page instead of switching the tab, so the whole panel reads from one
 // list. Adding a section is a line here plus a branch in the body below.
-// `need` is the lowest role the section is offered to. Leaving a section out of
-// the list is not what protects it — every route checks again — it is what stops
-// the panel offering a moderator a door that answers 404.
-const NAV = [
-  { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd', group: 'Platforma', need: 'admin' },
-  { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria', group: 'Platforma', need: 'admin' },
-  { id: 'catalog', icon: 'i-pixelarticons-package', label: 'Katalog', group: 'Treść', to: '/admin/catalog', need: 'moderator' },
-  { id: 'verification', icon: 'i-pixelarticons-check-double', label: 'Weryfikacja', group: 'Treść', to: '/admin/verification', need: 'moderator' },
-  { id: 'shares', icon: 'i-pixelarticons-archive', label: 'Paczki', group: 'Treść', need: 'admin' },
-  { id: 'posts', icon: 'i-pixelarticons-article', label: 'Artykuły', group: 'Treść', to: '/admin/posts', need: 'admin' },
-  { id: 'newsletter', icon: 'i-pixelarticons-mail', label: 'Newsletter', group: 'Treść', to: '/admin/posts?kind=newsletter', need: 'admin' },
-  { id: 'users', icon: 'i-pixelarticons-users', label: 'Użytkownicy', group: 'Ludzie', need: 'admin' },
-  { id: 'badges', icon: 'i-pixelarticons-trophy', label: 'Odznaki', group: 'Ludzie', need: 'admin' },
-  { id: 'discord', icon: 'i-simple-icons-discord', label: 'Discord', group: 'Integracje', need: 'admin' },
-  { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit', need: 'admin' },
-  { id: 'finance', icon: 'i-pixelarticons-coin', label: 'Finanse', group: 'Platforma', to: '/admin/finance', need: 'admin' },
-  { id: 'settings', icon: 'i-pixelarticons-sliders', label: 'Ustawienia', group: 'Platforma', to: '/admin/settings', need: 'admin' },
-] as const
-
 const { data: staff } = await useFetch<{ role: string | null }>('/api/admin/session')
 const role = computed(() => staff.value?.role ?? null)
 
-const navItems = computed<SideNavItem[]>(() => NAV
-  .filter(item => atLeast({ role: role.value }, item.need))
-  .map(({ need: _need, ...item }) => ({ ...item, to: item.to ? localePath(item.to) : undefined })))
+// The sections without an address of their own are the tabs this page renders;
+// the sidebar in the layout links to them with ?tab=.
+// The sidebar is in the layout now and links here with ?tab=, so the address is
+// what picks the section — which also makes a tab linkable and survivable across
+// a refresh, neither of which a plain ref gave.
+const TABS = new Set(ADMIN_NAV.filter(entry => !entry.to).map(entry => entry.id))
 
-const tab = ref<string>('overview')
+const tab = computed({
+  get: () => (TABS.has(String(route.query.tab)) ? String(route.query.tab) : 'overview'),
+  set: value => router.replace({ query: { ...route.query, tab: value } }),
+})
 
 const subtitle = computed(() => {
   const email = me.value?.email || '—'
@@ -386,7 +375,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-7xl">
+  <div class="min-w-0">
     <UiPageHeader title="Panel" :description="subtitle">
       <div class="flex flex-wrap gap-2 pb-1.5">
         <UButton
@@ -412,10 +401,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
     <UAlert v-if="error" color="error" variant="subtle" class="mb-4" icon="i-pixelarticons-alert" :description="error" />
     <UAlert v-if="notice" color="success" variant="subtle" class="mb-4" icon="i-pixelarticons-check" :description="notice" />
 
-    <div class="grid gap-4 lg:grid-cols-[240px_1fr]">
-      <UiSideNav v-model="tab" :items="navItems" />
-
-      <UiPanel class="min-w-0 p-6 lg:p-8">
+    <UiPanel class="min-w-0 p-6 lg:p-8">
         <template v-if="tab === 'overview'">
           <h2 class="mb-6 text-lg font-semibold tracking-tight">Przegląd</h2>
 
@@ -789,6 +775,8 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                     </div>
                   </td>
 
+                  <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>
+
                   <td class="px-4 py-3">
                     <USelect
                       v-if="isOwner({ role })"
@@ -801,8 +789,6 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                     />
                     <span v-else class="text-xs text-dimmed">{{ user.role ? ROLE_LABEL[user.role] : '—' }}</span>
                   </td>
-
-                  <td class="px-4 py-3 font-mono text-xs text-muted">{{ user.mcUsername || '—' }}</td>
                   <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.friends) }}</td>
                   <td class="px-4 py-3 text-right font-mono text-xs">{{ num(user.shares) }}</td>
                   <td class="px-4 py-3 text-xs text-muted">{{ date(user.createdAt) }}</td>
@@ -861,7 +847,6 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
             <p v-if="!users.length" class="px-4 py-8 text-center text-sm text-muted">Brak wyników.</p>
           </div>
         </template>
-      </UiPanel>
-    </div>
-  </UiPageShell>
+    </UiPanel>
+  </div>
 </template>

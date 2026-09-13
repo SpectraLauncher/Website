@@ -155,6 +155,24 @@
   padding: 0;
 }
 
+/* A boxed aside. The tone is a word on the element, so the palette lives here
+   and nothing an author writes can reach it — see shared/utils/post-doc. */
+.callout {
+  margin: 1.25em 0;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--color-raised-line);
+  border-left-width: 3px;
+  border-radius: 0.75rem;
+  background: var(--color-raised);
+}
+
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+
+.callout[data-tone="info"] { border-left-color: var(--ui-primary); }
+.callout[data-tone="warn"] { border-left-color: #f59e0b; }
+.callout[data-tone="success"] { border-left-color: #34d399; }
+
 .prose blockquote {
   border-left: 2px solid var(--ui-primary);
   color: var(--ui-text-dimmed);

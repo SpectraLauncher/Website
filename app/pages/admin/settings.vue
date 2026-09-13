@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PlatformPolicy } from '~~/shared/utils/platform-policy'
 
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -51,17 +51,9 @@ useSeoMeta({ title: () => t('platform.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-4xl">
+  <div class="min-w-0">
     <UiPageHeader :title="t('platform.title')" :description="t('platform.lead')">
       <div class="flex flex-wrap gap-2 pb-1.5">
-        <UButton
-          variant="subtle"
-          color="neutral"
-          size="lg"
-          icon="i-pixelarticons-arrow-left"
-          :label="t('catalog.admin.backToPanel')"
-          :to="localePath('/admin')"
-        />
       </div>
     </UiPageHeader>
 
@@ -179,5 +171,5 @@ useSeoMeta({ title: () => t('platform.title'), robots: 'noindex' })
         </div>
       </UiPanel>
     </div>
-  </UiPageShell>
+  </div>
 </template>

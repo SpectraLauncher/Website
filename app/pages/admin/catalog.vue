@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const localePath = useLocalePath()
 const { t } = useI18n()
@@ -675,20 +675,12 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell>
+  <div class="min-w-0">
     <UiPageHeader
       :title="t('catalog.admin.title')"
       :description="t('catalog.admin.subtitle', { n: total })"
     >
       <div class="flex flex-wrap gap-2 pb-1.5">
-        <UButton
-          variant="ghost"
-          color="neutral"
-          size="lg"
-          icon="i-pixelarticons-arrow-left"
-          :label="t('catalog.admin.backToPanel')"
-          :to="localePath('/admin')"
-        />
         <UButton
           size="lg"
           icon="i-pixelarticons-plus"
@@ -1429,5 +1421,5 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
         </div>
       </main>
     </div>
-  </UiPageShell>
+  </div>
 </template>

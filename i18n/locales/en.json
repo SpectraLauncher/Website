@@ -3661,7 +3661,14 @@
       "showing": "{n} of {total}"
     },
     "dependents": "Used by",
-    "dependentsHint": "Projects that list this one as a dependency."
+    "dependentsHint": "Projects that list this one as a dependency.",
+    "slugProblems": {
+      "too-short": "Too short — at least 3 characters.",
+      "too-long": "Too long.",
+      "reserved": "That word is one of our routes. Pick another.",
+      "numeric": "Digits alone read as an id.",
+      "id-shaped": "This looks like an id, not an address."
+    }
   },
   "verification": {
     "title": "Verification",
@@ -4521,7 +4528,19 @@
     "bulletList": "Bullet list",
     "orderedList": "Numbered list",
     "blockquote": "Quote",
-    "dropHint": "Drop a picture anywhere"
+    "dropHint": "Drop a picture anywhere",
+    "heading2": "Heading",
+    "heading3": "Subheading",
+    "codeBlock": "Code block",
+    "linkPrompt": "Address of the link (empty to remove it)",
+    "divider": "Divider",
+    "undo": "Undo",
+    "redo": "Redo",
+    "callout": {
+      "info": "Note",
+      "warn": "Warning",
+      "success": "Good to know"
+    }
   },
   "seller": {
     "title": "Selling",
@@ -4641,7 +4660,8 @@
     "noSubscribers": "Nobody has subscribed yet.",
     "noPosts": "Nothing here yet.",
     "sentAlready": "Sent {date} to {n}.",
-    "uploadCover": "Upload a cover"
+    "uploadCover": "Upload a cover",
+    "state": "State"
   },
   "news": {
     "title": "News",

@@ -21,7 +21,7 @@ interface Payout {
   settled: number | null
 }
 
-definePageMeta({ middleware: 'admin' })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -73,17 +73,9 @@ useSeoMeta({ title: () => t('finance.title'), robots: 'noindex' })
 </script>
 
 <template>
-  <UiPageShell width="max-w-5xl">
+  <div class="min-w-0">
     <UiPageHeader :title="t('finance.title')" :description="t('finance.lead')">
       <div class="flex flex-wrap gap-2 pb-1.5">
-        <UButton
-          variant="subtle"
-          color="neutral"
-          size="lg"
-          icon="i-pixelarticons-arrow-left"
-          :label="t('catalog.admin.backToPanel')"
-          :to="localePath('/admin')"
-        />
         <UButton
           size="lg"
           color="neutral"
@@ -173,5 +165,5 @@ useSeoMeta({ title: () => t('finance.title'), robots: 'noindex' })
         {{ t('finance.noPayouts') }}
       </p>
     </UiPanel>
-  </UiPageShell>
+  </div>
 </template>
