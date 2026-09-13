@@ -21,7 +21,7 @@ const props = defineProps<{ slug: string }>()
 
 const { t, locale } = useI18n()
 const session = useAuthSession()
-const isStaff = computed(() => (session.value.data?.user as { role?: string })?.role === 'admin')
+const isStaff = computed(() => canModerate(session.value.data?.user as { role?: string } | undefined))
 
 const messages = ref<ThreadMessage[]>([])
 const status = ref('')

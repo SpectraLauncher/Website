@@ -28,7 +28,9 @@ onMounted(() => {
     onUnmounted(() => window.removeEventListener('scroll', onScroll))
 })
 
-const isAdmin = computed(() => me.value?.role === 'admin')
+// Through the ladder, never a literal: comparing to 'admin' hid the panel
+// from the owner the moment roles gained a rung above it.
+const isAdmin = computed(() => isStaff(me.value))
 
 // While the catalog is closed it exists for the admin alone, and the server
 // serves it to them — so the navigation has to reach it too, or the only way in

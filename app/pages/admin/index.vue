@@ -778,7 +778,7 @@ useSeoMeta({ title: () => 'Panel', robots: 'noindex, nofollow' })
                             v-else-if="user.role"
                             size="sm"
                             variant="subtle"
-                            :color="user.role === 'admin' ? 'primary' : 'neutral'"
+                            :color="isAdmin(user) ? 'primary' : 'neutral'"
                             :label="ROLE_LABEL[user.role] ?? user.role"
                           />
                           <UIcon v-if="user.emailVerified" name="i-pixelarticons-check-double" class="size-3.5 shrink-0 text-primary" />

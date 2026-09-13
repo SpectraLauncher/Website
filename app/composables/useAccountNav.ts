@@ -16,7 +16,7 @@ export function useAccountNav() {
   // strict comparison quietly hides the whole catalog half of the menu.
   const catalogVisible = computed(() => {
     const flag = useRuntimeConfig().public.catalogPublic
-    return flag === true || flag === 'true' || user.value?.role === 'admin'
+    return flag === true || flag === 'true' || canModerate(user.value)
   })
 
   return computed<SideNavItem[]>(() =>

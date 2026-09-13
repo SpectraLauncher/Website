@@ -24,7 +24,7 @@ const localePath = useLocalePath()
 const session = useAuthSession()
 
 const me = computed(() => session.value.data?.user as { id?: string, role?: string } | undefined)
-const isStaff = computed(() => me.value?.role === 'admin')
+const isStaff = computed(() => canModerate(me.value))
 
 const comments = ref<Comment[]>([])
 const loaded = ref(false)

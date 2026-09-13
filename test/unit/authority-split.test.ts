@@ -1,10 +1,18 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
+import { join, sep } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
 import { canModerate, isAdmin, isOwner } from '../../shared/utils/staff-roles'
 
 const read = (file: string) => readFileSync(file, 'utf8')
+const slash = (file: string) => file.split(sep).join('/')
+
+function walk(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap(entry => (entry.isDirectory()
+    ? walk(join(dir, entry.name))
+    : [join(dir, entry.name)]))
+}
 
 /**
  * Two different kinds of authority, and folding them together breaks things in
@@ -76,5 +84,29 @@ describe('drabina platformy sama w sobie', () => {
     for (const role of [null, '', 'user', 'creator']) {
       expect(canModerate({ role }), String(role)).toBe(false)
     }
+  })
+})
+
+// The bug this exists to stop, which shipped: five places in the browser asked
+// `role === 'admin'` instead of going through the ladder. Adding `owner` above
+// admin made every one of them false for the owner, so the admin link and the
+// catalog half of the account menu simply vanished — the routes still worked,
+// nothing linked to them, and it looked like lost access.
+describe('nikt nie porownuje roli z palca', () => {
+  const sources = walk('app').concat(walk('server'), walk('shared'))
+    .filter(file => file.endsWith('.vue') || file.endsWith('.ts'))
+    .filter(file => !slash(file).endsWith('shared/utils/staff-roles.ts'))
+
+  it('zadna platformowa rola nie jest sprawdzana literalem', () => {
+    // Only an account's own role. `member.role === 'admin'` is organisation
+    // vocabulary — a different ladder with its own owner and admin — and saying
+    // so by filename was too blunt: project-notify reads org members.
+    const ACCOUNT = /\b(?:user|me|viewer|account|session|staff|candidate)\b[\w.?![\]'"]*\.role\s*[=!]==\s*['"](?:admin|moderator|owner)['"]/
+
+    const offenders = sources
+      .filter(file => ACCOUNT.test(read(file)))
+      .map(slash)
+
+    expect(offenders).toEqual([])
   })
 })
