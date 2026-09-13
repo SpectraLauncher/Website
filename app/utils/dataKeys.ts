@@ -20,6 +20,9 @@ export const dataKeys = {
 
   org: (slug: string) => `org:${slug}`,
 
+  /** The three newest articles, shown on the home page. */
+  homeNews: () => 'home-news',
+
   launcherVersion: () => 'launcher-version',
   authProviders: () => 'auth-providers',
 } as const

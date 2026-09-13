@@ -76,7 +76,11 @@
     "discordTitle": "Come say hi",
     "discordSub": "Support, mod recommendations, build feedback and weekend events. The Discord is where Spectra actually lives.",
     "discordCta": "Join the Discord",
-    "members": "members"
+    "members": "members",
+    "newsTitle": "From the blog",
+    "newsSub": "Releases, what changed and what we are building next.",
+    "newsletterTitle": "Get it by mail",
+    "newsletterSub": "One message when something worth reading happens — a release, a change that affects your servers. Nothing else, and one click takes you off it."
   },
   "toolsPage": {
     "title": "Tools",
@@ -4684,7 +4688,7 @@
     "subscribeHint": "One message when something worth reading happens. Nothing else, and you can leave with one click.",
     "subscribe": "Subscribe",
     "subscribed": "Done. Check your inbox.",
-    "emailPlaceholder": "you@example.com",
+    "emailPlaceholder": "you{'@'}example.com",
     "unsubscribe": "Unsubscribe",
     "unsubscribeHint": "You will stop getting the newsletter. Articles stay on the site.",
     "unsubscribeNoToken": "This link is missing its token. Use the one at the bottom of the message.",

@@ -9,6 +9,7 @@ useHead({ titleTemplate: '%s' })
     <HomePillarsSection/>
     <HomeFeaturedTools/>
     <HomeLauncherSection/>
+    <HomeNewsSection/>
     <HomeNewsletterSection/>
     <DiscordCta/>
   </div>
