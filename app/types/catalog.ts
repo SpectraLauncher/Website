@@ -50,6 +50,8 @@ export interface CatalogProjectData {
   summary: string
   description: string
   icon: string | null
+  /** The wide picture at the top of the page. */
+  banner: string | null
   license: string | null
   licenseUrl: string | null
   links: Record<string, string>

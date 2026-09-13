@@ -45,6 +45,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/game-versions', group: 'compat', auth: 'session', summary: 'Minecraft releases the version form offers' },
   { route: 'GET /api/catalog/project/{slug}/editor', group: 'projects', auth: 'session', summary: 'A project as its author sees it, with what they may change' },
   { route: 'PATCH /api/catalog/project/{slug}', group: 'projects', auth: 'session', summary: 'Edit a project you can edit' },
+  { route: 'POST /api/catalog/project/{slug}/banner', group: 'catalog', auth: 'session', summary: 'Upload the wide picture at the top of a project' },
+  { route: 'DELETE /api/catalog/project/{slug}/banner', group: 'catalog', auth: 'session', summary: 'Take it off again' },
   { route: 'POST /api/catalog/project/{slug}/icon', group: 'projects', auth: 'session', summary: 'Replace the project icon' },
   { route: 'POST /api/catalog/project/{slug}/image', group: 'projects', auth: 'session', summary: 'Upload an image for the description' },
   { route: 'POST /api/catalog/project/{slug}/transfer', group: 'projects', auth: 'session', summary: 'Hand a project to an organization' },

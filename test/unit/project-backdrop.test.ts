@@ -37,7 +37,7 @@ describe('tlo strony projektu', () => {
   // once for every type rather than each page rendering it for itself.
   it('naglowek projektu jest jedynym miejscem, ktore je zamawia', () => {
     expect(projectPage()).not.toContain('<ProjectBackdrop')
-    expect(header).toContain('<ProjectBackdrop :gallery="gallery" />')
+    expect(header).toContain('<ProjectBackdrop :banner="project.banner" :gallery="gallery" />')
   })
 
   // A stock photograph on every project that never picked one is worse than no

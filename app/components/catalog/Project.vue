@@ -135,7 +135,7 @@ async function toggleFollow() {
     </NuxtLink>
 
     <UiPanel class="mt-4 overflow-hidden">
-      <ProjectBackdrop :gallery="gallery" />
+      <ProjectBackdrop :banner="project.banner" :gallery="gallery" />
 
       <header class="flex flex-wrap items-start gap-5 p-5 sm:p-6">
         <span class="grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">

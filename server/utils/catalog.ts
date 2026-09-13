@@ -93,7 +93,7 @@ export function num(value: string | number | null | undefined): number {
 }
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
-  status, requested_status, license, license_url, icon, categories, featured_categories,
+  status, requested_status, license, license_url, icon, banner, categories, featured_categories,
   game_versions, loaders, environment, links, disclosures, meta, price, currency, downloads,
   follows, created, updated, published`
 

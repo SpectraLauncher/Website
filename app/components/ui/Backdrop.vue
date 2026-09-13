@@ -15,7 +15,10 @@ const url = computed(() => cssSafeAssetUrl(props.image ?? undefined))
 
 <template>
   <div v-if="url" class="relative">
-    <img :src="url" alt="" class="block h-auto w-full">
+    <!-- Its own height up to 560px, which is what a 1920-wide banner comes to
+         on a wide card. Past that it is cropped rather than allowed to push the
+         page down; the upload hints ask for that shape so it rarely happens. -->
+    <img :src="url" alt="" class="block max-h-[560px] w-full object-cover">
 
     <!-- Only the last stretch fades, so the join with the card is clean without
          dimming the picture somebody chose. -->

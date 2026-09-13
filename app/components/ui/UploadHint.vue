@@ -11,7 +11,9 @@ const spec = computed(() => IMAGE_SPECS[props.id])
 const line = computed(() => {
   const value = spec.value
 
-  return t(value.fit === 'cover' ? 'images.square' : 'images.longest', {
+  const shape = value.height ? 'images.banner' : value.fit === 'cover' ? 'images.square' : 'images.longest'
+
+  return t(shape, {
     size: specDimensions(value),
     mb: specWeight(value),
     types: acceptedLabel(value.types),

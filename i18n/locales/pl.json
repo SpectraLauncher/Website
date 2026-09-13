@@ -3679,7 +3679,9 @@
       "reserved": "To słowo jest jedną z naszych tras. Wybierz inne.",
       "numeric": "Same cyfry czytają się jak id.",
       "id-shaped": "To wygląda jak id, nie jak adres."
-    }
+    },
+    "banner": "Baner",
+    "bannerRemove": "Usuń baner"
   },
   "verification": {
     "title": "Weryfikacja",
@@ -4817,6 +4819,7 @@
   "images": {
     "square": "Najlepiej {size} px, kwadrat — inne proporcje zostaną przycięte. Do {mb}, {types}.",
     "longest": "Najlepiej dłuższy bok {size} px; proporcje zostają zachowane. Do {mb}, {types}.",
-    "animated": "Animowany GIF zostaje ruchomy."
+    "animated": "Animowany GIF zostaje ruchomy.",
+    "banner": "Najlepiej {size} px — w takim kształcie się wyświetla. Wyższe zostanie przycięte. Do {mb}, {types}."
   }
 }

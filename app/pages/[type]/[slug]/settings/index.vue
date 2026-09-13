@@ -56,6 +56,44 @@ const visibilityOptions = computed(() =>
 
 const uploading = ref(false)
 
+const bannerBusy = ref(false)
+
+async function uploadBanner(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  bannerBusy.value = true
+  problem.value = ''
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(project.value!.slug)}/banner`, {
+      method: 'POST',
+      body: await file.arrayBuffer(),
+      headers: { 'content-type': file.type },
+    })
+    await refresh()
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally {
+    bannerBusy.value = false
+    input.value = ''
+  }
+}
+
+async function removeBanner() {
+  bannerBusy.value = true
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(project.value!.slug)}/banner`, {
+      method: 'DELETE',
+    })
+    await refresh()
+  }
+  catch (e: any) { problem.value = e?.data?.statusMessage || t('auth.genericError') }
+  finally { bannerBusy.value = false }
+}
+
 async function uploadIcon(event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
@@ -110,6 +148,55 @@ async function uploadIcon(event: Event) {
         </label>
         <p class="mt-1.5 text-xs text-dimmed">{{ t('catalog.settingsHint.icon') }}</p>
         <UiUploadHint id="projectIcon" class="mt-1" />
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <p class="mb-2 text-sm font-semibold text-highlighted">{{ t('catalog.banner') }}</p>
+
+      <!-- Shown the way the project page shows it. -->
+      <label class="group relative block cursor-pointer overflow-hidden rounded-xl border border-raised-line">
+        <img
+          v-if="project?.banner"
+          :src="project.banner"
+          alt=""
+          class="block max-h-[280px] w-full object-cover"
+        >
+        <span
+          v-else
+          class="grid h-32 w-full place-items-center bg-raised text-dimmed sm:h-40"
+        >
+          <UIcon name="i-pixelarticons-image" class="size-7" />
+        </span>
+
+        <span class="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+          <UIcon
+            :name="bannerBusy ? 'i-pixelarticons-loader' : 'i-pixelarticons-camera'"
+            class="size-6"
+            :class="bannerBusy && 'animate-spin'"
+          />
+        </span>
+
+        <input
+          type="file"
+          :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
+          class="hidden"
+          @change="uploadBanner"
+        >
+      </label>
+
+      <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2">
+        <UiUploadHint id="projectBanner" />
+        <UButton
+          v-if="project?.banner"
+          size="xs"
+          color="neutral"
+          variant="ghost"
+          icon="i-pixelarticons-close"
+          :loading="bannerBusy"
+          :label="t('catalog.bannerRemove')"
+          @click.prevent="removeBanner"
+        />
       </div>
     </div>
 

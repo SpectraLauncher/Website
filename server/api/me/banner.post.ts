@@ -3,7 +3,7 @@ import { r2Put } from '../../utils/r2'
 // Wide rather than square: it sits behind the profile the way a project wears
 // its feature image, so the shape is the shape of the page, not of an avatar.
 const MAX_BYTES = 6 * 1024 * 1024
-const WIDTH = 1600
+const WIDTH = 1920
 
 export default defineEventHandler(async (event) => {
   const me = await requireUser(event)

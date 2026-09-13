@@ -3679,7 +3679,9 @@
       "reserved": "That word is one of our routes. Pick another.",
       "numeric": "Digits alone read as an id.",
       "id-shaped": "This looks like an id, not an address."
-    }
+    },
+    "banner": "Banner",
+    "bannerRemove": "Remove banner"
   },
   "verification": {
     "title": "Verification",
@@ -4817,6 +4819,7 @@
   "images": {
     "square": "Best at {size} px, square — anything else is cropped to fit. Up to {mb}, {types}.",
     "longest": "Best with the longer side at {size} px; the shape is kept. Up to {mb}, {types}.",
-    "animated": "An animated GIF keeps moving."
+    "animated": "An animated GIF keeps moving.",
+    "banner": "Best at {size} px — that is the shape it is drawn in. Anything taller is cropped. Up to {mb}, {types}."
   }
 }

@@ -515,6 +515,17 @@ export async function ensureCatalogSchema() {
     ALTER TABLE project ADD COLUMN IF NOT EXISTS disclosures JSONB NOT NULL DEFAULT '{}'
   `)
 
+  // The wide picture at the top of a project, uploaded as itself.
+  //
+  // It used to be whichever gallery image an author had ticked as featured,
+  // which asked them to put a 1920x560 banner into a list of screenshots — where
+  // it then also showed up as a screenshot. The gallery keeps its own job; a
+  // project with no banner of its own still falls back to the featured image so
+  // nothing that already had one lost it.
+  await pool.query(`
+    ALTER TABLE project ADD COLUMN IF NOT EXISTS banner TEXT
+  `)
+
   // Who is looking at this submission right now. Not a lock — a second
   // moderator can still decide it — just the answer to "is somebody already on
   // this", which is the whole reason two people open the same queue.

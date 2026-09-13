@@ -3,7 +3,7 @@ import { join, sep } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { IMAGE_SPECS, specDimensions } from '../../shared/utils/image-specs'
+import { BANNER_HEIGHT, IMAGE_SPECS, specDimensions } from '../../shared/utils/image-specs'
 import { MOVING_IMAGE_TYPES, STILL_IMAGE_TYPES, acceptedLabel } from '../../shared/utils/image-uploads'
 
 const read = (file: string) => readFileSync(file, 'utf8')
@@ -14,6 +14,7 @@ const read = (file: string) => readFileSync(file, 'utf8')
 const ENDPOINTS: Record<keyof typeof IMAGE_SPECS, string> = {
   avatar: 'server/api/me/avatar.post.ts',
   banner: 'server/api/me/banner.post.ts',
+  projectBanner: 'server/api/catalog/project/[slug]/banner.post.ts',
   projectIcon: 'server/api/catalog/project/[slug]/icon.post.ts',
   projectGallery: 'server/api/catalog/project/[slug]/gallery.post.ts',
   orgLogo: 'server/api/org/[slug]/logo.post.ts',
@@ -41,9 +42,22 @@ describe('podpowiedzi zgadzaja sie z serwerem', () => {
     expect(takesGif, `${id}: typy`).toBe(spec.animated)
   })
 
-  it('kwadrat mowi dwa wymiary, reszta jeden', () => {
+  it('ksztalt tam, gdzie powierzchnia go ma; sam bok tam, gdzie nie', () => {
+    // a banner is drawn in a shape, so the hint names both sides
+    expect(specDimensions(IMAGE_SPECS.banner)).toBe('1920 × 560')
+    expect(specDimensions(IMAGE_SPECS.projectBanner)).toBe('1920 × 560')
+
     expect(specDimensions(IMAGE_SPECS.avatar)).toBe('512 × 512')
-    expect(specDimensions(IMAGE_SPECS.banner)).toBe('1600')
+    // a gallery shot keeps whatever shape it came in
+    expect(specDimensions(IMAGE_SPECS.projectGallery)).toBe('1280')
+  })
+
+  it('oba banery sa rysowane na te sama wysokosc', () => {
+    const backdrop = readFileSync('app/components/ui/Backdrop.vue', 'utf8')
+
+    expect(backdrop).toContain(`max-h-[${BANNER_HEIGHT}px]`)
+    expect(IMAGE_SPECS.banner.height).toBe(BANNER_HEIGHT)
+    expect(IMAGE_SPECS.projectBanner.height).toBe(BANNER_HEIGHT)
   })
 
   it('animacja idzie w parze z przyjmowaniem gifow', () => {

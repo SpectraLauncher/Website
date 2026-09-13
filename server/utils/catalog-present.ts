@@ -55,6 +55,7 @@ export function shortProject(row: ProjectRow) {
     status: row.status,
     requestedStatus: row.requested_status,
     icon: row.icon,
+    banner: row.banner ?? null,
     categories: row.categories,
     featuredCategories: row.featured_categories ?? [],
     environment: row.environment ?? [],
