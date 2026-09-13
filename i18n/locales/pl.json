@@ -4819,5 +4819,12 @@
     "longest": "Najlepiej dłuższy bok {size} px; proporcje zostają zachowane. Do {mb}, {types}.",
     "animated": "Animowany GIF zostaje ruchomy.",
     "banner": "Najlepiej {size} px — w takim kształcie się wyświetla. Wyższe zostanie przycięte. Do {mb}, {types}."
+  },
+  "reactions": {
+    "like": "Podoba mi się",
+    "agree": "Zgadzam się",
+    "useful": "Dowiedziałem się czegoś",
+    "hype": "Nie mogę się doczekać",
+    "signIn": "Zaloguj się, żeby zareagować"
   }
 }

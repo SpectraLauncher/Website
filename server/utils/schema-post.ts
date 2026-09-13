@@ -44,6 +44,21 @@ export async function ensurePostSchema() {
     CREATE INDEX IF NOT EXISTS idx_post_kind ON post (kind, status, published DESC);
   `)
 
+  // One row per person per kind, so the key is the whole rule: reacting twice
+  // the same way is the same row, and taking it back is a delete. No counter to
+  // drift from the rows it counts.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS post_reaction (
+      post_id TEXT NOT NULL REFERENCES post(id) ON DELETE CASCADE,
+      user_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      kind    TEXT NOT NULL,
+      created BIGINT NOT NULL,
+      PRIMARY KEY (post_id, user_id, kind)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_post_reaction_post ON post_reaction (post_id, kind);
+  `)
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS newsletter_subscriber (
       id        TEXT PRIMARY KEY,

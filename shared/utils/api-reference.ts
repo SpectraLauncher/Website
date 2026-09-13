@@ -85,6 +85,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/users', group: 'social', auth: 'session', summary: 'Search people by name' },
   { route: 'GET /api/news', group: 'news', auth: 'none', summary: 'Published articles, newest first' },
   { route: 'GET /api/news/{slug}', group: 'news', auth: 'none', summary: 'One article, rendered' },
+  { route: 'POST /api/news/{slug}/reactions', group: 'news', auth: 'session', summary: 'Pick a reaction on an article, or take it back' },
   { route: 'POST /api/news/subscribe', group: 'news', auth: 'none', summary: 'Put an address on the newsletter' },
   { route: 'POST /api/news/confirm', group: 'news', auth: 'none', summary: 'Confirm a subscription with the token from the e-mail' },
   { route: 'POST /api/news/unsubscribe', group: 'news', auth: 'none', summary: 'Take an address off it, with the token from the e-mail' },

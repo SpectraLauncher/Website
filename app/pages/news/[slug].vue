@@ -13,7 +13,7 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 
-const { data } = await useFetch<{ article: Article }>(
+const { data } = await useFetch<{ article: Article, reactions: ReactionState }>(
   () => `/api/news/${encodeURIComponent(String(route.params.slug ?? ''))}`)
 
 const article = computed(() => data.value?.article)
@@ -65,6 +65,15 @@ useSeoMeta({
       <div
         class="prose prose-invert mt-7 max-w-none break-words prose-a:text-primary"
         v-html="article.html"
+      />
+
+      <!-- After the piece, not before it: there is nothing to react to yet at
+           the top of a page nobody has read. -->
+      <NewsReactions
+        v-if="data?.reactions"
+        class="mt-8 border-t border-panel-line pt-6"
+        :slug="String(route.params.slug ?? '')"
+        :reactions="data.reactions"
       />
     </article>
 

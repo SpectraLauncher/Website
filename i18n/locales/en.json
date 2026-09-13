@@ -4819,5 +4819,12 @@
     "longest": "Best with the longer side at {size} px; the shape is kept. Up to {mb}, {types}.",
     "animated": "An animated GIF keeps moving.",
     "banner": "Best at {size} px — that is the shape it is drawn in. Anything taller is cropped. Up to {mb}, {types}."
+  },
+  "reactions": {
+    "like": "Nice one",
+    "agree": "Agree",
+    "useful": "Learned something",
+    "hype": "Excited",
+    "signIn": "Sign in to react"
   }
 }

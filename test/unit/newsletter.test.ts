@@ -80,8 +80,15 @@ describe('publiczne trasy newsa', () => {
     expect(source('index.get.ts')).toMatch(/publishedArticles\(/)
     expect(source('[slug].get.ts')).toMatch(/publishedArticle\(/)
 
-    for (const file of readdirSync(dir)) {
-      expect(source(file), file).not.toMatch(/\bpostById\(|\bpostsOfKind\(/)
+    // Recursive: reactions live under [slug]/, and a handler that skipped the
+    // status filter would have been invisible to a flat listing.
+    const every = (path: string): string[] => readdirSync(path, { withFileTypes: true })
+      .flatMap(entry => (entry.isDirectory()
+        ? every(join(path, entry.name))
+        : [join(path, entry.name)]))
+
+    for (const file of every(dir)) {
+      expect(readFileSync(file, 'utf8'), file).not.toMatch(/\bpostById\(|\bpostsOfKind\(/)
     }
   })
 
