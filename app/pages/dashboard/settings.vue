@@ -65,9 +65,22 @@ watch(user, (u) => {
   profile.name = u.name ?? ''
   profile.username = u.username ?? ''
   profile.image = u.image ?? ''
-  profile.banner = (u as { banner?: string | null }).banner ?? ''
-  profile.bio = u.bio ?? ''
-  for (const kind of LINK_KINDS) links[kind] = (u.links ?? {})[kind] ?? ''
+}, { immediate: true })
+
+// bio, links and the banner live in columns of our own, so they come from our
+// own route: a field the session does not carry reads as undefined on the next
+// load, and the form then looks like the save never happened.
+const { data: stored } = await useFetch<{
+  bio: string
+  links: Record<string, string>
+  banner: string | null
+}>('/api/me/profile', { key: dataKeys.myProfile() })
+
+watch(stored, (row) => {
+  if (!row) return
+  profile.bio = row.bio
+  profile.banner = row.banner ?? ''
+  for (const kind of LINK_KINDS) links[kind] = row.links[kind] ?? ''
 }, { immediate: true })
 
 const BIO_LIMIT = 500
@@ -162,6 +175,7 @@ async function uploadAvatar(event: Event) {
 }
 
 const bannerInput = useTemplateRef<HTMLInputElement>('bannerInput')
+const { invalidate } = useInvalidate()
 
 // Sent as it came, unlike the avatar: the server bounds the width, keeps the
 // shape and — for a GIF — the animation, none of which a canvas in the browser
@@ -187,6 +201,7 @@ async function uploadBanner(event: Event) {
       headers: { 'content-type': file.type },
     })
     profile.banner = url
+    await invalidate(dataKeys.myProfile())
     notice.value = t('account.bannerUploaded')
   })
 }
@@ -194,6 +209,7 @@ async function uploadBanner(event: Event) {
 const removeBanner = () => run('banner', async () => {
   await $fetch('/api/me/banner', { method: 'DELETE' })
   profile.banner = ''
+  await invalidate(dataKeys.myProfile())
 })
 
 const saveProfile = () => run('profile', async () => {

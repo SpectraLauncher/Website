@@ -139,10 +139,18 @@ const send = () => run('send', async () => {
             {{ t('posts.state') }}
           </span>
           <UBadge
+            v-if="isArticle"
             size="sm"
             variant="subtle"
             :color="post.status === 'published' ? 'success' : 'neutral'"
             :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
+          />
+          <UBadge
+            v-else
+            size="sm"
+            variant="subtle"
+            :color="post.sent ? 'success' : 'neutral'"
+            :label="t(post.sent ? 'posts.sentBadge' : 'posts.unsent')"
           />
         </div>
 
@@ -158,24 +166,28 @@ const send = () => run('send', async () => {
         @click="save()"
       />
 
-      <UButton
-        v-if="post.status === 'draft'"
-        color="neutral"
-        variant="subtle"
-        icon="i-pixelarticons-upload"
-        :loading="busy === 'save'"
-        :label="t('posts.publish')"
-        @click="save({ status: 'published' })"
-      />
-      <UButton
-        v-else
-        color="neutral"
-        variant="subtle"
-        icon="i-pixelarticons-draft"
-        :loading="busy === 'save'"
-        :label="t('posts.unpublish')"
-        @click="save({ status: 'draft' })"
-      />
+      <!-- An issue is not a page anybody visits: it is written, then it is sent.
+           Publishing it would put it nowhere. -->
+      <template v-if="isArticle">
+        <UButton
+          v-if="post.status === 'draft'"
+          color="neutral"
+          variant="subtle"
+          icon="i-pixelarticons-upload"
+          :loading="busy === 'save'"
+          :label="t('posts.publish')"
+          @click="save({ status: 'published' })"
+        />
+        <UButton
+          v-else
+          color="neutral"
+          variant="subtle"
+          icon="i-pixelarticons-draft"
+          :loading="busy === 'save'"
+          :label="t('posts.unpublish')"
+          @click="save({ status: 'draft' })"
+        />
+      </template>
 
       <!-- An issue goes out once. After that the button is a record of when. -->
       <UButton

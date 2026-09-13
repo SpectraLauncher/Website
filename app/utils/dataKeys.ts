@@ -20,6 +20,9 @@ export const dataKeys = {
 
   org: (slug: string) => `org:${slug}`,
 
+  /** The signed-in account's own bio, links and banner. */
+  myProfile: () => 'me-profile',
+
   /** The three newest articles, shown on the home page. */
   homeNews: () => 'home-news',
 

@@ -262,6 +262,11 @@ export function useAuth() {
         banned: { type: 'boolean', required: false, input: false },
         role: { type: 'string', required: false, input: false },
         partner: { type: 'boolean', required: false, input: false },
+        // Written by their own endpoints, never through update-user, but the
+        // session has to carry them or the settings form comes back empty on
+        // the next load and looks like the save was lost.
+        banner: { type: 'string', required: false, input: false },
+        bio: { type: 'string', required: false, input: false },
         friendsVisibility: { type: 'string', required: false, input: true },
       },
     },

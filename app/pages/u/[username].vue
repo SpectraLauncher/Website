@@ -271,7 +271,7 @@ useSchemaOrg(computed(() => (data.value
 </script>
 
 <template>
-  <UiPageShell :backdrop="data?.user.banner ?? null">
+  <UiPageShell>
     <template v-if="error || !data">
       <UiPanel class="mx-auto max-w-lg p-10 text-center">
         <span class="inline-flex size-12 items-center justify-center rounded-2xl border border-raised-line bg-raised">
@@ -292,6 +292,8 @@ useSchemaOrg(computed(() => (data.value
 
     <template v-else>
       <UiPanel class="overflow-hidden">
+        <UiBackdrop :image="data.user.banner" />
+
         <div class="flex flex-wrap gap-6 p-5 sm:p-6">
           <ProfileSkin
             v-if="mc"

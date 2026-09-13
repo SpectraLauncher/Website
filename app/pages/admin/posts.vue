@@ -16,8 +16,10 @@ const { data, refresh } = await useFetch<{ posts: AdminPost[] }>('/api/admin/pos
   query: computed(() => ({ kind: kind.value })),
 })
 
-const { data: list } = await useFetch<{ subscribers: Array<{ id: string }> }>(
-  '/api/admin/newsletter')
+const { data: list } = await useFetch<{
+  subscribers: Array<{ id: string, confirmed: number | null }>
+  confirmed: number
+}>('/api/admin/newsletter')
 
 const posts = computed(() => data.value?.posts ?? [])
 const openId = ref<string | null>(null)
@@ -63,7 +65,7 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
     <UiPageHeader
       :title="t(kind === 'article' ? 'posts.articles' : 'posts.newsletter')"
       :description="kind === 'newsletter'
-        ? t('posts.subscribers') + ': ' + (list?.subscribers.length ?? 0)
+        ? t('posts.subscribers') + ': ' + (list?.confirmed ?? 0)
         : undefined"
     >
       <div class="flex flex-wrap gap-2 pb-1.5">
@@ -105,7 +107,7 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
         <AdminPostEditor
           :key="open.id"
           :post="open"
-          :recipient-count="list?.subscribers.length ?? 0"
+          :recipient-count="list?.confirmed ?? 0"
           @saved="saved"
           @removed="removed"
         />
@@ -140,16 +142,23 @@ useSeoMeta({ title: () => t(`posts.${kind.value === 'article' ? 'articles' : 'ne
             <p v-if="post.summary" class="line-clamp-2 text-sm text-muted">{{ post.summary }}</p>
 
             <span class="mt-auto flex flex-wrap items-center gap-2 pt-1 text-xs text-dimmed">
-              <UBadge
-                size="sm"
-                variant="subtle"
-                :color="post.status === 'published' ? 'success' : 'neutral'"
-                :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
-              />
               <template v-if="kind === 'newsletter'">
-                {{ post.sent ? t('posts.sent', { n: post.recipients }) : t('posts.unsent') }}
+                <UBadge
+                  size="sm"
+                  variant="subtle"
+                  :color="post.sent ? 'success' : 'neutral'"
+                  :label="post.sent ? t('posts.sent', { n: post.recipients }) : t('posts.unsent')"
+                />
               </template>
-              <template v-else>{{ when(post.published) }}</template>
+              <template v-else>
+                <UBadge
+                  size="sm"
+                  variant="subtle"
+                  :color="post.status === 'published' ? 'success' : 'neutral'"
+                  :label="t(post.status === 'published' ? 'posts.published' : 'posts.draft')"
+                />
+                {{ when(post.published) }}
+              </template>
             </span>
           </div>
         </UiPanel>

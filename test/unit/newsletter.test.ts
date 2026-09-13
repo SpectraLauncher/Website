@@ -99,3 +99,33 @@ describe('publiczne trasy newsa', () => {
     }
   })
 })
+
+// Double opt-in: anybody can type somebody else's address into a form, so the
+// click in the mailbox is what decides, not the submit.
+describe('potwierdzenie zapisu', () => {
+  const source = readFileSync('server/utils/newsletter.ts', 'utf8')
+
+  it('adres startuje niepotwierdzony', () => {
+    expect(source).toMatch(/VALUES \(\$1, \$2, \$3, \$4, NULL, \$5\)/)
+  })
+
+  it('wysylka idzie wylacznie do potwierdzonych', () => {
+    expect(source).toMatch(/const list = await confirmedSubscribers\(\)/)
+    expect(source).toMatch(/WHERE confirmed IS NOT NULL/)
+  })
+
+  it('potwierdzenie dziala raz', () => {
+    // claimed in the statement that reads it, so a replayed link changes nothing
+    expect(source).toMatch(/SET confirmed = \$2[\s\S]*?WHERE token = \$1 AND confirmed IS NULL/)
+  })
+
+  it('mail potwierdzajacy tez niesie wypis', () => {
+    expect(source).toMatch(/sendConfirmation/)
+    expect(source).toMatch(/news\/unsubscribe\?token=/)
+  })
+
+  it('formularz nie wysyla maila komus, kto juz potwierdzil', () => {
+    expect(readFileSync('server/api/news/subscribe.post.ts', 'utf8'))
+      .toMatch(/if \(!row\.confirmed\)/)
+  })
+})

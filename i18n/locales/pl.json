@@ -4678,7 +4678,8 @@
     "sentAlready": "Wysłane {date} do {n}.",
     "uploadCover": "Wgraj okładkę",
     "state": "Stan",
-    "allPosts": "Wszystkie ({n})"
+    "allPosts": "Wszystkie ({n})",
+    "sentBadge": "Wysłane"
   },
   "news": {
     "title": "Aktualności",
@@ -4687,14 +4688,18 @@
     "subscribeTitle": "Dostawaj to mailem",
     "subscribeHint": "Jedna wiadomość, kiedy dzieje się coś wartego przeczytania. Nic poza tym, a wypisujesz się jednym kliknięciem.",
     "subscribe": "Zapisz się",
-    "subscribed": "Gotowe. Sprawdź skrzynkę.",
+    "subscribed": "Prawie — otwórz wiadomość, którą właśnie wysłaliśmy, i potwierdź.",
     "emailPlaceholder": "ty{'@'}przyklad.pl",
     "unsubscribe": "Wypisz się",
     "unsubscribeHint": "Przestaniesz dostawać newsletter. Artykuły zostają na stronie.",
     "unsubscribeNoToken": "W tym linku brakuje tokenu. Użyj tego ze stopki wiadomości.",
     "unsubscribeConfirm": "Wypisz mnie",
     "unsubscribed": "Nie ma cię już na liście.",
-    "readAll": "Czytaj aktualności"
+    "readAll": "Czytaj aktualności",
+    "confirmTitle": "Potwierdzam…",
+    "confirmed": "Jesteś na liście",
+    "confirmedBody": "Dostaniesz wiadomość, kiedy wydarzy się coś wartego przeczytania. W każdej jest wypis jednym kliknięciem.",
+    "confirmNoToken": "W tym linku brakuje tokenu. Użyj tego z wiadomości."
   },
   "audit": {
     "title": "Dziennik działań",

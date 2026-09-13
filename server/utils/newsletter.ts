@@ -28,6 +28,10 @@ export function isEmail(value: unknown): value is string {
  *
  * Never reports which of the two happened. "That address is already subscribed"
  * turns the form into a way to ask whether somebody is on the list.
+ *
+ * The address arrives unconfirmed: anybody can type somebody else's into a form,
+ * so it is the click in the mailbox that decides, not the submit. Nothing is
+ * ever sent to an address that has not answered.
  */
 export async function subscribe(email: string, userId: string | null) {
   const existing = await one<SubscriberRow>(
@@ -38,10 +42,44 @@ export async function subscribe(email: string, userId: string | null) {
 
   return (await one<SubscriberRow>(
     `INSERT INTO newsletter_subscriber (id, email, user_id, token, confirmed, created)
-     VALUES ($1, $2, $3, $4, $5, $5)
+     VALUES ($1, $2, $3, $4, NULL, $5)
      RETURNING id, email, user_id, token, confirmed, created`,
     [newId(), email.trim(), userId, newId() + newId(), Date.now()],
   ))!
+}
+
+/** One click in the mailbox. The token is the whole authorisation. */
+export async function confirmByToken(token: string): Promise<boolean> {
+  const row = await one<{ id: string }>(
+    `UPDATE newsletter_subscriber SET confirmed = $2
+     WHERE token = $1 AND confirmed IS NULL RETURNING id`,
+    [token, Date.now()],
+  )
+  return Boolean(row)
+}
+
+/**
+ * The "please confirm" mail.
+ *
+ * Carries the unsubscribe link too: somebody whose address was typed in by a
+ * stranger should be able to end it from the same message, without confirming
+ * anything first.
+ */
+export async function sendConfirmation(row: SubscriberRow, origin: string) {
+  const confirm = `${origin}/news/confirm?token=${encodeURIComponent(row.token)}`
+  const out = `${origin}/news/unsubscribe?token=${encodeURIComponent(row.token)}`
+
+  await sendMail(row.email, 'Potwierdź zapis do newslettera Spectra', mailTemplate({
+    preheader: 'Jeden klik i będziesz dostawać newsletter Spectry.',
+    eyebrow: 'Spectra',
+    title: 'Potwierdź zapis',
+    body: 'Ktoś podał ten adres przy zapisie do newslettera Spectry. '
+      + 'Jeśli to ty — potwierdź poniżej. Jeśli nie, po prostu zignoruj tę wiadomość; '
+      + 'bez potwierdzenia nic nie wyślemy.',
+    ctaUrl: confirm,
+    ctaLabel: 'Potwierdzam zapis',
+    footnote: `Nie chcesz tego? ${out}`,
+  }))
 }
 
 /** One click, no sign-in: the token in the link is the whole authorisation. */
@@ -51,13 +89,22 @@ export async function unsubscribeByToken(token: string): Promise<boolean> {
   return Boolean(row)
 }
 
+/** Everyone on the list, confirmed or not — the admin sees both. */
 export async function subscribers(): Promise<SubscriberRow[]> {
   return await q<SubscriberRow>(
     'SELECT id, email, user_id, token, confirmed, created FROM newsletter_subscriber ORDER BY created DESC')
 }
 
+/** Who an issue actually goes to. Never an address that has not answered. */
+export async function confirmedSubscribers(): Promise<SubscriberRow[]> {
+  return await q<SubscriberRow>(
+    `SELECT id, email, user_id, token, confirmed, created FROM newsletter_subscriber
+     WHERE confirmed IS NOT NULL ORDER BY created DESC`)
+}
+
 export async function subscriberCount(): Promise<number> {
-  const row = await one<{ n: number }>('SELECT count(*)::int AS n FROM newsletter_subscriber')
+  const row = await one<{ n: number }>(
+    'SELECT count(*)::int AS n FROM newsletter_subscriber WHERE confirmed IS NOT NULL')
   return row?.n ?? 0
 }
 
@@ -102,7 +149,7 @@ function escapeHtml(value: string): string {
 export async function sendIssue(post: PostRow, origin: string): Promise<number> {
   if (post.sent) throw createError({ statusCode: 409, statusMessage: 'already sent' })
 
-  const list = await subscribers()
+  const list = await confirmedSubscribers()
 
   const claimed = await one<{ id: string }>(
     'UPDATE post SET sent = $2, recipients = $3 WHERE id = $1 AND sent IS NULL RETURNING id',

@@ -4,7 +4,11 @@ import { describe, expect, it } from 'vitest'
 
 import { cssSafeAssetUrl, safeAssetUrl } from '../../shared/utils/links'
 
-const component = readFileSync('app/components/project/Backdrop.vue', 'utf8')
+// The drawing moved into a shared component when profiles gained a banner: a
+// project's feature image and a profile's banner are the same band, and two
+// copies of it would drift. ProjectBackdrop now only picks which picture.
+const picker = readFileSync('app/components/project/Backdrop.vue', 'utf8')
+const component = readFileSync('app/components/ui/Backdrop.vue', 'utf8')
 
 // The page file's name is a routing decision that has changed once already
 // ([[tab]] to [...tab] when versions gained their own address), and this test
@@ -39,9 +43,14 @@ describe('tlo strony projektu', () => {
 
   // A stock photograph on every project that never picked one is worse than no
   // band at all: it makes them all look like the same project.
+  it('wybor obrazu zostaje przy projekcie', () => {
+    expect(picker).toContain('entry.featured')
+    expect(picker).toContain('<UiBackdrop')
+  })
+
   it('bez wyroznionego obrazu nie ma pasa', () => {
     expect(component).not.toContain(`'/bg.webp'`)
-    expect(component).toContain('v-if="image"')
+    expect(component).toContain('v-if="url"')
   })
 
   // Tailwind resolves its arbitrary values when it builds, so a runtime URL has

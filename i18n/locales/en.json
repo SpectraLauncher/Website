@@ -4678,7 +4678,8 @@
     "sentAlready": "Sent {date} to {n}.",
     "uploadCover": "Upload a cover",
     "state": "State",
-    "allPosts": "All ({n})"
+    "allPosts": "All ({n})",
+    "sentBadge": "Sent"
   },
   "news": {
     "title": "News",
@@ -4687,14 +4688,18 @@
     "subscribeTitle": "Get it by mail",
     "subscribeHint": "One message when something worth reading happens. Nothing else, and you can leave with one click.",
     "subscribe": "Subscribe",
-    "subscribed": "Done. Check your inbox.",
+    "subscribed": "Almost there — open the message we just sent and confirm.",
     "emailPlaceholder": "you{'@'}example.com",
     "unsubscribe": "Unsubscribe",
     "unsubscribeHint": "You will stop getting the newsletter. Articles stay on the site.",
     "unsubscribeNoToken": "This link is missing its token. Use the one at the bottom of the message.",
     "unsubscribeConfirm": "Unsubscribe me",
     "unsubscribed": "You are off the list.",
-    "readAll": "Read the news"
+    "readAll": "Read the news",
+    "confirmTitle": "Confirming…",
+    "confirmed": "You are on the list",
+    "confirmedBody": "You will get a message when something worth reading happens. Every one of them has a one-click way off.",
+    "confirmNoToken": "This link is missing its token. Use the one in the message."
   },
   "audit": {
     "title": "Audit log",

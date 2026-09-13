@@ -156,22 +156,27 @@
 }
 
 /* A boxed aside. The tone is a word on the element, so the palette lives here
-   and nothing an author writes can reach it — see shared/utils/post-doc. */
+   and nothing an author writes can reach it — see shared/utils/post-doc.
+
+   One custom property carries the tone, so a new one is a single line rather
+   than a rule per part. The fill is the same colour as the edge at a tenth of
+   its strength, which keeps the box readable on both the page and the editor's
+   own ground without picking a second colour for each tone. */
 .callout {
+  --callout: var(--ui-primary);
+
   margin: 1.25em 0;
-  padding: 0.9rem 1.1rem;
-  border: 1px solid var(--color-raised-line);
-  border-left-width: 3px;
-  border-radius: 0.75rem;
-  background: var(--color-raised);
+  padding: 1rem 1.15rem;
+  border: 1px solid color-mix(in oklab, var(--callout) 35%, transparent);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--callout) 10%, transparent);
 }
+
+.callout[data-tone="warn"] { --callout: #f59e0b; }
+.callout[data-tone="success"] { --callout: #34d399; }
 
 .callout > :first-child { margin-top: 0; }
 .callout > :last-child { margin-bottom: 0; }
-
-.callout[data-tone="info"] { border-left-color: var(--ui-primary); }
-.callout[data-tone="warn"] { border-left-color: #f59e0b; }
-.callout[data-tone="success"] { border-left-color: #34d399; }
 
 .prose blockquote {
   border-left: 2px solid var(--ui-primary);
