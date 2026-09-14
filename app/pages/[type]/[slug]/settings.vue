@@ -27,7 +27,7 @@ const TABS = [
   { id: 'links', to: '/links', icon: 'i-pixelarticons-link', need: 'edit_details' },
   { id: 'versions', to: '/versions', icon: 'i-pixelarticons-archive', need: 'upload_version' },
   { id: 'members', to: '/members', icon: 'i-pixelarticons-users', need: 'edit_member' },
-  { id: 'analytics', to: '/dashboard/analytics', icon: 'i-pixelarticons-chart-line', need: 'view_analytics' },
+  { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line', need: 'view_analytics' },
 ] as const
 
 const tabs = computed<SideNavItem[]>(() => TABS

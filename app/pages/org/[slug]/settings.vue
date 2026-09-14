@@ -14,13 +14,15 @@ watchEffect(() => {
   if (org.value && !canManage.value) navigateTo(localePath(`/org/${slug.value}`), { replace: true })
 })
 
-// To add a tab: one entry here and one page under settings/.
+// To add a tab: one entry here and one page under settings/ whose file name
+// matches `to` — the address is built by gluing it onto the settings path, so
+// an entry naming a page that is not there renders the frame and nothing in it.
 const TABS = [
   { id: 'overview', to: '', icon: 'i-pixelarticons-gear' },
   { id: 'members', to: '/members', icon: 'i-pixelarticons-users' },
-  { id: 'projects', to: '/dashboard/projects', icon: 'i-pixelarticons-package' },
+  { id: 'projects', to: '/projects', icon: 'i-pixelarticons-package' },
   { id: 'split', to: '/split', icon: 'i-pixelarticons-coin' },
-  { id: 'analytics', to: '/dashboard/analytics', icon: 'i-pixelarticons-chart-line' },
+  { id: 'analytics', to: '/analytics', icon: 'i-pixelarticons-chart-line' },
 ]
 
 const tabs = computed<SideNavItem[]>(() => TABS.map(tab => ({
