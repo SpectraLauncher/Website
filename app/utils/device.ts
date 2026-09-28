@@ -9,7 +9,7 @@ const PLATFORMS: Array<[RegExp, string]> = [
   [/Windows/i, 'Windows'],
   [/Android/i, 'Android'],
   [/iPhone|iPad|iPod|iOS/i, 'iOS'],
-  [/Mac OS X|Macintosh/i, 'macOS'],
+  [/Mac OS X|Macintosh|macOS/i, 'macOS'],
   [/Linux/i, 'Linux'],
 ]
 
@@ -27,6 +27,13 @@ function first(agent: string, table: Array<[RegExp, string]>): string | null {
 
 export function describeAgent(agent?: string | null): string | null {
   if (!agent) return null
+
+  // Launcher sessions are created by the one-time-token exchange, not a browser.
+  // Older versions sent only Spectra-Launcher/<version>, so keep those recognisable.
+  if (/^Spectra-Launcher\//i.test(agent)) {
+    const platform = first(agent, PLATFORMS)
+    return platform ? `Spectra Launcher · ${platform}` : 'Spectra Launcher'
+  }
 
   const parts = [first(agent, BROWSERS), first(agent, PLATFORMS)].filter(Boolean)
   return parts.length ? parts.join(' · ') : null

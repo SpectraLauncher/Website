@@ -1497,7 +1497,7 @@ useSeoMeta({ title: () => `${t('account.title')}`, robots: 'noindex, nofollow' }
                 />
               </p>
               <p class="truncate text-xs text-muted">
-                {{ item.ipAddress || '—' }} · {{ new Date(item.updatedAt).toLocaleString(locale) }}
+                {{ item.ipAddress && item.ipAddress !== '0.0.0.0' ? item.ipAddress : '—' }} · {{ new Date(item.updatedAt).toLocaleString(locale) }}
               </p>
             </div>
             <UButton
