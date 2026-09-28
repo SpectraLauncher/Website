@@ -24,7 +24,7 @@ for (const line of envFile.split('\n')) {
   if (!(key in process.env)) process.env[key] = line.slice(at + 1).trim().replace(/^["']|["']$/g, '')
 }
 
-const REPO = process.env.RELEASE_REPO || 'MakotoPD/Spectra-Launcher'
+const REPO = process.env.RELEASE_REPO || 'SpectraLauncher/Launcher'
 const SECRET = process.env.GITHUB_WEBHOOK_SECRET
 const SITE = process.env.SITE || process.env.NUXT_PUBLIC_SITE_URL || 'https://usespectra.app'
 const tag = process.argv[2]
