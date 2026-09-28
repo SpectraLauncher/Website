@@ -1,10 +1,12 @@
 
 import { exec, q } from './db'
 import { r2Delete, useR2 } from './r2'
+import { deleteLauncherCloudObjects } from './launcher-cloud-sync'
 
 const AVATAR_EXTENSIONS = ['webp', 'png', 'jpg']
 
 export async function deleteAccount(id: string): Promise<void> {
+  await deleteLauncherCloudObjects(id)
   const r2 = useR2()
   if (r2) {
     const packs = await q<{ object_key: string | null, pending_key: string | null }>(

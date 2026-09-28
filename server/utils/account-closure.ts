@@ -1,6 +1,7 @@
 
 import { exec, one, q } from './db'
 import { queueSweep } from './images'
+import { deleteLauncherCloudObjects } from './launcher-cloud-sync'
 
 export interface ClosureBlocker {
   code: string
@@ -38,6 +39,7 @@ export async function closureBlockers(userId: string): Promise<ClosureBlocker[]>
 // with it; anything deliberately kept is severed first and named here so the
 // list is auditable rather than implicit.
 export async function closeAccount(userId: string): Promise<void> {
+  await deleteLauncherCloudObjects(userId)
   // Moderation history stays, with the author detached. A rejection has to keep
   // explaining itself after the person who was rejected is gone.
   await exec('UPDATE project_message SET author_id = NULL WHERE author_id = $1', [userId])

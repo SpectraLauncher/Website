@@ -26,6 +26,19 @@ export async function ensureSchema() {
     CREATE INDEX IF NOT EXISTS idx_shares_expires ON shares(expires);
     CREATE INDEX IF NOT EXISTS idx_shares_owner ON shares(owner_id, instance_id);
 
+    -- One private cloud snapshot per account. The ZIP lives in R2; only the
+    -- current revision and an in-progress upload live in Postgres.
+    CREATE TABLE IF NOT EXISTS launcher_cloud_sync (
+      user_id      TEXT PRIMARY KEY REFERENCES "user"(id) ON DELETE CASCADE,
+      revision     BIGINT NOT NULL DEFAULT 0,
+      object_key   TEXT,
+      size         BIGINT NOT NULL DEFAULT 0,
+      updated      BIGINT,
+      pending_key  TEXT,
+      pending_size BIGINT,
+      pending_at   BIGINT
+    );
+
     -- One row per pair, not per direction: requester_id remembers who asked.
     CREATE TABLE IF NOT EXISTS friendship (
       id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
