@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   ADDON_PERMISSIONS,
+  ADDON_SLOTS,
   AddonManifestError,
   addonMeta,
   readAddonManifest,
@@ -59,7 +60,7 @@ describe.skipIf(!hasFixtures('sample-addon.zip'))('addon.json z prawdziwego arch
 
   it('czyta wszystko, co addon dokłada do launchera', () => {
     expect(manifest.contributes.pages).toEqual([
-      { id: 'stats', title: 'Stats', icon: 'chart', entry: 'ui/stats.html' },
+      { id: 'stats', title: 'Stats', icon: 'icons/chart.svg', entry: 'ui/stats.html' },
     ])
     expect(manifest.contributes.instanceTabs[0]!.entry).toBe('ui/tab.html')
     expect(manifest.contributes.settings).toBe('ui/settings.html')
@@ -67,6 +68,17 @@ describe.skipIf(!hasFixtures('sample-addon.zip'))('addon.json z prawdziwego arch
       { id: 'midnight', name: 'Midnight', file: 'themes/midnight.json' },
     ])
     expect(manifest.contributes.locales).toEqual({ pl: 'locales/pl.json' })
+  })
+
+  it('czyta przyciski w slotach i okna', () => {
+    expect(manifest.contributes.buttons.map(b => [b.slot, b.action.type])).toEqual([
+      ['sidebar.menu', 'page'],
+      ['titlebar', 'window'],
+      ['instance.header', 'url'],
+    ])
+    expect(manifest.contributes.windows).toEqual([
+      { id: 'overlay', title: 'Overlay', entry: 'ui/overlay.html', width: 420, height: 300, resizable: true },
+    ])
   })
 
   it('metadane wersji niosa id addonu i uprawnienia', () => {
@@ -181,6 +193,65 @@ describe('addon.json', () => {
   it('odrzuca nieznany kod jezyka', () => {
     rejects({ ...base, contributes: { locales: { polish: 'pl.json' } } }, { 'pl.json': '{}' })
       .toThrow(/language/)
+  })
+
+  describe('przyciski', () => {
+    const button = (over: Record<string, unknown>) => ({
+      ...base,
+      main: undefined,
+      contributes: {
+        buttons: [{ id: 'b', slot: 'sidebar.menu', title: 'B', action: { type: 'url', url: 'https://example.com' }, ...over }],
+      },
+    })
+
+    it('przycisk z linkiem wystarcza za caly addon', () => {
+      expect(readAddonManifest(withManifest(button({})))?.contributes.buttons[0]!.action)
+        .toEqual({ type: 'url', url: 'https://example.com/' })
+    })
+
+    it.each(ADDON_SLOTS.map(slot => [slot]))('zna slot %s', (slot) => {
+      expect(readAddonManifest(withManifest(button({ slot })))?.contributes.buttons[0]!.slot).toBe(slot)
+    })
+
+    it('odrzuca nieznany slot', () => {
+      rejects(button({ slot: 'everywhere' })).toThrow(/not a place/)
+    })
+
+    it.each([
+      ['http://example.com'],
+      ['javascript:alert(1)'],
+      ['https://user:pass@example.com'],
+      ['file:///C:/Windows'],
+      ['nie adres'],
+    ])('link %s nie przechodzi', (url) => {
+      rejects(button({ action: { type: 'url', url } })).toThrow(/url/)
+    })
+
+    it('akcja musi wskazywac cos, co addon ma', () => {
+      rejects(button({ action: { type: 'page', page: 'nope' } })).toThrow(/page the addon does not have/)
+      rejects(button({ action: { type: 'window', window: 'nope' } })).toThrow(/window the addon does not have/)
+      rejects(button({ action: { type: 'command', command: 'go' } })).toThrow(/needs main/)
+      rejects(button({ action: { type: 'shell', command: 'rm' } })).toThrow(/type/)
+    })
+
+    it('ikona to obrazek z paczki', () => {
+      rejects(button({ icon: 'icon.exe' }), { 'icon.exe': '' }).toThrow(/\.svg/)
+      rejects(button({ icon: 'missing.png' })).toThrow(/not in the archive/)
+    })
+  })
+
+  it('okno ma rozsadny rozmiar', () => {
+    const win = (over: Record<string, unknown>) => ({
+      ...base,
+      contributes: { windows: [{ id: 'w', title: 'W', entry: 'w.html', ...over }] },
+    })
+    expect(readAddonManifest(withManifest(win({}), { 'w.html': '' }))?.contributes.windows[0]!.resizable).toBe(true)
+    rejects(win({ width: 50 }), { 'w.html': '' }).toThrow(/between/)
+    rejects(win({ height: 1.5 }), { 'w.html': '' }).toThrow(/between/)
+  })
+
+  it('zakres wersji launchera moze miec kilka warunkow', () => {
+    expect(readAddonManifest(withManifest({ ...base, launcher: '>=0.10.0, <2.0.0' }))?.launcher).toBe('>=0.10.0, <2.0.0')
   })
 
   it('addon, ktory niczego nie dokłada, jest bledem', () => {

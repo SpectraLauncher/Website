@@ -16,16 +16,54 @@ export const ADDON_PERMISSIONS = [
   'skins:read',
 ] as const
 
+export const ADDON_SLOTS = [
+  'sidebar.menu',
+  'sidebar.footer',
+  'titlebar',
+  'home.header',
+  'instance.header',
+  'instance.menu',
+  'worlds.header',
+  'screenshots.header',
+  'skins.header',
+  'settings.header',
+] as const
+
 export const ADDON_LIMITS = {
   entries: 20,
   permissions: 30,
 }
+
+const ICON_TYPES = ['.svg', '.png', '.webp']
 
 export interface AddonView {
   id: string
   title: string
   entry: string
   icon: string | null
+}
+
+export type AddonAction =
+  | { type: 'url', url: string }
+  | { type: 'page', page: string }
+  | { type: 'window', window: string }
+  | { type: 'command', command: string }
+
+export interface AddonButton {
+  id: string
+  slot: string
+  title: string
+  icon: string | null
+  action: AddonAction
+}
+
+export interface AddonWindow {
+  id: string
+  title: string
+  entry: string
+  width: number | null
+  height: number | null
+  resizable: boolean
 }
 
 export interface AddonTheme {
@@ -50,6 +88,8 @@ export interface AddonManifest {
     settings: string | null
     themes: AddonTheme[]
     locales: Record<string, string>
+    buttons: AddonButton[]
+    windows: AddonWindow[]
   }
 }
 
@@ -57,7 +97,7 @@ export class AddonManifestError extends Error {}
 
 const ID = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/
 const VERSION = /^[0-9A-Za-z][0-9A-Za-z.+-]{0,59}$/
-const RANGE = /^[0-9A-Za-z.*<>=~^|\s-]{1,64}$/
+const RANGE = /^[0-9A-Za-z.*<>=~^|,\s-]{1,64}$/
 const HOST = /^network:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/
 const LOCALE = /^[a-z]{2}(?:-[A-Z]{2})?$/
 
@@ -120,9 +160,75 @@ function views(zip: Zip, value: unknown, field: string): AddonView[] {
       id,
       title: string(entry.title, `${field}[${i}].title`, 64),
       entry: path(zip, entry.entry, `${field}[${i}].entry`, ['.html']),
-      icon: optionalString(entry.icon, `${field}[${i}].icon`, 64),
+      icon: optionalPath(zip, entry.icon, `${field}[${i}].icon`, ICON_TYPES),
     }
   }), field)
+}
+
+function id(value: unknown, field: string): string {
+  const out = string(value, field, 64)
+  if (!ID.test(out)) fail(`${field} may only use a-z, 0-9 and dashes`)
+  return out
+}
+
+function size(value: unknown, field: string, min: number, max: number): number | null {
+  if (value === undefined || value === null) return null
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < min || value > max) {
+    fail(`${field} has to be a whole number between ${min} and ${max}`)
+  }
+  return value
+}
+
+function httpsUrl(value: unknown, field: string): string {
+  const raw = string(value, field, 500)
+  let url: URL
+  try {
+    url = new URL(raw)
+  } catch {
+    fail(`${field} is not an address`)
+  }
+  if (url.protocol !== 'https:' || url.username || url.password) fail(`${field} has to be a plain https address`)
+  return url.toString()
+}
+
+function windows(zip: Zip, value: unknown): AddonWindow[] {
+  return uniqueIds(list(value, 'contributes.windows', ADDON_LIMITS.entries).map((raw, i) => {
+    const field = `contributes.windows[${i}]`
+    const entry = object(raw, field)
+    return {
+      id: id(entry.id, `${field}.id`),
+      title: string(entry.title, `${field}.title`, 64),
+      entry: path(zip, entry.entry, `${field}.entry`, ['.html']),
+      width: size(entry.width, `${field}.width`, 200, 3840),
+      height: size(entry.height, `${field}.height`, 150, 2160),
+      resizable: entry.resizable !== false,
+    }
+  }), 'contributes.windows')
+}
+
+function action(value: unknown, field: string): AddonAction {
+  const raw = object(value, field)
+  if (raw.type === 'url') return { type: 'url', url: httpsUrl(raw.url, `${field}.url`) }
+  if (raw.type === 'page') return { type: 'page', page: id(raw.page, `${field}.page`) }
+  if (raw.type === 'window') return { type: 'window', window: id(raw.window, `${field}.window`) }
+  if (raw.type === 'command') return { type: 'command', command: id(raw.command, `${field}.command`) }
+  fail(`${field}.type has to be url, page, window or command`)
+}
+
+function buttons(zip: Zip, value: unknown): AddonButton[] {
+  return uniqueIds(list(value, 'contributes.buttons', ADDON_LIMITS.entries).map((raw, i) => {
+    const field = `contributes.buttons[${i}]`
+    const entry = object(raw, field)
+    const slot = string(entry.slot, `${field}.slot`, 64)
+    if (!(ADDON_SLOTS as readonly string[]).includes(slot)) fail(`${field}.slot is not a place in the launcher: ${slot}`)
+    return {
+      id: id(entry.id, `${field}.id`),
+      slot,
+      title: string(entry.title, `${field}.title`, 64),
+      icon: optionalPath(zip, entry.icon, `${field}.icon`, ICON_TYPES),
+      action: action(entry.action, `${field}.action`),
+    }
+  }), 'contributes.buttons')
 }
 
 function themes(zip: Zip, value: unknown): AddonTheme[] {
@@ -202,12 +308,28 @@ export function readAddonManifest(zip: Zip): AddonManifest | null {
       settings: optionalPath(zip, contributes.settings, 'contributes.settings', ['.html']),
       themes: themes(zip, contributes.themes),
       locales: locales(zip, contributes.locales),
+      buttons: buttons(zip, contributes.buttons),
+      windows: windows(zip, contributes.windows),
     },
   }
 
   const c = manifest.contributes
+  for (const [i, button] of c.buttons.entries()) {
+    const { action } = button
+    if (action.type === 'page' && !c.pages.some(page => page.id === action.page)) {
+      fail(`contributes.buttons[${i}] opens a page the addon does not have: ${action.page}`)
+    }
+    if (action.type === 'window' && !c.windows.some(win => win.id === action.window)) {
+      fail(`contributes.buttons[${i}] opens a window the addon does not have: ${action.window}`)
+    }
+    if (action.type === 'command' && !manifest.main) {
+      fail(`contributes.buttons[${i}] sends a command, which needs main`)
+    }
+  }
+
   const empty = !manifest.main && !manifest.backend && !c.pages.length && !c.instanceTabs.length
     && !c.settings && !c.themes.length && !Object.keys(c.locales).length
+    && !c.buttons.length && !c.windows.length
   if (empty) fail('the addon does not contribute anything')
 
   return manifest

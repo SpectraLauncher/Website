@@ -105,11 +105,19 @@ ADDON = {
     'backend': 'backend.wasm',
     'permissions': ['instances:read', 'network:api.example.com', 'instances:read'],
     'contributes': {
-        'pages': [{'id': 'stats', 'title': 'Stats', 'icon': 'chart', 'entry': 'ui/stats.html'}],
+        'pages': [{'id': 'stats', 'title': 'Stats', 'icon': 'icons/chart.svg', 'entry': 'ui/stats.html'}],
         'instanceTabs': [{'id': 'stats-tab', 'title': 'Stats', 'entry': 'ui/tab.html'}],
         'settings': 'ui/settings.html',
         'themes': [{'id': 'midnight', 'name': 'Midnight', 'file': 'themes/midnight.json'}],
         'locales': {'pl': 'locales/pl.json'},
+        'buttons': [
+            {'id': 'open-stats', 'slot': 'sidebar.menu', 'title': '%stats%', 'icon': 'icons/chart.svg',
+             'action': {'type': 'page', 'page': 'stats'}},
+            {'id': 'overlay', 'slot': 'titlebar', 'title': 'Overlay', 'action': {'type': 'window', 'window': 'overlay'}},
+            {'id': 'wiki', 'slot': 'instance.header', 'title': 'Wiki',
+             'action': {'type': 'url', 'url': 'https://example.com/wiki'}},
+        ],
+        'windows': [{'id': 'overlay', 'title': 'Overlay', 'entry': 'ui/overlay.html', 'width': 420, 'height': 300}],
     },
 }
 
@@ -164,6 +172,8 @@ FILES = {
         ('ui/stats.html', b'<!doctype html><title>Stats</title>\n', DEFLATED),
         ('ui/tab.html', b'<!doctype html><title>Tab</title>\n', DEFLATED),
         ('ui/settings.html', b'<!doctype html><title>Settings</title>\n', DEFLATED),
+        ('ui/overlay.html', b'<!doctype html><title>Overlay</title>\n', DEFLATED),
+        ('icons/chart.svg', b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>', DEFLATED),
         ('themes/midnight.json', b'{"accent":"indigo","mode":"oled"}', DEFLATED),
         ('locales/pl.json', b'{"stats":"Statystyki"}', DEFLATED),
     ],
