@@ -1,5 +1,7 @@
 
 import { normalizeSlug } from '../../shared/utils/catalog-slug'
+import { type AddonManifest, AddonManifestError, addonMeta, readAddonManifest } from './addon-manifest'
+import { openZip } from './zip'
 import type { ProjectType, VersionChannel } from '../../shared/utils/catalog-types'
 import { channelFromVersion, versionFromFilename } from '../../shared/utils/version-from-filename'
 import { expandRange, minecraftVersions, releaseIds } from './game-versions'
@@ -129,6 +131,21 @@ function fromArchive(info: ModInfo, releases: string[]): UploadAnalysis {
   return out
 }
 
+function fromAddon(manifest: AddonManifest): UploadAnalysis {
+  const out = blank()
+
+  out.detected = 'addon'
+  out.title = manifest.name
+  out.slug = normalizeSlug(manifest.id)
+  out.summary = manifest.description
+  out.version = manifest.version
+  out.loaders = ['spectra']
+  out.environment = ['client']
+  out.meta = addonMeta(manifest)
+
+  return out
+}
+
 function fromSchematic(info: SchematicInfo): UploadAnalysis {
   const out = blank()
 
@@ -188,6 +205,17 @@ async function read(
   filename: string,
   sha512?: string,
 ): Promise<UploadAnalysis> {
+  try {
+    const manifest = readAddonManifest(openZip(body))
+    if (manifest) return fromAddon(manifest)
+  } catch (e) {
+    if (e instanceof AddonManifestError) {
+      const out = blank()
+      out.warnings.push({ code: 'catalog.warn.badAddon', params: { reason: e.message } })
+      return out
+    }
+  }
+
   const releases = releaseIds(await minecraftVersions().catch(() => []))
 
   try {

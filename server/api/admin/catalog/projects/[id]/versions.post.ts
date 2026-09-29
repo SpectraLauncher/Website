@@ -3,6 +3,9 @@ export default defineEventHandler(async (event) => {
 
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'id') ?? ''))
   if (!project) throw createError({ statusCode: 404, statusMessage: 'no such project' })
+  if (project.type === 'addon') {
+    throw createError({ statusCode: 400, statusMessage: 'upload addon versions from the project page' })
+  }
 
   await requireHeadroom(project.id, 'versionsPerProject', project.owner_id ?? admin.id)
 

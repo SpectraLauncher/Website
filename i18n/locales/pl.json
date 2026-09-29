@@ -3213,7 +3213,8 @@
       "previewTruncated": "Budowla jest na tyle duża, że podgląd 3D pokazuje tylko jej część.",
       "noPreview": "Brak podglądu 3D: {reason}",
       "emptyModpack": "Ten modpack nie wymienia żadnych plików, więc nic by się nie zainstalowało.",
-      "multiPlatform": "Ten jar zawiera deskryptory kilku platform ({loaders}). Wszystkie zostały zapisane; wybierz typ projektu, który pasuje najlepiej."
+      "multiPlatform": "Ten jar zawiera deskryptory kilku platform ({loaders}). Wszystkie zostały zapisane; wybierz typ projektu, który pasuje najlepiej.",
+      "badAddon": "To wygląda na addon do launchera, ale jego addon.json jest błędny: {reason}"
     },
     "admin": {
       "title": "Katalog",

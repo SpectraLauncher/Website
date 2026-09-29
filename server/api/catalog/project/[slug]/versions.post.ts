@@ -48,6 +48,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if (project.type === 'addon') {
+    const primary = files.find(file => file.primary) ?? files[0]
+    if (!primary) throw createError({ statusCode: 400, statusMessage: 'an addon version needs its file' })
+
+    const manifest = await readAddonFile(primary.key)
+    await claimAddonId(project, manifest.id)
+    Object.assign(body, addonVersionInput(manifest))
+  }
+
   const version = await createVersion(project.id, body)
 
   const attached = []

@@ -94,6 +94,27 @@ MRPACK_INDEX = {
     ],
 }
 
+ADDON = {
+    'id': 'better-stats',
+    'name': 'Better Stats',
+    'version': '1.2.0',
+    'description': 'Play time and crash counts per instance.',
+    'api': 1,
+    'launcher': '>=0.10.0',
+    'main': 'main.js',
+    'backend': 'backend.wasm',
+    'permissions': ['instances:read', 'network:api.example.com', 'instances:read'],
+    'contributes': {
+        'pages': [{'id': 'stats', 'title': 'Stats', 'icon': 'chart', 'entry': 'ui/stats.html'}],
+        'instanceTabs': [{'id': 'stats-tab', 'title': 'Stats', 'entry': 'ui/tab.html'}],
+        'settings': 'ui/settings.html',
+        'themes': [{'id': 'midnight', 'name': 'Midnight', 'file': 'themes/midnight.json'}],
+        'locales': {'pl': 'locales/pl.json'},
+    },
+}
+
+WASM_MAGIC = b'\x00asm\x01\x00\x00\x00'
+
 # Enough of a mod to be read at all. The scan samples pair it with the one thing
 # each of them exists to be caught for.
 MINIMAL_MOD = b'{"id":"x","version":"1.0.0"}'
@@ -135,6 +156,16 @@ FILES = {
     'scan-executable.jar': [
         ('fabric.mod.json', MINIMAL_MOD, STORED),
         ('payload.exe', MZ, STORED),
+    ],
+    'sample-addon.zip': [
+        ('addon.json', json.dumps(ADDON, indent=2).encode(), DEFLATED),
+        ('main.js', b'spectra.events.on("game:exit", () => spectra.ui.toast("bye"))\n', DEFLATED),
+        ('backend.wasm', WASM_MAGIC, STORED),
+        ('ui/stats.html', b'<!doctype html><title>Stats</title>\n', DEFLATED),
+        ('ui/tab.html', b'<!doctype html><title>Tab</title>\n', DEFLATED),
+        ('ui/settings.html', b'<!doctype html><title>Settings</title>\n', DEFLATED),
+        ('themes/midnight.json', b'{"accent":"indigo","mode":"oled"}', DEFLATED),
+        ('locales/pl.json', b'{"stats":"Statystyki"}', DEFLATED),
     ],
     # 10 MB of zeros in 10 kB of archive: the ratio is the finding, not the size.
     'zip-bomb.zip': [

@@ -25,4 +25,5 @@ in here to get that coverage back.
 The small ones are ours and are written by `test/fixtures/make.mjs`:
 `sample-fabric-mod.jar`, `sample-plugin.jar`, `sample-velocity-plugin.jar`,
 `sample-pack.mrpack`, `scan-beacon.jar`, `scan-disguised.jar`,
-`scan-executable.jar`, `zip-bomb.zip`, `zip-comment.zip`, `zip-traversal.zip`.
+`scan-executable.jar`, `sample-addon.zip`, `zip-bomb.zip`, `zip-comment.zip`,
+`zip-traversal.zip`.

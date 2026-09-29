@@ -455,6 +455,11 @@ export async function ensureCatalogSchema() {
   `)
   await pool.query('CREATE INDEX IF NOT EXISTS idx_project_search ON project USING GIN (search)')
 
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uniq_addon_id ON project ((meta->>'addonId'))
+      WHERE type = 'addon' AND meta ? 'addonId'
+  `)
+
   // pg_trgm needs privileges the application role may not have. Search works
   // without it, just without typo tolerance — not a reason to refuse to boot.
   try {
