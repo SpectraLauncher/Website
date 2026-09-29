@@ -1,5 +1,5 @@
 Your account is how the site knows what is yours: your projects, your
-collections, the things you follow, and anything you have bought.
+collections and the things you follow.
 
 ## Signing in
 
@@ -40,4 +40,4 @@ you. They are never told.
 
 **Settings → Privacy** has account deletion, with a preview of what goes with it.
 It refuses while somebody else would be left holding a broken thing: an
-organization you solely own, or completed sales that have to stay attributable.
+organization you solely own.

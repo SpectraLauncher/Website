@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+const sections = docSections(useCatalogOpen())
 
 useSeoMeta({
   title: () => t('docs.title'),
@@ -21,7 +22,7 @@ useSeoMeta({
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2">
           <div
-            v-for="section in DOC_SECTIONS"
+            v-for="section in sections"
             :key="section.id"
             class="rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
           >

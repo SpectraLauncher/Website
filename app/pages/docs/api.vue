@@ -8,12 +8,14 @@ useSeoMeta({
 })
 
 const search = ref('')
+const catalogOpen = useCatalogOpen()
+const published = API_ENDPOINTS.filter(endpoint => catalogOpen || !isCatalogEndpoint(endpoint.route))
 
 const shown = computed(() => {
   const needle = search.value.trim().toLowerCase()
-  if (!needle) return API_ENDPOINTS
+  if (!needle) return published
 
-  return API_ENDPOINTS.filter(endpoint =>
+  return published.filter(endpoint =>
     endpoint.route.toLowerCase().includes(needle)
     || endpoint.summary.toLowerCase().includes(needle))
 })

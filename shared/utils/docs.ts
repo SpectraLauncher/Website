@@ -37,8 +37,22 @@ export type DocSection = typeof DOC_SECTIONS[number]['id']
 
 export const DOC_PAGES = DOC_SECTIONS.flatMap(section => section.pages) as readonly string[]
 
-export function isDocPage(value: unknown): value is string {
-  return typeof value === 'string' && DOC_PAGES.includes(value)
+export const CATALOG_DOC_PAGES: readonly string[] = [
+  'what-is-spectra', 'project-types', 'finding-content', 'collections',
+  'publishing', 'versions', 'organizations', 'disclosures', 'moderation', 'reporting',
+]
+
+export function docSections(catalogOpen: boolean) {
+  return DOC_SECTIONS
+    .map(section => ({
+      ...section,
+      pages: section.pages.filter(page => catalogOpen || !CATALOG_DOC_PAGES.includes(page)),
+    }))
+    .filter(section => section.pages.length)
+}
+
+export function docPages(catalogOpen: boolean): readonly string[] {
+  return docSections(catalogOpen).flatMap(section => section.pages)
 }
 
 export function sectionOf(slug: string): DocSection | null {
@@ -47,12 +61,15 @@ export function sectionOf(slug: string): DocSection | null {
 
 // Previous and next across the whole manual, so a reader can work through it
 // without going back to the index every time.
-export function neighbours(slug: string): { previous: string | null, next: string | null } {
-  const index = DOC_PAGES.indexOf(slug)
+export function neighbours(
+  slug: string,
+  pages: readonly string[] = DOC_PAGES,
+): { previous: string | null, next: string | null } {
+  const index = pages.indexOf(slug)
   if (index < 0) return { previous: null, next: null }
 
   return {
-    previous: DOC_PAGES[index - 1] ?? null,
-    next: DOC_PAGES[index + 1] ?? null,
+    previous: pages[index - 1] ?? null,
+    next: pages[index + 1] ?? null,
   }
 }

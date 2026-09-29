@@ -18,6 +18,13 @@ export const API_GROUPS = [
 
 export type ApiGroup = typeof API_GROUPS[number]
 
+export const CATALOG_API_PREFIXES = ['/api/catalog/', '/api/org/', '/api/verification', '/api/v2/'] as const
+
+export function isCatalogEndpoint(route: string): boolean {
+  const path = route.split(' ')[1] ?? ''
+  return CATALOG_API_PREFIXES.some(prefix => path.startsWith(prefix))
+}
+
 export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/search', group: 'catalog', auth: 'none', summary: 'Search projects, with filters and sorting' },
   { route: 'GET /api/catalog/facets', group: 'catalog', auth: 'none', summary: 'Counts per filter value for the current search' },

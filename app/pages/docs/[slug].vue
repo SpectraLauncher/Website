@@ -3,14 +3,17 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const docContent = useDocContent()
+const catalogOpen = useCatalogOpen()
+const sections = docSections(catalogOpen)
+const pages = docPages(catalogOpen)
 
 const slug = computed(() => String(route.params.slug ?? ''))
-const known = computed(() => isDocPage(slug.value))
+const known = computed(() => pages.includes(slug.value))
 
 const source = computed(() => (known.value ? docContent(slug.value) : null))
 const body = computed(() => (source.value ? renderMarkdown(source.value) : ''))
 
-const around = computed(() => neighbours(slug.value))
+const around = computed(() => neighbours(slug.value, pages))
 
 const title = computed(() =>
   known.value ? t(`docs.pages.${slug.value}.title`) : t('docs.notFound'))
@@ -40,7 +43,7 @@ useSeoMeta({
               {{ t('docs.title') }}
             </NuxtLink>
 
-            <div v-for="section in DOC_SECTIONS" :key="section.id" class="mb-5">
+            <div v-for="section in sections" :key="section.id" class="mb-5">
               <p class="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-dimmed">
                 <UIcon :name="section.icon" class="size-3.5" />
                 {{ t(`docs.sections.${section.id}`) }}

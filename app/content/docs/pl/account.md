@@ -1,5 +1,5 @@
-Konto jest tym, po czym serwis poznaje, co jest twoje: projekty, kolekcje,
-obserwowane rzeczy i to, co kupiłeś.
+Konto jest tym, po czym serwis poznaje, co jest twoje: projekty, kolekcje
+i obserwowane rzeczy.
 
 ## Logowanie
 
@@ -40,5 +40,4 @@ mu kontakt. Zablokowana osoba nie dowiaduje się o tym.
 
 W **Ustawienia → Prywatność** usuniesz konto, z podglądem tego, co zniknie razem
 z nim. Odmówi, jeśli ktoś inny zostałby z zepsutą rzeczą: organizacją, której
-jesteś jedynym właścicielem, albo zakończoną sprzedażą, która musi pozostać
-przypisana.
+jesteś jedynym właścicielem.
