@@ -9,7 +9,6 @@ export interface ProjectEditorPayload {
   }
   gallery: Array<{ id: string, url: string, title: string }>
   permissions: ProjectPermission[]
-  pricing: { rateBps: number, minFeeMinor: number, minPriceMinor: number }
 }
 
 // One fetch behind every settings page, keyed by the project so the tabs share

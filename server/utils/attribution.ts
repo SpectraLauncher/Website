@@ -74,52 +74,6 @@ export async function pruneViewSeen(): Promise<number> {
     [metricDay(Date.now() - SEEN_RETENTION_DAYS * 86_400_000)])
 }
 
-export interface MetricRow {
-  project_id: string
-  views: number
-  downloads: number
-}
-
-export interface Share {
-  projectId: string
-  views: number
-  downloads: number
-  weight: number
-  share: number
-}
-
-// Modrinth splits by views and downloads together; this keeps the same shape so
-// the weighting can be tuned without touching how anything is collected.
-export const VIEW_WEIGHT = 1
-export const DOWNLOAD_WEIGHT = 1
-
-// The split for a period. Returned as fractions rather than money so the same
-// numbers can be shown in a dashboard long before anything is paid out.
-export function revenueShares(rows: MetricRow[]): Share[] {
-  const weighted = rows.map(row => ({
-    projectId: row.project_id,
-    views: Number(row.views) || 0,
-    downloads: Number(row.downloads) || 0,
-    weight: (Number(row.views) || 0) * VIEW_WEIGHT
-      + (Number(row.downloads) || 0) * DOWNLOAD_WEIGHT,
-  }))
-
-  const total = weighted.reduce((sum, row) => sum + row.weight, 0)
-
-  return weighted
-    .map(row => ({ ...row, share: total > 0 ? row.weight / total : 0 }))
-    .sort((a, b) => b.share - a.share || a.projectId.localeCompare(b.projectId))
-}
-
-export async function metricsBetween(from: string, to: string): Promise<MetricRow[]> {
-  return await q<MetricRow>(
-    `SELECT project_id, SUM(views)::int AS views, SUM(downloads)::int AS downloads
-     FROM project_metric WHERE day >= $1 AND day <= $2
-     GROUP BY project_id`,
-    [from, to],
-  )
-}
-
 export async function metricsForProject(projectId: string, days: number) {
   const from = metricDay(Date.now() - days * 86_400_000)
   return await q<{ day: string, views: number, downloads: number }>(
@@ -136,11 +90,4 @@ export async function totalsForProject(projectId: string) {
      FROM project_metric WHERE project_id = $1`,
     [projectId],
   )
-}
-
-export async function projectTitles(ids: string[]): Promise<Map<string, string>> {
-  if (!ids.length) return new Map()
-  const rows = await q<{ id: string, title: string }>(
-    'SELECT id, title FROM project WHERE id = ANY($1)', [ids])
-  return new Map(rows.map(row => [row.id, row.title]))
 }

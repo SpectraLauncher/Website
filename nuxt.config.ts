@@ -37,7 +37,7 @@ const ACCOUNT_PATHS = [
   // consumers of this list - robots.disallow and sitemap.exclude - match by
   // prefix, so the eleven pages under it need naming once.
   '/dashboard',
-  '/account', '/cart', '/oauth', '/order',
+  '/account', '/oauth',
 ]
 
 const PRIVATE_PATHS = [

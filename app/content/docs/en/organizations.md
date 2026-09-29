@@ -24,5 +24,5 @@ one cannot be demoted, removed, or leave.
 
 A project owned by an organization is worked on by its members. Being in the
 organization gets you the working set — upload versions, edit details, edit the
-description, see analytics. Deleting, member management and payouts have to be
-granted per project.
+description, see analytics. Deleting and member management have to be granted per
+project.

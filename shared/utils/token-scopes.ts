@@ -18,7 +18,6 @@ export const TOKEN_SCOPES = {
   'collections:read': 1 << 9,
   'collections:write': 1 << 10,
   'analytics:read': 1 << 11,
-  'payouts:read': 1 << 12,
 } as const
 
 export type TokenScope = keyof typeof TOKEN_SCOPES

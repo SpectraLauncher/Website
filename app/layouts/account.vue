@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // The frame around everything somebody reaches from their own account:
-// notifications, projects, collections, organizations, library, analytics,
-// revenue, selling, reports and settings. Before this each page built its own
-// and none of them could see the others.
+// notifications, projects, collections, organizations, analytics, reports and
+// settings. Before this each page built its own and none of them could see the
+// others.
 //
 // A page joins it with definePageMeta({ layout: 'account' }) and renders its own
 // UiPageHeader — the layout owns the frame, not the heading.

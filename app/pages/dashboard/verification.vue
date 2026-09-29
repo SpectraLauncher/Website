@@ -2,7 +2,6 @@
 definePageMeta({ middleware: 'catalog' })
 
 const { t, locale } = useI18n()
-const localePath = useLocalePath()
 
 interface Request {
   id: string
@@ -214,13 +213,6 @@ useSeoMeta({ title: () => t('verification.title'), robots: 'noindex' })
             @click="submit"
           />
         </div>
-
-        <p class="mt-6 text-sm text-dimmed">
-          {{ t('verification.rates') }}
-          <NuxtLink :to="localePath('/terms')" class="text-primary hover:underline">
-            {{ t('verification.terms') }}
-          </NuxtLink>
-        </p>
       </section>
     </div>
   </div>

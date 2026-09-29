@@ -6,7 +6,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { count, when, price } = useCatalogFormat()
+const { count, when } = useCatalogFormat()
 
 const versions = computed(() => gameVersionRange(props.hit.gameVersions))
 </script>
@@ -40,12 +40,5 @@ const versions = computed(() => gameVersionRange(props.hit.gameVersions))
         <span>{{ t('catalog.updated') }} {{ when(hit.updated) }}</span>
       </span>
     </span>
-
-    <span
-      class="inline-flex h-7 shrink-0 items-center rounded-full px-3 text-xs font-bold"
-      :class="hit.price > 0
-        ? 'bg-primary font-mono text-white'
-        : 'border border-raised-line bg-raised text-muted'"
-    >{{ price(hit.price) }}</span>
   </UiPanel>
 </template>

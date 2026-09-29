@@ -25,7 +25,6 @@ export interface AdminNavEntry {
 export const ADMIN_NAV: readonly AdminNavEntry[] = [
   { id: 'overview', icon: 'i-pixelarticons-dashboard', label: 'Przegląd', group: 'Platforma', need: 'admin' },
   { id: 'telemetry', icon: 'i-pixelarticons-chart-bar', label: 'Telemetria', group: 'Platforma', need: 'admin' },
-  { id: 'finance', icon: 'i-pixelarticons-coin', label: 'Finanse', group: 'Platforma', to: '/admin/finance', need: 'admin' },
   { id: 'audit', icon: 'i-pixelarticons-list', label: 'Dziennik', group: 'Platforma', to: '/admin/audit', need: 'admin' },
   { id: 'settings', icon: 'i-pixelarticons-sliders', label: 'Ustawienia', group: 'Platforma', to: '/admin/settings', need: 'admin' },
 

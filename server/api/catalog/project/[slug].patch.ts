@@ -5,7 +5,7 @@ import type { ProjectInput } from '../../../utils/catalog'
 // that would be publishing without review.
 export const DETAILS = [
   'title', 'summary', 'slug', 'license', 'licenseUrl', 'links',
-  'categories', 'featuredCategories', 'environment', 'visibility', 'price', 'currency',
+  'categories', 'featuredCategories', 'environment', 'visibility',
 ] as const
 
 export default defineEventHandler(async (event) => {

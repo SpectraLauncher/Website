@@ -128,7 +128,7 @@ describe('strony konta sa prywatne niezaleznie od flagi', () => {
     }
   })
 
-  it.each(['/account', '/cart'])('%s jest w ACCOUNT_PATHS', (path) => {
+  it.each(['/account', '/dashboard'])('%s jest w ACCOUNT_PATHS', (path) => {
     expect(accountPaths).toContain(path)
   })
 

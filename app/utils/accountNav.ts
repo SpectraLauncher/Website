@@ -22,10 +22,7 @@ export const ACCOUNT_ENTRIES: AccountEntry[] = [
   { id: 'projects', icon: 'i-pixelarticons-package', label: 'nav.account.projects', path: '/dashboard/projects', catalog: true },
   { id: 'collections', icon: 'i-pixelarticons-bookmark', label: 'nav.account.collections', path: '/dashboard/collections', catalog: true },
   { id: 'organizations', icon: 'i-pixelarticons-users', label: 'nav.account.organizations', path: '/dashboard/organizations', catalog: true },
-  { id: 'library', icon: 'i-pixelarticons-library', label: 'nav.account.library', path: '/dashboard/library', catalog: true },
   { id: 'analytics', icon: 'i-pixelarticons-chart-line', label: 'nav.account.analytics', path: '/dashboard/analytics', catalog: true },
-  { id: 'revenue', icon: 'i-pixelarticons-chart', label: 'nav.account.revenue', path: '/dashboard/revenue', catalog: true },
-  { id: 'seller', icon: 'i-pixelarticons-wallet', label: 'nav.account.seller', path: '/dashboard/seller', catalog: true },
   { id: 'reports', icon: 'i-pixelarticons-flag', label: 'reports.mine', path: '/dashboard/reports', catalog: true },
   { id: 'settings', icon: 'i-pixelarticons-gear', label: 'nav.account.settings', path: '/dashboard/settings' },
 ]

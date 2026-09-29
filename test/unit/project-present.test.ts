@@ -27,8 +27,6 @@ const row = {
   links: { source: 'https://example.com' },
   disclosures: {},
   meta: {},
-  price: 0,
-  currency: 'EUR',
   downloads: 0,
   follows: 0,
   owner_id: 'u1',

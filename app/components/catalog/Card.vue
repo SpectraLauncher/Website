@@ -6,7 +6,7 @@ defineProps<{
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { count, when, price } = useCatalogFormat()
+const { count, when } = useCatalogFormat()
 </script>
 
 <template>
@@ -18,13 +18,6 @@ const { count, when, price } = useCatalogFormat()
         <span class="block truncate font-bold text-highlighted">{{ hit.title }}</span>
         <span class="mt-0.5 block text-xs text-dimmed">{{ t(`catalog.admin.types.${hit.type}`) }}</span>
       </span>
-
-      <span
-        class="inline-flex h-6 shrink-0 items-center rounded-full px-2.5 text-[11px] font-bold"
-        :class="hit.price > 0
-          ? 'bg-primary font-mono text-white'
-          : 'border border-raised-line bg-raised text-muted'"
-      >{{ price(hit.price) }}</span>
     </span>
 
     <span class="mt-3 line-clamp-2 text-pretty text-sm text-muted">{{ hit.summary }}</span>

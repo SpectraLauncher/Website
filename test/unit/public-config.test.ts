@@ -59,31 +59,4 @@ describe('publiczna konfiguracja runtime', () => {
     expect(config).toContain('process.env.NUXT_PUBLIC_CATALOG_PUBLIC')
     expect(config).not.toMatch(/process\.env\.CATALOG_PUBLIC\b/)
   })
-
-  // The key that broke this: it was read as STRIPE_PUBLISHABLE_KEY, baked empty
-  // by the Docker build, and no amount of setting it in the deployment could
-  // change that. It now comes back from /api/seller/status instead.
-  it('klucz publiczny Stripe nie wraca do runtimeConfig', () => {
-    expect(publicBlock()).not.toMatch(/stripe/i)
-  })
-})
-
-describe('klucz publiczny Stripe idzie przez API', () => {
-  const status = readFileSync('server/api/seller/status.get.ts', 'utf8')
-  const page = readFileSync('app/pages/dashboard/seller.vue', 'utf8')
-
-  it('serwer czyta go z srodowiska przy zadaniu', () => {
-    expect(status).toContain('process.env.STRIPE_PUBLISHABLE_KEY')
-  })
-
-  // Without the secret key the server cannot mint an account session, so handing
-  // the browser a publishable key would only get it as far as a failing call.
-  it('nie podaje go, gdy brakuje klucza tajnego', () => {
-    expect(status).toMatch(/useStripe\(\)\s*\?/)
-  })
-
-  it('strona bierze go z odpowiedzi, nie z konfiguracji builda', () => {
-    expect(page).toContain('data.value?.publishableKey')
-    expect(page).not.toContain('useRuntimeConfig')
-  })
 })

@@ -64,10 +64,6 @@ export interface CatalogProjectData {
   created: number
   updated: number
   versions: CatalogVersion[]
-  price?: number
-  canDownload?: boolean
-  currency?: string
-  owned?: boolean
   follows: number
   following?: boolean
   dependents?: DependentProject[]

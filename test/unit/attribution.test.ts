@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  DOWNLOAD_WEIGHT,
-  VIEW_WEIGHT,
-  looksAutomated,
-  metricDay,
-  revenueShares,
-  visitorKey,
-} from '../../server/utils/attribution'
+import { looksAutomated, metricDay, visitorKey } from '../../server/utils/attribution'
 
 describe('metricDay', () => {
   it('to data UTC w formacie YYYY-MM-DD', () => {
@@ -69,44 +62,5 @@ describe('visitorKey', () => {
     expect(key).not.toContain('203.0.113')
     expect(key).not.toContain('SomeBrowser')
     expect(key).toMatch(/^[A-Za-z0-9_-]{22}$/)
-  })
-})
-
-describe('revenueShares', () => {
-  it('udzialy sumuja sie do jedynki', () => {
-    const shares = revenueShares([
-      { project_id: 'a', views: 100, downloads: 20 },
-      { project_id: 'b', views: 50, downloads: 10 },
-      { project_id: 'c', views: 1, downloads: 0 },
-    ])
-    const total = shares.reduce((sum, s) => sum + s.share, 0)
-    expect(total).toBeCloseTo(1, 10)
-  })
-
-  it('liczy udzial z wag wyswietlen i pobran', () => {
-    const shares = revenueShares([
-      { project_id: 'a', views: 3, downloads: 1 },
-      { project_id: 'b', views: 1, downloads: 3 },
-    ])
-    // Przy rownych wagach oba maja te sama sume, wiec dziela sie po polowie.
-    expect(VIEW_WEIGHT).toBe(DOWNLOAD_WEIGHT)
-    expect(shares[0]!.share).toBeCloseTo(0.5, 10)
-    expect(shares[1]!.share).toBeCloseTo(0.5, 10)
-  })
-
-  it('sortuje malejaco po udziale', () => {
-    const shares = revenueShares([
-      { project_id: 'small', views: 1, downloads: 0 },
-      { project_id: 'big', views: 100, downloads: 0 },
-    ])
-    expect(shares[0]!.projectId).toBe('big')
-  })
-
-  // Okres bez ruchu nie moze podzielic niczego przez zero.
-  it('pusty okres daje zerowe udzialy, a nie NaN', () => {
-    expect(revenueShares([])).toEqual([])
-    const zeroed = revenueShares([{ project_id: 'a', views: 0, downloads: 0 }])
-    expect(zeroed[0]!.share).toBe(0)
-    expect(Number.isNaN(zeroed[0]!.share)).toBe(false)
   })
 })

@@ -24,4 +24,4 @@ właściciela: ostatniego nie da się zdegradować, usunąć ani nie może wyjś
 
 Nad projektem organizacji pracują jej członkowie. Sama przynależność daje zestaw
 roboczy — wgrywanie wersji, edycja danych, edycja opisu, podgląd analityki.
-Kasowanie, zarządzanie ludźmi i wypłaty trzeba nadać osobno przy projekcie.
+Kasowanie i zarządzanie ludźmi trzeba nadać osobno przy projekcie.

@@ -10,7 +10,7 @@
  * the place that reads it.
  */
 export interface PlatformPolicy {
-  /** Read-only mode. Downloads keep working; uploads and purchases stop. */
+  /** Read-only mode. Downloads keep working; uploads stop. */
   maintenance: boolean
   /** Whether an author may send a project to review at all. */
   submissions: boolean

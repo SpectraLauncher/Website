@@ -34,10 +34,7 @@
       "organizations": "Organizations",
       "analytics": "Analytics",
       "signOut": "Sign out",
-      "admin": "Admin",
-      "seller": "Selling",
-      "library": "Library",
-      "revenue": "Revenue"
+      "admin": "Admin"
     },
     "publish": "Publish"
   },
@@ -2482,18 +2479,13 @@
     "unverifiedBadge": "Unverified",
     "verifyWhy": "Confirm it to keep access to your account and to reset your password if you ever lose it.",
     "projectsIntro": "Everything you publish, on your own account and through organizations you belong to.",
-    "organizationsIntro": "Organizations you belong to. An organization owns its projects and is paid as itself.",
+    "organizationsIntro": "Organizations you belong to. An organization owns its projects.",
     "analyticsIntro": "Views and downloads for what you publish. Crawlers and refreshes are not counted.",
-    "revenueIntro": "What your sales have earned, after the {rate}% commission.",
     "noProjects": "Nothing published yet.",
     "noOrganizations": "You do not belong to any organization.",
-    "noSales": "No sales yet.",
     "noData": "No traffic in this window.",
     "views": "Views",
     "lastDays": "Last {n} days",
-    "grossAndFee": "{gross} gross, {fee} commission",
-    "notConnected": "Payouts are not set up",
-    "notConnectedBody": "A sale needs a connected account before the money can reach you.",
     "bio": "Bio",
     "bioHint": "A few words about you. Shown on your public profile.",
     "links": "Links",
@@ -2548,8 +2540,7 @@
     "closeConfirm": "Type {username} to confirm",
     "closeFootprint": "This removes {projects} project(s), {collections} collection(s) and {comments} comment(s).",
     "closeBlockers": {
-      "sole_owner": "You are the only owner of {detail} — hand it over or delete it first.",
-      "has_sales": "{detail} completed sale(s) have to stay attributable."
+      "sole_owner": "You are the only owner of {detail} — hand it over or delete it first."
     },
     "settingsIntro": "Account, security, notifications and the keys other apps use.",
     "bannerHint": "The picture behind your profile. Wide works best — 1600×420 or so. An animated GIF keeps moving.",
@@ -2675,7 +2666,7 @@
   "privacy": {
     "title": "Privacy policy",
     "intro": "What we collect, why, who we pass it to and what you can do about it. No hand-waving — below is the actual list of data this site and the launcher process.",
-    "updated": "Last updated: 6 September 2026",
+    "updated": "Last updated: 29 September 2026",
     "sections": [
       {
         "title": "Who is responsible",
@@ -2773,15 +2764,6 @@
         ]
       },
       {
-        "title": "Selling and payments",
-        "body": [
-          "If you sell, Stripe collects and holds your identity and bank details directly. We never see a card number or a bank account number.",
-          "We store what the ledger needs: the amount, the currency, the commission, the project, the time, and Stripe’s identifier for the transaction.",
-          "A purchase records that your account owns that project, which is what lets you download it again later.",
-          "Stripe is an independent controller for what it collects, under its own privacy policy."
-        ]
-      },
-      {
         "title": "Tokens and applications",
         "body": [
           "A personal access token stores its name, its scopes, when it was created, when it expires and when it was last used. The token itself is stored only as a hash and is shown once, at creation.",
@@ -2826,8 +2808,7 @@
           "Account and social data are processed to perform the service agreement (Art. 6(1)(b) GDPR).",
           "Logs, abuse prevention and anonymous telemetry rest on our legitimate interest (Art. 6(1)(f) GDPR) in keeping the service running and improving it.",
           "Linking a Minecraft account and making your friend list public rest on your consent (Art. 6(1)(a) GDPR), which you may withdraw at any time.",
-          "Publishing, selling and buying are performed under the service agreement (Art. 6(1)(b) GDPR). Moderation records, abuse reports and file scanning rest on our legitimate interest (Art. 6(1)(f) GDPR) in keeping the platform safe.",
-          "Ledger lines and invoices are kept to satisfy a legal obligation (Art. 6(1)(c) GDPR)."
+          "Publishing is performed under the service agreement (Art. 6(1)(b) GDPR). Moderation records, abuse reports and file scanning rest on our legitimate interest (Art. 6(1)(f) GDPR) in keeping the platform safe."
         ]
       },
       {
@@ -2837,7 +2818,6 @@
           "Mojang Studios and Microsoft — when a skin or cape is displayed, we query their servers for public Minecraft profile data.",
           "External sign-in providers — Discord, Google, GitHub, Microsoft — strictly for signing in.",
           "We do not sell data and we do not pass it on for advertising.",
-          "Stripe — payments, payouts, and the identity checks required before it will pay someone.",
           "The mail server configured for this site, which carries the e-mail we send."
         ]
       },
@@ -2846,7 +2826,7 @@
         "body": [
           "Account data is kept until the account is deleted. Deleting an account removes the profile, friends, notifications, badges, activity, avatar and shared packs.",
           "Shared packs disappear when their code expires. Server logs and anonymous telemetry are kept for the limited period needed to investigate problems.",
-          "Moderation decisions and reports are kept while the account exists. Ledger lines are kept for the period accounting law requires, which is longer than the account."
+          "Moderation decisions and reports are kept while the account exists."
         ]
       },
       {
@@ -2890,7 +2870,7 @@
   "terms": {
     "title": "Terms of service",
     "intro": "The rules for using the Spectra site and Spectra Launcher.",
-    "updated": "Last updated: 6 September 2026",
+    "updated": "Last updated: 29 September 2026",
     "sections": [
       {
         "title": "What these terms cover",
@@ -2938,13 +2918,6 @@
           "We review what is published and we can reject, hide or remove it. Every decision comes with a reason, written on the project.",
           "You can reply to that decision and ask for it to be looked at again. We do not promise an outcome; we do promise a person reads it.",
           "We can act without warning where content is malicious, illegal, or puts people at risk. Everything else gets the conversation first."
-        ]
-      },
-      {
-        "title": "Selling",
-        "body": [
-          "Charging for a project is governed by the separate Selling and Payouts terms, which apply in addition to these and which you accept when you enable selling.",
-          "A licence a buyer has paid for survives you, your project, and this agreement."
         ]
       },
       {
@@ -3225,8 +3198,7 @@
         "overview": "Overview",
         "members": "Members",
         "projects": "Projects",
-        "analytics": "Analytics",
-        "split": "Split"
+        "analytics": "Analytics"
       }
     },
     "warn": {
@@ -3240,11 +3212,6 @@
       "noPreview": "No 3D preview: {reason}",
       "emptyModpack": "This modpack lists no files, so nothing would be installed.",
       "multiPlatform": "This jar ships descriptors for several platforms ({loaders}). Every one is recorded; pick the project type that fits it best."
-    },
-    "sale": {
-      "unknownLicense": "No licence is recorded here, so nothing can tell you whether selling this is allowed. Make sure you hold the rights.",
-      "nonCommercial": "{license} forbids commercial use. Unless you hold the rights some other way, putting a price on this breaks its own licence.",
-      "copyleft": "{license} lets you sell this, but every buyer may ask you for the source and may pass the work on themselves. A price does not restrict that."
     },
     "admin": {
       "title": "Catalog",
@@ -3313,8 +3280,6 @@
         "pending": "Pending",
         "private": "private"
       },
-      "price": "Price in cents (0 = free)",
-      "priceHint": "Prices are in minor units, so 999 means 9.99. Zero keeps the project free.",
       "imageTitle": "Caption",
       "addImage": "Add an image",
       "linksHint": "Only http and https addresses are stored. Empty removes the link.",
@@ -3381,9 +3346,7 @@
       "velocity": "Velocity",
       "waterfall": "Waterfall"
     },
-    "buyFor": "Buy for {price}",
     "owned": "You own this",
-    "buyFailed": "Checkout could not be opened.",
     "categoryNames": {
       "adventure": "Adventure",
       "atmosphere": "Atmosphere",
@@ -3542,8 +3505,7 @@
       "versions": "Versions",
       "members": "Members",
       "analytics": "Analytics",
-      "disclosures": "Declarations",
-      "pricing": "Pricing"
+      "disclosures": "Declarations"
     },
     "settingsHint": {
       "general": "The name, the address and who can see it.",
@@ -3562,8 +3524,7 @@
       "icon": "A square image, at least 256 pixels. It is what your project looks like in every listing.",
       "members": "Everybody who can work on this project, and where their rights come from.",
       "otherLinks": "Where to follow the project. None of these is required.",
-      "transfer": "Only an organization you belong to, and only one you may publish in.",
-      "pricing": "Decide whether the project is free or paid. A change applies to purchases after it, never to those before."
+      "transfer": "Only an organization you belong to, and only one you may publish in."
     },
     "disclosureLock": {
       "cannot_remove": "Confirmed",
@@ -3616,20 +3577,6 @@
     "clearAll": "Clear all",
     "gameVersionsManual": "Type them instead",
     "gameVersionsManualHint": "The version list could not be loaded. Separate them with commas.",
-    "pricing": {
-      "paid": "This project is paid",
-      "price": "Price",
-      "minimum": "The minimum price is {amount}.",
-      "tooCheap": "Too low — the minimum is {amount}.",
-      "breakdown": "At this price",
-      "buyerPays": "The buyer pays",
-      "fee": "Platform fee ({rate}%)",
-      "youGet": "You get",
-      "feeNote": "The fee covers payment processing too — Stripe adds nothing separately. A minimum applies on cheap items, so the effective percentage can be higher than the rate.",
-      "payoutNote": "Money reaches your payout account after a holding period. You can sell before verification finishes.",
-      "freeNote": "This project is free. Anyone can download the files without paying."
-    },
-    "free": "Free",
     "statusLabel": "Status",
     "version": {
       "allVersions": "All versions",
@@ -3683,7 +3630,7 @@
   },
   "verification": {
     "title": "Verification",
-    "intro": "Partner accounts and verified organizations pay half the commission on sales. Both are decided by moderation, not granted on request.",
+    "intro": "Partner status and organization verification are decided by moderation, not granted on request.",
     "apply": "Apply",
     "submit": "Send application",
     "withdraw": "Withdraw",
@@ -3695,8 +3642,6 @@
     "linksPlaceholder": "One per line: a name, a space, then the address.\nyoutube https://youtube.com/c/yourchannel\ngithub https://github.com/yourname",
     "alreadyPartner": "This account already has partner standing.",
     "needOwnedOrg": "Only an owner may put an organization forward, and this account owns none.",
-    "rates": "Standard commission is 1%, reduced to 0.5% for partners and verified organizations. See the",
-    "terms": "terms",
     "queueTitle": "Verification queue",
     "queueCount": "{n} waiting",
     "queueEmpty": "Nothing waiting.",
@@ -3839,8 +3784,7 @@
       "versions:write": "Upload versions",
       "collections:read": "Read collections",
       "collections:write": "Edit collections",
-      "analytics:read": "Read analytics",
-      "payouts:read": "Read payouts"
+      "analytics:read": "Read analytics"
     },
     "lifetimes": {
       "1": "1 day",
@@ -3878,28 +3822,6 @@
     },
     "scanAll": "Scan {n} unscanned"
   },
-  "ledger": {
-    "title": "Ledger",
-    "available": "Available",
-    "request": "Request payout",
-    "summary": "Earned {earned}, commission {commission}, paid out {paidOut}",
-    "minimum": "Minimum payout is {amount}",
-    "empty": "Nothing in the ledger yet.",
-    "kinds": {
-      "sale": "Sale",
-      "commission": "Commission",
-      "refund": "Refund",
-      "payout": "Payout",
-      "adjustment": "Adjustment"
-    },
-    "statuses": {
-      "requested": "Requested",
-      "processing": "Processing",
-      "paid": "Paid",
-      "failed": "Failed",
-      "cancelled": "Cancelled"
-    }
-  },
   "projectMembers": {
     "title": "Members",
     "hint": "Who else may work on this project, and exactly what they may do.",
@@ -3918,8 +3840,7 @@
       "remove_member": "Remove people",
       "edit_member": "Edit permissions",
       "delete_project": "Delete the project",
-      "view_analytics": "View analytics",
-      "view_payouts": "View payouts"
+      "view_analytics": "View analytics"
     }
   },
   "disclosures": {
@@ -3997,15 +3918,13 @@
       "content": "Finding content",
       "authors": "For authors",
       "rules": "Rules and moderation",
-      "developers": "For developers",
-      "money": "Money"
+      "developers": "For developers"
     },
     "sectionHints": {
       "start": "What this is and how an account works.",
       "content": "Browsing, filtering and keeping things.",
       "authors": "Publishing, versions and working with other people.",
       "rules": "How review works and how to report something.",
-      "money": "Charging for a project and getting paid.",
       "developers": "Tokens, applications and limits."
     },
     "pages": {
@@ -4068,9 +3987,7 @@
       "rate-limits": {
         "title": "Rate limits",
         "summary": "What to expect and how to behave."
-      },
-      "selling": "Selling",
-      "payouts": "Payouts"
+      }
     },
     "api": {
       "title": "API reference",
@@ -4101,14 +4018,13 @@
   },
   "legal": {
     "title": "Legal",
-    "intro": "Everything that governs using Spectra, publishing on it and being paid through it. Written to be read, not to be survived.",
+    "intro": "Everything that governs using Spectra and publishing on it. Written to be read, not to be survived.",
     "others": "The other documents",
     "contact": "Anything unclear, or anything you think is wrong: write to %EMAIL%.",
     "summaries": {
       "terms": "The agreement between you and us for the site and the launcher.",
       "rules": "What may be published here, and what gets a project removed.",
       "copyright": "How to report an infringement and how to answer one.",
-      "monetization": "Selling a project, our commission, and how payouts work.",
       "privacy": "What we collect, why, who we pass it to and what you can do about it.",
       "cookies": "The handful of cookies this site sets, and why there is no banner.",
       "security": "How to report a vulnerability and what happens when you do."
@@ -4300,8 +4216,7 @@
           "Authentication and sessions: passkeys, two-factor, password reset, OAuth applications, personal access tokens.",
           "Authorisation: reaching another account’s data, another organisation’s projects, or moderator functions.",
           "Uploaded files: escaping the scan, path traversal, decompression bombs, stored content executing anywhere.",
-          "Injection of any kind, including into rendered descriptions and into e-mail we send.",
-          "Anything to do with payments, the payout ledger, or the amounts in it."
+          "Injection of any kind, including into rendered descriptions and into e-mail we send."
         ]
       },
       {
@@ -4340,102 +4255,6 @@
         "body": [
           "A file published here that turns out to be malicious is not a vulnerability report — use the report button on the project, with the malicious reason. Those are looked at ahead of everything else.",
           "If you believe a file got past the upload scanner, say that explicitly in the report. That part is a vulnerability and we want to know."
-        ]
-      }
-    ]
-  },
-  "monetization": {
-    "title": "Selling and payouts",
-    "updated": "Last updated: 8 September 2026",
-    "intro": "How charging for a project on Spectra works: who may sell, what the buyer gets, what we take and how the money reaches you.",
-    "sections": [
-      {
-        "title": "Who may sell",
-        "body": [
-          "Selling needs a connected Stripe account. You can start selling before verification finishes — the money waits as pending and reaches you as soon as the account is ready.",
-          "The account has to be in a country we can transfer to: the European Economic Area, the United Kingdom, Switzerland, the United States or Canada. Outside that list a transfer cannot be made, so onboarding is refused up front rather than after verification.",
-          "You must have the right to sell what you are selling. A project derived from work under a licence forbidding commercial use cannot be sold here, whatever licence you picked on the project.",
-          "An organization has no account of its own and holds nothing. Sales of its projects are divided between its members by the shares an owner or admin set, and the money goes straight to their own accounts. With no split set, the owners take everything."
-        ]
-      },
-      {
-        "title": "What the buyer gets",
-        "body": [
-          "A purchase gives the buyer a personal, non-transferable licence to download and use every version of that project, including later ones, for as long as their account exists.",
-          "Access opens the moment the payment succeeds. The holding period is about the transfer to you, not about delivery to them.",
-          "It is not a subscription. We never charge twice for the same project.",
-          "If you stop publishing a project, the people who bought it keep access to what they bought. Bear that in mind before charging for anything.",
-          "Buyers may not redistribute what they bought. Pursuing that against a particular person is your business; we act on reports about content held here."
-        ]
-      },
-      {
-        "title": "Prices",
-        "body": [
-          "Prices are set in euro and only in euro. What the buyer sees is what they are charged.",
-          "The minimum price is €3. Below that, payment processing eats most of the price.",
-          "You can change a price whenever you like. The change applies to purchases after it, never to those before.",
-          "A project may be free with paid parts, but then it has to carry the paid-features declaration. Discovering a paywall after downloading is grounds for removal."
-        ]
-      },
-      {
-        "title": "Our commission",
-        "body": [
-          "We take 8% of each sale, and never less than €0.50. Partners and verified organizations pay 6%.",
-          "That is one fee and it covers payment processing as well. Stripe charges you nothing separately and you will not see a second line for the gateway.",
-          "The minimum means the effective percentage is higher on cheap items than the rate suggests. At €3 the fee is €0.50, around 17%. The panel shows the arithmetic before you set a price.",
-          "In a cart holding several creators’ projects the fee is worked out per item. Otherwise cheap projects would subsidise expensive ones.",
-          "The commission comes out of the sale rather than being added to it. A buyer never pays more because of it.",
-          "Every order stores the rate and the minimum that were applied. Changing the commission affects sales after the change and does not rewrite old orders."
-        ]
-      },
-      {
-        "title": "The ledger",
-        "body": [
-          "We do not run a wallet and we do not hold your money on our own account. The ledger has exactly two states: pending, meaning sold and not yet transferred, and transferred, meaning it is on your Stripe account.",
-          "Once transferred, the funds are at Stripe and Stripe is the one counting them. The amount available to pay out comes from there, not from our ledger.",
-          "Entries are never edited or deleted. A correction is another entry, which keeps the history readable."
-        ]
-      },
-      {
-        "title": "Payouts",
-        "body": [
-          "A sale moves to your account once the holding period is up, counted from when the payment settled. The wait gives a chargeback or a licence complaint time to surface while the money is still on our account.",
-          "Paying out from your Stripe account to your bank is something you start yourself, on the revenue page. We do not do it automatically.",
-          "A minimum payout applies. Below it the transfer costs more than it moves.",
-          "Stripe requires funds sitting on a connected account to be paid out within 90 days (longer in the United States). Do not leave them there indefinitely."
-        ]
-      },
-      {
-        "title": "Refunds and the right to withdraw",
-        "body": [
-          "We do not offer discretionary refunds on digital content. Before every payment the buyer must separately tick a box agreeing to immediate delivery of the files and confirming that they lose their right to withdraw. Without it the payment does not start, and the fact and moment of that consent are stored with the order.",
-          "A refund may still happen where the law requires it, or where we decide a sale should not have gone through — content sold without the right to sell it, for example."
-        ]
-      },
-      {
-        "title": "Chargebacks",
-        "body": [
-          "A chargeback is started by the buyer’s bank or payment provider. No terms can switch that off.",
-          "The seller carries the loss. The amount appears in your ledger as a negative entry and reduces what we owe you. Later sales cover it before anything is transferred.",
-          "The fee the provider charges for handling the dispute is charged against the sale that caused it.",
-          "The buyer loses download access while the dispute is open. If it is resolved in our favour, access returns and the negative entry is reversed by another entry.",
-          "A run of chargebacks against one project suspends its sale while we find out why."
-        ]
-      },
-      {
-        "title": "Tax",
-        "body": [
-          "Tax on what you earn is yours to handle. We do not withhold it, advise on it, or file anything for you.",
-          "Stripe collects whatever your country requires before it pays you, and reports what it is obliged to report.",
-          "Where VAT or sales tax is due on a purchase, it is collected at payment and is never counted as your earnings."
-        ]
-      },
-      {
-        "title": "Ending it",
-        "body": [
-          "You can stop selling at any time by setting your projects back to free. Licences already issued survive that, and what you have already earned stays yours.",
-          "We may suspend selling on an account we have grounds to believe is committing fraud, laundering money, or selling something it has no rights to. Pending entries are held while we look, not taken.",
-          "If an account is removed for breaking the rules, what was already earned is still paid out. We do not use money as a punishment."
         ]
       }
     ]
@@ -4558,96 +4377,7 @@
     "linkApply": "Add link",
     "linkRemove": "Remove link"
   },
-  "seller": {
-    "title": "Selling",
-    "intro": "Connect the account we should send your sales money to.",
-    "account": "Payout account",
-    "failed": "That did not work. Try again.",
-    "notConfigured": "Payments are not configured on this server yet.",
-    "country": "Country",
-    "countryHint": "The country cannot be changed later. Pick the one your bank account is in.",
-    "start": "Connect an account",
-    "resume": "Finish verification",
-    "deferred": "You can sell before verification finishes. Money waits as pending and moves across as soon as the account is ready.",
-    "state": {
-      "none": "No account connected yet.",
-      "started": "Verification started, Stripe is waiting on details.",
-      "review": "Details submitted, Stripe is reviewing them.",
-      "ready": "Account ready, transfers will go through."
-    },
-    "badge": {
-      "none": "none",
-      "started": "in progress",
-      "review": "in review",
-      "ready": "ready"
-    }
-  },
-  "cart": {
-    "title": "Cart",
-    "empty": "Your cart is empty.",
-    "total": "Total",
-    "buy": "Buy for {amount}",
-    "inCart": "In cart",
-    "pay": "Pay {amount}",
-    "confirm": "Confirm payment",
-    "done": "Paid. The files are in your library.",
-    "toLibrary": "Go to the library",
-    "failed": "The payment did not go through. Try again.",
-    "consent": "I agree to the files being made available immediately and accept that I lose my right to withdraw.",
-    "open": "Open the cart",
-    "identify": "How do you want to buy?",
-    "identifyHint": "An account is not required. Without one we email the download links — that will be your only copy of the purchase, so use an address you can reach.",
-    "asGuest": "Continue as a guest",
-    "signIn": "Sign in",
-    "email": "Email address",
-    "emailHint": "Where the download links and the confirmation go.",
-    "doneGuest": "Paid. We have emailed the download links as well — keep that email, it is your only copy of the purchase without an account.",
-    "toFiles": "Open your files"
-  },
-  "library": {
-    "title": "Library",
-    "intro": "Everything you have bought. Access is permanent and tied to this account.",
-    "empty": "Nothing here yet."
-  },
-  "revenue": {
-    "title": "Revenue",
-    "pending": "Pending",
-    "pendingHint": "Sold, waiting to be transferred once the holding period is up.",
-    "owing": "A chargeback is reducing this balance. Later sales will cover it.",
-    "available": "Available at Stripe",
-    "minimum": "The minimum payout is {amount}.",
-    "payout": "Pay out",
-    "failed": "That did not work. Try again.",
-    "ledger": "Ledger",
-    "noEntries": "No entries.",
-    "sellerHint": "Set up the payout account on the",
-    "sellerLink": "selling page",
-    "kind": {
-      "sale": "Sale",
-      "chargeback": "Chargeback",
-      "adjustment": "Adjustment"
-    },
-    "state": {
-      "pending": "pending",
-      "transferred": "transferred"
-    }
-  },
-  "org": {
-    "split": {
-      "title": "Revenue split",
-      "hint": "Decide who gets what share of sales of this organization’s projects. The money goes straight to members’ own accounts; the organization holds nothing.",
-      "total": "Total: {total}%",
-      "fallback": "With no split, the owners take everything.",
-      "noAccount": "No payout account yet — their share waits as pending."
-    }
-  },
-  "order": {
-    "title": "Your files",
-    "intro": "The purchase went through. Here is what you paid for.",
-    "missing": "We could not find that order. Check the link from the email is complete.",
-    "gone": "The project has been taken down — there is nothing left to download.",
-    "keep": "Keep this email. The link keeps working and needs no sign-in."
-  },
+  "org": {},
   "posts": {
     "articles": "Articles",
     "newsletter": "Newsletter",
@@ -4758,35 +4488,9 @@
     "open": "Open",
     "closed": "Closed",
     "maintenance": "Maintenance mode",
-    "maintenanceHint": "Puts the platform in read-only mode. Downloads keep working; uploads, purchases and every other write stop. Signing in and this panel stay open, so it can be switched back off.",
+    "maintenanceHint": "Puts the platform in read-only mode. Downloads keep working; uploads and every other write stop. Signing in and this panel stay open, so it can be switched back off.",
     "maintenanceOn": "Enable maintenance mode",
     "maintenanceOff": "Back to normal"
-  },
-  "finance": {
-    "title": "Finance",
-    "lead": "Gross volume, the platform fee and what creators are owed.",
-    "figures": {
-      "gross": "Gross volume",
-      "fee": "Platform fee",
-      "pending": "Owed",
-      "transferred": "Paid out"
-    },
-    "figureHints": {
-      "gross": "what buyers paid",
-      "fee": "our cut of it",
-      "pending": "sold, not yet moved",
-      "transferred": "on creators’ accounts"
-    },
-    "perMonth": "Gross volume per month",
-    "sales": "{n} sales",
-    "noSales": "No paid sales yet.",
-    "payouts": "Payout requests",
-    "creator": "Creator",
-    "requested": "Requested",
-    "status": "Status",
-    "amount": "Amount",
-    "noPayouts": "Nobody has asked for a payout yet.",
-    "export": "Export CSV"
   },
   "staff": {
     "inviteTitle": "Invite to the team",

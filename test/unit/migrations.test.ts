@@ -43,3 +43,35 @@ describe('rejestr migracji', () => {
     }
   })
 })
+
+describe('003 usuwa platnosci', () => {
+  const tables = [
+    'payout_request', 'webhook_event', 'entitlement', 'ledger_entry', 'sale_item', 'sale',
+    'org_split', 'connected_account',
+  ]
+  const third = MIGRATIONS.find(m => m.id === '003-drop-payments')!
+
+  it('zrzuca kazda tabele platnosci i odtwarza ja w down', () => {
+    for (const table of tables) {
+      expect(third.up, table).toMatch(new RegExp(`\\b${table}\\b`))
+      expect(third.down, table).toContain(`CREATE TABLE IF NOT EXISTS ${table} (`)
+    }
+  })
+
+  it('zdejmuje cene z projektu i oddaje ja w down', () => {
+    expect(third.up).toContain('DROP COLUMN IF EXISTS price')
+    expect(third.up).toContain('DROP COLUMN IF EXISTS currency')
+    expect(third.down).toContain('ADD COLUMN IF NOT EXISTS price')
+    expect(third.down).toContain('ADD COLUMN IF NOT EXISTS currency')
+  })
+
+  it('baseline nie tworzy juz tabel ani kolumn platnosci', async () => {
+    const { readFileSync } = await import('node:fs')
+    const baseline = readFileSync('server/utils/schema-catalog.ts', 'utf8')
+
+    for (const table of tables) {
+      expect(baseline, table).not.toContain(`CREATE TABLE IF NOT EXISTS ${table} (`)
+    }
+    expect(baseline).not.toMatch(/ADD COLUMN IF NOT EXISTS (price|currency)/)
+  })
+})

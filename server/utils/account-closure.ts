@@ -28,9 +28,6 @@ export async function closureBlockers(userId: string): Promise<ClosureBlocker[]>
     blockers.push({ code: 'sole_owner', detail: org.name })
   }
 
-  // A sales blocker belongs here too — money taken has to stay attributable for
-  // refunds and books — and comes back with the order model.
-
   return blockers
 }
 

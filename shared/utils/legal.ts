@@ -8,7 +8,6 @@ export const LEGAL_DOCUMENTS = [
   { id: 'terms', path: '/terms', icon: 'i-pixelarticons-hand' },
   { id: 'rules', path: '/legal/rules', icon: 'i-pixelarticons-scale' },
   { id: 'copyright', path: '/legal/copyright', icon: 'i-pixelarticons-letter-c-circle' },
-  { id: 'monetization', path: '/legal/monetization', icon: 'i-pixelarticons-wallet' },
   { id: 'privacy', path: '/privacy', icon: 'i-pixelarticons-lock' },
   { id: 'cookies', path: '/cookies', icon: 'i-pixelarticons-cake' },
   { id: 'security', path: '/legal/security', icon: 'i-pixelarticons-shield' },

@@ -52,7 +52,7 @@ describe('nawigacja panelu', () => {
 
   it('adres wskazuje wlasciwa pozycje', () => {
     expect(adminNavCurrent('/admin/catalog')).toBe('catalog')
-    expect(adminNavCurrent('/pl/admin/finance')).toBe('finance')
+    expect(adminNavCurrent('/pl/admin/catalog')).toBe('catalog')
     // one page, two sections: ?kind is what tells them apart
     expect(adminNavCurrent('/admin/posts')).toBe('posts')
     expect(adminNavCurrent('/admin/posts', { kind: 'newsletter' })).toBe('newsletter')

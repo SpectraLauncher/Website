@@ -34,10 +34,7 @@
       "organizations": "Organizacje",
       "analytics": "Analityka",
       "signOut": "Wyloguj",
-      "admin": "Panel admina",
-      "seller": "Sprzedaż",
-      "library": "Biblioteka",
-      "revenue": "Przychody"
+      "admin": "Panel admina"
     },
     "publish": "Opublikuj"
   },
@@ -2482,18 +2479,13 @@
     "unverifiedBadge": "Niezweryfikowany",
     "verifyWhy": "Potwierdź go, żeby zachować dostęp do konta i móc zresetować hasło, gdybyś je kiedyś zgubił.",
     "projectsIntro": "Wszystko, co publikujesz — na własnym koncie i przez organizacje, do których należysz.",
-    "organizationsIntro": "Organizacje, do których należysz. Organizacja jest właścicielem swoich projektów i rozlicza się jako ona sama.",
+    "organizationsIntro": "Organizacje, do których należysz. Organizacja jest właścicielem swoich projektów.",
     "analyticsIntro": "Wyświetlenia i pobrania tego, co publikujesz. Boty i odświeżenia nie są liczone.",
-    "revenueIntro": "Ile zarobiła Twoja sprzedaż, po prowizji {rate}%.",
     "noProjects": "Nic jeszcze nie opublikowano.",
     "noOrganizations": "Nie należysz do żadnej organizacji.",
-    "noSales": "Brak sprzedaży.",
     "noData": "Brak ruchu w tym okresie.",
     "views": "Wyświetlenia",
     "lastDays": "Ostatnie {n} dni",
-    "grossAndFee": "{gross} brutto, {fee} prowizji",
-    "notConnected": "Wypłaty nie są skonfigurowane",
-    "notConnectedBody": "Sprzedaż wymaga podpiętego konta, zanim pieniądze mogą do Ciebie trafić.",
     "bio": "O mnie",
     "bioHint": "Kilka słów o tobie. Widoczne na publicznym profilu.",
     "links": "Linki",
@@ -2548,8 +2540,7 @@
     "closeConfirm": "Wpisz {username}, aby potwierdzić",
     "closeFootprint": "Usunie to {projects} projekt(y), {collections} kolekcji i {comments} komentarz(y).",
     "closeBlockers": {
-      "sole_owner": "Jesteś jedynym właścicielem {detail} — przekaż ją albo usuń.",
-      "has_sales": "{detail} zakończona sprzedaż musi pozostać przypisana."
+      "sole_owner": "Jesteś jedynym właścicielem {detail} — przekaż ją albo usuń."
     },
     "settingsIntro": "Konto, bezpieczeństwo, powiadomienia i klucze dla innych aplikacji.",
     "bannerHint": "Zdjęcie za twoim profilem. Najlepiej szerokie — mniej więcej 1600×420. Animowany GIF zostaje ruchomy.",
@@ -2675,7 +2666,7 @@
   "privacy": {
     "title": "Polityka prywatności",
     "intro": "Co zbieramy, po co, komu to przekazujemy i co możesz z tym zrobić. Bez ogólników — poniżej jest lista konkretnych danych, które przetwarza ta strona i launcher.",
-    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "updated": "Ostatnia aktualizacja: 29 września 2026",
     "sections": [
       {
         "title": "Kto odpowiada za dane",
@@ -2773,15 +2764,6 @@
         ]
       },
       {
-        "title": "Sprzedaż i płatności",
-        "body": [
-          "Jeśli sprzedajesz, Stripe zbiera i trzyma twoje dane tożsamości i dane bankowe bezpośrednio. My nigdy nie widzimy numeru karty ani numeru konta.",
-          "Przechowujemy to, czego wymaga księga: kwotę, walutę, prowizję, projekt, czas i identyfikator transakcji nadany przez Stripe.",
-          "Zakup zapisuje, że twoje konto ma ten projekt, i dzięki temu możesz go pobrać ponownie.",
-          "Stripe jest niezależnym administratorem tego, co zbiera, na podstawie własnej polityki prywatności."
-        ]
-      },
-      {
         "title": "Tokeny i aplikacje",
         "body": [
           "Osobisty token dostępu przechowuje nazwę, zakresy, czas utworzenia, czas wygaśnięcia i ostatnie użycie. Sam token trzymamy wyłącznie jako skrót i pokazujemy raz, przy tworzeniu.",
@@ -2826,8 +2808,7 @@
           "Dane konta i funkcji społecznościowych przetwarzamy w celu wykonania umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO).",
           "Logi, ochronę przed nadużyciami i anonimową telemetrię przetwarzamy w oparciu o nasz uzasadniony interes (art. 6 ust. 1 lit. f RODO), którym jest utrzymanie i rozwój usługi.",
           "Podpięcie konta Minecraft i publiczne udostępnienie listy znajomych odbywa się na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO), którą możesz w każdej chwili wycofać.",
-          "Publikowanie, sprzedaż i zakup wykonujemy w ramach umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO). Zapisy moderacyjne, zgłoszenia nadużyć i skanowanie plików opierają się na naszym prawnie uzasadnionym interesie (art. 6 ust. 1 lit. f RODO) w utrzymaniu bezpieczeństwa platformy.",
-          "Linie księgi i faktury trzymamy w wykonaniu obowiązku prawnego (art. 6 ust. 1 lit. c RODO)."
+          "Publikowanie wykonujemy w ramach umowy o świadczenie usługi (art. 6 ust. 1 lit. b RODO). Zapisy moderacyjne, zgłoszenia nadużyć i skanowanie plików opierają się na naszym prawnie uzasadnionym interesie (art. 6 ust. 1 lit. f RODO) w utrzymaniu bezpieczeństwa platformy."
         ]
       },
       {
@@ -2837,7 +2818,6 @@
           "Mojang Studios i Microsoft — gdy wyświetlamy skórkę lub pelerynę, odpytujemy ich serwery o publiczne dane profilu Minecraft.",
           "Dostawcy logowania zewnętrznego — Discord, Google, GitHub, Microsoft — wyłącznie w zakresie samego logowania.",
           "Nie sprzedajemy danych i nie przekazujemy ich do celów reklamowych.",
-          "Stripe — płatności, wypłaty i weryfikacja tożsamości wymagana, zanim komukolwiek zapłaci.",
           "Serwer pocztowy skonfigurowany dla tego serwisu, przez który idą wysyłane przez nas e-maile."
         ]
       },
@@ -2846,7 +2826,7 @@
         "body": [
           "Dane konta trzymamy do momentu jego usunięcia. Usunięcie konta kasuje profil, listę znajomych, powiadomienia, odznaki, aktywność, awatar i udostępnione paczki.",
           "Udostępnione paczki znikają wraz z wygaśnięciem kodu. Logi serwera i anonimowa telemetria są przechowywane przez ograniczony czas potrzebny do analizy problemów.",
-          "Decyzje moderacyjne i zgłoszenia trzymamy, dopóki istnieje konto. Linie księgi trzymamy przez okres wymagany przepisami rachunkowymi, czyli dłużej niż samo konto."
+          "Decyzje moderacyjne i zgłoszenia trzymamy, dopóki istnieje konto."
         ]
       },
       {
@@ -2890,7 +2870,7 @@
   "terms": {
     "title": "Regulamin",
     "intro": "Zasady korzystania ze strony Spectra i ze Spectra Launchera.",
-    "updated": "Ostatnia aktualizacja: 6 września 2026",
+    "updated": "Ostatnia aktualizacja: 29 września 2026",
     "sections": [
       {
         "title": "Czego dotyczy regulamin",
@@ -2938,13 +2918,6 @@
           "Sprawdzamy to, co jest publikowane, i możemy to odrzucić, ukryć albo usunąć. Każda decyzja przychodzi z uzasadnieniem, wypisanym przy projekcie.",
           "Na decyzję można odpisać i poprosić o ponowne spojrzenie. Nie obiecujemy wyniku; obiecujemy, że przeczyta to człowiek.",
           "Możemy zadziałać bez ostrzeżenia, gdy treść jest złośliwa, nielegalna albo naraża ludzi. Wszystko inne najpierw dostaje rozmowę."
-        ]
-      },
-      {
-        "title": "Sprzedaż",
-        "body": [
-          "Pobieranie opłat za projekt reguluje osobny dokument Sprzedaż i wypłaty, który obowiązuje obok tego regulaminu i który akceptujesz, włączając sprzedaż.",
-          "Licencja, za którą kupujący zapłacił, przetrwa ciebie, twój projekt i tę umowę."
         ]
       },
       {
@@ -3225,8 +3198,7 @@
         "overview": "Przegląd",
         "members": "Członkowie",
         "projects": "Projekty",
-        "analytics": "Statystyki",
-        "split": "Podział"
+        "analytics": "Statystyki"
       }
     },
     "warn": {
@@ -3240,11 +3212,6 @@
       "noPreview": "Brak podglądu 3D: {reason}",
       "emptyModpack": "Ten modpack nie wymienia żadnych plików, więc nic by się nie zainstalowało.",
       "multiPlatform": "Ten jar zawiera deskryptory kilku platform ({loaders}). Wszystkie zostały zapisane; wybierz typ projektu, który pasuje najlepiej."
-    },
-    "sale": {
-      "unknownLicense": "Nie zapisano tu licencji, więc nic nie powie Ci, czy wolno to sprzedawać. Upewnij się, że masz prawa.",
-      "nonCommercial": "{license} zakazuje użycia komercyjnego. Jeśli nie masz praw z innego tytułu, ustawienie ceny łamie tę licencję.",
-      "copyleft": "{license} pozwala to sprzedawać, ale każdy kupujący może zażądać od Ciebie źródeł i sam przekazać pracę dalej. Cena tego nie ogranicza."
     },
     "admin": {
       "title": "Katalog",
@@ -3313,8 +3280,6 @@
         "pending": "Oczekuje",
         "private": "prywatny"
       },
-      "price": "Cena w groszach (0 = darmowy)",
-      "priceHint": "Ceny są w jednostkach minorowych, więc 999 znaczy 9,99. Zero zostawia projekt darmowym.",
       "imageTitle": "Podpis",
       "addImage": "Dodaj obraz",
       "linksHint": "Zapisywane są tylko adresy http i https. Puste pole usuwa link.",
@@ -3381,9 +3346,7 @@
       "velocity": "Velocity",
       "waterfall": "Waterfall"
     },
-    "buyFor": "Kup za {price}",
     "owned": "Masz to w bibliotece",
-    "buyFailed": "Nie udało się otworzyć płatności.",
     "categoryNames": {
       "adventure": "Przygoda",
       "atmosphere": "Atmosfera",
@@ -3542,8 +3505,7 @@
       "versions": "Wersje",
       "members": "Członkowie",
       "analytics": "Statystyki",
-      "disclosures": "Deklaracje",
-      "pricing": "Cena"
+      "disclosures": "Deklaracje"
     },
     "settingsHint": {
       "general": "Nazwa, adres i kto to widzi.",
@@ -3562,8 +3524,7 @@
       "icon": "Kwadratowy obraz, minimum 256 pikseli. Tak wygląda twój projekt na każdej liście.",
       "members": "Wszyscy, którzy mogą pracować przy tym projekcie, i skąd biorą się ich prawa.",
       "otherLinks": "Gdzie śledzić projekt. Żadne z tych nie jest wymagane.",
-      "transfer": "Tylko organizacja, do której należysz, i tylko taka, w której możesz publikować.",
-      "pricing": "Ustal, czy projekt jest darmowy, czy płatny. Zmiana działa na zakupy po niej, nigdy na te przed nią."
+      "transfer": "Tylko organizacja, do której należysz, i tylko taka, w której możesz publikować."
     },
     "disclosureLock": {
       "cannot_remove": "Potwierdzone",
@@ -3616,20 +3577,6 @@
     "clearAll": "Wyczyść",
     "gameVersionsManual": "Wpisz je ręcznie",
     "gameVersionsManualHint": "Nie udało się wczytać listy wersji. Oddziel je przecinkami.",
-    "pricing": {
-      "paid": "Projekt jest płatny",
-      "price": "Cena",
-      "minimum": "Minimalna cena to {amount}.",
-      "tooCheap": "Za nisko — minimum to {amount}.",
-      "breakdown": "Przy tej cenie",
-      "buyerPays": "Kupujący płaci",
-      "fee": "Prowizja platformy ({rate}%)",
-      "youGet": "Dostajesz",
-      "feeNote": "Prowizja pokrywa też koszt obsługi płatności — Stripe nie dolicza nic osobno. Przy niskich cenach obowiązuje kwota minimalna, więc procent bywa wyższy, niż wynika ze stawki.",
-      "payoutNote": "Pieniądze trafiają na twoje konto do wypłat po okresie karencji. Sprzedawać możesz, zanim weryfikacja się skończy.",
-      "freeNote": "Projekt jest darmowy. Każdy może pobrać pliki bez płacenia."
-    },
-    "free": "Za darmo",
     "statusLabel": "Status",
     "version": {
       "allVersions": "Wszystkie wersje",
@@ -3683,7 +3630,7 @@
   },
   "verification": {
     "title": "Weryfikacja",
-    "intro": "Konta partnerskie i zweryfikowane organizacje płacą połowę prowizji od sprzedaży. O obu decyduje moderacja, nie sam wniosek.",
+    "intro": "O statusie partnera i weryfikacji organizacji decyduje moderacja, nie sam wniosek.",
     "apply": "Złóż wniosek",
     "submit": "Wyślij wniosek",
     "withdraw": "Wycofaj",
@@ -3695,8 +3642,6 @@
     "linksPlaceholder": "Po jednym w linii: nazwa, spacja, adres.\nyoutube https://youtube.com/c/twojkanal\ngithub https://github.com/twojanazwa",
     "alreadyPartner": "To konto ma już status partnera.",
     "needOwnedOrg": "Organizację może zgłosić tylko jej właściciel, a to konto żadnej nie posiada.",
-    "rates": "Standardowa prowizja to 1%, obniżona do 0,5% dla partnerów i zweryfikowanych organizacji. Zobacz",
-    "terms": "regulamin",
     "queueTitle": "Kolejka weryfikacji",
     "queueCount": "Oczekujących: {n}",
     "queueEmpty": "Nic nie czeka.",
@@ -3839,8 +3784,7 @@
       "versions:write": "Wgrywanie wersji",
       "collections:read": "Odczyt kolekcji",
       "collections:write": "Edycja kolekcji",
-      "analytics:read": "Odczyt analityki",
-      "payouts:read": "Odczyt wypłat"
+      "analytics:read": "Odczyt analityki"
     },
     "lifetimes": {
       "1": "1 dzień",
@@ -3878,28 +3822,6 @@
     },
     "scanAll": "Przeskanuj {n} niesprawdzonych"
   },
-  "ledger": {
-    "title": "Księga",
-    "available": "Dostępne",
-    "request": "Zamów wypłatę",
-    "summary": "Zarobione {earned}, prowizja {commission}, wypłacone {paidOut}",
-    "minimum": "Minimalna wypłata to {amount}",
-    "empty": "Księga jest jeszcze pusta.",
-    "kinds": {
-      "sale": "Sprzedaż",
-      "commission": "Prowizja",
-      "refund": "Zwrot",
-      "payout": "Wypłata",
-      "adjustment": "Korekta"
-    },
-    "statuses": {
-      "requested": "Zamówiona",
-      "processing": "W realizacji",
-      "paid": "Wypłacona",
-      "failed": "Nieudana",
-      "cancelled": "Anulowana"
-    }
-  },
   "projectMembers": {
     "title": "Członkowie",
     "hint": "Kto jeszcze może pracować nad tym projektem i co dokładnie mu wolno.",
@@ -3918,8 +3840,7 @@
       "remove_member": "Usuwanie osób",
       "edit_member": "Edycja uprawnień",
       "delete_project": "Usunięcie projektu",
-      "view_analytics": "Podgląd analityki",
-      "view_payouts": "Podgląd wypłat"
+      "view_analytics": "Podgląd analityki"
     }
   },
   "disclosures": {
@@ -3997,15 +3918,13 @@
       "content": "Szukanie treści",
       "authors": "Dla autorów",
       "rules": "Zasady i moderacja",
-      "developers": "Dla programistów",
-      "money": "Pieniądze"
+      "developers": "Dla programistów"
     },
     "sectionHints": {
       "start": "Czym to jest i jak działa konto.",
       "content": "Przeglądanie, filtrowanie i zapisywanie.",
       "authors": "Publikowanie, wersje i praca z innymi.",
       "rules": "Jak wygląda sprawdzanie i jak coś zgłosić.",
-      "money": "Pobieranie opłat za projekt i wypłaty.",
       "developers": "Tokeny, aplikacje i limity."
     },
     "pages": {
@@ -4068,9 +3987,7 @@
       "rate-limits": {
         "title": "Limity zapytań",
         "summary": "Czego się spodziewać i jak się zachować."
-      },
-      "selling": "Sprzedaż",
-      "payouts": "Wypłaty"
+      }
     },
     "api": {
       "title": "Opis API",
@@ -4101,14 +4018,13 @@
   },
   "legal": {
     "title": "Dokumenty",
-    "intro": "Wszystko, co reguluje korzystanie ze Spectry, publikowanie na niej i zarabianie przez nią. Napisane po to, żeby to przeczytać, a nie przetrwać.",
+    "intro": "Wszystko, co reguluje korzystanie ze Spectry i publikowanie na niej. Napisane po to, żeby to przeczytać, a nie przetrwać.",
     "others": "Pozostałe dokumenty",
     "contact": "Coś jest niejasne albo uważasz, że jest źle — napisz na %EMAIL%.",
     "summaries": {
       "terms": "Umowa między tobą a nami, o serwis i launcher.",
       "rules": "Co można tu publikować i za co projekt znika.",
       "copyright": "Jak zgłosić naruszenie i jak odpowiedzieć na zgłoszenie.",
-      "monetization": "Sprzedaż projektu, nasza prowizja i wypłaty.",
       "privacy": "Co zbieramy, po co, komu przekazujemy i co możesz z tym zrobić.",
       "cookies": "Te kilka ciasteczek, które serwis ustawia, i czemu nie ma banera.",
       "security": "Jak zgłosić podatność i co się potem dzieje."
@@ -4300,8 +4216,7 @@
           "Uwierzytelnianie i sesje: klucze dostępu, dwa składniki, reset hasła, aplikacje OAuth, osobiste tokeny dostępu.",
           "Autoryzacja: dostanie się do danych innego konta, do projektów innej organizacji albo do funkcji moderatora.",
           "Wgrywane pliki: ominięcie skanowania, wyjście poza katalog, bomby dekompresyjne, wykonanie się przechowywanej treści gdziekolwiek.",
-          "Wstrzyknięcia dowolnego rodzaju, w tym w renderowane opisy i w wysyłane przez nas e-maile.",
-          "Wszystko dotyczące płatności, księgi wypłat i kwot w niej."
+          "Wstrzyknięcia dowolnego rodzaju, w tym w renderowane opisy i w wysyłane przez nas e-maile."
         ]
       },
       {
@@ -4340,102 +4255,6 @@
         "body": [
           "Opublikowany tu plik, który okazuje się złośliwy, nie jest zgłoszeniem podatności — użyj przycisku zgłoszenia przy projekcie, z powodem „złośliwe oprogramowanie”. Takie zgłoszenia idą przed wszystkimi innymi.",
           "Jeśli uważasz, że plik przeszedł przez skanowanie przy wgrywaniu, napisz to wprost. Ta część jest podatnością i chcemy o niej wiedzieć."
-        ]
-      }
-    ]
-  },
-  "monetization": {
-    "title": "Sprzedaż i wypłaty",
-    "updated": "Ostatnia aktualizacja: 8 września 2026",
-    "intro": "Zasady pobierania opłat za projekt na Spectrze: kto może sprzedawać, co dostaje kupujący, ile bierzemy i jak pieniądze do ciebie trafiają.",
-    "sections": [
-      {
-        "title": "Kto może sprzedawać",
-        "body": [
-          "Sprzedaż wymaga podpiętego konta Stripe. Możesz zacząć sprzedawać, zanim weryfikacja się zakończy — pieniądze czekają wtedy jako oczekujące i trafiają do ciebie, gdy tylko konto będzie gotowe.",
-          "Konto musi być w kraju, do którego umiemy przelać pieniądze: Europejski Obszar Gospodarczy, Wielka Brytania, Szwajcaria, Stany Zjednoczone albo Kanada. Poza tą listą nie da się przeprowadzić przelewu, więc onboarding jest odrzucany od razu, zamiast po weryfikacji.",
-          "Musisz mieć prawo sprzedawać to, co sprzedajesz. Projekt pochodny od pracy na licencji zakazującej użycia komercyjnego nie może być tu sprzedawany, niezależnie od licencji wybranej na projekcie.",
-          "Organizacja nie ma własnego konta i niczego nie trzyma. Sprzedaż jej projektów dzieli się między członków według udziałów ustawionych przez właściciela lub administratora, a pieniądze idą wprost na ich konta. Bez ustawionego podziału całość trafia do właścicieli."
-        ]
-      },
-      {
-        "title": "Co dostaje kupujący",
-        "body": [
-          "Zakup daje kupującemu osobistą, nieprzenoszalną licencję na pobieranie i używanie każdej wersji tego projektu, także wydanej później, dopóki istnieje jego konto.",
-          "Dostęp otwiera się natychmiast po udanej płatności. Okres karencji dotyczy przelewu do ciebie, nie dostawy do kupującego.",
-          "To nie jest abonament. Nie pobieramy opłaty drugi raz za ten sam projekt.",
-          "Jeśli przestaniesz publikować projekt, ci, którzy go kupili, zachowują dostęp do tego, co kupili. Weź to pod uwagę, zanim za coś zaczniesz brać pieniądze.",
-          "Kupujący nie mogą rozpowszechniać tego, co kupili. Dochodzenie tego wobec konkretnej osoby jest twoją sprawą; my reagujemy na zgłoszenia dotyczące treści trzymanych tutaj."
-        ]
-      },
-      {
-        "title": "Ceny",
-        "body": [
-          "Ceny ustawia się w euro i tylko w euro. Kwota, którą kupujący widzi, jest kwotą, którą zostanie obciążony.",
-          "Minimalna cena to 3 €. Poniżej tej kwoty opłata za obsługę płatności zjada większość ceny.",
-          "Cenę możesz zmienić kiedy chcesz. Zmiana działa na zakupy po niej, nigdy na te przed nią.",
-          "Projekt może być darmowy z płatnymi elementami, ale wtedy musi mieć zaznaczoną deklarację płatnych funkcji. Odkrycie płatnej ściany po pobraniu to usunięcie."
-        ]
-      },
-      {
-        "title": "Nasza prowizja",
-        "body": [
-          "Bierzemy 8% z każdej sprzedaży, nie mniej niż 0,50 €. Partnerzy i zweryfikowane organizacje płacą 6%.",
-          "To jedna opłata i pokrywa również koszt obsługi płatności. Stripe nie dolicza ci nic osobno i nie zobaczysz drugiej pozycji za bramkę.",
-          "Kwota minimalna sprawia, że przy tanich pozycjach faktyczny procent jest wyższy niż stawka. Przy cenie 3 € opłata wynosi 0,50 €, czyli około 17%. Wyliczenie zobaczysz w panelu, zanim ustawisz cenę.",
-          "W koszyku z projektami kilku twórców opłata liczy się osobno dla każdej pozycji. Inaczej tanie projekty dopłacałyby do drogich.",
-          "Prowizja jest potrącana ze sprzedaży, a nie doliczana do niej. Kupujący nigdy nie płaci więcej z jej powodu.",
-          "Każde zamówienie zapisuje stawkę i kwotę minimalną, które zastosowano. Zmiana prowizji dotyczy sprzedaży po zmianie i nie przepisuje starych zamówień."
-        ]
-      },
-      {
-        "title": "Księga",
-        "body": [
-          "Nie prowadzimy portfela i nie trzymamy twoich pieniędzy na własnym koncie. Księga zawiera wyłącznie dwa stany: oczekujące, czyli sprzedane i jeszcze nieprzelane, oraz przelane, czyli takie, które są już na twoim koncie w Stripe.",
-          "Po przelaniu środki są u Stripe i to Stripe je liczy. Kwota dostępna do wypłaty pochodzi stamtąd, nie z naszej księgi.",
-          "Wpisów nie edytujemy ani nie usuwamy. Korekta to kolejny wpis, dzięki czemu historia zostaje czytelna."
-        ]
-      },
-      {
-        "title": "Wypłaty",
-        "body": [
-          "Sprzedaż trafia na twoje konto po upływie okresu karencji, liczonego od zaksięgowania płatności. Karencja daje czas na ujawnienie się obciążenia zwrotnego albo zgłoszenia naruszenia licencji, zanim pieniądze opuszczą nasze konto.",
-          "Wypłatę z konta Stripe na konto bankowe zamawiasz sam, na stronie przychodów. Nie robimy tego automatycznie.",
-          "Obowiązuje próg minimalnej wypłaty. Poniżej niego przelew kosztuje więcej, niż przenosi.",
-          "Stripe wymaga, żeby środki leżące na koncie połączonym zostały wypłacone w ciągu 90 dni (w Stanach Zjednoczonych obowiązuje dłuższy termin). Nie zostawiaj ich tam bezterminowo."
-        ]
-      },
-      {
-        "title": "Zwroty i prawo odstąpienia",
-        "body": [
-          "Nie prowadzimy dobrowolnych zwrotów treści cyfrowych. Przed każdą płatnością kupujący musi osobno zaznaczyć zgodę na natychmiastowe udostępnienie plików i potwierdzić, że traci prawo odstąpienia od umowy. Bez tej zgody płatność się nie rozpoczyna, a fakt i moment jej udzielenia zapisujemy przy zamówieniu.",
-          "Zwrot może nastąpić, gdy wymaga tego prawo albo gdy sami uznamy, że sprzedaż nie powinna była dojść do skutku — na przykład przy treści sprzedanej bez prawa do niej."
-        ]
-      },
-      {
-        "title": "Obciążenia zwrotne",
-        "body": [
-          "Obciążenie zwrotne inicjuje bank albo operator płatności kupującego. Regulamin nie może tego wyłączyć.",
-          "Stratę ponosi sprzedawca. Kwota obciążenia zwrotnego pojawia się w twojej księdze jako pozycja ujemna i pomniejsza to, co jesteśmy ci winni. Kolejne sprzedaże pokrywają ją, zanim cokolwiek zostanie przelane.",
-          "Opłata, którą operator nalicza za samo rozpatrzenie sporu, obciąża sprzedaż, przy której powstała.",
-          "Kupujący traci dostęp do pobierania na czas sporu. Jeśli spór zostanie rozstrzygnięty na naszą korzyść, dostęp wraca, a wpis ujemny jest odwracany kolejnym wpisem.",
-          "Seria obciążeń zwrotnych przy jednym projekcie wstrzymuje jego sprzedaż na czas sprawdzenia dlaczego."
-        ]
-      },
-      {
-        "title": "Podatki",
-        "body": [
-          "Za podatek od tego, co zarobisz, odpowiadasz ty. Nie potrącamy go, nie doradzamy w tej sprawie i niczego za ciebie nie składamy.",
-          "Stripe zbiera dane, których wymaga twój kraj, zanim ci zapłaci, i raportuje to, co ma obowiązek raportować.",
-          "Tam, gdzie od zakupu należny jest VAT albo podatek od sprzedaży, jest pobierany przy płatności i nigdy nie jest liczony jako twój zarobek."
-        ]
-      },
-      {
-        "title": "Zakończenie",
-        "body": [
-          "Sprzedaż możesz wyłączyć w dowolnym momencie, ustawiając projekty jako darmowe. Wydane licencje to przetrwają, a to, co już zarobiłeś, dalej jest twoje.",
-          "Możemy zawiesić sprzedaż na koncie, co do którego mamy podstawy sądzić, że dopuszcza się oszustwa, prania pieniędzy albo sprzedaje coś, do czego nie ma praw. Wtedy pozycje oczekujące są wstrzymane na czas sprawdzenia, a nie zabrane.",
-          "Jeśli konto zostanie usunięte za łamanie zasad, to, co już zostało zarobione, i tak zostanie wypłacone. Nie używamy pieniędzy jako kary."
         ]
       }
     ]
@@ -4558,96 +4377,7 @@
     "linkApply": "Wstaw link",
     "linkRemove": "Usuń link"
   },
-  "seller": {
-    "title": "Sprzedaż",
-    "intro": "Podłącz konto, na które mamy przelewać pieniądze ze sprzedaży twoich projektów.",
-    "account": "Konto do wypłat",
-    "failed": "Nie udało się. Spróbuj jeszcze raz.",
-    "notConfigured": "Płatności nie są jeszcze skonfigurowane na tym serwerze.",
-    "country": "Kraj",
-    "countryHint": "Kraju nie da się później zmienić. Wybierz ten, w którym masz konto bankowe.",
-    "start": "Podłącz konto",
-    "resume": "Dokończ weryfikację",
-    "deferred": "Możesz sprzedawać, zanim weryfikacja się skończy. Pieniądze czekają wtedy jako oczekujące i trafiają na konto, gdy tylko będzie gotowe.",
-    "state": {
-      "none": "Jeszcze nie podłączyłeś konta.",
-      "started": "Weryfikacja zaczęta, Stripe czeka na dane.",
-      "review": "Dane wysłane, Stripe je sprawdza.",
-      "ready": "Konto gotowe, przelewy będą przechodzić."
-    },
-    "badge": {
-      "none": "brak",
-      "started": "w trakcie",
-      "review": "w sprawdzaniu",
-      "ready": "gotowe"
-    }
-  },
-  "cart": {
-    "title": "Koszyk",
-    "empty": "Koszyk jest pusty.",
-    "total": "Razem",
-    "buy": "Kup za {amount}",
-    "inCart": "W koszyku",
-    "pay": "Zapłać {amount}",
-    "confirm": "Potwierdź płatność",
-    "done": "Zapłacone. Pliki są już w twojej bibliotece.",
-    "toLibrary": "Przejdź do biblioteki",
-    "failed": "Płatność się nie powiodła. Spróbuj jeszcze raz.",
-    "consent": "Zgadzam się na natychmiastowe udostępnienie plików i przyjmuję do wiadomości, że tracę prawo odstąpienia od umowy.",
-    "open": "Otwórz koszyk",
-    "identify": "Jak chcesz kupić?",
-    "identifyHint": "Konto nie jest potrzebne. Bez niego linki do pobrania wyślemy mailem — to będzie twoja jedyna kopia zakupu, więc podaj adres, do którego masz dostęp.",
-    "asGuest": "Kontynuuj jako gość",
-    "signIn": "Zaloguj się",
-    "email": "Adres e-mail",
-    "emailHint": "Tam wyślemy linki do pobrania i potwierdzenie zakupu.",
-    "doneGuest": "Zapłacone. Linki do pobrania wysłaliśmy też na twój adres — zachowaj tego maila, bo bez konta to twoja jedyna kopia zakupu.",
-    "toFiles": "Przejdź do plików"
-  },
-  "library": {
-    "title": "Biblioteka",
-    "intro": "Wszystko, co kupiłeś. Dostęp jest bezterminowy i przypisany do tego konta.",
-    "empty": "Nic tu jeszcze nie ma."
-  },
-  "revenue": {
-    "title": "Przychody",
-    "pending": "Oczekujące",
-    "pendingHint": "Sprzedane, czeka na przelew po okresie karencji.",
-    "owing": "Obciążenie zwrotne pomniejsza saldo. Kolejne sprzedaże je pokryją.",
-    "available": "Dostępne u Stripe",
-    "minimum": "Minimalna wypłata to {amount}.",
-    "payout": "Wypłać",
-    "failed": "Nie udało się. Spróbuj jeszcze raz.",
-    "ledger": "Księga",
-    "noEntries": "Brak wpisów.",
-    "sellerHint": "Konto do wypłat ustawisz na stronie",
-    "sellerLink": "sprzedaży",
-    "kind": {
-      "sale": "Sprzedaż",
-      "chargeback": "Obciążenie zwrotne",
-      "adjustment": "Korekta"
-    },
-    "state": {
-      "pending": "oczekuje",
-      "transferred": "przelane"
-    }
-  },
-  "org": {
-    "split": {
-      "title": "Podział przychodu",
-      "hint": "Ustal, jaka część sprzedaży projektów organizacji trafia do kogo. Pieniądze idą wprost na konta członków — organizacja niczego nie trzyma.",
-      "total": "Razem: {total}%",
-      "fallback": "Bez podziału całość trafia do właścicieli.",
-      "noAccount": "Nie ma jeszcze konta do wypłat — udział poczeka jako oczekujący."
-    }
-  },
-  "order": {
-    "title": "Twoje pliki",
-    "intro": "Zakup przeszedł. Poniżej pliki, za które zapłaciłeś.",
-    "missing": "Nie znaleźliśmy takiego zamówienia. Sprawdź, czy link z maila jest kompletny.",
-    "gone": "Projekt został zdjęty — nie ma już czego pobrać.",
-    "keep": "Zachowaj tego maila. Link działa dalej i nie wymaga logowania."
-  },
+  "org": {},
   "posts": {
     "articles": "Artykuły",
     "newsletter": "Newsletter",
@@ -4758,35 +4488,9 @@
     "open": "Otwarty",
     "closed": "Zamknięty",
     "maintenance": "Tryb konserwacji",
-    "maintenanceHint": "Przełącza platformę w tryb tylko do odczytu. Pobieranie działa; wgrywanie, zakupy i każdy inny zapis stoją. Logowanie i ten panel zostają otwarte, żeby dało się to wyłączyć.",
+    "maintenanceHint": "Przełącza platformę w tryb tylko do odczytu. Pobieranie działa; wgrywanie i każdy inny zapis stoją. Logowanie i ten panel zostają otwarte, żeby dało się to wyłączyć.",
     "maintenanceOn": "Włącz tryb konserwacji",
     "maintenanceOff": "Wróć do normalnej pracy"
-  },
-  "finance": {
-    "title": "Finanse",
-    "lead": "Obrót, prowizja platformy i to, co należy się twórcom.",
-    "figures": {
-      "gross": "Obrót",
-      "fee": "Prowizja",
-      "pending": "Do wypłaty",
-      "transferred": "Wypłacone"
-    },
-    "figureHints": {
-      "gross": "co zapłacili kupujący",
-      "fee": "nasza część",
-      "pending": "sprzedane, jeszcze nieprzelane",
-      "transferred": "na kontach twórców"
-    },
-    "perMonth": "Obrót miesięcznie",
-    "sales": "{n} sprzedaży",
-    "noSales": "Nie ma jeszcze opłaconych sprzedaży.",
-    "payouts": "Wnioski o wypłatę",
-    "creator": "Twórca",
-    "requested": "Złożony",
-    "status": "Status",
-    "amount": "Kwota",
-    "noPayouts": "Nikt jeszcze nie poprosił o wypłatę.",
-    "export": "Eksport CSV"
   },
   "staff": {
     "inviteTitle": "Zaproś do zespołu",

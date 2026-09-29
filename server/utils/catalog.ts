@@ -6,11 +6,8 @@ import { newId } from './ids'
 import { dropStoredImage } from './images'
 import { isPublicId } from '../../shared/utils/ids'
 import {
-  CURRENCY,
   LISTED_STATUSES,
   MAX_FEATURED_CATEGORIES,
-  MAX_PRICE_MINOR,
-  MIN_PRICE_MINOR,
   VISIBILITY_STATUS,
   applyVisibility,
   categoriesFor,
@@ -50,8 +47,6 @@ export interface ProjectRow {
   links: Record<string, string>
   disclosures: DisclosureMap
   meta: Record<string, unknown>
-  price: number
-  currency: string
   downloads: string | number
   follows: number
   created: string | number
@@ -94,7 +89,7 @@ export function num(value: string | number | null | undefined): number {
 
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
   status, requested_status, license, license_url, icon, banner, categories, featured_categories,
-  game_versions, loaders, environment, links, disclosures, meta, price, currency, downloads,
+  game_versions, loaders, environment, links, disclosures, meta, downloads,
   follows, created, updated, published`
 
 // The column list spans lines, so a join that needs it aliased cannot just glue
@@ -200,8 +195,6 @@ export interface ProjectInput {
   visibility?: unknown
   environment?: unknown
   authorship?: unknown
-  price?: unknown
-  currency?: unknown
 }
 
 function text(value: unknown, max: number): string {
@@ -304,13 +297,6 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     throw createError({ statusCode: 400, statusMessage: 'a project needs an owner' })
   }
 
-  const price = input.price === undefined ? current.price : Math.floor(Number(input.price) || 0)
-  if (price < 0 || (price > 0 && (price < MIN_PRICE_MINOR || price > MAX_PRICE_MINOR))) {
-    throw createError({ statusCode: 400, statusMessage: 'price is outside the allowed range' })
-  }
-
-  const currency = CURRENCY
-
   // A moderator sets the status directly; an author sets a visibility and the
   // rule decides what that means for a project in this state.
   const moved = isVisibility(input.visibility)
@@ -341,8 +327,8 @@ export async function updateProject(id: string | number, input: ProjectInput): P
     `UPDATE project SET slug = $2, title = $3, summary = $4, description = $5,
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, disclosures = $12, meta = $13, published = $14, updated = $15,
-       owner_id = $16, org_id = $17, price = $18, currency = $19,
-       environment = $20, requested_status = $21, featured_categories = $22
+       owner_id = $16, org_id = $17,
+       environment = $18, requested_status = $19, featured_categories = $20
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -368,8 +354,6 @@ export async function updateProject(id: string | number, input: ProjectInput): P
       Date.now(),
       ownerId,
       orgId,
-      price,
-      currency,
       input.environment === undefined
         ? current.environment
         : stringList(input.environment, 4).filter(isEnvironment),

@@ -43,8 +43,8 @@ describe('co daje sama przynaleznosc do organizacji', () => {
     }
   })
 
-  it('nie pozwala kasowac, zarzadzac ludzmi ani widziec wyplat', () => {
-    for (const key of ['delete_project', 'edit_member', 'remove_member', 'view_payouts'] as const) {
+  it('nie pozwala kasowac ani zarzadzac ludzmi', () => {
+    for (const key of ['delete_project', 'edit_member', 'remove_member'] as const) {
       expect(hasProjectPermission(ORG_INHERITED_PROJECT_PERMISSIONS, key), key).toBe(false)
     }
   })

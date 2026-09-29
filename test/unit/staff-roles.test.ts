@@ -82,7 +82,6 @@ describe('bramy po stronie serwera', () => {
     const moderation = routes.filter(file => /requireModeration\(event\)/.test(read(file))).map(slash)
 
     expect(moderation.sort()).toEqual([
-      'server/api/admin/catalog/attribution.get.ts',
       'server/api/admin/catalog/game-versions.get.ts',
       'server/api/admin/catalog/projects.get.ts',
       'server/api/admin/catalog/projects/[id].get.ts',

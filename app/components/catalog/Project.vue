@@ -59,21 +59,6 @@ const gallery = computed(() => props.gallery ?? [])
 const openVersion = computed(() =>
   props.project.versions.find(version => version.id === props.versionId) ?? null)
 
-// Priced, and not held by whoever is looking. `owned` is deliberately narrower
-// than "may download": an admin may take any file down, which means reaching it,
-// but they have not bought it and the page should not pretend otherwise. Folding
-// the two together hid this button from every admin - and while the catalog is
-// closed, that is everyone who can open the page.
-const cart = useCart()
-const needsBuying = computed(() =>
-  Number(props.project.price ?? 0) > 0 && props.project.owned !== true)
-const canDownload = computed(() => props.project.canDownload !== false)
-const inCart = computed(() => cart.has(props.project.id))
-const price = computed(() => new Intl.NumberFormat(locale.value, {
-  style: 'currency',
-  currency: 'EUR',
-}).format(Number(props.project.price ?? 0) / 100))
-
 // To add a tab: one entry here and one branch in the body below. `shown` keeps a
 // tab out of the row when it would open on nothing.
 const TABS = [
@@ -166,38 +151,13 @@ async function toggleFollow() {
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <!-- A paid project somebody does not own has nothing to download yet, and
-               offering the button anyway only produces a 402. An admin keeps the
-               button as well as the price, because they can reach the file for
-               moderation without having bought it. -->
           <!-- A project that ships for several game versions or loaders offers
-               the choice here rather than making somebody read the table. A paid
-               one nobody owns keeps the plain button: there is nothing to pick
-               between until it is bought. -->
+               the choice here rather than making somebody read the table. -->
           <ProjectDownloadPicker
-            v-if="primaryFile && canDownload && !needsBuying"
+            v-if="primaryFile"
             :versions="project.versions"
             :path="project.path"
             :fallback-file-id="primaryFile.id"
-          />
-          <UButton
-            v-else-if="primaryFile && canDownload"
-            size="lg"
-            color="neutral"
-            variant="subtle"
-            icon="i-pixelarticons-download"
-            :label="t('catalog.download')"
-            :to="`/api/catalog/download/${primaryFile.id}`"
-            external
-          />
-          <UButton
-            v-if="needsBuying"
-            size="lg"
-            color="primary"
-            :icon="inCart ? 'i-pixelarticons-check' : 'i-pixelarticons-cart'"
-            :label="inCart ? t('cart.inCart') : t('cart.buy', { amount: price })"
-            :to="inCart ? localePath('/cart') : undefined"
-            @click="inCart ? undefined : cart.add(project.id)"
           />
           <UButton
             v-if="canEdit"

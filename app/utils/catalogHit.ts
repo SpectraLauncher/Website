@@ -12,7 +12,6 @@ export interface CatalogHit {
   loaders: string[]
   downloads: number
   follows: number
-  price: number
   updated: number
 }
 

@@ -14,7 +14,6 @@ export const PROJECT_PERMISSIONS = {
   edit_member: 1 << 6,
   delete_project: 1 << 7,
   view_analytics: 1 << 8,
-  view_payouts: 1 << 9,
 } as const
 
 export type ProjectPermission = keyof typeof PROJECT_PERMISSIONS
