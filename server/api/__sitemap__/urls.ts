@@ -26,13 +26,14 @@ export default defineSitemapEventHandler(async () => {
   if (!catalogIsIndexable()) return entries
 
   const projects = await q<{ slug: string, type: ProjectType, updated: string }>(
-    `SELECT slug, type, updated FROM project WHERE status = ANY($1) ORDER BY updated DESC`,
-    [LISTED_STATUSES])
+    `SELECT slug, type, updated FROM project WHERE status = ANY($1) AND type = ANY($2) ORDER BY updated DESC`,
+    [LISTED_STATUSES, ACTIVE_TYPES])
     .catch(() => [] as Array<{ slug: string, type: ProjectType, updated: string }>)
 
   const organizations = await q<{ slug: string }>(
     `SELECT DISTINCT o.slug FROM organization o
-     JOIN project p ON p.org_id = o.id AND p.status = ANY($1)`, [LISTED_STATUSES])
+     JOIN project p ON p.org_id = o.id AND p.status = ANY($1) AND p.type = ANY($2)`,
+    [LISTED_STATUSES, ACTIVE_TYPES])
     .catch(() => [] as Array<{ slug: string }>)
 
   return entries.concat(projects.map(project => ({

@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import { CATALOG_TYPES, catalogTypeByPrefix } from '../../app/utils/catalogTypes'
-import { PROJECT_TYPES, TYPE_PREFIX } from '../../shared/utils/catalog-types'
+import { PROJECT_TYPES, TYPE_PREFIX, isActiveType } from '../../shared/utils/catalog-types'
 
 describe('rejestr typow katalogu', () => {
   it('pokrywa kazdy typ projektu, raz', () => {
@@ -26,9 +26,15 @@ describe('rejestr typow katalogu', () => {
 // has to come back null and let the page throw a 404. Without that, /nonsense
 // renders an empty listing and /nonsense/thing fetches a project by that slug.
 describe('nieznany segment nie jest typem', () => {
-  it('zna swoje prefiksy', () => {
-    for (const entry of CATALOG_TYPES) {
+  it('zna prefiksy aktywnych typow', () => {
+    for (const entry of CATALOG_TYPES.filter(e => isActiveType(e.type))) {
       expect(catalogTypeByPrefix(entry.prefix)?.type, entry.prefix).toBe(entry.type)
+    }
+  })
+
+  it('nie otwiera typow wylaczonych z ACTIVE_TYPES', () => {
+    for (const entry of CATALOG_TYPES.filter(e => !isActiveType(e.type))) {
+      expect(catalogTypeByPrefix(entry.prefix), entry.prefix).toBeNull()
     }
   })
 

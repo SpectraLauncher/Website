@@ -36,7 +36,9 @@
       "signOut": "Wyloguj",
       "admin": "Panel admina"
     },
-    "publish": "Opublikuj"
+    "publish": "Opublikuj",
+    "addons": "Addony",
+    "addonsDesc": "Motywy i rozszerzenia do launchera."
   },
   "hero": {
     "opensource": "open source",
@@ -3258,7 +3260,8 @@
         "shader": "Shaderpack",
         "mod": "Mod",
         "modpack": "Modpack",
-        "plugin": "Plugin"
+        "plugin": "Plugin",
+        "addon": "Addon"
       },
       "statuses": {
         "draft": "Szkic — tylko dla właściciela",
@@ -3418,7 +3421,10 @@
       "protection": "Ochrona terenu",
       "teleportation": "Teleportacja",
       "world-management": "Zarządzanie światami",
-      "worldgen": "Generowanie świata"
+      "worldgen": "Generowanie świata",
+      "appearance": "Wygląd",
+      "instances": "Instancje",
+      "integrations": "Integracje"
     },
     "follows": "Obserwujących: {n}",
     "gallery": "Galeria",
@@ -3626,7 +3632,11 @@
       "id-shaped": "To wygląda jak id, nie jak adres."
     },
     "banner": "Baner",
-    "bannerRemove": "Usuń baner"
+    "bannerRemove": "Usuń baner",
+    "addons": {
+      "title": "Addony do launchera",
+      "sub": "Motywy, tłumaczenia i rozszerzenia dla launchera Spectra. To, czego addon może dotknąć, jest czytane z jego addon.json, a nie z formularza."
+    }
   },
   "verification": {
     "title": "Weryfikacja",

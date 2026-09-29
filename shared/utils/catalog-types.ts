@@ -1,8 +1,14 @@
 
 export const PROJECT_TYPES = [
-  'mod', 'plugin', 'modpack', 'shader', 'resourcepack', 'schematic',
+  'mod', 'plugin', 'modpack', 'shader', 'resourcepack', 'schematic', 'addon',
 ] as const
 export type ProjectType = typeof PROJECT_TYPES[number]
+
+export const ACTIVE_TYPES: readonly ProjectType[] = ['addon']
+
+export function isActiveType(value: unknown): value is ProjectType {
+  return ACTIVE_TYPES.includes(value as ProjectType)
+}
 
 // Registry: URL prefix per project type. Adding a sixth type means an entry
 // here, an entry in PROJECT_TYPES and a page in app/pages/<prefix>/[slug].vue.
@@ -13,6 +19,7 @@ export const TYPE_PREFIX: Record<ProjectType, string> = {
   shader: 'shader',
   resourcepack: 'resourcepack',
   schematic: 'schematic',
+  addon: 'addon',
 }
 
 export const VERSION_CHANNELS = ['release', 'beta', 'alpha'] as const
@@ -215,6 +222,9 @@ export const CATEGORIES: Record<ProjectType, readonly string[]> = {
     'minigame', 'moderation', 'permissions', 'protection', 'social',
     'teleportation', 'utility', 'world-management', 'worldgen',
   ],
+  addon: [
+    'appearance', 'instances', 'integrations', 'library', 'locale', 'social', 'utility',
+  ],
 }
 
 export function isEnvironment(value: unknown): value is Environment {
@@ -254,6 +264,7 @@ export const LOADER_TYPES: Record<string, ProjectType[]> = {
   sponge_schematic: ['schematic'],
   structure: ['schematic'],
   mcedit: ['schematic'],
+  spectra: ['addon'],
 }
 
 export function loadersForType(type: ProjectType): string[] {

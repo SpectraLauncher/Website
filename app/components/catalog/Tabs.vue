@@ -15,7 +15,7 @@ const localePath = useLocalePath()
 <template>
   <nav class="-mx-4 overflow-x-auto border-b border-panel-line px-4">
     <ul class="flex w-max min-w-full gap-1.5 pb-4">
-      <li v-for="tab in CATALOG_TYPES" :key="tab.type">
+      <li v-for="tab in ACTIVE_CATALOG_TYPES" :key="tab.type">
         <NuxtLink
           :to="localePath(`/${tab.prefix}`)"
           class="flex h-10 items-center gap-2 whitespace-nowrap rounded-xl border px-4 text-sm transition-colors"

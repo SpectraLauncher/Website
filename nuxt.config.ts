@@ -26,7 +26,7 @@ const LEGAL_PATHS = LEGAL_DOCUMENTS.map(doc => doc.path).filter(path => path.sta
 // They are never prerendered, which is what keeps them out of llms.txt and the
 // markdown mirrors nuxt-ai-ready writes for prerendered pages.
 const CATALOG_PATHS = [
-  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/org', '/project',
+  '/mod', '/plugin', '/pack', '/shader', '/resourcepack', '/schematic', '/addon', '/org', '/project',
   '/collection'
 ]
 

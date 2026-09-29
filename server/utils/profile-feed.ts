@@ -1,4 +1,4 @@
-import { projectPath } from '../../shared/utils/catalog-types'
+import { ACTIVE_TYPES, projectPath } from '../../shared/utils/catalog-types'
 import type { ProfileEvent } from '../../shared/utils/profile-events'
 
 const LIMIT = 12
@@ -24,9 +24,9 @@ async function releases(userId: string): Promise<ProfileEvent[]> {
   }>(
     `SELECT v.number, v.created, v.game_versions, v.loaders, p.title, p.slug, p.type
      FROM version v JOIN project p ON p.id = v.project_id
-     WHERE p.owner_id = $1 AND p.status = 'published'
+     WHERE p.owner_id = $1 AND p.status = 'published' AND p.type = ANY($3)
      ORDER BY v.created DESC LIMIT $2`,
-    [userId, LIMIT],
+    [userId, LIMIT, ACTIVE_TYPES],
   )
 
   return rows.map(row => ({
@@ -43,9 +43,9 @@ async function releases(userId: string): Promise<ProfileEvent[]> {
 async function publications(userId: string): Promise<ProfileEvent[]> {
   const rows = await q<{ title: string, slug: string, type: string, published: string | number }>(
     `SELECT title, slug, type, published FROM project
-     WHERE owner_id = $1 AND status = 'published' AND published IS NOT NULL
+     WHERE owner_id = $1 AND status = 'published' AND published IS NOT NULL AND type = ANY($3)
      ORDER BY published DESC LIMIT $2`,
-    [userId, LIMIT],
+    [userId, LIMIT, ACTIVE_TYPES],
   )
 
   return rows.map(row => ({

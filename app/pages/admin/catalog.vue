@@ -87,7 +87,7 @@ interface Analysis {
 const OWN_ACCOUNT = 'me'
 const ANY_TYPE = 'all'
 
-const TYPE_IDS = ['schematic', 'resourcepack', 'shader', 'mod', 'plugin', 'modpack'] as const
+const TYPE_IDS = ACTIVE_TYPES
 const STATUS_IDS = PROJECT_STATUSES
 
 const TYPES = computed(() =>
@@ -210,7 +210,7 @@ const selectedOwner = computed({
 })
 
 const creating = ref(false)
-const draft = reactive({ title: '', type: 'schematic', slug: '', orgId: OWN_ACCOUNT })
+const draft = reactive({ title: '', type: ACTIVE_TYPES[0] as string, slug: '', orgId: OWN_ACCOUNT })
 const authorship = ref(false)
 
 const versionDraft = reactive({

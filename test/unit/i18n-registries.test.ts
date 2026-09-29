@@ -10,6 +10,7 @@ import {
   VERSION_CHANNELS,
 } from '../../shared/utils/catalog-types'
 import { NOTIFICATION_ICONS } from '../../app/composables/useNotifications'
+import { CATALOG_TYPES } from '../../app/utils/catalogTypes'
 import { LINK_KINDS } from '../../shared/utils/links'
 import { LEGAL_DOCUMENTS } from '../../shared/utils/legal'
 
@@ -35,6 +36,15 @@ describe.each(LOCALES)('%s', (loc) => {
   it('ma nazwe kazdego rodzaju projektu', () => {
     for (const type of PROJECT_TYPES) {
       expect(dict.catalog?.admin?.types?.[type], type).toBeTruthy()
+    }
+  })
+
+  it('ma naglowek i pozycje w menu kazdego typu z rejestru stron', () => {
+    for (const { key } of CATALOG_TYPES) {
+      expect(dict.catalog?.[key]?.title, key).toBeTruthy()
+      expect(dict.catalog?.[key]?.sub, key).toBeTruthy()
+      expect(dict.nav?.[key], key).toBeTruthy()
+      expect(dict.nav?.[`${key}Desc`], key).toBeTruthy()
     }
   })
 

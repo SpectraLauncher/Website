@@ -6,6 +6,7 @@ import { newId } from './ids'
 import { dropStoredImage } from './images'
 import { isPublicId } from '../../shared/utils/ids'
 import {
+  ACTIVE_TYPES,
   LISTED_STATUSES,
   MAX_FEATURED_CATEGORIES,
   VISIBILITY_STATUS,
@@ -13,6 +14,7 @@ import {
   categoriesFor,
   initialStatus,
   loadersForType,
+  isActiveType,
   isEnvironment,
   isLicense,
   isProjectStatus,
@@ -107,7 +109,7 @@ const FILE_COLUMNS = `id, version_id, filename, size, sha1, sha512,
 export async function projectBySlug(slug: string): Promise<ProjectRow | undefined> {
   // sql-safe: PROJECT_COLUMNS is a constant column list
   return await one<ProjectRow>(
-    `SELECT ${PROJECT_COLUMNS} FROM project WHERE slug = $1`, [slug])
+    `SELECT ${PROJECT_COLUMNS} FROM project WHERE slug = $1 AND type = ANY($2)`, [slug, ACTIVE_TYPES])
 }
 
 // A caller may hold either a slug or an id, and both arrive on the same path.
@@ -117,7 +119,7 @@ export async function projectByIdOrSlug(key: string): Promise<ProjectRow | undef
   if (isPublicId(key)) {
     // sql-safe: PROJECT_COLUMNS is a constant column list
     const found = await one<ProjectRow>(
-      `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = $1`, [key])
+      `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = $1 AND type = ANY($2)`, [key, ACTIVE_TYPES])
     if (found) return found
   }
   return await projectBySlug(key)
@@ -208,7 +210,7 @@ function stringList(value: unknown, max: number): string[] {
 }
 
 export async function createProject(input: ProjectInput, ownerId: string): Promise<ProjectRow> {
-  if (!isProjectType(input.type)) {
+  if (!isActiveType(input.type)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown project type' })
   }
 
@@ -533,6 +535,7 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   }
 
   if (input.ownerId) add('owner_id = $?', input.ownerId)
+  add('type = ANY($?)', ACTIVE_TYPES)
 
   // A project belongs to a listing either because that is its own type or
   // because it carries a loader belonging to that type, so a jar built for
@@ -614,8 +617,8 @@ export interface Facets {
 // table on a timer once this stops being instant, which for Postgres is a long
 // way past where this catalog will ever get.
 export async function catalogFacets(type?: string): Promise<Facets> {
-  const params: unknown[] = [LISTED_STATUSES]
-  const scope = type ? 'AND (p.type = $2 OR p.loaders && $3)' : ''
+  const params: unknown[] = [LISTED_STATUSES, ACTIVE_TYPES]
+  const scope = type ? 'AND p.type = ANY($2) AND (p.type = $3 OR p.loaders && $4)' : 'AND p.type = ANY($2)'
   if (type) params.push(type, isProjectType(type) ? loadersForType(type) : [])
 
   const spread = async (column: string) => {
@@ -725,7 +728,7 @@ export async function projectsByIds(ids: string[]): Promise<Map<string, ProjectR
   if (!ids.length) return new Map()
   // sql-safe: PROJECT_COLUMNS is a constant column list
   const rows = await q<ProjectRow>(
-    `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = ANY($1)`, [ids])
+    `SELECT ${PROJECT_COLUMNS} FROM project WHERE id = ANY($1) AND type = ANY($2)`, [ids, ACTIVE_TYPES])
   return new Map(rows.map(row => [row.id, row]))
 }
 
@@ -733,9 +736,9 @@ export async function ownedProjects(userId: string, orgIds: string[]): Promise<P
   // sql-safe: PROJECT_COLUMNS is a constant column list
   return await q<ProjectRow>(
     `SELECT ${PROJECT_COLUMNS} FROM project
-     WHERE owner_id = $1 OR ($2::text[] <> '{}' AND org_id = ANY($2))
+     WHERE (owner_id = $1 OR ($2::text[] <> '{}' AND org_id = ANY($2))) AND type = ANY($3)
      ORDER BY updated DESC`,
-    [userId, orgIds],
+    [userId, orgIds, ACTIVE_TYPES],
   )
 }
 
@@ -748,8 +751,8 @@ export interface QueueCounts {
 export async function queueCounts(): Promise<QueueCounts> {
   const rows = await q<{ status: string, n: number }>(
     `SELECT status, count(*)::int AS n FROM project
-     WHERE status = ANY($1) GROUP BY status`,
-    [['pending', 'rejected', 'draft']],
+     WHERE status = ANY($1) AND type = ANY($2) GROUP BY status`,
+    [['pending', 'rejected', 'draft'], ACTIVE_TYPES],
   )
 
   const by = new Map(rows.map(row => [row.status, row.n]))

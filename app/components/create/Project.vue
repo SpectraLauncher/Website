@@ -8,7 +8,7 @@ const open = creating.project
 const title = ref('')
 const slug = ref('')
 const slugField = useTemplateRef('slugField')
-const type = ref<string>('mod')
+const type = ref<string>(ACTIVE_TYPES[0]!)
 const owner = ref('me')
 const visibility = ref<string>('public')
 const summary = ref('')
@@ -19,7 +19,7 @@ const error = ref('')
 const organizations = ref<Array<{ id: string, name: string, logo?: string | null }>>([])
 
 const typeOptions = computed(() =>
-  PROJECT_TYPES.map(value => ({ value, label: t(`catalog.admin.types.${value}`) })))
+  ACTIVE_TYPES.map(value => ({ value, label: t(`catalog.admin.types.${value}`) })))
 
 const session = useAuthSession()
 const account = computed(() =>

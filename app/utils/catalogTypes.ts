@@ -1,3 +1,5 @@
+import { isActiveType } from '../../shared/utils/catalog-types'
+
 /**
  * What a listing and a project page need to know about a project type beyond
  * what the database holds: the mark it draws and the translation key its name
@@ -21,6 +23,7 @@ export interface CatalogTypeInfo {
 }
 
 export const CATALOG_TYPES: CatalogTypeInfo[] = [
+  { type: 'addon', prefix: 'addon', icon: 'i-pixelarticons-add-box', key: 'addons' },
   { type: 'mod', prefix: 'mod', icon: 'i-pixelarticons-shapes', key: 'mods' },
   { type: 'plugin', prefix: 'plugin', icon: 'i-pixelarticons-plug', key: 'plugins' },
   { type: 'resourcepack', prefix: 'resourcepack', icon: 'i-pixelarticons-image', key: 'resourcepacks' },
@@ -28,6 +31,8 @@ export const CATALOG_TYPES: CatalogTypeInfo[] = [
   { type: 'modpack', prefix: 'pack', icon: 'i-pixelarticons-archive', key: 'modpacks' },
   { type: 'schematic', prefix: 'schematic', icon: 'i-pixelarticons-blocks', key: 'schematics' },
 ]
+
+export const ACTIVE_CATALOG_TYPES = CATALOG_TYPES.filter(entry => isActiveType(entry.type))
 
 /**
  * The type a URL segment names, or null.
@@ -42,5 +47,5 @@ export function catalogTypeByPrefix(prefix: unknown): CatalogTypeInfo | null {
   // meant for /mod.
   if (typeof prefix !== 'string') return null
 
-  return CATALOG_TYPES.find(entry => entry.prefix === prefix) ?? null
+  return ACTIVE_CATALOG_TYPES.find(entry => entry.prefix === prefix) ?? null
 }

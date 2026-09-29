@@ -20,7 +20,7 @@ const ROUTES = [
 ]
 
 const TYPE_PREFIXES = [
-  'mod', 'plugin', 'pack', 'shader', 'resourcepack', 'schematic', 'org',
+  'mod', 'plugin', 'pack', 'shader', 'resourcepack', 'schematic', 'addon', 'org',
 ]
 
 const INFRASTRUCTURE = [

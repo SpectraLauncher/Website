@@ -70,14 +70,12 @@ watch(me, (user) => {
 
 const discover: NavigationMenuItem = {
     label: 'nav.discover',
-    children: [
-        { label: 'nav.mods', icon: 'i-pixelarticons-shapes', to: localePath('/mod'), description: 'nav.modsDesc' },
-        { label: 'nav.plugins', icon: 'i-pixelarticons-plug', to: localePath('/plugin'), description: 'nav.pluginsDesc' },
-        { label: 'nav.resourcepacks', icon: 'i-pixelarticons-image', to: localePath('/resourcepack'), description: 'nav.resourcepacksDesc' },
-        { label: 'nav.shaders', icon: 'i-pixelarticons-sun', to: localePath('/shader'), description: 'nav.shadersDesc' },
-        { label: 'nav.modpacks', icon: 'i-pixelarticons-archive', to: localePath('/pack'), description: 'nav.modpacksDesc' },
-        { label: 'nav.schematics', icon: 'i-pixelarticons-blocks', to: localePath('/schematic'), description: 'nav.schematicsDesc' },
-    ]
+    children: ACTIVE_CATALOG_TYPES.map(entry => ({
+        label: `nav.${entry.key}`,
+        icon: entry.icon,
+        to: localePath(`/${entry.prefix}`),
+        description: `nav.${entry.key}Desc`,
+    })),
 }
 
 const items = ref<NavigationMenuItem[]>([

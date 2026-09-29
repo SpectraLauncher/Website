@@ -1,6 +1,6 @@
 
 import { type ProjectRow, num } from './catalog'
-import { LISTED_STATUSES, projectPath } from '../../shared/utils/catalog-types'
+import { ACTIVE_TYPES, LISTED_STATUSES, projectPath } from '../../shared/utils/catalog-types'
 import type { H3Event } from 'h3'
 import { isAdmin } from '../../shared/utils/staff-roles'
 import { exec, one, q } from './db'
@@ -90,16 +90,16 @@ export async function orgMembers(orgId: string): Promise<OrgMember[]> {
 }
 
 export async function orgProjects(orgId: string, includeDrafts: boolean): Promise<ProjectRow[]> {
-  const filter = includeDrafts ? '' : 'AND status = ANY($2)'
+  const filter = includeDrafts ? '' : 'AND status = ANY($3)'
 
   // sql-safe: `filter` is one of two constant fragments chosen above, never request text
   return await q<ProjectRow>(
     `SELECT id, slug, type, owner_id, org_id, title, summary, description, status,
             license, license_url, icon, categories, game_versions, loaders, links, meta,
             downloads, follows, created, updated, published
-     FROM project WHERE org_id = $1 ${filter}
+     FROM project WHERE org_id = $1 AND type = ANY($2) ${filter}
      ORDER BY downloads DESC, updated DESC`,
-    includeDrafts ? [orgId] : [orgId, LISTED_STATUSES],
+    includeDrafts ? [orgId, ACTIVE_TYPES] : [orgId, ACTIVE_TYPES, LISTED_STATUSES],
   )
 }
 

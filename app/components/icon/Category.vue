@@ -67,6 +67,11 @@ const ICONS: Record<string, string> = {
   'semi-realistic': 'camera',
   'shadows': 'moon',
 
+  // addon
+  'appearance': 'paint-bucket',
+  'instances': 'folder',
+  'integrations': 'plug',
+
   // schematic
   'base': 'flag',
   'farm': 'tree',

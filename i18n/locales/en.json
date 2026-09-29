@@ -36,7 +36,9 @@
       "signOut": "Sign out",
       "admin": "Admin"
     },
-    "publish": "Publish"
+    "publish": "Publish",
+    "addons": "Addons",
+    "addonsDesc": "Themes and extensions for the launcher."
   },
   "hero": {
     "opensource": "open source",
@@ -3258,7 +3260,8 @@
         "shader": "Shader pack",
         "mod": "Mod",
         "modpack": "Modpack",
-        "plugin": "Plugin"
+        "plugin": "Plugin",
+        "addon": "Addon"
       },
       "statuses": {
         "draft": "Draft — owner only",
@@ -3418,7 +3421,10 @@
       "protection": "Protection",
       "teleportation": "Teleportation",
       "world-management": "World management",
-      "worldgen": "World generation"
+      "worldgen": "World generation",
+      "appearance": "Appearance",
+      "instances": "Instances",
+      "integrations": "Integrations"
     },
     "follows": "{n} follows",
     "gallery": "Gallery",
@@ -3626,7 +3632,11 @@
       "id-shaped": "This looks like an id, not an address."
     },
     "banner": "Banner",
-    "bannerRemove": "Remove banner"
+    "bannerRemove": "Remove banner",
+    "addons": {
+      "title": "Launcher addons",
+      "sub": "Themes, translations and extensions for the Spectra launcher. What an addon may touch is read out of its addon.json, not from a form."
+    }
   },
   "verification": {
     "title": "Verification",

@@ -3,6 +3,7 @@ import type { H3Event } from 'h3'
 
 import { type FileRow, type ProjectRow, type VersionRow, num } from './catalog'
 import { exec, one } from './db'
+import { isActiveType, isLinkable } from '../../shared/utils/catalog-types'
 
 export function listParam(value: unknown): string[] | undefined {
   const raw = Array.isArray(value) ? value : [value]
@@ -23,7 +24,7 @@ export async function visibleProject(
   project: ProjectRow | undefined,
   viewer: { id?: string, role?: string | null } | null,
 ): Promise<boolean> {
-  if (!project) return false
+  if (!project || !isActiveType(project.type)) return false
   if (isLinkable(project.status)) return true
   if (!viewer) return false
   if (canModerate(viewer)) return true
@@ -71,12 +72,13 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
     object_key: string
     status: string
     updated: string
+    type: string
     owner_id: string | null
     org_id: string | null
   }>(
     `SELECT f.id AS file_id, f.version_id, v.project_id,
             f.filename, f.object_key, p.status, p.updated,
-            p.owner_id, p.org_id
+            p.type, p.owner_id, p.org_id
      FROM version_file f
      JOIN version v ON v.id = f.version_id
      JOIN project p ON p.id = v.project_id
@@ -92,6 +94,7 @@ export async function downloadTarget(fileId: string): Promise<DownloadTarget | u
       id: row.project_id,
       status: row.status,
       updated: row.updated,
+      type: row.type,
       owner_id: row.owner_id,
       org_id: row.org_id,
     } as unknown as ProjectRow,
