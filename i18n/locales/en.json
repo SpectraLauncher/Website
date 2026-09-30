@@ -3448,7 +3448,8 @@
       "worldgen": "World generation",
       "appearance": "Appearance",
       "instances": "Instances",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "theme": "Launcher theme"
     },
     "follows": "{n} follows",
     "gallery": "Gallery",

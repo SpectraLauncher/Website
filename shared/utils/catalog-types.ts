@@ -274,7 +274,7 @@ export const CATEGORIES: Record<ProjectType, readonly string[]> = {
     'teleportation', 'utility', 'world-management', 'worldgen',
   ],
   addon: [
-    'appearance', 'instances', 'integrations', 'library', 'locale', 'social', 'utility',
+    'appearance', 'instances', 'integrations', 'library', 'locale', 'social', 'theme', 'utility',
   ],
 }
 

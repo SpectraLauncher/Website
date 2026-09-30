@@ -71,6 +71,7 @@ const ICONS: Record<string, string> = {
   'appearance': 'paint-bucket',
   'instances': 'folder',
   'integrations': 'plug',
+  'theme': 'drop-half',
 
   // schematic
   'base': 'flag',

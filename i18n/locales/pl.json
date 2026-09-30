@@ -3448,7 +3448,8 @@
       "worldgen": "Generowanie świata",
       "appearance": "Wygląd",
       "instances": "Instancje",
-      "integrations": "Integracje"
+      "integrations": "Integracje",
+      "theme": "Motyw launchera"
     },
     "follows": "Obserwujących: {n}",
     "gallery": "Galeria",
