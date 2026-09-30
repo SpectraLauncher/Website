@@ -74,6 +74,13 @@ export async function versionsByHash(
   })) as HashMatch[]
 }
 
+export async function revokedAddonFiles(hashes: string[]): Promise<string[]> {
+  const matches = await versionsByHash(hashes, 'sha512')
+  return [...new Set(matches
+    .filter(m => m.project.type === 'addon' && m.project.status === 'removed')
+    .map(m => m.hash))]
+}
+
 // Third-party tools run in a browser, so the compatibility surface has to say so.
 export function allowAnyOrigin(event: import('h3').H3Event) {
   setHeader(event, 'access-control-allow-origin', '*')

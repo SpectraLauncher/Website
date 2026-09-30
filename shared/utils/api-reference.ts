@@ -32,6 +32,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/project/{slug}', group: 'catalog', auth: 'none', summary: 'One project with its versions and files' },
   { route: 'GET /api/catalog/project/{slug}/versions', group: 'catalog', auth: 'none', summary: 'Versions of a project' },
   { route: 'GET /api/catalog/download/{fileId}', group: 'catalog', auth: 'none', summary: 'Download a file and count the download' },
+  { route: 'POST /api/catalog/addons/revoked', group: 'catalog', auth: 'none', summary: 'Which installed addon files moderation has taken down' },
   { route: 'POST /api/catalog/project/{slug}/follow', group: 'projects', auth: 'session', summary: 'Follow a project' },
   { route: 'DELETE /api/catalog/project/{slug}/follow', group: 'projects', auth: 'session', summary: 'Stop following a project' },
   { route: 'POST /api/catalog/project/{slug}/favourite', group: 'projects', auth: 'session', summary: 'Put a project on your favourites shelf' },
