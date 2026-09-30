@@ -2120,6 +2120,7 @@
     "searchPh": "nick gracza",
     "notFound": "Nie znaleziono gracza {q}",
     "badFile": "Nie udało się wczytać pliku",
+    "shareExpired": "Ten skin już wygasł. Otwórz go ponownie z launchera.",
     "hint": "Malujesz w obu widokach naraz. W 3D przeciągnięcie po modelu maluje, a przeciągnięcie obok obraca kamerę. Skróty: P ołówek, F wypełnianie, E gumka, S cieniowanie, D dither, I pipeta, M symetria, Ctrl+Z cofnij.",
     "tools": {
       "pencil": "Ołówek",

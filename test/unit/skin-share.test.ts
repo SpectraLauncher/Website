@@ -2,34 +2,52 @@ import { readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
-import { SHARED_SKIN_MAX, sharedSkin } from '../../app/utils/mc/skin'
+import { encodePng } from '../../server/utils/png'
+import {
+  SKIN_SHARE_MAX_ENTRIES,
+  SKIN_SHARE_TTL,
+  isSkinPng,
+  isSkinShareId,
+  shareSkin,
+  sharedSkinPng,
+} from '../../server/utils/skin-share'
 
-const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+const png = (width: number, height: number) => encodePng(new Uint8ClampedArray(width * height * 4), width, height)
 
-describe('skin przekazany z launchera w adresie', () => {
-  it('czyta obraz i model z fragmentu', () => {
-    const hash = `#${new URLSearchParams({ skin: png, model: 'slim' })}`
-    expect(sharedSkin(hash)).toEqual({ png, model: 'slim' })
+describe('skin przekazany do edytora', () => {
+  it('przyjmuje tylko PNG skina w rozmiarze 64x64 albo 64x32', () => {
+    expect(isSkinPng(png(64, 64))).toBe(true)
+    expect(isSkinPng(png(64, 32))).toBe(true)
+    expect(isSkinPng(png(128, 128))).toBe(false)
+    expect(isSkinPng(png(32, 32))).toBe(false)
+    expect(isSkinPng(Buffer.from('not a png at all, just some text'))).toBe(false)
+    expect(isSkinPng(Buffer.alloc(0))).toBe(false)
   })
 
-  it('bez modelu albo z nieznanym przyjmuje classic', () => {
-    expect(sharedSkin(`#skin=${encodeURIComponent(png)}`)?.model).toBe('classic')
-    expect(sharedSkin(`#skin=${encodeURIComponent(png)}&model=giant`)?.model).toBe('classic')
+  it('oddaje skin pod krotkim id i tylko przez pietnascie minut', () => {
+    const skin = png(64, 64)
+    const id = shareSkin(skin, 1_000)
+    expect(isSkinShareId(id)).toBe(true)
+    expect(sharedSkinPng(id, 1_000 + SKIN_SHARE_TTL - 1)?.equals(skin)).toBe(true)
+    expect(sharedSkinPng(id, 1_000 + SKIN_SHARE_TTL)).toBeNull()
   })
 
-  it('odrzuca wszystko, co nie jest samym base64', () => {
-    for (const bad of ['', '#', '#skin=', '#skin=<script>', '#skin=data:image/png;base64,AAAA', '#skin=AA%20AA']) {
-      expect(sharedSkin(bad), bad).toBeNull()
+  it('nie trzyma w pamieci wiecej niz limit', () => {
+    const first = shareSkin(png(64, 64), 5_000)
+    for (let i = 0; i < SKIN_SHARE_MAX_ENTRIES; i++) shareSkin(png(64, 64), 5_000)
+    expect(sharedSkinPng(first, 5_000)).toBeNull()
+  })
+
+  it('odrzuca id, ktore nie wyglada na nasze', () => {
+    for (const bad of ['', 'short', '../../etc/passwd', 'a'.repeat(17), null, 12]) {
+      expect(isSkinShareId(bad), String(bad)).toBe(false)
     }
   })
 
-  it('odrzuca za duzy obraz', () => {
-    expect(sharedSkin(`#skin=${'A'.repeat(SHARED_SKIN_MAX + 4)}`)).toBeNull()
-  })
-
-  it('edytor czyta skin z fragmentu i usuwa go z adresu', () => {
-    const page = readFileSync('app/pages/tools/skin-editor.vue', 'utf8')
-    expect(page).toContain('sharedSkin(window.location.hash)')
-    expect(page).toContain('window.history.replaceState(')
+  it('edytor bierze skin z ?share i ma limit zapytan po stronie serwera', () => {
+    expect(readFileSync('app/pages/tools/skin-editor.vue', 'utf8')).toContain('/api/tools/skin-share/${share}')
+    const post = readFileSync('server/api/tools/skin-share.post.ts', 'utf8')
+    expect(post.indexOf('rateLimit(')).toBeLessThan(post.indexOf('shareSkin('))
+    expect(post).toContain('isSkinPng(png)')
   })
 })

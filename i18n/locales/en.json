@@ -2120,6 +2120,7 @@
     "searchPh": "player name",
     "notFound": "Player {q} not found",
     "badFile": "Could not load that file",
+    "shareExpired": "That skin is no longer available. Open it from the launcher again.",
     "hint": "Both views paint the same texture. In 3D, dragging on the model paints and dragging beside it orbits the camera. Shortcuts: P pencil, F fill, E eraser, S shading, D dither, I eyedropper, M symmetry, Ctrl+Z undo.",
     "tools": {
       "pencil": "Pencil",

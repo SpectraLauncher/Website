@@ -158,6 +158,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/curseforge/{path}', group: 'compat', auth: 'none', summary: 'Proxy to CurseForge, so a key is not shipped in a client' },
   { route: 'GET /api/mc-profile', group: 'compat', auth: 'none', summary: 'A Minecraft profile by name or UUID' },
   { route: 'GET /api/mc-skin', group: 'compat', auth: 'none', summary: 'A Minecraft skin texture' },
+  { route: 'POST /api/tools/skin-share', group: 'compat', auth: 'none', summary: 'Hand a skin to the skin editor for fifteen minutes' },
+  { route: 'GET /api/tools/skin-share/{id}', group: 'compat', auth: 'none', summary: 'A skin handed to the skin editor' },
   { route: 'GET /api/mc-cape', group: 'compat', auth: 'none', summary: 'A Minecraft cape texture' },
   { route: 'GET /api/mc-capes', group: 'compat', auth: 'none', summary: 'Every cape a profile has' },
   { route: 'GET /api/badges', group: 'account', auth: 'none', summary: 'Badges that can be awarded' },

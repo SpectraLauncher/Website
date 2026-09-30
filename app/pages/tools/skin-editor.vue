@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, sharedSkin, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/mc/skin'
+import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/mc/skin'
 import { PALETTES, brushCells, fill, mirrorMap, shadeChannel, skinRegions, type EditorTool } from '~/utils/mc/skinEdit'
 
 const localePath = useLocalePath()
 const { t, tm, rt } = useI18n()
+const route = useRoute()
 const toast = useToast()
 
 const tool = TOOLS.find(x => x.id === 'skin-editor')!
@@ -353,16 +354,18 @@ onMounted(async () => {
   source.value = blank()
   window.addEventListener('keydown', shortcut)
 
-  const shared = sharedSkin(window.location.hash)
-  if (!shared) return reset()
+  const share = typeof route.query.share === 'string' && /^[A-Za-z0-9_-]{16}$/.test(route.query.share)
+    ? route.query.share
+    : null
+  if (!share) return reset()
 
-  window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search)
-  model.value = shared.model
+  model.value = route.query.model === 'slim' ? 'slim' : 'classic'
   try {
-    await loadUrl(`data:image/png;base64,${shared.png}`)
+    const { png } = await $fetch<{ png: string }>(`/api/tools/skin-share/${share}`)
+    await loadUrl(`data:image/png;base64,${png}`)
   }
   catch {
-    toast.add({ title: t('skinEditor.badFile'), color: 'error' })
+    toast.add({ title: t('skinEditor.shareExpired'), color: 'error' })
     await reset()
   }
 })
