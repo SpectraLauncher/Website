@@ -65,6 +65,10 @@ Addon musi coś dodawać: `main`, `backend` albo co najmniej jedną pozycję w
 | `servers:ping` | Sprawdzać serwery Minecrafta |
 | `account:read` | Nazwy konta Minecraft i konta Spectra |
 | `skins:read` | Zapisane skiny |
+| `resourcepacks:read` | Wypisywanie plików w paczce zasobów i czytanie ich |
+| `resourcepacks:write` | Zapisywanie edytowanej kopii paczki zasobów |
+| `files:read:<folder>` | Czytanie jednego folderu (albo pliku) na górze folderu gry instancji, na przykład `files:read:config` albo `files:read:options.txt` |
+| `files:write:<folder>` | Także tworzenie, zmiana i usuwanie tam plików, na przykład `files:write:saves`. Do `mods`, `kubejs`, `scripts` i `coremods` nie da się pisać, tak samo jak nigdzie nie da się zapisać plików programów, takich jak `.jar`, `.dll` czy `.exe` |
 | `network:<host>` | `spectra.http.fetch` dokładnie do tego hosta przez `https`, na przykład `network:api.example.com` |
 
 Pamięć addonu, powiadomienia, własne strony i okna addonu oraz wersja, język i motyw

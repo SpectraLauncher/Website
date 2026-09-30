@@ -44,6 +44,34 @@ dostaje `instanceId`.
 | `account.spectra()` | `account:read` | `{ username, name, image }` albo `null` |
 | `skins.list()` | `skins:read` | Zapisane skiny |
 
+## files
+
+Ścieżki zaczynają się w folderze gry instancji, na przykład `config/example.json`. Pierwsza część ścieżki musi być
+folderem wymienionym w uprawnieniu `files:read:<folder>` albo `files:write:<folder>`; `write` pozwala też czytać.
+
+| Metoda | Uprawnienie | Wynik |
+|---|---|---|
+| `list(id, path)` | read | Zawartość folderu: `name`, `dir`, `size`, `modified` (milisekundy) |
+| `read(id, path, { encoding })` | read | Plik jako tekst albo jako base64 z `encoding: 'base64'`. Do 10 MB |
+| `write(id, path, data, { encoding })` | write | Tworzy plik razem z folderami albo go podmienia. `data` to tekst albo base64 z `encoding: 'base64'` |
+| `remove(id, path)` | write | Usuwa plik albo folder |
+| `mkdir(id, path)` | write | Tworzy folder |
+
+Nic nie ginie na dobre: plik, który `write` podmienia albo `remove` zabiera, trafia do `addon-trash/<id addonu>/`
+w folderze instancji, obok folderu gry, skąd gracz może go odzyskać. Gra może nadpisać pliki, które trzyma otwarte
+w trakcie działania.
+
+## resourcepacks
+
+`filename` to nazwa paczki w folderze `resourcepacks` instancji, taka jak w `instances.content(id, 'resourcepack')`.
+Działają paczki spakowane i foldery.
+
+| Metoda | Uprawnienie | Wynik |
+|---|---|---|
+| `files(id, filename)` | `resourcepacks:read` | `{ files, mcmeta, edit }`: każdy plik z `path` i `size`, odczytany `pack.mcmeta`, a dla kopii zapisanej przez `save` jej `source` i ścieżki `excluded` |
+| `read(id, filename, path)` | `resourcepacks:read` | `{ data }`: jeden plik z wnętrza paczki jako base64, do 4 MB |
+| `save(id, filename, excluded)` | `resourcepacks:write` | `{ filename }`: zapisuje `<nazwa> (edited).zip` bez ścieżek z `excluded`, wyłącza oryginał i stawia kopię na jego miejscu w kolejności paczek w grze. Kolejny zapis podmienia kopię. Nie działa, gdy gra jest uruchomiona |
+
 ## http
 
 ```js

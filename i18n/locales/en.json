@@ -3679,6 +3679,8 @@
       "title": "Access",
       "none": "Needs nothing beyond its own buttons and themes.",
       "network": "Connects to",
+      "filesRead": "Reads the folder",
+      "filesWrite": "Changes files in",
       "runsCode": "Runs its own code in an isolated frame inside the launcher.",
       "permissions": {
         "instancesRead": "Sees your instances, their content and worlds",
@@ -3687,7 +3689,9 @@
         "logsRead": "Reads game logs",
         "serversPing": "Checks Minecraft servers",
         "accountRead": "Knows your Minecraft and Spectra account names",
-        "skinsRead": "Sees your skins"
+        "skinsRead": "Sees your skins",
+        "resourcepacksRead": "Looks inside your resource packs",
+        "resourcepacksWrite": "Saves edited copies of your resource packs"
       }
     }
   },

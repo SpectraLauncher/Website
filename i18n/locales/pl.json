@@ -3679,6 +3679,8 @@
       "title": "Dostęp",
       "none": "Nie potrzebuje niczego poza własnymi przyciskami i motywami.",
       "network": "Łączy się z",
+      "filesRead": "Czyta folder",
+      "filesWrite": "Zmienia pliki w",
       "runsCode": "Uruchamia własny kod w odizolowanej ramce w launcherze.",
       "permissions": {
         "instancesRead": "Widzi twoje instancje, ich zawartość i światy",
@@ -3687,7 +3689,9 @@
         "logsRead": "Czyta logi gry",
         "serversPing": "Sprawdza serwery Minecraft",
         "accountRead": "Zna nazwy twoich kont Minecraft i Spectra",
-        "skinsRead": "Widzi twoje skórki"
+        "skinsRead": "Widzi twoje skórki",
+        "resourcepacksRead": "Zagląda do wnętrza twoich paczek zasobów",
+        "resourcepacksWrite": "Zapisuje edytowane kopie twoich paczek zasobów"
       }
     }
   },

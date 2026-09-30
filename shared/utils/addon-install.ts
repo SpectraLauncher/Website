@@ -38,6 +38,7 @@ export function newAddonAsks(
 export interface AddonAccess {
   permissions: string[]
   hosts: string[]
+  folders: { folder: string, write: boolean }[]
   runsCode: boolean
 }
 
@@ -59,8 +60,12 @@ export function addonAccess(meta: Record<string, unknown> | null | undefined): A
     || listOf(contributes.buttons).some(b => (b as { action?: { type?: unknown } })?.action?.type !== 'url')
 
   return {
-    permissions: permissions.filter(p => !p.startsWith('network:')),
+    permissions: permissions.filter(p => !p.startsWith('network:') && !p.startsWith('files:')),
     hosts: permissions.filter(p => p.startsWith('network:')).map(p => p.slice('network:'.length)),
+    folders: permissions.flatMap((p) => {
+      const match = /^files:(read|write):(.+)$/.exec(p)
+      return match ? [{ folder: match[2]!, write: match[1] === 'write' }] : []
+    }),
     runsCode,
   }
 }

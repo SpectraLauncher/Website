@@ -22,6 +22,7 @@ describe('instalacja addonu z katalogu', () => {
     expect(access).toEqual({
       permissions: ['instances:read'],
       hosts: ['api.example.com'],
+      folders: [],
       runsCode: true,
     })
   })
@@ -34,7 +35,14 @@ describe('instalacja addonu z katalogu', () => {
         buttons: [{ action: { type: 'url', url: 'https://x.com' } }],
       },
     })
-    expect(access).toEqual({ permissions: [], hosts: [], runsCode: false })
+    expect(access).toEqual({ permissions: [], hosts: [], folders: [], runsCode: false })
+  })
+
+  it('foldery instancji ida osobno, z informacja o zapisie', () => {
+    const access = addonAccess({ permissions: ['instances:read', 'files:read:config', 'files:write:saves', 'network:api.example.com'] })
+    expect(access.permissions).toEqual(['instances:read'])
+    expect(access.folders).toEqual([{ folder: 'config', write: false }, { folder: 'saves', write: true }])
+    expect(access.hosts).toEqual(['api.example.com'])
   })
 
   it('kazdy slot z widokiem albo akcja inna niz link to kod', () => {
@@ -50,8 +58,8 @@ describe('instalacja addonu z katalogu', () => {
   })
 
   it('nie wysypuje sie na brakujacych metadanych', () => {
-    expect(addonAccess(null)).toEqual({ permissions: [], hosts: [], runsCode: false })
-    expect(addonAccess({ permissions: 'nope' })).toEqual({ permissions: [], hosts: [], runsCode: false })
+    expect(addonAccess(null)).toEqual({ permissions: [], hosts: [], folders: [], runsCode: false })
+    expect(addonAccess({ permissions: 'nope' })).toEqual({ permissions: [], hosts: [], folders: [], runsCode: false })
   })
 
   it.each(['en', 'pl'])('%s opisuje kazde uprawnienie z parsera', (loc) => {

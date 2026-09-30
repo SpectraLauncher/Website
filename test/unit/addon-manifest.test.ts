@@ -157,9 +157,9 @@ describe('addon.json', () => {
   it('przyjmuje kazde znane uprawnienie i domeny sieci', () => {
     const manifest = readAddonManifest(withManifest({
       ...base,
-      permissions: [...ADDON_PERMISSIONS, 'network:api.example.com', 'network:cdn.example.co.uk'],
+      permissions: [...ADDON_PERMISSIONS, 'network:api.example.com', 'network:cdn.example.co.uk', 'files:read:config', 'files:write:saves', 'files:read:mods', 'files:write:options.txt'],
     }))
-    expect(manifest?.permissions).toHaveLength(ADDON_PERMISSIONS.length + 2)
+    expect(manifest?.permissions).toHaveLength(ADDON_PERMISSIONS.length + 6)
   })
 
   it.each([
@@ -169,6 +169,16 @@ describe('addon.json', () => {
     ['network:https://example.com'],
     ['network:localhost'],
     ['network:example.com/path'],
+    ['files:read'],
+    ['files:read:'],
+    ['files:read:config/sub'],
+    ['files:read:../saves'],
+    ['files:read:.fabric'],
+    ['files:write:mods'],
+    ['files:write:MODS'],
+    ['files:write:kubejs'],
+    ['files:write:mods.'],
+    ['files:delete:config'],
   ])('odrzuca uprawnienie %s', (permission) => {
     rejects({ ...base, permissions: [permission] }).toThrow(/permission/)
   })

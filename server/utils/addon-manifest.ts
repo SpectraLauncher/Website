@@ -14,7 +14,11 @@ export const ADDON_PERMISSIONS = [
   'servers:ping',
   'account:read',
   'skins:read',
+  'resourcepacks:read',
+  'resourcepacks:write',
 ] as const
+
+export const ADDON_NO_WRITE_FOLDERS = ['mods', 'kubejs', 'scripts', 'coremods'] as const
 
 export const ADDON_SLOTS = [
   'sidebar.menu',
@@ -99,6 +103,7 @@ const ID = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/
 const VERSION = /^[0-9A-Za-z][0-9A-Za-z.+-]{0,59}$/
 const RANGE = /^[0-9A-Za-z.*<>=~^|,\s-]{1,64}$/
 const HOST = /^network:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/
+const FILES = /^files:(read|write):([A-Za-z0-9_-][A-Za-z0-9_.-]{0,63})$/
 const LOCALE = /^[a-z]{2}(?:-[A-Z]{2})?$/
 
 function fail(message: string): never {
@@ -254,13 +259,19 @@ function locales(zip: Zip, value: unknown): Record<string, string> {
   }))
 }
 
+function filesPermission(entry: string): boolean {
+  const match = FILES.exec(entry)
+  if (!match || match[2]!.endsWith('.')) return false
+  return match[1] === 'read' || !(ADDON_NO_WRITE_FOLDERS as readonly string[]).includes(match[2]!.toLowerCase())
+}
+
 function permissions(value: unknown): string[] {
   const raw = list(value, 'permissions', ADDON_LIMITS.permissions)
   const out = new Set<string>()
   for (const [i, entry] of raw.entries()) {
     if (typeof entry !== 'string') fail(`permissions[${i}] must be a string`)
     const known = (ADDON_PERMISSIONS as readonly string[]).includes(entry)
-    if (!known && !HOST.test(entry)) fail(`permissions[${i}] is not a permission: ${entry}`)
+    if (!known && !HOST.test(entry) && !filesPermission(entry)) fail(`permissions[${i}] is not a permission: ${entry}`)
     out.add(entry)
   }
   return [...out].sort()

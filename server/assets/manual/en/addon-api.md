@@ -44,6 +44,34 @@ await spectra.ui.toast(`${instances.length} instances`, { color: 'success' })
 | `account.spectra()` | `account:read` | `{ username, name, image }` or `null` |
 | `skins.list()` | `skins:read` | Saved skins |
 
+## files
+
+Paths start at the instance's game folder, such as `config/example.json`. The first part of the path has to be a
+folder named in a `files:read:<folder>` or `files:write:<folder>` permission; `write` allows reading as well.
+
+| Method | Permission | Result |
+|---|---|---|
+| `list(id, path)` | read | The folder's entries: `name`, `dir`, `size`, `modified` (milliseconds) |
+| `read(id, path, { encoding })` | read | The file as text, or as base64 with `encoding: 'base64'`. Up to 10 MB |
+| `write(id, path, data, { encoding })` | write | Creates the file and its folders, or replaces it. `data` is text, or base64 with `encoding: 'base64'` |
+| `remove(id, path)` | write | Removes a file or a folder |
+| `mkdir(id, path)` | write | Creates a folder |
+
+Nothing is lost for good: a file that `write` replaces or `remove` takes away is moved to
+`addon-trash/<addon id>/` in the instance folder, next to the game folder, where the player can get it back. The game
+may overwrite files it keeps open while it runs.
+
+## resourcepacks
+
+`filename` is the pack's name in the instance's `resourcepacks` folder, as `instances.content(id, 'resourcepack')`
+lists it. Zipped packs and folders both work.
+
+| Method | Permission | Result |
+|---|---|---|
+| `files(id, filename)` | `resourcepacks:read` | `{ files, mcmeta, edit }`: every file with `path` and `size`, `pack.mcmeta` parsed, and for a copy saved by `save` its `source` and the `excluded` paths |
+| `read(id, filename, path)` | `resourcepacks:read` | `{ data }`: one file from inside the pack as base64, up to 4 MB |
+| `save(id, filename, excluded)` | `resourcepacks:write` | `{ filename }`: writes `<name> (edited).zip` without the `excluded` paths, turns the original off and puts the copy in its place in the game's pack order. Saving again replaces the copy. It fails while the game runs |
+
 ## http
 
 ```js

@@ -97,7 +97,7 @@ const owner = computed(() => props.project.owner)
 
     <div v-if="access" class="rounded-2xl border border-panel-line bg-panel p-5">
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.addonAccess.title') }}</h2>
-      <ul v-if="access.permissions.length || access.hosts.length" class="space-y-1.5 text-sm">
+      <ul v-if="access.permissions.length || access.hosts.length || access.folders.length" class="space-y-1.5 text-sm">
         <li v-for="permission in access.permissions" :key="permission" class="flex items-start gap-2">
           <UIcon name="i-pixelarticons-lock" class="mt-0.5 size-3.5 shrink-0 text-dimmed" />
           {{ t(`catalog.addonAccess.permissions.${permissionKey(permission)}`) }}
@@ -105,6 +105,10 @@ const owner = computed(() => props.project.owner)
         <li v-for="host in access.hosts" :key="host" class="flex items-start gap-2">
           <UIcon name="i-pixelarticons-globe" class="mt-0.5 size-3.5 shrink-0 text-dimmed" />
           <span>{{ t('catalog.addonAccess.network') }} <span class="font-mono">{{ host }}</span></span>
+        </li>
+        <li v-for="entry in access.folders" :key="`${entry.folder}:${entry.write}`" class="flex items-start gap-2">
+          <UIcon name="i-pixelarticons-folder" class="mt-0.5 size-3.5 shrink-0 text-dimmed" />
+          <span>{{ t(entry.write ? 'catalog.addonAccess.filesWrite' : 'catalog.addonAccess.filesRead') }} <span class="font-mono">{{ entry.folder }}</span></span>
         </li>
       </ul>
       <p v-else class="text-sm text-muted">{{ t('catalog.addonAccess.none') }}</p>

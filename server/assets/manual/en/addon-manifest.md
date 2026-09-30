@@ -65,6 +65,10 @@ An addon has to add something: `main`, `backend` or at least one entry in
 | `servers:ping` | Checking Minecraft servers |
 | `account:read` | The Minecraft and Spectra account names |
 | `skins:read` | Saved skins |
+| `resourcepacks:read` | Listing the files inside a resource pack and reading them |
+| `resourcepacks:write` | Saving an edited copy of a resource pack |
+| `files:read:<folder>` | Reading one folder (or file) at the top of the instance's game folder, for example `files:read:config` or `files:read:options.txt` |
+| `files:write:<folder>` | Creating, changing and removing files there too, for example `files:write:saves`. `mods`, `kubejs`, `scripts` and `coremods` cannot be written, and neither can program files such as `.jar`, `.dll` or `.exe` anywhere |
 | `network:<host>` | `spectra.http.fetch` to exactly that host over `https`, for example `network:api.example.com` |
 
 Storage, notifications, the addon's own pages and windows, and the launcher's
