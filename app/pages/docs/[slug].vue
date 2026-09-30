@@ -1,19 +1,38 @@
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const docContent = useDocContent()
-const catalogOpen = useCatalogOpen()
-const sections = docSections(catalogOpen)
-const pages = docPages(catalogOpen)
+const session = useAuthSession()
+const request = useRequestFetch()
+const flag = useCatalogOpen()
+const catalogOpen = computed(() => flag || isStaff(session.value.data?.user as WithRole | undefined))
+const sections = computed(() => docSections(catalogOpen.value))
+const pages = computed(() => docPages(catalogOpen.value))
 
 const slug = computed(() => String(route.params.slug ?? ''))
-const known = computed(() => pages.includes(slug.value))
+const known = computed(() => pages.value.includes(slug.value))
+const fromServer = computed(() => CATALOG_DOC_PAGES.includes(slug.value))
 
-const source = computed(() => (known.value ? docContent(slug.value) : null))
+const { data: remote } = await useAsyncData(
+  () => dataKeys.catalogDoc(slug.value, locale.value),
+  async () => {
+    if (!fromServer.value) return null
+    try {
+      return await request<{ markdown: string }>(`/api/catalog/docs/${slug.value}`, { query: { locale: locale.value } })
+    }
+    catch { return null }
+  },
+  { watch: [slug, locale] },
+)
+
+const source = computed(() => {
+  if (!known.value) return null
+  return fromServer.value ? (remote.value?.markdown ?? null) : docContent(slug.value)
+})
 const body = computed(() => (source.value ? renderMarkdown(source.value) : ''))
 
-const around = computed(() => neighbours(slug.value, pages))
+const around = computed(() => neighbours(slug.value, pages.value))
 
 const title = computed(() =>
   known.value ? t(`docs.pages.${slug.value}.title`) : t('docs.notFound'))

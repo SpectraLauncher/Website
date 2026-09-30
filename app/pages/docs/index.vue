@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
-const sections = docSections(useCatalogOpen())
+const session = useAuthSession()
+const flag = useCatalogOpen()
+const sections = computed(() => docSections(flag || isStaff(session.value.data?.user as WithRole | undefined)))
 
 useSeoMeta({
   title: () => t('docs.title'),

@@ -3,8 +3,10 @@
 // the summary come from the locale files, so a page is written once and
 // translated like everything else.
 //
-// To add a page: an entry here, a markdown file per language under
-// app/content/docs/<locale>/<slug>.md, and `docs.pages.<slug>` strings.
+// To add a page: an entry here, a markdown file per language, and
+// `docs.pages.<slug>` strings. A page in CATALOG_DOC_PAGES lives in
+// server/assets/manual/<locale>/<slug>.md and is served only through the
+// catalog gate; any other page lives in app/content/docs/<locale>/<slug>.md.
 export const DOC_SECTIONS = [
   {
     id: 'start',

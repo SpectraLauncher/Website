@@ -27,6 +27,7 @@ export const dataKeys = {
   homeNews: () => 'home-news',
 
   launcherVersion: () => 'launcher-version',
+  catalogDoc: (slug: string, locale: string) => `catalog-doc:${locale}:${slug}`,
   authProviders: () => 'auth-providers',
 } as const
 

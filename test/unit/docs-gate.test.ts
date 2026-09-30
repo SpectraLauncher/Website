@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -76,5 +76,33 @@ describe('referencja API przy zamknietej fladze', () => {
     const source = read('app/pages/docs/api.vue')
     expect(source).toContain('useCatalogOpen()')
     expect(source).toContain('isCatalogEndpoint')
+  })
+})
+
+describe('tresc dokumentacji katalogu nie trafia do paczki JS', () => {
+  const locales = ['en', 'pl']
+
+  it('zadna strona katalogu nie lezy w app/content, z ktorego Vite pakuje wszystko', () => {
+    for (const locale of locales) {
+      const bundled = readdirSync(`app/content/docs/${locale}`).map(file => file.replace(/\.md$/, ''))
+      for (const page of CATALOG_DOC_PAGES) expect(bundled, `${locale}/${page}`).not.toContain(page)
+    }
+  })
+
+  it('kazda strona katalogu ma tresc po angielsku na serwerze', () => {
+    const served = readdirSync('server/assets/manual/en').map(file => file.replace(/\.md$/, ''))
+    for (const page of CATALOG_DOC_PAGES) expect(served, page).toContain(page)
+  })
+
+  it('serwer oddaje ja tylko przez straznika katalogu i tylko z listy', () => {
+    const route = read('server/api/catalog/docs/[slug].get.ts')
+    expect(route.indexOf('requireCatalogRead(event)')).toBeLessThan(route.indexOf('useStorage('))
+    expect(route).toContain('CATALOG_DOC_PAGES.includes(slug)')
+  })
+
+  it('strona dokumentacji bierze strony katalogu z serwera', () => {
+    const page = read('app/pages/docs/[slug].vue')
+    expect(page).toContain('/api/catalog/docs/')
+    expect(page).toContain('fromServer.value ? (remote.value?.markdown ?? null) : docContent(slug.value)')
   })
 })
