@@ -13,8 +13,15 @@ export default defineEventHandler(async (event) => {
     orgId?: unknown
     visibility?: unknown
     summary?: unknown
+    description?: unknown
+    license?: unknown
+    licenseUrl?: unknown
+    links?: unknown
+    categories?: unknown
     authorship?: unknown
   }>(event) ?? {}
+
+  requireLicense({ license: body.license, licenseUrl: body.licenseUrl, links: cleanLinks(body.links) })
 
   rateLimit(event, { key: `create-project:${user.id}`, limit: 10, windowMs: 3_600_000 })
 
@@ -39,6 +46,11 @@ export default defineEventHandler(async (event) => {
     slug: body.slug,
     type: body.type,
     summary: body.summary,
+    description: body.description,
+    license: body.license,
+    licenseUrl: body.licenseUrl,
+    links: body.links,
+    categories: body.categories,
     orgId: orgId || undefined,
     visibility: body.visibility,
     authorship: body.authorship,

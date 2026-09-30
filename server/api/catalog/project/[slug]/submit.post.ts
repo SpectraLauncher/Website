@@ -18,6 +18,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'this project cannot be submitted' })
   }
 
+  requireLicense({ license: project.license, licenseUrl: project.license_url, links: project.links })
+
   // Nothing to review without a file: an empty submission wastes a moderator's
   // turn and the author cannot tell why it came back.
   const versions = await versionsOf(project.id)

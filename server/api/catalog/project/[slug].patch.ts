@@ -27,6 +27,14 @@ export default defineEventHandler(async (event) => {
   }
   if (wantsBody) input.description = body.description
 
+  if ('license' in input || 'licenseUrl' in input || 'links' in input) {
+    requireLicense({
+      license: 'license' in input ? input.license : project.license,
+      licenseUrl: 'licenseUrl' in input ? input.licenseUrl : project.license_url,
+      links: 'links' in input ? cleanLinks(input.links) : project.links,
+    })
+  }
+
   const updated = await updateProject(project.id, input)
 
   return { project: fullProject(updated, [], []) }

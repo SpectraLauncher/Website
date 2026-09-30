@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
         description: row.description,
         icon: row.icon,
         license: row.license,
+        licenseUrl: row.license_url,
         categories: row.categories,
         links: row.links,
         disclosures: row.disclosures,

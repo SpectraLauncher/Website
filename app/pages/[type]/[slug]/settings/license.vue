@@ -29,12 +29,17 @@ async function save(body: Record<string, unknown>) {
 
 const license = ref<string | null>(null)
 const licenseUrl = ref('')
+const source = ref('')
 
 watchEffect(() => {
   if (!project.value) return
   license.value = project.value.license
   licenseUrl.value = project.value.licenseUrl ?? ''
+  source.value = project.value.links?.source ?? ''
 })
+
+const links = computed(() => ({ ...project.value?.links, source: source.value.trim() }))
+const rule = computed(() => licenseProblem({ license: license.value, licenseUrl: licenseUrl.value, links: links.value }))
 
 const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: value })))
 </script>
@@ -64,9 +69,15 @@ const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: val
         />
       </UFormField>
 
-      <UFormField :label="t('catalog.licenseUrl')" :help="t('catalog.settingsHint.licenseUrl')">
+      <UFormField v-if="license === 'other'" :label="t('catalog.licenseUrl')" :help="t('catalog.settingsHint.licenseUrl')">
         <UInput v-model="licenseUrl" class="w-full" placeholder="https://" />
       </UFormField>
+
+      <UFormField v-if="needsSource(license)" :label="t('catalog.sourceCode')" :help="t('catalog.settingsHint.sourceCode')">
+        <UInput v-model="source" class="w-full" placeholder="https://github.com/you/project" />
+      </UFormField>
+
+      <p v-if="rule" class="text-sm text-warning">{{ t(`catalog.licenseProblems.${rule}`) }}</p>
     </div>
 
     <div class="mt-5 flex items-center gap-3">
@@ -74,7 +85,8 @@ const licenseOptions = computed(() => LICENSES.map(value => ({ value, label: val
         class="rounded-xl"
         :label="t('account.save')"
         :loading="busy"
-        @click="save({ license, licenseUrl })"
+        :disabled="Boolean(rule)"
+        @click="save({ license, licenseUrl, links })"
       />
       <span v-if="saved" class="text-sm text-primary">{{ t('account.saved') }}</span>
     </div>

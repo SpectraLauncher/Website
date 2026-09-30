@@ -15,7 +15,7 @@ const complete = {
   license: 'MIT',
   categories: ['magic'],
   versions: [{ id: 'v1' }],
-  links: { source: 'https://example.com' },
+  links: { source: 'https://github.com/someone/cauldrons' },
   disclosures: {},
   gallery: [{ id: 'g1' }],
 }
@@ -61,7 +61,7 @@ describe('co blokuje wyslanie', () => {
 
   // Ikona i galeria pomagaja, ale projekt bez nich da sie ocenic.
   it('ikona, galeria i linki nie blokuja', () => {
-    expect(isReadyToSubmit({ ...complete, icon: null, gallery: [], links: {} })).toBe(true)
+    expect(isReadyToSubmit({ ...complete, license: 'ARR', icon: null, gallery: [], links: {} })).toBe(true)
   })
 
   it('wypisuje wszystko, czego brakuje, a nie tylko pierwsze', () => {

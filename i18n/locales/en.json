@@ -3516,6 +3516,12 @@
     "imageTitle": "Caption",
     "confirmRemoveImage": "Remove this image?",
     "licenseUrl": "Licence address",
+    "sourceCode": "Source code",
+    "licenseProblems": {
+      "license-required": "Pick a license.",
+      "license-url-required": "Link the text of your license.",
+      "source-required": "An open license needs a link to the source code on GitHub, GitLab or Codeberg."
+    },
     "disclosureNote": "Anything a reader should know",
     "descriptionPlaceholder": "What it does, what it needs, and what it does not do. Markdown.",
     "projectTabs": {
@@ -3537,6 +3543,7 @@
       "description": "The page people read before they install anything.",
       "license": "What other people may do with your work.",
       "licenseUrl": "Only when the licence is not one of the standard ones.",
+      "sourceCode": "An open license needs the code to be public: a repository on GitHub, GitLab or Codeberg.",
       "gallery": "One picture of the thing working saves a paragraph.",
       "links": "Where a bug goes, and where the code lives if it is open.",
       "disclosures": "What the project tells people about itself before they download it.",

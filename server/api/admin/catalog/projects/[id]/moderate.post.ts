@@ -31,6 +31,10 @@ export default defineEventHandler(async (event) => {
     ? String(body.body ?? '').trim().slice(0, MAX_BODY)
     : cleanBody(body.body)
 
+  if (decision === 'approve') {
+    requireLicense({ license: project.license, licenseUrl: project.license_url, links: project.links })
+  }
+
   if (decision === 'approve' && project.type === 'addon' && !addonReviewDone(body.review)) {
     throw createError({ statusCode: 409, statusMessage: 'finish the addon review first' })
   }

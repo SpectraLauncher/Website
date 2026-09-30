@@ -21,6 +21,8 @@ import {
   isProjectType,
   isVersionChannel,
   isVisibility,
+  licenseProblem,
+  type LicenseProblem,
   type ProjectType,
 } from '../../shared/utils/catalog-types'
 import { normalizeSlug, slugProblem } from '../../shared/utils/catalog-slug'
@@ -207,6 +209,18 @@ function stringList(value: unknown, max: number): string[] {
   if (!Array.isArray(value)) return []
   return [...new Set(value.filter((v): v is string => typeof v === 'string')
     .map(v => v.trim()).filter(Boolean))].slice(0, max)
+}
+
+const LICENSE_MESSAGES: Record<LicenseProblem, string> = {
+  'license-required': 'pick a license',
+  'license-url-required': 'link the text of your license',
+  'source-required': 'an open license needs a link to the source code on GitHub, GitLab or Codeberg',
+}
+
+export function requireLicense(input: { license?: unknown, licenseUrl?: unknown, links?: unknown }) {
+  const links = input.links && typeof input.links === 'object' ? input.links as Record<string, unknown> : null
+  const problem = licenseProblem({ license: input.license, licenseUrl: input.licenseUrl, links })
+  if (problem) throw createError({ statusCode: 400, statusMessage: LICENSE_MESSAGES[problem] })
 }
 
 export async function createProject(input: ProjectInput, ownerId: string): Promise<ProjectRow> {

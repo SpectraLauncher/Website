@@ -180,6 +180,42 @@ export function isLicense(value: unknown): value is License {
   return LICENSES.includes(value as License)
 }
 
+export const SOURCE_HOSTS: readonly string[] = ['github.com', 'gitlab.com', 'codeberg.org']
+
+export const LICENSE_PROBLEMS = ['license-required', 'license-url-required', 'source-required'] as const
+export type LicenseProblem = typeof LICENSE_PROBLEMS[number]
+
+export function needsSource(license: unknown): boolean {
+  return isLicense(license) && license !== 'ARR' && license !== 'other'
+}
+
+export function isSourceUrl(value: unknown): boolean {
+  if (typeof value !== 'string') return false
+  try {
+    const url = new URL(value.trim())
+    const [owner, repo] = url.pathname.split('/').filter(Boolean)
+    return url.protocol === 'https:'
+      && SOURCE_HOSTS.includes(url.hostname.replace(/^www\./, ''))
+      && Boolean(owner && repo)
+  }
+  catch {
+    return false
+  }
+}
+
+export function licenseProblem(input: {
+  license?: unknown
+  licenseUrl?: unknown
+  links?: Record<string, unknown> | null
+}): LicenseProblem | null {
+  if (!isLicense(input.license)) return 'license-required'
+  if (input.license === 'other' && !(typeof input.licenseUrl === 'string' && input.licenseUrl.trim())) {
+    return 'license-url-required'
+  }
+  if (needsSource(input.license) && !isSourceUrl(input.links?.source)) return 'source-required'
+  return null
+}
+
 export function projectPath(type: ProjectType, slug: string): string {
   return `/${TYPE_PREFIX[type]}/${slug}`
 }

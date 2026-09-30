@@ -1,3 +1,5 @@
+import { licenseProblem } from './catalog-types'
+
 // What a project still needs before it is worth a moderator's time. This is a
 // pure read over what the project already has, so the same list drives the
 // interface and can be tested without a database.
@@ -34,6 +36,7 @@ export interface ChecklistInput {
   description?: string | null
   icon?: string | null
   license?: string | null
+  licenseUrl?: string | null
   categories?: readonly string[] | null
   versions?: readonly unknown[] | null
   links?: Record<string, string> | null
@@ -52,7 +55,7 @@ export function checklistState(input: ChecklistInput): Record<ChecklistItem, boo
     icon: filled(input.icon),
     gallery: (input.gallery?.length ?? 0) > 0,
     categories: (input.categories?.length ?? 0) > 0,
-    license: filled(input.license),
+    license: licenseProblem({ license: input.license, licenseUrl: input.licenseUrl, links: input.links }) === null,
     version: (input.versions?.length ?? 0) > 0,
     links: Object.values(input.links ?? {}).some(Boolean),
     // Ticking nothing is a valid answer, so this counts as done once the author

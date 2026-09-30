@@ -66,6 +66,7 @@ describe('kolejka recenzji', () => {
       description: 'x'.repeat(100),
       categories: ['worldgen'],
       license: 'MIT',
+      links: { source: 'https://github.com/someone/worldgen' },
       versions: [{}],
       disclosures: {},
     })

@@ -3516,6 +3516,12 @@
     "imageTitle": "Podpis",
     "confirmRemoveImage": "Usunąć ten obraz?",
     "licenseUrl": "Adres licencji",
+    "sourceCode": "Kod źródłowy",
+    "licenseProblems": {
+      "license-required": "Wybierz licencję.",
+      "license-url-required": "Podaj link do treści licencji.",
+      "source-required": "Otwarta licencja wymaga linku do kodu źródłowego na GitHubie, GitLabie albo Codebergu."
+    },
     "disclosureNote": "Co czytelnik powinien wiedzieć",
     "descriptionPlaceholder": "Co robi, czego wymaga i czego nie robi. Markdown.",
     "projectTabs": {
@@ -3537,6 +3543,7 @@
       "description": "Strona, którą ludzie czytają, zanim cokolwiek zainstalują.",
       "license": "Co inni mogą zrobić z twoją pracą.",
       "licenseUrl": "Tylko wtedy, gdy licencja nie jest jedną ze standardowych.",
+      "sourceCode": "Otwarta licencja wymaga publicznego kodu: repozytorium na GitHubie, GitLabie albo Codebergu.",
       "gallery": "Jedno zdjęcie działającej rzeczy oszczędza akapit.",
       "links": "Gdzie trafia błąd i gdzie leży kod, jeśli jest otwarty.",
       "disclosures": "Co projekt mówi o sobie, zanim ktoś go pobierze.",
