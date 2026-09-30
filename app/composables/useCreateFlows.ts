@@ -3,7 +3,6 @@
 // about the other.
 export function useCreateFlows() {
   return {
-    project: useState('create-project', () => false),
     organization: useState('create-organization', () => false),
     collection: useState('create-collection', () => false),
   }

@@ -65,7 +65,7 @@ describe('bramy tras', () => {
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '')
 
-  it.each(['admin', 'catalog'])('middleware %s idzie przez wspolna brame', (name) => {
+  it.each(['admin', 'catalog', 'catalog-author'])('middleware %s idzie przez wspolna brame', (name) => {
     const source = readFileSync(`app/middleware/${name}.ts`, 'utf8')
 
     expect(source).toContain('gateRoute(')

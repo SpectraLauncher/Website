@@ -4336,6 +4336,24 @@
       "authorship": "This is my own work, or work I have the right to publish here.",
       "submit": "Create project"
     },
+    "wizard": {
+      "lead": "Five short steps. A moderator looks at the project once, after you send it; new versions and edits go live on their own after that.",
+      "steps": {
+        "basics": "Basics",
+        "license": "License",
+        "description": "Description",
+        "file": "First version",
+        "review": "Review"
+      },
+      "next": "Next",
+      "back": "Back",
+      "later": "Finish later",
+      "open": "Open the project",
+      "fileHint": "Pick the file people will download. What it says about itself fills in the version.",
+      "reviewHint": "Everything is in place. Send it to the moderators: they look at the project once, and after approval new versions and edits go live without waiting. An addon version that asks for new permissions is the one exception.",
+      "note": "Note for the moderators (optional)",
+      "saved": "The project is saved as a draft. You can finish it later in its settings."
+    },
     "organization": {
       "title": "New organization",
       "name": "Name",

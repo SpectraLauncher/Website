@@ -29,6 +29,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'GET /api/catalog/search', group: 'catalog', auth: 'none', summary: 'Search projects, with filters and sorting' },
   { route: 'GET /api/catalog/facets', group: 'catalog', auth: 'none', summary: 'Counts per filter value for the current search' },
   { route: 'GET /api/catalog/gate', group: 'catalog', auth: 'none', summary: 'Whether the catalog is open to everyone yet' },
+  { route: 'GET /api/catalog/author-gate', group: 'catalog', auth: 'session', summary: 'Whether this account may start a project' },
   { route: 'GET /api/catalog/project/{slug}', group: 'catalog', auth: 'none', summary: 'One project with its versions and files' },
   { route: 'GET /api/catalog/project/{slug}/versions', group: 'catalog', auth: 'none', summary: 'Versions of a project' },
   { route: 'GET /api/catalog/download/{fileId}', group: 'catalog', auth: 'none', summary: 'Download a file and count the download' },

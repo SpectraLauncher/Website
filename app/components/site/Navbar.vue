@@ -48,7 +48,7 @@ const publishMenu = computed(() => [
     {
         label: t('create.project.title'),
         icon: 'i-pixelarticons-package',
-        onSelect: () => { creating.project.value = true },
+        to: localePath('/create/project'),
     },
     {
         label: t('create.organization.title'),

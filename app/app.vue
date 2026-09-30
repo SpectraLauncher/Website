@@ -72,7 +72,6 @@ useSeoMeta({
       </div>
 
       <SiteFooter />
-      <CreateProject />
       <CreateOrganization />
       <CreateCollection />
       <UiConfirmDialog />

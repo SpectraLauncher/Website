@@ -4336,6 +4336,24 @@
       "authorship": "To moja praca albo praca, którą mam prawo tutaj publikować.",
       "submit": "Utwórz projekt"
     },
+    "wizard": {
+      "lead": "Pięć krótkich kroków. Moderacja ogląda projekt raz, po wysłaniu. Potem nowe wersje i zmiany wchodzą same.",
+      "steps": {
+        "basics": "Podstawy",
+        "license": "Licencja",
+        "description": "Opis",
+        "file": "Pierwsza wersja",
+        "review": "Akceptacja"
+      },
+      "next": "Dalej",
+      "back": "Wstecz",
+      "later": "Dokończę później",
+      "open": "Otwórz projekt",
+      "fileHint": "Wybierz plik, który ludzie będą pobierać. To, co plik mówi o sobie, wypełni wersję.",
+      "reviewHint": "Wszystko gotowe. Wyślij projekt do moderacji: ogląda go raz, a po akceptacji nowe wersje i zmiany wchodzą bez czekania. Jedyny wyjątek to wersja addonu, która prosi o nowe uprawnienia.",
+      "note": "Wiadomość dla moderacji (opcjonalnie)",
+      "saved": "Projekt jest zapisany jako szkic. Możesz go dokończyć później w ustawieniach."
+    },
     "organization": {
       "title": "Nowa organizacja",
       "name": "Nazwa",

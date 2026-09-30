@@ -73,3 +73,31 @@ it('trasa zakladania projektu uzywa straznika autora, panel admina zostaje przy 
   expect(readFileSync('server/api/admin/catalog/projects.post.ts', 'utf8')).toContain('requireCatalogWrite(event)')
   expect(readFileSync('server/utils/catalog-gate.ts', 'utf8')).toMatch(/requireCatalogWrite[\s\S]*?requireAdmin\(event\)/)
 })
+
+describe('strona zakladania projektu', () => {
+  const page = readFileSync('app/pages/create/project.vue', 'utf8')
+
+  it('ma wlasna brame po stronie Nuxta, opartą o straznika autora', () => {
+    expect(page).toContain("definePageMeta({ middleware: 'catalog-author' })")
+    expect(readFileSync('app/middleware/catalog-author.ts', 'utf8')).toContain("gateRoute('/api/catalog/author-gate')")
+    expect(readFileSync('server/api/catalog/author-gate.get.ts', 'utf8')).toContain('requireCatalogAuthor(event)')
+  })
+
+  it('nie pobiera niczego przy renderze na serwerze', () => {
+    expect(page).not.toMatch(/useFetch|useAsyncData/)
+  })
+
+  it('akceptacja idzie raz, po utworzeniu i pierwszej wersji', () => {
+    const create = page.indexOf("'/api/catalog/projects'")
+    const version = page.indexOf('/versions`')
+    const submit = page.indexOf('/submit`')
+    expect(create).toBeGreaterThan(-1)
+    expect(create).toBeLessThan(version)
+    expect(version).toBeLessThan(submit)
+  })
+
+  it('menu tworzenia prowadzi na te strone, stary modal zniknal', () => {
+    expect(readFileSync('app/components/site/Navbar.vue', 'utf8')).toContain("to: localePath('/create/project')")
+    expect(readFileSync('app/app.vue', 'utf8')).not.toContain('<CreateProject')
+  })
+})
