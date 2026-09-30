@@ -151,6 +151,15 @@ async function toggleFollow() {
         </div>
 
         <div class="flex flex-wrap gap-2">
+          <UButton
+            v-if="project.type === 'addon' && primaryFile"
+            size="lg"
+            color="primary"
+            icon="i-pixelarticons-download"
+            :label="t('catalog.installInSpectra')"
+            :to="addonInstallLink(project.slug)"
+            external
+          />
           <!-- A project that ships for several game versions or loaders offers
                the choice here rather than making somebody read the table. -->
           <ProjectDownloadPicker

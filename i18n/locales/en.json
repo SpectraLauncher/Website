@@ -3637,6 +3637,22 @@
     "addons": {
       "title": "Launcher addons",
       "sub": "Themes, translations and extensions for the Spectra launcher. What an addon may touch is read out of its addon.json, not from a form."
+    },
+    "installInSpectra": "Install in Spectra",
+    "addonAccess": {
+      "title": "Access",
+      "none": "Needs nothing beyond its own buttons and themes.",
+      "network": "Connects to",
+      "runsCode": "Runs its own code in an isolated frame inside the launcher.",
+      "permissions": {
+        "instancesRead": "Sees your instances, their content and worlds",
+        "instancesWrite": "Changes instance settings and turns content on or off",
+        "instancesLaunch": "Starts and stops the game",
+        "logsRead": "Reads game logs",
+        "serversPing": "Checks Minecraft servers",
+        "accountRead": "Knows your Minecraft and Spectra account names",
+        "skinsRead": "Sees your skins"
+      }
     }
   },
   "verification": {

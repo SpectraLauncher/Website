@@ -25,6 +25,9 @@ const hasCompatibility = computed(() =>
 
 const links = computed(() => Object.entries(props.project.links ?? {}).filter(([, url]) => url))
 
+const access = computed(() =>
+  (props.project.type === 'addon' && latest.value ? addonAccess(latest.value.meta) : null))
+
 const owner = computed(() => props.project.owner)
 </script>
 
@@ -83,6 +86,22 @@ const owner = computed(() => props.project.owner)
         <span class="text-dimmed">pack_format</span>
         <span class="font-mono">{{ packFormat }}</span>
       </div>
+    </div>
+
+    <div v-if="access" class="rounded-2xl border border-panel-line bg-panel p-5">
+      <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.addonAccess.title') }}</h2>
+      <ul v-if="access.permissions.length || access.hosts.length" class="space-y-1.5 text-sm">
+        <li v-for="permission in access.permissions" :key="permission" class="flex items-start gap-2">
+          <UIcon name="i-pixelarticons-lock" class="mt-0.5 size-3.5 shrink-0 text-dimmed" />
+          {{ t(`catalog.addonAccess.permissions.${permissionKey(permission)}`) }}
+        </li>
+        <li v-for="host in access.hosts" :key="host" class="flex items-start gap-2">
+          <UIcon name="i-pixelarticons-globe" class="mt-0.5 size-3.5 shrink-0 text-dimmed" />
+          <span>{{ t('catalog.addonAccess.network') }} <span class="font-mono">{{ host }}</span></span>
+        </li>
+      </ul>
+      <p v-else class="text-sm text-muted">{{ t('catalog.addonAccess.none') }}</p>
+      <p v-if="access.runsCode" class="mt-3 text-xs text-dimmed">{{ t('catalog.addonAccess.runsCode') }}</p>
     </div>
 
     <div v-if="links.length" class="rounded-2xl border border-panel-line bg-panel p-5">

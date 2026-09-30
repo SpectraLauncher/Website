@@ -3637,6 +3637,22 @@
     "addons": {
       "title": "Addony do launchera",
       "sub": "Motywy, tłumaczenia i rozszerzenia dla launchera Spectra. To, czego addon może dotknąć, jest czytane z jego addon.json, a nie z formularza."
+    },
+    "installInSpectra": "Zainstaluj w Spectra",
+    "addonAccess": {
+      "title": "Dostęp",
+      "none": "Nie potrzebuje niczego poza własnymi przyciskami i motywami.",
+      "network": "Łączy się z",
+      "runsCode": "Uruchamia własny kod w odizolowanej ramce w launcherze.",
+      "permissions": {
+        "instancesRead": "Widzi twoje instancje, ich zawartość i światy",
+        "instancesWrite": "Zmienia ustawienia instancji i włącza lub wyłącza zawartość",
+        "instancesLaunch": "Uruchamia i zatrzymuje grę",
+        "logsRead": "Czyta logi gry",
+        "serversPing": "Sprawdza serwery Minecraft",
+        "accountRead": "Zna nazwy twoich kont Minecraft i Spectra",
+        "skinsRead": "Widzi twoje skórki"
+      }
     }
   },
   "verification": {
