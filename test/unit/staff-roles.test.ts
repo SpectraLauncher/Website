@@ -93,6 +93,7 @@ describe('bramy po stronie serwera', () => {
       'server/api/admin/catalog/scans.get.ts',
       'server/api/admin/catalog/scans.post.ts',
       'server/api/admin/catalog/scans/[id].post.ts',
+      'server/api/admin/catalog/versions/[id]/code.get.ts',
       'server/api/admin/verification/[id].post.ts',
       'server/api/admin/verification/index.get.ts',
     ])

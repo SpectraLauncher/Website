@@ -3288,6 +3288,21 @@
       "addImage": "Add an image",
       "linksHint": "Only http and https addresses are stored. Empty removes the link.",
       "moderationHint": "A rejection or removal needs a message — it is what the author reads and appeals against.",
+      "addonReview": {
+        "title": "Addon review",
+        "noVersion": "There is no version to review yet.",
+        "files": "Code in the package",
+        "noCode": "No scripts, pages or WebAssembly.",
+        "unreadable": "The package could not be read.",
+        "minified": "minified",
+        "dynamic": "builds code from text",
+        "items": {
+          "permissions": "Every permission is needed for what the addon says it does",
+          "network": "Every host it connects to fits what it does",
+          "code": "The code is readable, not obfuscated or packed",
+          "backend": "backend.wasm, if there is one, has a stated purpose and a sensible size"
+        }
+      },
       "approve": "Approve",
       "reject": "Reject",
       "remove": "Remove",

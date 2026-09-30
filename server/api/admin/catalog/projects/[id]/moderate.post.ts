@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   const project = await projectByIdOrSlug(String(getRouterParam(event, 'id') ?? ''))
   if (!project) throw createError({ statusCode: 404, statusMessage: 'no such project' })
 
-  const body = await readBody<{ decision?: unknown, body?: unknown, force?: unknown }>(event) ?? {}
+  const body = await readBody<{ decision?: unknown, body?: unknown, force?: unknown, review?: unknown }>(event) ?? {}
   const decision = String(body.decision ?? '')
   if (!(DECISIONS as readonly string[]).includes(decision)) {
     throw createError({ statusCode: 400, statusMessage: 'unknown decision' })
@@ -30,6 +30,10 @@ export default defineEventHandler(async (event) => {
   const message = decision === 'approve'
     ? String(body.body ?? '').trim().slice(0, MAX_BODY)
     : cleanBody(body.body)
+
+  if (decision === 'approve' && project.type === 'addon' && !addonReviewDone(body.review)) {
+    throw createError({ statusCode: 409, statusMessage: 'finish the addon review first' })
+  }
 
   if (decision === 'approve' && body.force !== true && (await platformPolicy()).scanGate) {
     const blocking = await blockingScanIssues(project.id)
@@ -59,7 +63,7 @@ export default defineEventHandler(async (event) => {
     subjectKind: 'project',
     subjectId: project.id,
     summary: `${project.title || project.slug} → ${status}`,
-    meta: { slug: project.slug, type: project.type, from: project.status, to: status, forced: body.force === true },
+    meta: { slug: project.slug, type: project.type, from: project.status, to: status, forced: body.force === true, review: project.type === 'addon' ? body.review : undefined },
   })
 
   await notifyOwners(project, {

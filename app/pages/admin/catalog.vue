@@ -284,6 +284,7 @@ function withAllLinks(project: FullProject): FullProject {
 }
 
 const decisionNote = ref('')
+const addonReview = ref<string[]>([])
 
 const disclosures = ref<DisclosureMap>({})
 
@@ -370,7 +371,7 @@ async function moderate(decision: 'approve' | 'reject' | 'remove') {
   try {
     const res = await $fetch<{ project: FullProject }>(
       `/api/admin/catalog/projects/${selected.value.id}/moderate`,
-      { method: 'POST', body: { decision, body: decisionNote.value } },
+      { method: 'POST', body: { decision, body: decisionNote.value, review: addonReview.value } },
     )
     selected.value = { ...withAllLinks(res.project), versions: selected.value.versions }
     decisionNote.value = ''
@@ -386,6 +387,7 @@ async function open(id: string) {
     const res = await $fetch<{ project: FullProject, gallery: GalleryImage[] }>(
       `/api/admin/catalog/projects/${id}`)
     selected.value = withAllLinks(res.project)
+    addonReview.value = []
     loadDisclosures(res.project)
     gallery.value = res.gallery ?? []
   } catch (e) { fail(e) } finally { busy.value = '' }
@@ -1128,6 +1130,13 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.moderation') }}</h2>
           <p class="mb-4 text-xs text-dimmed">{{ t('catalog.admin.moderationHint') }}</p>
 
+          <AdminAddonReview
+            v-if="selected.type === 'addon'"
+            v-model="addonReview"
+            :version="selected.versions[0] ?? null"
+            class="mb-4"
+          />
+
           <UTextarea
             v-model="decisionNote"
             :rows="3"
@@ -1142,6 +1151,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               variant="soft"
               class="rounded-xl"
               icon="i-pixelarticons-check-double"
+              :disabled="selected.type === 'addon' && !addonReviewDone(addonReview)"
               :loading="busy === 'approve'"
               :label="t('catalog.admin.approve')"
               @click="moderate('approve')"

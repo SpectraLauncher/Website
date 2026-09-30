@@ -3288,6 +3288,21 @@
       "addImage": "Dodaj obraz",
       "linksHint": "Zapisywane są tylko adresy http i https. Puste pole usuwa link.",
       "moderationHint": "Odrzucenie i usunięcie wymaga wiadomości — to ją czyta autor i od niej się odwołuje.",
+      "addonReview": {
+        "title": "Przegląd addonu",
+        "noVersion": "Nie ma jeszcze wersji do przejrzenia.",
+        "files": "Kod w paczce",
+        "noCode": "Brak skryptów, stron i WebAssembly.",
+        "unreadable": "Nie udało się odczytać paczki.",
+        "minified": "zminifikowany",
+        "dynamic": "składa kod z tekstu",
+        "items": {
+          "permissions": "Każde uprawnienie jest potrzebne do tego, co addon obiecuje",
+          "network": "Każdy host, z którym się łączy, pasuje do tego, co robi",
+          "code": "Kod jest czytelny, nie zaciemniony ani spakowany",
+          "backend": "backend.wasm, jeśli jest, ma opisany cel i rozsądny rozmiar"
+        }
+      },
       "approve": "Zaakceptuj",
       "reject": "Odrzuć",
       "remove": "Usuń",

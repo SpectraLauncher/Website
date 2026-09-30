@@ -347,13 +347,15 @@ export function addonMeta(manifest: AddonManifest): Record<string, unknown> {
   }
 }
 
-export async function readAddonFile(key: string): Promise<AddonManifest> {
+async function openAddonFile(key: string): Promise<{ zip: Zip, manifest: AddonManifest }> {
   const body = await readContent(key)
   if (!body) throw createError({ statusCode: 409, statusMessage: 'upload the file again' })
 
+  let zip: Zip
   let manifest: AddonManifest | null
   try {
-    manifest = readAddonManifest(openZip(body))
+    zip = openZip(body)
+    manifest = readAddonManifest(zip)
   } catch (e) {
     if (e instanceof AddonManifestError || e instanceof ZipError) {
       throw createError({ statusCode: 400, statusMessage: `addon.json: ${e.message}` })
@@ -362,7 +364,42 @@ export async function readAddonFile(key: string): Promise<AddonManifest> {
   }
 
   if (!manifest) throw createError({ statusCode: 400, statusMessage: 'the file has no addon.json' })
-  return manifest
+  return { zip, manifest }
+}
+
+export async function readAddonFile(key: string): Promise<AddonManifest> {
+  return (await openAddonFile(key)).manifest
+}
+
+export interface AddonCodeFile {
+  name: string
+  size: number
+  minified: boolean
+  dynamic: boolean
+}
+
+const CODE_FILES = /\.(?:m?js|html?|wasm)$/i
+const SCRIPT_FILES = /\.(?:m?js|html?)$/i
+const LONG_LINE = 1000
+const DYNAMIC_CODE = /\beval\s*\(|\bnew\s+Function\s*\(|\bset(?:Timeout|Interval)\s*\(\s*['"`]/
+
+export function addonCodeFiles(zip: Zip): AddonCodeFile[] {
+  return zip.entries
+    .filter(entry => CODE_FILES.test(entry.name) && !entry.name.endsWith('/'))
+    .map((entry) => {
+      const text = SCRIPT_FILES.test(entry.name) ? zip.readText(entry.name) ?? '' : ''
+      return {
+        name: entry.name,
+        size: entry.uncompressedSize,
+        minified: text.split('\n').some(line => line.length > LONG_LINE),
+        dynamic: DYNAMIC_CODE.test(text),
+      }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+export async function readAddonCodeFiles(key: string): Promise<AddonCodeFile[]> {
+  return addonCodeFiles((await openAddonFile(key)).zip)
 }
 
 export async function claimAddonId(project: { id: string, meta: Record<string, unknown> }, addonId: string) {

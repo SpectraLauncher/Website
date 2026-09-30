@@ -2,6 +2,13 @@ export function addonInstallLink(slug: string): string {
   return `spectra://addon/${encodeURIComponent(slug)}`
 }
 
+export const ADDON_REVIEW_ITEMS = ['permissions', 'network', 'code', 'backend'] as const
+export type AddonReviewItem = typeof ADDON_REVIEW_ITEMS[number]
+
+export function addonReviewDone(ticked: unknown): boolean {
+  return Array.isArray(ticked) && ADDON_REVIEW_ITEMS.every(item => ticked.includes(item))
+}
+
 export interface AddonAccess {
   permissions: string[]
   hosts: string[]
