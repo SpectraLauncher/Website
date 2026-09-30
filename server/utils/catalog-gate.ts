@@ -33,10 +33,15 @@ export async function requireCatalogRead(event: H3Event) {
   return user
 }
 
-// Catalog write access. Stays admin-only even after reads open up — open upload
-// ships together with moderation, as a separate decision and a separate stage.
+// Catalog write access for the admin panel. Stays admin-only even after reads
+// open up; authors start their own projects through requireCatalogAuthor.
 export async function requireCatalogWrite(event: H3Event) {
   return await requireAdmin(event)
+}
+
+export async function requireCatalogAuthor(event: H3Event) {
+  await requireCatalogRead(event)
+  return await requireUser(event)
 }
 
 // Whether catalog content may reach the sitemap, llms.txt, feeds and public
