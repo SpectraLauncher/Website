@@ -4,6 +4,7 @@ import { PALETTES, brushCells, fill, mirrorMap, shadeChannel, skinRegions, type 
 
 const localePath = useLocalePath()
 const { t, tm, rt } = useI18n()
+const router = useRouter()
 const toast = useToast()
 
 const tool = TOOLS.find(x => x.id === 'skin-editor')!
@@ -349,15 +350,17 @@ const faq = computed(() => list('skinEditor.faq').map((x, i) => ({
   content: rt((x as { a: string }).a)
 })))
 
-onMounted(async () => {
+onMounted(() => {
   source.value = blank()
   window.addEventListener('keydown', shortcut)
+})
 
-  const params = new URLSearchParams(window.location.search)
-  const share = params.get('share')
-  if (!share || !/^[A-Za-z0-9_-]{16}$/.test(share)) return reset()
+onNuxtReady(async () => {
+  const { query } = router.currentRoute.value
+  const share = typeof query.share === 'string' && /^[A-Za-z0-9_-]{16}$/.test(query.share) ? query.share : null
+  if (!share) return reset()
 
-  model.value = params.get('model') === 'slim' ? 'slim' : 'classic'
+  model.value = query.model === 'slim' ? 'slim' : 'classic'
   try {
     const { png } = await $fetch<{ png: string }>(`/api/tools/skin-share/${share}`)
     await loadUrl(`data:image/png;base64,${png}`)

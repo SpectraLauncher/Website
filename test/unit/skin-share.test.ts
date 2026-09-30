@@ -51,11 +51,16 @@ describe('skin przekazany do edytora', () => {
     expect(post).toContain('isSkinPng(png)')
   })
 
-  it('prerenderowane narzedzia czytaja parametry z adresu, bo route.query jest pusty w trakcie hydracji', () => {
+  it('prerenderowane narzedzia czytaja parametry dopiero po hydracji, bo do tej pory nuxt podmienia adres na ten bez query', () => {
     const readers = readdirSync('app/pages/tools')
       .filter(name => name.endsWith('.vue') && readFileSync(`app/pages/tools/${name}`, 'utf8').includes('useRoute()'))
-
     expect(readers).toEqual([])
-    expect(readFileSync('app/pages/tools/skin-editor.vue', 'utf8')).toContain('new URLSearchParams(window.location.search)')
+
+    const editor = readFileSync('app/pages/tools/skin-editor.vue', 'utf8')
+    const mounted = editor.slice(editor.indexOf('onMounted('), editor.indexOf('})', editor.indexOf('onMounted(')))
+    const ready = editor.slice(editor.indexOf('onNuxtReady('))
+    expect(mounted).not.toMatch(/share|location|query/)
+    expect(ready).toContain('router.currentRoute.value')
+    expect(ready.indexOf('router.currentRoute.value')).toBeLessThan(ready.indexOf('/api/tools/skin-share/'))
   })
 })
