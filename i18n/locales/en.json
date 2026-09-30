@@ -3979,6 +3979,7 @@
       "start": "Getting started",
       "content": "Finding content",
       "authors": "For authors",
+      "addons": "Launcher addons",
       "rules": "Rules and moderation",
       "developers": "For developers"
     },
@@ -3986,6 +3987,7 @@
       "start": "What this is and how an account works.",
       "content": "Browsing, filtering and keeping things.",
       "authors": "Publishing, versions and working with other people.",
+      "addons": "Themes, buttons, pages and windows for the launcher.",
       "rules": "How review works and how to report something.",
       "developers": "Tokens, applications and limits."
     },
@@ -4037,6 +4039,30 @@
       "reporting": {
         "title": "Reporting something",
         "summary": "What to say and what happens next."
+      },
+      "addons": {
+        "title": "Addons",
+        "summary": "What an addon can change in the launcher, and how it is kept in check."
+      },
+      "addon-templates": {
+        "title": "Templates",
+        "summary": "Four complete addons to download and build on."
+      },
+      "addon-manifest": {
+        "title": "addon.json",
+        "summary": "Every field, permission, button slot and limit."
+      },
+      "addon-api": {
+        "title": "The spectra API",
+        "summary": "What pages, windows and main.js can call."
+      },
+      "addon-backend": {
+        "title": "Backend in WebAssembly",
+        "summary": "backend.wasm, spectra_call and a Rust example."
+      },
+      "addon-publishing": {
+        "title": "Publishing an addon",
+        "summary": "Testing, packaging, review, updates and takedowns."
       },
       "api-tokens": {
         "title": "API tokens",

@@ -3979,6 +3979,7 @@
       "start": "Na początek",
       "content": "Szukanie treści",
       "authors": "Dla autorów",
+      "addons": "Addony do launchera",
       "rules": "Zasady i moderacja",
       "developers": "Dla programistów"
     },
@@ -3986,6 +3987,7 @@
       "start": "Czym to jest i jak działa konto.",
       "content": "Przeglądanie, filtrowanie i zapisywanie.",
       "authors": "Publikowanie, wersje i praca z innymi.",
+      "addons": "Motywy, przyciski, strony i okna w launcherze.",
       "rules": "Jak wygląda sprawdzanie i jak coś zgłosić.",
       "developers": "Tokeny, aplikacje i limity."
     },
@@ -4037,6 +4039,30 @@
       "reporting": {
         "title": "Zgłaszanie",
         "summary": "Co napisać i co dzieje się dalej."
+      },
+      "addons": {
+        "title": "Addony",
+        "summary": "Co addon może zmienić w launcherze i jak jest pilnowany."
+      },
+      "addon-templates": {
+        "title": "Szablony",
+        "summary": "Cztery kompletne addony do pobrania i rozbudowy."
+      },
+      "addon-manifest": {
+        "title": "addon.json",
+        "summary": "Każde pole, uprawnienie, miejsce na przycisk i limit."
+      },
+      "addon-api": {
+        "title": "API spectra",
+        "summary": "Co mogą wywołać strony, okna i main.js."
+      },
+      "addon-backend": {
+        "title": "Backend w WebAssembly",
+        "summary": "backend.wasm, spectra_call i przykład w Rust."
+      },
+      "addon-publishing": {
+        "title": "Publikowanie addonu",
+        "summary": "Testy, pakowanie, przegląd, aktualizacje i zdjęcie addonu."
       },
       "api-tokens": {
         "title": "Tokeny API",

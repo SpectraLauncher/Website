@@ -6,6 +6,7 @@ import { API_ENDPOINTS, isCatalogEndpoint } from '../../shared/utils/api-referen
 import {
   CATALOG_DOC_PAGES,
   DOC_PAGES,
+  DOC_SECTIONS,
   docPages,
   docSections,
   neighbours,
@@ -89,9 +90,27 @@ describe('tresc dokumentacji katalogu nie trafia do paczki JS', () => {
     }
   })
 
-  it('kazda strona katalogu ma tresc po angielsku na serwerze', () => {
-    const served = readdirSync('server/assets/manual/en').map(file => file.replace(/\.md$/, ''))
-    for (const page of CATALOG_DOC_PAGES) expect(served, page).toContain(page)
+  it('kazda strona katalogu ma tresc po angielsku i po polsku na serwerze', () => {
+    for (const locale of locales) {
+      const served = readdirSync(`server/assets/manual/${locale}`).map(file => file.replace(/\.md$/, ''))
+      for (const page of CATALOG_DOC_PAGES) expect(served, `${locale}/${page}`).toContain(page)
+    }
+  })
+
+  it('dokumentacja addonow to osobna sekcja, cala schowana przy zamknietym katalogu', () => {
+    const addons = DOC_SECTIONS.find(section => section.id === 'addons')
+    expect(addons?.pages.length).toBeGreaterThanOrEqual(6)
+    for (const page of addons!.pages) expect(CATALOG_DOC_PAGES, page).toContain(page)
+    expect(docSections(false).map(section => section.id)).not.toContain('addons')
+  })
+
+  it('szablony w dokumentacji to te, ktore serwer umie oddac', () => {
+    for (const locale of locales) {
+      const page = read(`server/assets/manual/${locale}/addon-templates.md`)
+      for (const name of ['theme', 'page', 'window', 'backend']) {
+        expect(page, locale).toContain(`/api/catalog/addon-templates/${name}`)
+      }
+    }
   })
 
   it('serwer oddaje ja tylko przez straznika katalogu i tylko z listy', () => {

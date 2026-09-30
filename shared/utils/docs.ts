@@ -24,6 +24,11 @@ export const DOC_SECTIONS = [
     pages: ['publishing', 'versions', 'organizations', 'disclosures'],
   },
   {
+    id: 'addons',
+    icon: 'i-pixelarticons-plug',
+    pages: ['addons', 'addon-templates', 'addon-manifest', 'addon-api', 'addon-backend', 'addon-publishing'],
+  },
+  {
     id: 'rules',
     icon: 'i-pixelarticons-scale',
     pages: ['moderation', 'reporting'],
@@ -42,6 +47,7 @@ export const DOC_PAGES = DOC_SECTIONS.flatMap(section => section.pages) as reado
 export const CATALOG_DOC_PAGES: readonly string[] = [
   'what-is-spectra', 'project-types', 'finding-content', 'collections',
   'publishing', 'versions', 'organizations', 'disclosures', 'moderation', 'reporting',
+  'addons', 'addon-templates', 'addon-manifest', 'addon-api', 'addon-backend', 'addon-publishing',
 ]
 
 export function docSections(catalogOpen: boolean) {
