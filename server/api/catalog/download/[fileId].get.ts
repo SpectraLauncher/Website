@@ -8,6 +8,9 @@ export default defineEventHandler(async (event) => {
   if (!found || !await visibleProject(found.project, viewer)) {
     throw createError({ statusCode: 404, statusMessage: 'no such file' })
   }
+  if (found.version.held && !(viewer && (canModerate(viewer) || await mayProject(found.project, viewer, 'upload_version')))) {
+    throw createError({ statusCode: 404, statusMessage: 'no such file' })
+  }
 
   await countDownload(found.version.id, found.project.id)
   await recordDownload(found.project.id).catch(e => console.error('[attribution] download', e))

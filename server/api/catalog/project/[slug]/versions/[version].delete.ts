@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
 
   const id = String(getRouterParam(event, 'version') ?? '')
 
-  const version = await versionById(id)
+  const version = await versionById(id, true)
   if (!version || version.project_id !== project.id) {
     throw createError({ statusCode: 404, statusMessage: 'no such version' })
   }

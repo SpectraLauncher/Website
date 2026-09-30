@@ -7,12 +7,18 @@ export default defineEventHandler(async (event) => {
 
   // The version has to belong to this project, or upload rights on one project
   // would be edit rights on every version in the catalog.
-  const version = await versionById(id)
+  const version = await versionById(id, true)
   if (!version || version.project_id !== project.id) {
     throw createError({ statusCode: 404, statusMessage: 'no such version' })
   }
 
   const body = await readBody<VersionInput>(event) ?? {}
+  if (project.type === 'addon') {
+    delete body.meta
+    delete body.number
+    delete body.loaders
+    delete body.gameVersions
+  }
   const updated = await updateVersion(id, body)
 
   return { version: shortVersion(updated, await filesOf(id)) }

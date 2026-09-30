@@ -46,7 +46,15 @@ interface Version {
   downloads: number
   created: number
   meta: Record<string, unknown>
+  held?: boolean
   files: VersionFile[]
+}
+
+interface HeldVersion {
+  id: string
+  number: string
+  asks: string[]
+  project: { id: string, slug: string, title: string, path: string }
 }
 
 interface FullProject extends ShortProject {
@@ -143,13 +151,38 @@ const claim = (entry: QueueEntry) => run(`claim:${entry.id}`, async () => {
 const queueCounts = ref({ pending: 0, rejected: 0, draft: 0 })
 const queueStatus = ref('pending')
 
+const held = ref<HeldVersion[]>([])
+const heldReview = ref<Record<string, string[]>>({})
+const heldNote = ref<Record<string, string>>({})
+
 async function loadQueue() {
   busy.value = 'queue'
   try {
-    const res = await $fetch<{ hits: QueueEntry[], counts: typeof queueCounts.value }>(
-      '/api/admin/catalog/queue', { query: { status: queueStatus.value } })
+    const [res, waiting] = await Promise.all([
+      $fetch<{ hits: QueueEntry[], counts: typeof queueCounts.value }>(
+        '/api/admin/catalog/queue', { query: { status: queueStatus.value } }),
+      $fetch<{ versions: HeldVersion[] }>('/api/admin/catalog/versions/held'),
+    ])
     queue.value = res.hits
     queueCounts.value = res.counts
+    held.value = waiting.versions
+  } catch (e) { fail(e) } finally { busy.value = '' }
+}
+
+const asksOf = (versionId: string) => held.value.find(v => v.id === versionId)?.asks ?? []
+
+async function reviewVersion(version: Version, decision: 'approve' | 'reject') {
+  if (!selected.value) return
+  busy.value = `${decision}:${version.id}`
+  error.value = ''
+  try {
+    await $fetch(`/api/admin/catalog/versions/${version.id}/review`, {
+      method: 'POST',
+      body: { decision, review: heldReview.value[version.id] ?? [], body: heldNote.value[version.id] ?? '' },
+    })
+    delete heldNote.value[version.id]
+    announce(t('catalog.admin.saved'))
+    await Promise.all([open(selected.value.id), loadQueue()])
   } catch (e) { fail(e) } finally { busy.value = '' }
 }
 
@@ -882,6 +915,40 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
       </ul>
 
       <p v-else class="py-6 text-center text-sm text-dimmed">{{ t('catalog.admin.queueEmpty') }}</p>
+
+      <template v-if="held.length">
+        <h3 class="mt-6 mb-1 text-sm font-semibold">{{ t('catalog.admin.heldVersions') }}</h3>
+        <p class="mb-3 text-xs text-dimmed">{{ t('catalog.admin.heldHint') }}</p>
+        <ul class="space-y-2">
+          <li
+            v-for="version in held"
+            :key="version.id"
+            class="flex flex-wrap items-center gap-3 rounded-2xl border border-raised-line bg-raised p-3"
+          >
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium">
+                {{ version.project.title }} <span class="font-mono text-xs text-dimmed">{{ version.number }}</span>
+              </p>
+            </div>
+            <UBadge
+              v-for="ask in version.asks"
+              :key="ask"
+              variant="subtle"
+              size="sm"
+              color="warning"
+              class="font-mono"
+              :label="ask"
+            />
+            <UButton
+              size="xs"
+              variant="subtle"
+              color="neutral"
+              :label="t('catalog.admin.review')"
+              @click="creating = false; open(version.project.id)"
+            />
+          </li>
+        </ul>
+      </template>
     </div>
 
     <div class="grid gap-4 lg:grid-cols-[340px_1fr]">
@@ -1131,11 +1198,64 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
           <p class="mb-4 text-xs text-dimmed">{{ t('catalog.admin.moderationHint') }}</p>
 
           <AdminAddonReview
-            v-if="selected.type === 'addon'"
+            v-if="selected.type === 'addon' && !['published', 'unlisted', 'archived'].includes(selected.status)"
             v-model="addonReview"
-            :version="selected.versions[0] ?? null"
+            :version="selected.versions.find(v => !v.held) ?? selected.versions[0] ?? null"
             class="mb-4"
           />
+
+          <div
+            v-for="version in selected.versions.filter(v => v.held)"
+            :key="version.id"
+            class="mb-4 space-y-3 rounded-2xl border border-warning/40 p-3"
+          >
+            <p class="text-sm">
+              {{ t('catalog.admin.heldVersion', { version: version.number }) }}
+              <UBadge
+                v-for="ask in asksOf(version.id)"
+                :key="ask"
+                variant="subtle"
+                size="sm"
+                color="warning"
+                class="ml-1 font-mono"
+                :label="ask"
+              />
+            </p>
+            <AdminAddonReview
+              :model-value="heldReview[version.id] ?? []"
+              :version="version"
+              @update:model-value="heldReview[version.id] = $event"
+            />
+            <UTextarea
+              v-model="heldNote[version.id]"
+              :rows="2"
+              :maxlength="4000"
+              :placeholder="t('catalog.staffReplyPlaceholder')"
+              class="w-full"
+            />
+            <div class="flex flex-wrap gap-2">
+              <UButton
+                color="success"
+                variant="soft"
+                class="rounded-xl"
+                icon="i-pixelarticons-check-double"
+                :disabled="!addonReviewDone(heldReview[version.id])"
+                :loading="busy === `approve:${version.id}`"
+                :label="t('catalog.admin.releaseVersion')"
+                @click="reviewVersion(version, 'approve')"
+              />
+              <UButton
+                color="error"
+                variant="soft"
+                class="rounded-xl"
+                icon="i-pixelarticons-close-box"
+                :disabled="!heldNote[version.id]?.trim()"
+                :loading="busy === `reject:${version.id}`"
+                :label="t('catalog.admin.rejectVersion')"
+                @click="reviewVersion(version, 'reject')"
+              />
+            </div>
+          </div>
 
           <UTextarea
             v-model="decisionNote"

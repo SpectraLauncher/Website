@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const id = String(getRouterParam(event, 'id') ?? '')
   if (!isPublicId(id)) throw createError({ statusCode: 404, statusMessage: 'no such version' })
 
-  const version = await versionById(id)
+  const version = await versionById(id, true)
   if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
 
   const body = await readBody<{

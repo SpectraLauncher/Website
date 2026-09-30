@@ -3289,6 +3289,11 @@
       "addImage": "Add an image",
       "linksHint": "Only http and https addresses are stored. Empty removes the link.",
       "moderationHint": "A rejection or removal needs a message — it is what the author reads and appeals against.",
+      "heldVersions": "Addon versions waiting",
+      "heldHint": "These versions ask for more than the approved ones did. Players do not see them until you release them.",
+      "heldVersion": "Version {version} waits for review. It asks for:",
+      "releaseVersion": "Release this version",
+      "rejectVersion": "Reject this version",
       "addonReview": {
         "title": "Addon review",
         "noVersion": "There is no version to review yet.",
@@ -3516,6 +3521,8 @@
     "imageTitle": "Caption",
     "confirmRemoveImage": "Remove this image?",
     "licenseUrl": "Licence address",
+    "versionHeld": "Waiting for review",
+    "versionHeldHint": "This version asks for permissions the approved ones did not. Nobody sees it until a moderator releases it.",
     "sourceCode": "Source code",
     "licenseProblems": {
       "license-required": "Pick a license.",

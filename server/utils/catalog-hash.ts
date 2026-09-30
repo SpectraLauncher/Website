@@ -45,7 +45,7 @@ export async function versionsByHash(
      FROM version_file f
      JOIN version v ON v.id = f.version_id
      JOIN project p ON p.id = v.project_id
-     WHERE ${column} = ANY($1)`,
+     WHERE ${column} = ANY($1) AND NOT v.held`,
     [hashes],
   )
 

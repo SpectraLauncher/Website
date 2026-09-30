@@ -24,7 +24,7 @@ async function releases(userId: string): Promise<ProfileEvent[]> {
   }>(
     `SELECT v.number, v.created, v.game_versions, v.loaders, p.title, p.slug, p.type
      FROM version v JOIN project p ON p.id = v.project_id
-     WHERE p.owner_id = $1 AND p.status = 'published' AND p.type = ANY($3)
+     WHERE p.owner_id = $1 AND p.status = 'published' AND p.type = ANY($3) AND NOT v.held
      ORDER BY v.created DESC LIMIT $2`,
     [userId, LIMIT, ACTIVE_TYPES],
   )

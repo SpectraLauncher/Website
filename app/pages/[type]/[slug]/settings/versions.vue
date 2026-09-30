@@ -306,6 +306,14 @@ const loaderOptions = computed(() =>
           class="flex flex-wrap items-center gap-3 rounded-xl border border-raised-line bg-raised p-3"
         >
           <UBadge size="sm" variant="subtle" :label="t(`catalog.channels.${version.channel}`)" />
+          <UBadge
+            v-if="version.held"
+            size="sm"
+            variant="subtle"
+            color="warning"
+            :title="t('catalog.versionHeldHint')"
+            :label="t('catalog.versionHeld')"
+          />
           <span class="min-w-0 flex-1">
             <span class="block truncate text-sm font-medium">{{ version.name }}</span>
             <span class="block text-xs text-dimmed">

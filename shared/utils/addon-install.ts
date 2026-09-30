@@ -9,6 +9,19 @@ export function addonReviewDone(ticked: unknown): boolean {
   return Array.isArray(ticked) && ADDON_REVIEW_ITEMS.every(item => ticked.includes(item))
 }
 
+const stringsOf = (value: unknown): string[] =>
+  (Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : [])
+
+export function newAddonAsks(
+  approved: ReadonlyArray<Record<string, unknown> | null | undefined>,
+  next: Record<string, unknown> | null | undefined,
+): string[] {
+  const had = new Set(approved.flatMap(meta => stringsOf(meta?.permissions)))
+  const asks = stringsOf(next?.permissions).filter(permission => !had.has(permission))
+  if (next?.backend && !approved.some(meta => meta?.backend)) asks.push('backend')
+  return asks
+}
+
 export interface AddonAccess {
   permissions: string[]
   hosts: string[]

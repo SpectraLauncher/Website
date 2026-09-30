@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   // No rights at all is indistinguishable from the project not being there.
   if (!standing.mask) throw createError({ statusCode: 404, statusMessage: 'no such project' })
 
-  const versions = await versionsOf(project.id)
+  const versions = await versionsOf(project.id, true)
   const files = await filesForVersions(versions.map(v => v.id))
   const owner = await projectOwner(project.owner_id, project.org_id)
 

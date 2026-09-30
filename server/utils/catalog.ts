@@ -72,6 +72,7 @@ export interface VersionRow {
   meta: Record<string, unknown>
   downloads: string | number
   created: string | number
+  held: boolean
 }
 
 export interface FileRow {
@@ -105,7 +106,7 @@ export function projectColumns(alias: string): string {
 }
 
 const VERSION_COLUMNS = `id, project_id, number, name, changelog, channel,
-  game_versions, loaders, meta, downloads, created`
+  game_versions, loaders, meta, downloads, created, held`
 
 const FILE_COLUMNS = `id, version_id, filename, size, sha1, sha512,
   is_primary, object_key, created`
@@ -129,17 +130,33 @@ export async function projectByIdOrSlug(key: string): Promise<ProjectRow | undef
   return await projectBySlug(key)
 }
 
-export async function versionsOf(projectId: string | number): Promise<VersionRow[]> {
+export async function versionsOf(projectId: string | number, withHeld = false): Promise<VersionRow[]> {
   // sql-safe: VERSION_COLUMNS is a constant column list
   return await q<VersionRow>(
-    `SELECT ${VERSION_COLUMNS} FROM version WHERE project_id = $1
-     ORDER BY created DESC`, [projectId])
+    `SELECT ${VERSION_COLUMNS} FROM version WHERE project_id = $1 AND ($2 OR NOT held)
+     ORDER BY created DESC`, [projectId, withHeld])
 }
 
-export async function versionById(id: string | number): Promise<VersionRow | undefined> {
+export async function versionById(id: string | number, withHeld = false): Promise<VersionRow | undefined> {
   // sql-safe: VERSION_COLUMNS is a constant column list
   return await one<VersionRow>(
-    `SELECT ${VERSION_COLUMNS} FROM version WHERE id = $1`, [id])
+    `SELECT ${VERSION_COLUMNS} FROM version WHERE id = $1 AND ($2 OR NOT held)`, [id, withHeld])
+}
+
+export async function heldVersions(): Promise<Array<VersionRow & { title: string, slug: string, type: string }>> {
+  // sql-safe: VERSION_COLUMNS is a constant column list
+  return await q(
+    `SELECT ${VERSION_COLUMNS.split(',').map(c => `v.${c.trim()}`).join(', ')}, p.title, p.slug, p.type
+     FROM version v JOIN project p ON p.id = v.project_id
+     WHERE v.held AND p.type = ANY($1)
+     ORDER BY v.created`, [ACTIVE_TYPES])
+}
+
+export async function releaseVersion(id: string | number) {
+  const version = await versionById(id, true)
+  if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
+  await exec('UPDATE version SET held = FALSE WHERE id = $1', [id])
+  await refreshProjectFacets(version.project_id)
 }
 
 export async function filesOf(versionId: string | number): Promise<FileRow[]> {
@@ -172,10 +189,10 @@ export async function refreshProjectFacets(projectId: string | number) {
     `UPDATE project SET
        game_versions = COALESCE((
          SELECT array_agg(DISTINCT gv ORDER BY gv) FROM version v,
-           LATERAL unnest(v.game_versions) AS gv WHERE v.project_id = $1), '{}'),
+           LATERAL unnest(v.game_versions) AS gv WHERE v.project_id = $1 AND NOT v.held), '{}'),
        loaders = COALESCE((
          SELECT array_agg(DISTINCT l ORDER BY l) FROM version v,
-           LATERAL unnest(v.loaders) AS l WHERE v.project_id = $1), '{}'),
+           LATERAL unnest(v.loaders) AS l WHERE v.project_id = $1 AND NOT v.held), '{}'),
        updated = $2
      WHERE id = $1`,
     [projectId, Date.now()],
@@ -409,6 +426,7 @@ export interface VersionInput {
 export async function createVersion(
   projectId: string | number,
   input: VersionInput,
+  held = false,
 ): Promise<VersionRow> {
   const number = text(input.number, 60)
   if (!number) throw createError({ statusCode: 400, statusMessage: 'version number is required' })
@@ -422,14 +440,15 @@ export async function createVersion(
   // sql-safe: VERSION_COLUMNS is a constant column list
   const row = await one<VersionRow>(
     `INSERT INTO version (id, project_id, number, name, changelog, channel,
-                          game_versions, loaders, meta, created)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                          game_versions, loaders, meta, created, held)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      RETURNING ${VERSION_COLUMNS}`,
     [
       newId(), projectId, number, text(input.name, 160), text(input.changelog, 100_000), channel,
       stringList(input.gameVersions, 200), stringList(input.loaders, 20),
       JSON.stringify(input.meta && typeof input.meta === 'object' ? input.meta : {}),
       Date.now(),
+      held,
     ],
   )
 
@@ -445,7 +464,7 @@ export async function updateVersion(
   id: string,
   input: VersionInput,
 ): Promise<VersionRow> {
-  const current = await versionById(id)
+  const current = await versionById(id, true)
   if (!current) throw createError({ statusCode: 404, statusMessage: 'no such version' })
 
   const number = input.number === undefined ? current.number : text(input.number, 60)
@@ -484,7 +503,7 @@ export async function updateVersion(
 }
 
 export async function deleteVersion(id: string | number) {
-  const version = await versionById(id)
+  const version = await versionById(id, true)
   if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
   await exec('DELETE FROM version WHERE id = $1', [id])
   await refreshProjectFacets(version.project_id)

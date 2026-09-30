@@ -141,6 +141,7 @@ export async function dependentsOf(projectId: string, limit = 20): Promise<Depen
      JOIN project p ON p.id = v.project_id
      WHERE p.id <> $1
        AND p.status = ANY($3)
+       AND NOT v.held
        AND (d.project_id = $1 OR d.depends_on IN (SELECT id FROM version WHERE project_id = $1))
      ORDER BY p.downloads DESC
      LIMIT $2`,

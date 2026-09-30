@@ -3289,6 +3289,11 @@
       "addImage": "Dodaj obraz",
       "linksHint": "Zapisywane są tylko adresy http i https. Puste pole usuwa link.",
       "moderationHint": "Odrzucenie i usunięcie wymaga wiadomości — to ją czyta autor i od niej się odwołuje.",
+      "heldVersions": "Wersje addonów w kolejce",
+      "heldHint": "Te wersje proszą o więcej niż zatwierdzone. Gracze ich nie widzą, dopóki ich nie wypuścisz.",
+      "heldVersion": "Wersja {version} czeka na przegląd. Prosi o:",
+      "releaseVersion": "Wypuść tę wersję",
+      "rejectVersion": "Odrzuć tę wersję",
       "addonReview": {
         "title": "Przegląd addonu",
         "noVersion": "Nie ma jeszcze wersji do przejrzenia.",
@@ -3516,6 +3521,8 @@
     "imageTitle": "Podpis",
     "confirmRemoveImage": "Usunąć ten obraz?",
     "licenseUrl": "Adres licencji",
+    "versionHeld": "Czeka na przegląd",
+    "versionHeldHint": "Ta wersja prosi o uprawnienia, których nie miały zatwierdzone. Nikt jej nie widzi, dopóki moderacja jej nie wypuści.",
     "sourceCode": "Kod źródłowy",
     "licenseProblems": {
       "license-required": "Wybierz licencję.",

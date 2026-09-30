@@ -36,6 +36,7 @@ export function shortVersion(row: VersionRow, files: FileRow[]) {
     downloads: num(row.downloads),
     created: num(row.created),
     meta: row.meta,
+    held: row.held === true,
     files: files.map(publicFile),
   }
 }

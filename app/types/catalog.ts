@@ -29,6 +29,7 @@ export interface CatalogVersion {
   meta: Record<string, any>
   files: CatalogVersionFile[]
   dependencies?: CatalogDependency[]
+  held?: boolean
 }
 
 /** A project that depends on the one being viewed. */

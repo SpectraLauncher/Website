@@ -48,6 +48,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  let held = false
   if (project.type === 'addon') {
     const primary = files.find(file => file.primary) ?? files[0]
     if (!primary) throw createError({ statusCode: 400, statusMessage: 'an addon version needs its file' })
@@ -55,9 +56,14 @@ export default defineEventHandler(async (event) => {
     const manifest = await readAddonFile(primary.key)
     await claimAddonId(project, manifest.id)
     Object.assign(body, addonVersionInput(manifest))
+
+    if (project.approved !== null) {
+      const released = await versionsOf(project.id)
+      held = newAddonAsks(released.map(v => v.meta), body.meta as Record<string, unknown>).length > 0
+    }
   }
 
-  const version = await createVersion(project.id, body)
+  const version = await createVersion(project.id, body, held)
 
   const attached = []
   for (const file of files) {
@@ -69,7 +75,8 @@ export default defineEventHandler(async (event) => {
   // The follow button collected these people; this is the thing it collected
   // them for. After the files are attached, so nobody is told about a release
   // they cannot download yet.
-  await notifyFollowers(project, { actorId: user.id, version: version.number })
+  if (held) await notifyStaff({ kind: 'project_message', actorId: user.id, projectId: project.id })
+  else await notifyFollowers(project, { actorId: user.id, version: version.number })
 
   setResponseStatus(event, 201)
   return { version: shortVersion(version, attached) }
