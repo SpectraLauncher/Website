@@ -1,10 +1,28 @@
 Projekt przechodzi przez kilka stanów, zanim zobaczy go ktokolwiek inny.
 
+## Zakładanie projektu
+
+Projekt może założyć każdy, kto ma konto, dla siebie albo dla organizacji, do
+której wolno mu dodawać projekty. **Nowy projekt** prowadzi przez pięć kroków:
+
+1. **Podstawy** — typ, nazwa, adres, właściciel i widoczność
+2. **Licencja** — wymagana. Otwarta licencja (MIT, Apache, GPL, MPL, BSD,
+   Creative Commons i podobne) wymaga też linku do kodu źródłowego na GitHubie,
+   GitLabie albo Codebergu. „Wszelkie prawa zastrzeżone” nie wymaga linku, a
+   licencja spoza listy wymaga linku do jej treści
+3. **Opis** — opis skrócony, pełny opis, kategorie i ikona. Zakończenie tego
+   kroku zapisuje projekt jako szkic
+4. **Pierwsza wersja** — plik, który ludzie będą pobierać. To, co plik mówi o
+   sobie, wypełnia wersję
+5. **Akceptacja** — wysłanie do moderacji
+
+Od momentu zapisania szkicu możesz przerwać po dowolnym kroku i dokończyć w
+ustawieniach projektu.
+
 ## Szkic
 
-Nowy projekt zaczyna jako szkic. Widzisz go tylko ty i osoby, które dodałeś.
-Uzupełnij tytuł, opis skrócony i pełny, licencję, kategorie i linki, wgraj ikonę
-i kilka obrazów do galerii, dodaj co najmniej jedną wersję z plikiem.
+Szkic widzisz tylko ty i osoby, które dodałeś. Galerię, linki i deklaracje
+możesz uzupełnić w ustawieniach w każdej chwili.
 
 ## Zgłoszony
 
@@ -17,6 +35,10 @@ pozostaje prywatny.
 Moderator albo publikuje projekt, albo odrzuca go z wiadomością wyjaśniającą, co
 trzeba zmienić. Odrzucenie nie jest końcem: popraw to, o co prosi wiadomość,
 odpisz w wątku, a projekt wraca do kolejki.
+
+Projekt jest sprawdzany raz. Po akceptacji nowe wersje i zmiany wchodzą bez
+czekania, a przełączanie między publicznym, niepublicznym i prywatnym nie
+odsyła go z powrotem do kolejki.
 
 ## Niepubliczny i zarchiwizowany
 
