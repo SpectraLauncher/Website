@@ -84,3 +84,30 @@ describe('wylaczony typ nie istnieje dla nikogo', () => {
       .rejects.toMatchObject({ statusCode: 400 })
   })
 })
+
+describe('lista addonow nie lapie innych typow', () => {
+  it('wyszukanie typu addon nie dolacza projektow po loaderze', async () => {
+    vi.mocked(db.one).mockResolvedValue({ n: 0 } as never)
+    await catalog.listProjects({ type: 'addon' })
+    const [sql, params] = vi.mocked(db.one).mock.calls[0]!
+    const typeAt = (params as unknown[]).indexOf('addon') + 1
+    expect(sql).toContain(`(type = $${typeAt} OR loaders && $${typeAt + 1})`)
+    expect((params as unknown[])[typeAt]).toEqual([])
+  })
+
+  it('mody i pluginy dalej dziela sie loaderami', async () => {
+    vi.mocked(db.one).mockResolvedValue({ n: 0 } as never)
+    await catalog.listProjects({ type: 'mod' })
+    const [, params] = vi.mocked(db.one).mock.calls[0]!
+    const typeAt = (params as unknown[]).indexOf('mod') + 1
+    expect((params as unknown[])[typeAt]).toContain('fabric')
+  })
+
+  it('liczniki filtrow dla addonow tez', async () => {
+    await catalog.catalogFacets('addon')
+    expect(vi.mocked(db.q)).toHaveBeenCalled()
+    for (const [, params] of vi.mocked(db.q).mock.calls) {
+      expect(params).toEqual([expect.anything(), ACTIVE_TYPES, 'addon', []])
+    }
+  })
+})

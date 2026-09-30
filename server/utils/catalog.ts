@@ -12,8 +12,8 @@ import {
   VISIBILITY_STATUS,
   applyVisibility,
   categoriesFor,
+  crossListedLoaders,
   initialStatus,
-  loadersForType,
   isActiveType,
   isEnvironment,
   isLicense,
@@ -541,7 +541,7 @@ export async function listProjects(input: ListQuery): Promise<ListResult> {
   // because it carries a loader belonging to that type, so a jar built for
   // Fabric and for Paper is found under both.
   if (input.type && isProjectType(input.type)) {
-    const kin = loadersForType(input.type)
+    const kin = crossListedLoaders(input.type)
     params.push(input.type, kin)
     where.push(`(type = $${params.length - 1} OR loaders && $${params.length})`) // sql-safe: placeholder numbers only
   }
@@ -619,7 +619,7 @@ export interface Facets {
 export async function catalogFacets(type?: string): Promise<Facets> {
   const params: unknown[] = [LISTED_STATUSES, ACTIVE_TYPES]
   const scope = type ? 'AND p.type = ANY($2) AND (p.type = $3 OR p.loaders && $4)' : 'AND p.type = ANY($2)'
-  if (type) params.push(type, isProjectType(type) ? loadersForType(type) : [])
+  if (type) params.push(type, isProjectType(type) ? crossListedLoaders(type) : [])
 
   const spread = async (column: string) => {
     // sql-safe: `column` and `scope` are constants chosen here, never request text

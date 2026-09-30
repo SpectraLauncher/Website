@@ -272,3 +272,7 @@ export function loadersForType(type: ProjectType): string[] {
     .filter(([, types]) => types.includes(type))
     .map(([loader]) => loader)
 }
+
+export function crossListedLoaders(type: ProjectType): string[] {
+  return type === 'addon' ? [] : loadersForType(type)
+}
