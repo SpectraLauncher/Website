@@ -3,7 +3,9 @@ import { AUTHORSHIP_TERMS } from './catalog-licensing'
 import { exec, one, q, usePool } from './db'
 import { replaceDependencies } from './dependencies'
 import { newId } from './ids'
-import { dropStoredImage } from './images'
+import { dropStoredImage, forgetImage, keyFromUrl } from './images'
+import { r2Delete, useR2 } from './r2'
+import { previewKey } from './schematic-voxels'
 import { isPublicId } from '../../shared/utils/ids'
 import {
   ACTIVE_TYPES,
@@ -405,14 +407,63 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   return row!
 }
 
+interface StoredFile {
+  object_key: string
+  sha512: string
+}
+
+export async function unusedFileKeys(files: StoredFile[], previews: boolean): Promise<string[]> {
+  if (!files.length) return []
+  const keys = [...new Set(files.map(f => f.object_key))]
+  const hashes = [...new Set(files.map(f => f.sha512))]
+  const used = await q<StoredFile>(
+    'SELECT object_key, sha512 FROM version_file WHERE object_key = ANY($1) OR sha512 = ANY($2)', [keys, hashes])
+  const usedKeys = new Set(used.map(f => f.object_key))
+  const usedHashes = new Set(used.map(f => f.sha512))
+  return [
+    ...keys.filter(key => !usedKeys.has(key)),
+    ...(previews ? hashes.filter(hash => !usedHashes.has(hash)).map(previewKey) : []),
+  ]
+}
+
+export async function removeObjects(keys: string[]) {
+  const r2 = useR2()
+  if (!r2) return
+  for (const key of new Set(keys)) {
+    try {
+      await r2Delete(r2, key)
+      await forgetImage(key)
+    }
+    catch (e) {
+      console.error('[catalog] could not delete', key, e)
+    }
+  }
+}
+
 export async function deleteProject(id: string | number) {
-  // Files in R2 are content-addressed and shared between versions and projects,
-  // so nothing is removed from storage here — a stray object costs pennies, a
-  // wrongly deleted one breaks every other project that hashes to it.
-  //
-  // no garbage collection for orphaned objects. Add a sweep that
-  // deletes content/ keys with no version_file row once storage cost matters.
+  const project = await one<{ type: string, icon: string | null, banner: string | null }>(
+    'SELECT type, icon, banner FROM project WHERE id = $1', [id])
+  if (!project) return
+
+  const files = await q<StoredFile>(
+    `SELECT f.object_key, f.sha512 FROM version_file f
+     JOIN version v ON v.id = f.version_id WHERE v.project_id = $1`, [id])
+  const images = await q<{ object_key: string }>(
+    `SELECT object_key FROM stored_image
+     WHERE (context = 'project' AND subject_id = $1)
+        OR (context = 'version' AND subject_id IN (SELECT id FROM version WHERE project_id = $1))`, [id])
+  const gallery = await q<{ url: string }>('SELECT url FROM project_gallery WHERE project_id = $1', [id])
+
   await exec('DELETE FROM project WHERE id = $1', [id])
+
+  const linked = [project.icon, project.banner, ...gallery.map(g => g.url)]
+    .map(url => (url ? keyFromUrl(url) : null))
+    .filter((key): key is string => Boolean(key?.startsWith('catalog/')))
+  await removeObjects([
+    ...await unusedFileKeys(files, project.type === 'schematic'),
+    ...images.map(i => i.object_key),
+    ...linked,
+  ])
 }
 
 export interface VersionInput {
@@ -508,8 +559,11 @@ export async function updateVersion(
 export async function deleteVersion(id: string | number) {
   const version = await versionById(id, true)
   if (!version) throw createError({ statusCode: 404, statusMessage: 'no such version' })
+  const files = await q<StoredFile>('SELECT object_key, sha512 FROM version_file WHERE version_id = $1', [id])
+  const project = await one<{ type: string }>('SELECT type FROM project WHERE id = $1', [version.project_id])
   await exec('DELETE FROM version WHERE id = $1', [id])
   await refreshProjectFacets(version.project_id)
+  await removeObjects(await unusedFileKeys(files, project?.type === 'schematic'))
 }
 
 export interface FileInput {

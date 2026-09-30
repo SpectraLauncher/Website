@@ -3549,6 +3549,12 @@
       "analytics": "Statystyki",
       "disclosures": "Deklaracje"
     },
+    "deleteProject": {
+      "title": "Usuń projekt",
+      "hint": "Projekt, jego wersje, pliki, galeria i komentarze znikną na zawsze, a adres znów będzie wolny. Kto już go pobrał, zachowa swoją kopię, ale nikt nie pobierze go ani jego aktualizacji.",
+      "button": "Usuń na zawsze",
+      "confirm": "Usunąć {title} razem ze wszystkimi wersjami? Tego nie da się cofnąć."
+    },
     "settingsHint": {
       "general": "Nazwa, adres i kto to widzi.",
       "tags": "Po tym ludzie filtrują, szukając czegoś takiego jak twoje.",

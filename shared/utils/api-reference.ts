@@ -66,6 +66,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
   { route: 'PATCH /api/catalog/project/{slug}/gallery/{image}', group: 'projects', auth: 'session', summary: 'Caption or feature a gallery image' },
   { route: 'DELETE /api/catalog/project/{slug}/gallery/{image}', group: 'projects', auth: 'session', summary: 'Remove a gallery image' },
   { route: 'POST /api/catalog/project/{slug}/analyze', group: 'projects', auth: 'session', summary: 'Upload a file and read its metadata' },
+  { route: 'DELETE /api/catalog/project/{slug}', group: 'projects', auth: 'session', summary: 'Delete a project for good' },
   { route: 'POST /api/catalog/project/{slug}/versions', group: 'projects', auth: 'session', summary: 'Add a version' },
   { route: 'PATCH /api/catalog/project/{slug}/versions/{version}', group: 'projects', auth: 'session', summary: 'Edit a version' },
   { route: 'DELETE /api/catalog/project/{slug}/versions/{version}', group: 'projects', auth: 'session', summary: 'Delete a version' },

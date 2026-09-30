@@ -3549,6 +3549,12 @@
       "analytics": "Analytics",
       "disclosures": "Declarations"
     },
+    "deleteProject": {
+      "title": "Delete project",
+      "hint": "The project, its versions, files, gallery and comments go for good, and its address becomes free again. People who already downloaded it keep their copy, but nobody can get it or its updates any more.",
+      "button": "Delete for good",
+      "confirm": "Delete {title} with all its versions? This cannot be undone."
+    },
     "settingsHint": {
       "general": "The name, the address and who can see it.",
       "tags": "How people filter to find something like yours.",

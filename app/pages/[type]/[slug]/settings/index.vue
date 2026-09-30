@@ -5,7 +5,8 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 
 const slug = computed(() => String(route.params.slug ?? ''))
-const { data, project, refresh } = useProjectEditor(slug)
+const { data, project, refresh, may } = useProjectEditor(slug)
+const { ask } = useConfirm()
 
 const busy = ref(false)
 const saved = ref(false)
@@ -53,6 +54,32 @@ watchEffect(() => {
 
 const visibilityOptions = computed(() =>
   VISIBILITIES.map(value => ({ value, label: t(`create.visibility.${value}`) })))
+
+const deleting = ref(false)
+
+async function deleteForGood() {
+  const current = project.value
+  if (!current) return
+
+  const ok = await ask({
+    title: t('catalog.deleteProject.title'),
+    body: t('catalog.deleteProject.confirm', { title: current.title }),
+    confirmLabel: t('catalog.deleteProject.button'),
+    danger: true,
+  })
+  if (!ok) return
+
+  deleting.value = true
+  problem.value = ''
+  try {
+    await $fetch(`/api/catalog/project/${encodeURIComponent(current.slug)}`, { method: 'DELETE' })
+    await router.push(localePath('/dashboard/projects'))
+  }
+  catch (e: any) {
+    problem.value = e?.data?.statusMessage || t('auth.genericError')
+  }
+  finally { deleting.value = false }
+}
 
 const uploading = ref(false)
 
@@ -120,117 +147,133 @@ async function uploadIcon(event: Event) {
 </script>
 
 <template>
-  <div class="rounded-2xl border border-panel-line bg-panel p-6">
-    <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.general') }}</h2>
-    <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.general') }}</p>
+  <div>
+    <div class="rounded-2xl border border-panel-line bg-panel p-6">
+      <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.projectTabs.general') }}</h2>
+      <p class="mb-5 text-sm text-muted">{{ t('catalog.settingsHint.general') }}</p>
 
-    <UAlert
-      v-if="problem"
-      color="error"
-      variant="subtle"
-      class="mb-4 rounded-2xl"
-      icon="i-pixelarticons-warning-box"
-      :description="problem"
-    />
-
-    <div class="mb-5 flex flex-wrap items-center gap-4">
-      <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
-        <img v-if="project?.icon" :src="project.icon" alt="" class="size-full object-cover">
-        <UIcon v-else name="i-pixelarticons-package" class="size-8 text-dimmed" />
-      </span>
-      <div>
-        <label
-          class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
-        >
-          <UIcon name="i-pixelarticons-camera" class="size-4" />
-          {{ uploading ? t('catalog.org.uploading') : t('catalog.uploadIcon') }}
-          <input type="file" :accept="acceptAttribute(MOVING_IMAGE_TYPES)" class="hidden" @change="uploadIcon">
-        </label>
-        <p class="mt-1.5 text-xs text-dimmed">{{ t('catalog.settingsHint.icon') }}</p>
-        <UiUploadHint id="projectIcon" class="mt-1" />
-      </div>
-    </div>
-
-    <div class="mt-6">
-      <p class="mb-2 text-sm font-semibold text-highlighted">{{ t('catalog.banner') }}</p>
-
-      <!-- Shown the way the project page shows it. -->
-      <label class="group relative block cursor-pointer overflow-hidden rounded-xl border border-raised-line">
-        <img
-          v-if="project?.banner"
-          :src="project.banner"
-          alt=""
-          class="block max-h-[280px] w-full object-cover"
-        >
-        <span
-          v-else
-          class="grid h-32 w-full place-items-center bg-raised text-dimmed sm:h-40"
-        >
-          <UIcon name="i-pixelarticons-image" class="size-7" />
-        </span>
-
-        <span class="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-          <UIcon
-            :name="bannerBusy ? 'i-pixelarticons-loader' : 'i-pixelarticons-camera'"
-            class="size-6"
-            :class="bannerBusy && 'animate-spin'"
-          />
-        </span>
-
-        <input
-          type="file"
-          :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
-          class="hidden"
-          @change="uploadBanner"
-        >
-      </label>
-
-      <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2">
-        <UiUploadHint id="projectBanner" />
-        <UButton
-          v-if="project?.banner"
-          size="xs"
-          color="neutral"
-          variant="ghost"
-          icon="i-pixelarticons-close"
-          :loading="bannerBusy"
-          :label="t('catalog.bannerRemove')"
-          @click.prevent="removeBanner"
-        />
-      </div>
-    </div>
-
-    <div class="space-y-4">
-      <UFormField :label="t('create.project.name')">
-        <UInput v-model="form.title" :maxlength="64" class="w-full" />
-      </UFormField>
-
-      <UFormField :label="t('create.project.summary')" :help="t('create.project.summaryHint')">
-        <UTextarea v-model="form.summary" :rows="3" :maxlength="256" class="w-full" />
-      </UFormField>
-
-      <UiSlugField
-        v-model="form.slug"
-        :label="t('create.project.url')"
-        :prefix="`usespectra.app/${project?.path.split('/')[1] ?? ''}/`"
+      <UAlert
+        v-if="problem"
+        color="error"
+        variant="subtle"
+        class="mb-4 rounded-2xl"
+        icon="i-pixelarticons-warning-box"
+        :description="problem"
       />
 
-      <UFormField
-        :label="t('create.project.visibility')"
-        :help="t(`create.visibilityHint.${form.visibility}`)"
-      >
-        <UiChoiceRow v-model="form.visibility" :options="visibilityOptions" />
-      </UFormField>
+      <div class="mb-5 flex flex-wrap items-center gap-4">
+        <span class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-raised-line bg-raised">
+          <img v-if="project?.icon" :src="project.icon" alt="" class="size-full object-cover">
+          <UIcon v-else name="i-pixelarticons-package" class="size-8 text-dimmed" />
+        </span>
+        <div>
+          <label
+            class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-raised-line bg-raised px-3 py-2 text-sm transition-colors hover:border-zinc-600"
+          >
+            <UIcon name="i-pixelarticons-camera" class="size-4" />
+            {{ uploading ? t('catalog.org.uploading') : t('catalog.uploadIcon') }}
+            <input type="file" :accept="acceptAttribute(MOVING_IMAGE_TYPES)" class="hidden" @change="uploadIcon">
+          </label>
+          <p class="mt-1.5 text-xs text-dimmed">{{ t('catalog.settingsHint.icon') }}</p>
+          <UiUploadHint id="projectIcon" class="mt-1" />
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <p class="mb-2 text-sm font-semibold text-highlighted">{{ t('catalog.banner') }}</p>
+
+        <!-- Shown the way the project page shows it. -->
+        <label class="group relative block cursor-pointer overflow-hidden rounded-xl border border-raised-line">
+          <img
+            v-if="project?.banner"
+            :src="project.banner"
+            alt=""
+            class="block max-h-[280px] w-full object-cover"
+          >
+          <span
+            v-else
+            class="grid h-32 w-full place-items-center bg-raised text-dimmed sm:h-40"
+          >
+            <UIcon name="i-pixelarticons-image" class="size-7" />
+          </span>
+
+          <span class="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+            <UIcon
+              :name="bannerBusy ? 'i-pixelarticons-loader' : 'i-pixelarticons-camera'"
+              class="size-6"
+              :class="bannerBusy && 'animate-spin'"
+            />
+          </span>
+
+          <input
+            type="file"
+            :accept="acceptAttribute(MOVING_IMAGE_TYPES)"
+            class="hidden"
+            @change="uploadBanner"
+          >
+        </label>
+
+        <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2">
+          <UiUploadHint id="projectBanner" />
+          <UButton
+            v-if="project?.banner"
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            icon="i-pixelarticons-close"
+            :loading="bannerBusy"
+            :label="t('catalog.bannerRemove')"
+            @click.prevent="removeBanner"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <UFormField :label="t('create.project.name')">
+          <UInput v-model="form.title" :maxlength="64" class="w-full" />
+        </UFormField>
+
+        <UFormField :label="t('create.project.summary')" :help="t('create.project.summaryHint')">
+          <UTextarea v-model="form.summary" :rows="3" :maxlength="256" class="w-full" />
+        </UFormField>
+
+        <UiSlugField
+          v-model="form.slug"
+          :label="t('create.project.url')"
+          :prefix="`usespectra.app/${project?.path.split('/')[1] ?? ''}/`"
+        />
+
+        <UFormField
+          :label="t('create.project.visibility')"
+          :help="t(`create.visibilityHint.${form.visibility}`)"
+        >
+          <UiChoiceRow v-model="form.visibility" :options="visibilityOptions" />
+        </UFormField>
+      </div>
+
+      <div class="mt-5 flex items-center gap-3">
+        <UButton
+          class="rounded-xl"
+          :label="t('account.save')"
+          :loading="busy"
+          @click="save({ ...form })"
+        />
+        <span v-if="saved" class="text-sm text-primary">{{ t('account.saved') }}</span>
+      </div>
     </div>
 
-    <div class="mt-5 flex items-center gap-3">
+    <div v-if="may('delete_project')" class="mt-4 rounded-2xl border border-red-500/30 bg-panel p-6">
+      <h2 class="mb-1 text-lg font-semibold">{{ t('catalog.deleteProject.title') }}</h2>
+      <p class="mb-4 text-sm text-muted">{{ t('catalog.deleteProject.hint') }}</p>
       <UButton
         class="rounded-xl"
-        :label="t('account.save')"
-        :loading="busy"
-        @click="save({ ...form })"
+        color="error"
+        variant="soft"
+        icon="i-pixelarticons-trash"
+        :label="t('catalog.deleteProject.button')"
+        :loading="deleting"
+        @click="deleteForGood"
       />
-      <span v-if="saved" class="text-sm text-primary">{{ t('account.saved') }}</span>
     </div>
   </div>
 </template>
