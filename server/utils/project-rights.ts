@@ -8,12 +8,13 @@ import { orgStanding } from './organization'
 import {
   ALL_PROJECT_PERMISSIONS,
   ORG_INHERITED_PROJECT_PERMISSIONS,
+  ORG_MANAGER_PROJECT_PERMISSIONS,
   PROJECT_PERMISSIONS,
   type ProjectPermission,
   hasProjectPermission,
   projectMaskToList,
 } from '../../shared/utils/project-permissions'
-import { has } from '../../shared/utils/org-permissions'
+import { ORG_ROLE_RANK, has, rankOf } from '../../shared/utils/org-permissions'
 
 export interface ProjectStanding {
   mask: number
@@ -52,7 +53,9 @@ export async function projectStanding(
       // it gets the working set, and the rest has to be granted per project.
       mask |= standing.role === 'owner'
         ? ALL_PROJECT_PERMISSIONS
-        : ORG_INHERITED_PROJECT_PERMISSIONS
+        : rankOf(standing.role) >= ORG_ROLE_RANK.moderator
+          ? ORG_MANAGER_PROJECT_PERMISSIONS
+          : ORG_INHERITED_PROJECT_PERMISSIONS
 
       // Being allowed to remove projects from the organization implies being
       // allowed to delete one, so that right follows the organization

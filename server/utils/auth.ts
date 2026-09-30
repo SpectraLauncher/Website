@@ -3,6 +3,7 @@ import type { H3Event } from 'h3'
 import { passkey } from '@better-auth/passkey'
 import { betterAuth } from 'better-auth'
 import { bearer, captcha, oneTimeToken, organization, twoFactor, username } from 'better-auth/plugins'
+import { defaultAc, defaultRoles, memberAc } from 'better-auth/plugins/organization/access'
 import { createTransport } from 'nodemailer'
 
 import { isAdmin } from '../../shared/utils/staff-roles'
@@ -306,6 +307,8 @@ export function useAuth() {
       // tym, zanim katalog w ogole zobaczy swiatlo dzienne.
       organization({
         creatorRole: 'owner',
+        ac: defaultAc,
+        roles: { ...defaultRoles, moderator: memberAc },
         allowUserToCreateOrganization: async (user) => {
           if (!catalogIsPublic() && !isAdmin(user)) return false
           const state = await limitState(user.id, 'organizations')

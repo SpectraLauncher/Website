@@ -3163,6 +3163,7 @@
       "roles": {
         "owner": "Owner",
         "admin": "Admin",
+        "moderator": "Moderator",
         "member": "Member"
       },
       "permissions": {

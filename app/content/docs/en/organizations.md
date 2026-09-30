@@ -3,8 +3,14 @@ depend on one person's account.
 
 ## Roles
 
-**Owner**, **admin** and **member**. Roles set the default rights; the rights
-themselves are individual.
+**Owner**, **admin**, **moderator** and **member**. Roles set the default
+rights; the rights themselves are individual.
+
+- **Owner** holds everything and is the only one who can delete the organization
+- **Admin** holds everything else, including people and settings
+- **Moderator** looks after the projects: adds them, removes them and works on
+  every one of them, but does not touch people or settings
+- **Member** adds projects to the organization and works on them
 
 ## Permissions
 
@@ -22,7 +28,8 @@ one cannot be demoted, removed, or leave.
 
 ## Projects
 
-A project owned by an organization is worked on by its members. Being in the
-organization gets you the working set — upload versions, edit details, edit the
-description, see analytics. Deleting and member management have to be granted per
-project.
+A project owned by an organization is worked on by its members. A member gets
+the working set — upload versions, edit details, edit the description, see
+analytics. Moderators, admins and owners get every right on every project of the
+organization; deleting a project follows the "remove projects" permission.
+Anything beyond that for a member is granted per project.

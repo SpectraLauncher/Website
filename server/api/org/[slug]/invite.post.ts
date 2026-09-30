@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   // tell anyone which usernames are registered.
   if (!email) return { ok: true }
 
-  const invited = body.role === 'admin' ? 'admin' : 'member'
+  const invited = body.role === 'admin' || body.role === 'moderator' ? body.role : 'member'
   if (rankOf(invited) > actor.rank) {
     throw createError({ statusCode: 403, statusMessage: 'you cannot invite above your own role' })
   }

@@ -31,6 +31,9 @@ export const ORG_INHERITED_PROJECT_PERMISSIONS =
   | PROJECT_PERMISSIONS.edit_body
   | PROJECT_PERMISSIONS.view_analytics
 
+export const ORG_MANAGER_PROJECT_PERMISSIONS =
+  ALL_PROJECT_PERMISSIONS & ~PROJECT_PERMISSIONS.delete_project
+
 export function isProjectPermission(value: unknown): value is ProjectPermission {
   return PROJECT_PERMISSION_KEYS.includes(value as ProjectPermission)
 }

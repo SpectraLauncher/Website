@@ -31,9 +31,13 @@ describe('bity uprawnien', () => {
 })
 
 describe('domyslne uprawnienia roli', () => {
-  it('wlasciciel ma wszystko, czlonek nic', () => {
+  it('wlasciciel ma wszystko, czlonek tylko dodaje projekty', () => {
     expect(ROLE_DEFAULT_PERMISSIONS.owner).toBe(ALL_ORG_PERMISSIONS)
-    expect(ROLE_DEFAULT_PERMISSIONS.member).toBe(0)
+    expect(ROLE_DEFAULT_PERMISSIONS.member).toBe(ORG_PERMISSIONS.add_project)
+  })
+
+  it('moderator dodaje i usuwa projekty, ale nie rusza ludzi ani ustawien', () => {
+    expect(maskToList(ROLE_DEFAULT_PERMISSIONS.moderator).sort()).toEqual(['add_project', 'remove_project'])
   })
 
   // Deleting stays with the owner; otherwise an invited admin could delete an
@@ -47,7 +51,8 @@ describe('domyslne uprawnienia roli', () => {
 describe('permissionsOf', () => {
   it('brak zapisanej maski znaczy domyslna dla roli', () => {
     expect(permissionsOf('admin', null)).toBe(ROLE_DEFAULT_PERMISSIONS.admin)
-    expect(permissionsOf('member', undefined)).toBe(0)
+    expect(permissionsOf('member', undefined)).toBe(ORG_PERMISSIONS.add_project)
+    expect(permissionsOf('moderator', null)).toBe(ROLE_DEFAULT_PERMISSIONS.moderator)
   })
 
   it('zapisana maska nadpisuje domyslna', () => {
@@ -81,8 +86,9 @@ describe('canGrant', () => {
 })
 
 describe('ranga', () => {
-  it('rosnie od czlonka do wlasciciela', () => {
-    expect(rankOf('member')).toBeLessThan(rankOf('admin'))
+  it('rosnie od czlonka przez moderatora do wlasciciela', () => {
+    expect(rankOf('member')).toBeLessThan(rankOf('moderator'))
+    expect(rankOf('moderator')).toBeLessThan(rankOf('admin'))
     expect(rankOf('admin')).toBeLessThan(rankOf('owner'))
   })
 

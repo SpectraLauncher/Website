@@ -2,6 +2,7 @@
 import type { H3Event } from 'h3'
 import type { ProjectRow } from './catalog'
 import { isListed } from '../../shared/utils/catalog-types'
+import { ORG_ROLE_RANK, rankOf } from '../../shared/utils/org-permissions'
 import { canModerate } from '../../shared/utils/staff-roles'
 import { q } from './db'
 import { isOrgMember, orgMembers } from './organization'
@@ -26,7 +27,7 @@ export async function ownerIdsOf(project: ProjectRow): Promise<string[]> {
   if (!project.org_id) return []
 
   const members = await orgMembers(project.org_id)
-  return members.filter(m => m.role === 'owner' || m.role === 'admin').map(m => m.userId)
+  return members.filter(m => rankOf(m.role) >= ORG_ROLE_RANK.moderator).map(m => m.userId)
 }
 
 export async function notifyOwners(project: ProjectRow, n: {

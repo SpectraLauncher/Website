@@ -21,21 +21,23 @@ export const ORG_PERMISSION_KEYS = Object.keys(ORG_PERMISSIONS) as OrgPermission
 export const ALL_ORG_PERMISSIONS = ORG_PERMISSION_KEYS
   .reduce((mask, key) => mask | ORG_PERMISSIONS[key], 0)
 
-export const ORG_ROLES = ['member', 'admin', 'owner'] as const
+export const ORG_ROLES = ['member', 'moderator', 'admin', 'owner'] as const
 export type OrgRole = typeof ORG_ROLES[number]
 
 // Rank decides who may act on whom. Equal rank cannot touch equal rank, which is
 // what stops two admins from removing each other in a loop.
 export const ORG_ROLE_RANK: Record<OrgRole, number> = {
   member: 0,
-  admin: 1,
-  owner: 2,
+  moderator: 1,
+  admin: 2,
+  owner: 3,
 }
 
 // What a role is worth before anyone edits the individual bits. Deleting the
 // organization stays with the owner alone.
 export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, number> = {
-  member: 0,
+  member: ORG_PERMISSIONS.add_project,
+  moderator: ORG_PERMISSIONS.add_project | ORG_PERMISSIONS.remove_project,
   admin: ALL_ORG_PERMISSIONS & ~ORG_PERMISSIONS.delete_organization,
   owner: ALL_ORG_PERMISSIONS,
 }
