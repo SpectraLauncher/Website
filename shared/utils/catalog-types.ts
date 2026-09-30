@@ -81,7 +81,7 @@ export function initialStatus(visibility: Visibility): ProjectStatus {
 }
 
 // Statuses a moderator has already said yes to.
-const APPROVED: readonly string[] = ['published', 'unlisted']
+export const APPROVED_STATUSES: readonly string[] = ['published', 'unlisted']
 
 // What changing the visibility does to a project that already exists. Split out
 // because the interesting part is not the SQL: an approved project may move
@@ -92,13 +92,16 @@ export function applyVisibility(
   status: string,
   requested: string,
   visibility: Visibility,
+  approved = false,
 ): { status: string, requested: string } {
   const kept = requested === 'unlisted' ? 'unlisted' : 'published'
   if (visibility === 'private') return { status: 'private', requested: kept }
 
   const target = VISIBILITY_STATUS[visibility]
 
-  if (APPROVED.includes(status)) return { status: target, requested: target }
+  if (APPROVED_STATUSES.includes(status) || (status === 'private' && approved)) {
+    return { status: target, requested: target }
+  }
 
   // A submission already in the queue keeps its place; a removed or archived
   // project is not somewhere its author can leave by editing a form.
@@ -128,6 +131,12 @@ export const SUBMITTABLE_STATUSES: readonly ProjectStatus[] = ['draft', 'rejecte
 
 export function isQueued(status: string): boolean {
   return QUEUED_STATUSES.includes(status as ProjectStatus)
+}
+
+export function approvalAfter(status: string, approved: number | null, now: number): number | null {
+  if (APPROVED_STATUSES.includes(status)) return approved ?? now
+  if (status === 'rejected' || status === 'removed') return null
+  return approved
 }
 
 export function isSubmittable(status: string): boolean {

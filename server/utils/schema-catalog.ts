@@ -435,6 +435,7 @@ export async function ensureCatalogSchema() {
   await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_by TEXT')
   await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_at BIGINT')
   await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS authorship_terms TEXT')
+  await pool.query('ALTER TABLE project ADD COLUMN IF NOT EXISTS approved BIGINT')
 
   // Environment is a real column rather than a JSONB field because it is a
   // browse filter, and a browse filter that cannot use an index is a browse

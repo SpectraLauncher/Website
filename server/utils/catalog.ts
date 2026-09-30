@@ -11,6 +11,7 @@ import {
   MAX_FEATURED_CATEGORIES,
   VISIBILITY_STATUS,
   applyVisibility,
+  approvalAfter,
   categoriesFor,
   crossListedLoaders,
   initialStatus,
@@ -56,6 +57,7 @@ export interface ProjectRow {
   created: string | number
   updated: string | number
   published: string | number | null
+  approved: string | number | null
 }
 
 export interface VersionRow {
@@ -94,7 +96,7 @@ export function num(value: string | number | null | undefined): number {
 const PROJECT_COLUMNS = `id, slug, type, owner_id, org_id, title, summary, description,
   status, requested_status, license, license_url, icon, banner, categories, featured_categories,
   game_versions, loaders, environment, links, disclosures, meta, downloads,
-  follows, created, updated, published`
+  follows, created, updated, published, approved`
 
 // The column list spans lines, so a join that needs it aliased cannot just glue
 // a prefix onto a split on ", ".
@@ -316,7 +318,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   // A moderator sets the status directly; an author sets a visibility and the
   // rule decides what that means for a project in this state.
   const moved = isVisibility(input.visibility)
-    ? applyVisibility(current.status, current.requested_status, input.visibility)
+    ? applyVisibility(current.status, current.requested_status, input.visibility, current.approved !== null)
     : { status: current.status, requested: current.requested_status }
 
   const status = typeof input.status === 'string' ? input.status : moved.status
@@ -325,6 +327,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
   }
 
   const published = status === 'published' && !current.published ? Date.now() : current.published
+  const approved = approvalAfter(status, current.approved === null ? null : Number(current.approved), Date.now())
 
   const categories = input.categories === undefined
     ? current.categories
@@ -344,7 +347,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
        status = $6, license = $7, license_url = $8, icon = $9, categories = $10,
        links = $11, disclosures = $12, meta = $13, published = $14, updated = $15,
        owner_id = $16, org_id = $17,
-       environment = $18, requested_status = $19, featured_categories = $20
+       environment = $18, requested_status = $19, featured_categories = $20, approved = $21
      WHERE id = $1
      RETURNING ${PROJECT_COLUMNS}`,
     [
@@ -375,6 +378,7 @@ export async function updateProject(id: string | number, input: ProjectInput): P
         : stringList(input.environment, 4).filter(isEnvironment),
       moved.requested,
       featured,
+      approved,
     ],
   )
 

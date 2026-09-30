@@ -6,6 +6,7 @@ import {
   SUBMITTABLE_STATUSES,
   VISIBILITIES,
   applyVisibility,
+  approvalAfter,
   initialStatus,
   needsReview,
   visibilityOf,
@@ -52,6 +53,29 @@ describe('zmiana widocznosci', () => {
   it('wyjscie z prywatnego wraca do kolejki, a nie od razu na strone', () => {
     expect(applyVisibility('private', 'published', 'public'))
       .toEqual({ status: 'draft', requested: 'published' })
+  })
+
+  it('zaakceptowany wczesniej projekt wraca z prywatnego bez kolejki', () => {
+    expect(applyVisibility('private', 'published', 'public', true))
+      .toEqual({ status: 'published', requested: 'published' })
+    expect(applyVisibility('private', 'published', 'unlisted', true))
+      .toEqual({ status: 'unlisted', requested: 'unlisted' })
+  })
+
+  it('akceptacja przetrwa ukrycie, ale nie odrzucenie ani usuniecie', () => {
+    expect(approvalAfter('published', null, 5)).toBe(5)
+    expect(approvalAfter('unlisted', 3, 5)).toBe(3)
+    expect(approvalAfter('private', 3, 5)).toBe(3)
+    expect(approvalAfter('archived', 3, 5)).toBe(3)
+    expect(approvalAfter('draft', null, 5)).toBeNull()
+    expect(approvalAfter('rejected', 3, 5)).toBeNull()
+    expect(approvalAfter('removed', 3, 5)).toBeNull()
+  })
+
+  it('usuniety projekt nie wraca na strone przez prywatny', () => {
+    const hidden = applyVisibility('removed', 'published', 'private')
+    expect(applyVisibility(hidden.status, hidden.requested, 'public', approvalAfter('removed', 3, 5) !== null).status)
+      .toBe('draft')
   })
 
   it('odrzucony projekt po zmianie dalej musi zostac wyslany', () => {

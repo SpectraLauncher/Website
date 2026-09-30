@@ -266,6 +266,16 @@ export const MIGRATIONS: readonly Migration[] = [
       CREATE INDEX IF NOT EXISTS idx_payout_user ON payout_request (user_id, requested DESC);
     `,
   },
+  {
+    id: '004-remember-approval',
+    up: `
+      UPDATE project SET approved = COALESCE(published, updated)
+      WHERE approved IS NULL AND status IN ('published', 'unlisted', 'archived');
+    `,
+    down: `
+      UPDATE project SET approved = NULL;
+    `,
+  },
 ]
 
 // Chosen once and never changed: two instances booting together must queue on
