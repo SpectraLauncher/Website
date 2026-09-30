@@ -99,6 +99,14 @@ function size(bytes: number) {
     <section>
       <h3 class="mb-3 text-base font-bold text-highlighted">{{ t('catalog.compatibility') }}</h3>
       <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <UiPanel v-if="launcherRequirement(version.meta)" inset class="p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('catalog.launcherVersion') }}</p>
+          <div class="mt-2.5">
+            <ProjectLauncherRange :meta="version.meta" />
+          </div>
+        </UiPanel>
+
+        <template v-else>
         <UiPanel inset class="p-4">
           <p class="text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('catalog.gameVersions') }}</p>
           <div class="mt-2.5 flex flex-wrap gap-1.5">
@@ -125,6 +133,7 @@ function size(bytes: number) {
             <span v-if="!version.loaders.length" class="text-sm text-dimmed">—</span>
           </div>
         </UiPanel>
+        </template>
 
         <UiPanel v-if="environment.length" inset class="p-4">
           <p class="text-[11px] font-bold uppercase tracking-[0.09em] text-dimmed">{{ t('catalog.environment') }}</p>

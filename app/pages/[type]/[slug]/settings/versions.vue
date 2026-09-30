@@ -110,6 +110,7 @@ async function dropFile(event: DragEvent) {
 }
 
 const ready = computed(() => Boolean(upload.value) && Boolean(draft.number.trim()))
+const forLauncher = computed(() => isLauncherType(project.value?.type))
 
 async function create() {
   busy.value = 'create'
@@ -238,8 +239,8 @@ const loaderOptions = computed(() =>
         <p class="mt-4 text-xs text-dimmed">{{ t('catalog.readFromFile') }}</p>
 
         <div class="mt-2 grid gap-3 sm:grid-cols-2">
-          <UFormField :label="t('catalog.versionNumber')">
-            <UInput v-model="draft.number" class="w-full" placeholder="1.0.0" />
+          <UFormField :label="t('catalog.versionNumber')" :help="forLauncher ? t('catalog.numberFromFile') : undefined">
+            <UInput v-model="draft.number" :disabled="forLauncher" class="w-full" placeholder="1.0.0" />
           </UFormField>
           <UFormField :label="t('catalog.versionName')">
             <UInput v-model="draft.name" class="w-full" />
@@ -247,7 +248,10 @@ const loaderOptions = computed(() =>
           <UFormField :label="t('catalog.channel')">
             <USelect v-model="draft.channel" :items="channelOptions" value-key="value" class="w-full" />
           </UFormField>
-          <UFormField :label="t('catalog.loaders')">
+          <UFormField v-if="forLauncher" :label="t('catalog.launcherVersion')" :help="t('catalog.launcherFromFile')">
+            <ProjectLauncherRange :meta="analysis?.meta" />
+          </UFormField>
+          <UFormField v-if="!forLauncher" :label="t('catalog.loaders')">
             <USelectMenu
               v-model="draft.loaders"
               multiple
@@ -257,7 +261,7 @@ const loaderOptions = computed(() =>
               class="w-full"
             />
           </UFormField>
-          <div class="sm:col-span-2">
+          <div v-if="!forLauncher" class="sm:col-span-2">
             <UFormField :label="t('catalog.gameVersions')">
               <ProjectGameVersionPicker v-model="draft.gameVersions" :versions="gameVersions" />
             </UFormField>
@@ -317,7 +321,8 @@ const loaderOptions = computed(() =>
           <span class="min-w-0 flex-1">
             <span class="block truncate text-sm font-medium">{{ version.name }}</span>
             <span class="block text-xs text-dimmed">
-              {{ version.gameVersions.join(', ') || '—' }}
+              <ProjectLauncherRange :meta="version.meta" />
+              <template v-if="!forLauncher">{{ version.gameVersions.join(', ') || '—' }}</template>
               <template v-if="version.loaders.length"> · {{ version.loaders.join(', ') }}</template>
               · {{ when(version.created) }}
               · {{ t('catalog.fileCount', version.files.length, { n: version.files.length }) }}

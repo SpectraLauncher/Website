@@ -61,6 +61,7 @@ function clear() {
     <!-- Only worth the room once there is something to narrow down. -->
     <div v-if="versions.length > 1" class="flex flex-wrap items-center gap-2">
       <USelect
+        v-if="gameOptions.length"
         v-model="game"
         size="sm"
         class="w-40"
@@ -141,6 +142,7 @@ function clear() {
       </span>
 
       <span class="flex flex-wrap gap-1.5">
+        <ProjectLauncherRange :meta="version.meta" />
         <span
           v-for="game in version.gameVersions.slice(0, 2)"
           :key="game"

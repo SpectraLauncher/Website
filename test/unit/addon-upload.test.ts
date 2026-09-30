@@ -26,8 +26,9 @@ describe.skipIf(!hasFixtures('sample-addon.zip'))('wersja addonu z pliku', () =>
       title: 'Better Stats',
       slug: 'better-stats',
       version: '1.2.0',
-      loaders: ['spectra'],
-      environment: ['client'],
+      loaders: [],
+      gameVersions: [],
+      environment: [],
     })
     expect(analysis.meta).toMatchObject({ addonId: 'better-stats', api: 1 })
   })
@@ -38,7 +39,7 @@ describe.skipIf(!hasFixtures('sample-addon.zip'))('wersja addonu z pliku', () =>
     const manifest = await readAddonFile('some/key')
     expect(addonVersionInput(manifest)).toMatchObject({
       number: '1.2.0',
-      loaders: ['spectra'],
+      loaders: [],
       gameVersions: [],
       meta: { addonId: 'better-stats', permissions: ['instances:read', 'network:api.example.com'] },
     })

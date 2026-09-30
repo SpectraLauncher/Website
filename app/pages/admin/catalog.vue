@@ -1103,6 +1103,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
               class="sm:col-span-2"
             />
             <USelectMenu
+              v-if="!isLauncherType(selected.type)"
               v-model="selected.environment"
               :items="environmentOptions"
               value-key="value"
@@ -1431,6 +1432,14 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             </li>
           </ul>
 
+          <p v-if="isLauncherType(selected.type)" class="text-sm text-muted">
+            {{ t('catalog.admin.addonVersionsHere') }}
+            <NuxtLink :to="localePath(`${selected.path}/settings/versions`)" class="text-primary hover:underline">
+              {{ t('catalog.projectTabs.versions') }}
+            </NuxtLink>
+          </p>
+
+          <template v-else>
           <div class="rounded-2xl border border-dashed border-white/15 p-4">
             <label class="flex cursor-pointer items-center gap-3">
               <UIcon name="i-pixelarticons-upload" class="size-5 text-primary" />
@@ -1494,6 +1503,7 @@ useSeoMeta({ title: () => t('catalog.admin.title'), robots: 'noindex' })
             :disabled="!versionDraft.number.trim()"
             @click="addVersion"
           />
+          </template>
         </div>
 
         <div

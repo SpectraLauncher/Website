@@ -74,7 +74,7 @@ describe('przynaleznosc do listy wg loadera', () => {
 
   it('kazdy typ ma przypisany co najmniej jeden loader', () => {
     for (const type of PROJECT_TYPES) {
-      if (type === 'modpack') continue
+      if (type === 'modpack' || type === 'addon') continue
       expect(loadersForType(type), type).not.toHaveLength(0)
     }
   })

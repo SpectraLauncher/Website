@@ -326,8 +326,11 @@ function next() {
           </ul>
           <p class="text-xs text-dimmed">{{ t('catalog.readFromFile') }}</p>
           <div class="grid gap-3 sm:grid-cols-2">
-            <UFormField :label="t('catalog.versionNumber')">
-              <UInput v-model="version.number" class="w-full" />
+            <UFormField :label="t('catalog.versionNumber')" :help="isLauncherType(type) ? t('catalog.numberFromFile') : undefined">
+              <UInput v-model="version.number" :disabled="isLauncherType(type)" class="w-full" />
+            </UFormField>
+            <UFormField v-if="isLauncherType(type)" :label="t('catalog.launcherVersion')" :help="t('catalog.launcherFromFile')">
+              <ProjectLauncherRange :meta="analysis?.meta" />
             </UFormField>
             <UFormField :label="t('catalog.channel')">
               <USelect v-model="version.channel" :items="channelOptions" value-key="value" class="w-full" />

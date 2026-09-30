@@ -134,7 +134,7 @@ async function save() {
       <p v-else class="mt-3 text-sm text-dimmed">{{ t('catalog.pickCategoryFirst') }}</p>
     </div>
 
-    <div class="mt-8">
+    <div v-if="!isLauncherType(project?.type)" class="mt-8">
       <h3 class="text-sm font-semibold">{{ t('catalog.environment') }}</h3>
       <div class="mt-3 grid gap-2 sm:grid-cols-2">
         <label

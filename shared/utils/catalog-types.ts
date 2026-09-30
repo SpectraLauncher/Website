@@ -6,6 +6,8 @@ export type ProjectType = typeof PROJECT_TYPES[number]
 
 export const ACTIVE_TYPES: readonly ProjectType[] = ['addon']
 
+export const LAUNCHER_TYPES: readonly ProjectType[] = ['addon']
+
 export function isActiveType(value: unknown): value is ProjectType {
   return ACTIVE_TYPES.includes(value as ProjectType)
 }
@@ -181,6 +183,10 @@ export function isProjectType(value: unknown): value is ProjectType {
   return PROJECT_TYPES.includes(value as ProjectType)
 }
 
+export function isLauncherType(value: unknown): boolean {
+  return LAUNCHER_TYPES.includes(value as ProjectType)
+}
+
 export function isVersionChannel(value: unknown): value is VersionChannel {
   return VERSION_CHANNELS.includes(value as VersionChannel)
 }
@@ -309,7 +315,6 @@ export const LOADER_TYPES: Record<string, ProjectType[]> = {
   sponge_schematic: ['schematic'],
   structure: ['schematic'],
   mcedit: ['schematic'],
-  spectra: ['addon'],
 }
 
 export function loadersForType(type: ProjectType): string[] {

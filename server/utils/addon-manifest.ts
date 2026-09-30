@@ -428,7 +428,7 @@ export async function claimAddonId(project: { id: string, meta: Record<string, u
 export function addonVersionInput(manifest: AddonManifest) {
   return {
     number: manifest.version,
-    loaders: ['spectra'],
+    loaders: [],
     gameVersions: [],
     meta: addonMeta(manifest),
   }

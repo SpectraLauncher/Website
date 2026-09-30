@@ -139,8 +139,6 @@ function fromAddon(manifest: AddonManifest): UploadAnalysis {
   out.slug = normalizeSlug(manifest.id)
   out.summary = manifest.description
   out.version = manifest.version
-  out.loaders = ['spectra']
-  out.environment = ['client']
   out.meta = addonMeta(manifest)
 
   return out

@@ -1,3 +1,9 @@
+export function launcherRequirement(meta: Record<string, unknown> | null | undefined): { range: string | null } | null {
+  if (!meta || typeof meta.addonId !== 'string') return null
+  const range = typeof meta.launcher === 'string' ? meta.launcher.trim() : ''
+  return { range: range || null }
+}
+
 export function addonInstallLink(slug: string): string {
   return `spectra://addon/${encodeURIComponent(slug)}`
 }

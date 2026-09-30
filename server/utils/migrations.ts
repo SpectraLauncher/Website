@@ -276,6 +276,21 @@ export const MIGRATIONS: readonly Migration[] = [
       UPDATE project SET approved = NULL;
     `,
   },
+  {
+    id: '005-addons-have-no-minecraft-fields',
+    up: `
+      UPDATE version SET loaders = '{}', game_versions = '{}'
+      WHERE project_id IN (SELECT id FROM project WHERE type = 'addon');
+      UPDATE project SET loaders = '{}', game_versions = '{}', environment = '{}'
+      WHERE type = 'addon';
+    `,
+    down: `
+      UPDATE version SET loaders = '{spectra}'
+      WHERE project_id IN (SELECT id FROM project WHERE type = 'addon');
+      UPDATE project SET loaders = '{spectra}', environment = '{client}'
+      WHERE type = 'addon';
+    `,
+  },
 ]
 
 // Chosen once and never changed: two instances booting together must queue on

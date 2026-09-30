@@ -17,6 +17,7 @@ import {
   initialStatus,
   isActiveType,
   isEnvironment,
+  isLauncherType,
   isLicense,
   isProjectStatus,
   isProjectType,
@@ -390,9 +391,11 @@ export async function updateProject(id: string | number, input: ProjectInput): P
       Date.now(),
       ownerId,
       orgId,
-      input.environment === undefined
-        ? current.environment
-        : stringList(input.environment, 4).filter(isEnvironment),
+      isLauncherType(current.type)
+        ? []
+        : input.environment === undefined
+          ? current.environment
+          : stringList(input.environment, 4).filter(isEnvironment),
       moved.requested,
       featured,
       approved,

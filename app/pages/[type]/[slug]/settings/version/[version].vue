@@ -19,6 +19,7 @@ const path = computed(() => `/api/catalog/project/${encodeURIComponent(project.v
 
 const version = computed(() =>
   project.value?.versions.find(entry => entry.id === versionId.value) ?? null)
+const forLauncher = computed(() => isLauncherType(project.value?.type))
 
 const draft = reactive({
   number: '',
@@ -84,16 +85,18 @@ async function save() {
   try {
     await $fetch(`${path.value}/versions/${encodeURIComponent(versionId.value)}`, {
       method: 'PATCH',
-      body: {
-        number: draft.number,
-        name: draft.name,
-        channel: draft.channel,
-        changelog: draft.changelog,
-        gameVersions: versionsFailed.value
-          ? manual.value.split(',').map(part => part.trim()).filter(Boolean)
-          : draft.gameVersions,
-        loaders: draft.loaders,
-      },
+      body: forLauncher.value
+        ? { name: draft.name, channel: draft.channel, changelog: draft.changelog }
+        : {
+            number: draft.number,
+            name: draft.name,
+            channel: draft.channel,
+            changelog: draft.changelog,
+            gameVersions: versionsFailed.value
+              ? manual.value.split(',').map(part => part.trim()).filter(Boolean)
+              : draft.gameVersions,
+            loaders: draft.loaders,
+          },
     })
     await refresh()
     notice.value = t('catalog.version.saved')
@@ -169,8 +172,8 @@ useSeoMeta({ title: () => t('catalog.version.editTitle'), robots: 'noindex' })
         <p class="mt-1 text-sm text-muted">{{ t('catalog.version.editHint') }}</p>
 
         <div class="mt-5 grid gap-3 sm:grid-cols-2">
-          <UFormField :label="t('catalog.versionNumber')">
-            <UInput v-model="draft.number" class="w-full" placeholder="1.0.0" />
+          <UFormField :label="t('catalog.versionNumber')" :help="forLauncher ? t('catalog.numberFromFile') : undefined">
+            <UInput v-model="draft.number" :disabled="forLauncher" class="w-full" placeholder="1.0.0" />
           </UFormField>
           <UFormField :label="t('catalog.versionName')">
             <UInput v-model="draft.name" class="w-full" :placeholder="draft.number" />
@@ -178,7 +181,10 @@ useSeoMeta({ title: () => t('catalog.version.editTitle'), robots: 'noindex' })
           <UFormField :label="t('catalog.channel')">
             <USelect v-model="draft.channel" :items="channelOptions" value-key="value" class="w-full" />
           </UFormField>
-          <UFormField :label="t('catalog.loaders')">
+          <UFormField v-if="forLauncher" :label="t('catalog.launcherVersion')" :help="t('catalog.launcherFromFile')">
+            <ProjectLauncherRange :meta="version?.meta" />
+          </UFormField>
+          <UFormField v-else :label="t('catalog.loaders')">
             <USelectMenu
               v-model="draft.loaders"
               multiple
@@ -189,7 +195,7 @@ useSeoMeta({ title: () => t('catalog.version.editTitle'), robots: 'noindex' })
             />
           </UFormField>
 
-          <div class="sm:col-span-2">
+          <div v-if="!forLauncher" class="sm:col-span-2">
             <UFormField :label="t('catalog.gameVersions')">
               <ProjectGameVersionPicker v-model="draft.gameVersions" :versions="gameVersions" />
             </UFormField>

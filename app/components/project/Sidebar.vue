@@ -19,9 +19,11 @@ const count = (n: number) => new Intl.NumberFormat(locale.value).format(n)
 const latest = computed(() => props.project.versions[0] ?? null)
 const packFormat = computed(() => latest.value?.meta?.packFormat)
 
+const launcher = computed(() => (latest.value ? launcherRequirement(latest.value.meta) : null))
+
 const hasCompatibility = computed(() =>
   props.project.gameVersions.length || props.project.loaders.length
-  || props.project.environment?.length || packFormat.value)
+  || props.project.environment?.length || packFormat.value || launcher.value)
 
 const links = computed(() => Object.entries(props.project.links ?? {}).filter(([, url]) => url))
 
@@ -38,6 +40,11 @@ const owner = computed(() => props.project.owner)
       class="rounded-2xl border border-panel-line bg-panel p-5"
     >
       <h2 class="mb-3 text-sm font-semibold">{{ t('catalog.compatibility') }}</h2>
+
+      <div v-if="launcher" class="mb-3">
+        <p class="mb-1.5 text-xs text-dimmed">{{ t('catalog.launcherVersion') }}</p>
+        <ProjectLauncherRange :meta="latest?.meta" />
+      </div>
 
       <div v-if="project.gameVersions.length" class="mb-3">
         <p class="mb-1.5 text-xs text-dimmed">{{ t('catalog.gameVersions') }}</p>

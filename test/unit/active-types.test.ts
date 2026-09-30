@@ -10,6 +10,7 @@ const {
   CATEGORIES,
   PROJECT_TYPES,
   isActiveType,
+  isLauncherType,
   loadersForType,
 } = await import('../../shared/utils/catalog-types')
 
@@ -32,9 +33,13 @@ describe('ACTIVE_TYPES', () => {
     for (const type of ACTIVE_TYPES) expect(PROJECT_TYPES, type).toContain(type)
   })
 
-  it('addon ma swoj loader i kategorie', () => {
-    expect(loadersForType('addon')).toEqual(['spectra'])
+  it('addon ma kategorie, ale nie ma loadera, wersji gry ani srodowiska', () => {
+    expect(loadersForType('addon')).toEqual([])
     expect(CATEGORIES.addon.length).toBeGreaterThan(0)
+    expect(isLauncherType('addon')).toBe(true)
+    for (const type of ['mod', 'plugin', 'shader', 'resourcepack', 'modpack', 'schematic']) {
+      expect(isLauncherType(type), type).toBe(false)
+    }
   })
 
   it('straznik odrzuca stare typy i smieci', () => {
