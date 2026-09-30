@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/mc/skin'
+import { LEGACY_COPIES, SKIN_SIZE, isLegacySkin, normaliseQuery, sharedSkin, skinFileName, stripLegacyHat, type SkinModel, type SkinProfile } from '~/utils/mc/skin'
 import { PALETTES, brushCells, fill, mirrorMap, shadeChannel, skinRegions, type EditorTool } from '~/utils/mc/skinEdit'
 
 const localePath = useLocalePath()
@@ -349,10 +349,22 @@ const faq = computed(() => list('skinEditor.faq').map((x, i) => ({
   content: rt((x as { a: string }).a)
 })))
 
-onMounted(() => {
+onMounted(async () => {
   source.value = blank()
-  reset()
   window.addEventListener('keydown', shortcut)
+
+  const shared = sharedSkin(window.location.hash)
+  if (!shared) return reset()
+
+  window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search)
+  model.value = shared.model
+  try {
+    await loadUrl(`data:image/png;base64,${shared.png}`)
+  }
+  catch {
+    toast.add({ title: t('skinEditor.badFile'), color: 'error' })
+    await reset()
+  }
 })
 
 onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))

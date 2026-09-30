@@ -199,5 +199,14 @@ export const normaliseQuery = (input: string) => {
     : trimmed
 }
 
+export const SHARED_SKIN_MAX = 200_000
+
+export function sharedSkin(hash: string): { png: string, model: SkinModel } | null {
+  const params = new URLSearchParams(hash.replace(/^#/, ''))
+  const png = params.get('skin') ?? ''
+  if (!png || png.length > SHARED_SKIN_MAX || !/^[A-Za-z0-9+/]+={0,2}$/.test(png)) return null
+  return { png, model: params.get('model') === 'slim' ? 'slim' : 'classic' }
+}
+
 export const skinFileName = (name: string, suffix: string) =>
   `${name.replace(/[^A-Za-z0-9_-]/g, '') || 'skin'}-${suffix}.png`
