@@ -1,0 +1,56 @@
+{
+  "id": "my-pages",
+  "name": "My pages",
+  "version": "1.0.0",
+  "description": "A page in the sidebar, a tab on every instance, a settings screen and a command.",
+  "api": 1,
+  "launcher": ">=0.9.0",
+  "main": "main.js",
+  "permissions": [
+    "instances:read"
+  ],
+  "contributes": {
+    "pages": [
+      {
+        "id": "playtime",
+        "title": "%playtime%",
+        "icon": "icons/clock.svg",
+        "entry": "ui/playtime.html"
+      }
+    ],
+    "instanceTabs": [
+      {
+        "id": "notes",
+        "title": "%notes%",
+        "icon": "icons/note.svg",
+        "entry": "ui/notes.html"
+      }
+    ],
+    "settings": "ui/settings.html",
+    "locales": {
+      "en": "locales/en.json",
+      "pl": "locales/pl.json"
+    },
+    "buttons": [
+      {
+        "id": "open-playtime",
+        "slot": "sidebar.menu",
+        "title": "%playtime%",
+        "icon": "icons/clock.svg",
+        "action": {
+          "type": "page",
+          "page": "playtime"
+        }
+      },
+      {
+        "id": "show-name",
+        "slot": "instance.menu",
+        "title": "%showName%",
+        "action": {
+          "type": "command",
+          "command": "show-name"
+        }
+      }
+    ]
+  }
+}

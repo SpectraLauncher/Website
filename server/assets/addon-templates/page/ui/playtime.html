@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 id="title">Playtime</h1>
+  <p class="lede" id="lede"></p>
+  <ul class="rows" id="list"></ul>
+  <script>
+    const TEXT = {
+      en: { title: 'Playtime', lede: 'Hours played on each instance.', none: 'No instances yet.' },
+      pl: { title: 'Czas gry', lede: 'Godziny spędzone na każdej instancji.', none: 'Nie ma jeszcze instancji.' },
+    }
+
+    ;(async () => {
+      const locale = await spectra.launcher.locale()
+      const text = TEXT[locale.split('-')[0]] ?? TEXT.en
+      document.getElementById('title').textContent = text.title
+      document.getElementById('lede').textContent = text.lede
+
+      const instances = await spectra.instances.list()
+      instances.sort((a, b) => (b.playtimeSeconds ?? 0) - (a.playtimeSeconds ?? 0))
+
+      const list = document.getElementById('list')
+      if (!instances.length) list.innerHTML = `<li class="muted">${text.none}</li>`
+      for (const instance of instances) {
+        const row = document.createElement('li')
+        const name = document.createElement('span')
+        const hours = document.createElement('span')
+        name.textContent = instance.name
+        hours.className = 'muted'
+        hours.textContent = `${((instance.playtimeSeconds ?? 0) / 3600).toFixed(1)} h`
+        row.append(name, hours)
+        list.append(row)
+      }
+    })()
+  </script>
+</body>
+</html>

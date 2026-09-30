@@ -1,0 +1,38 @@
+{
+  "id": "my-backend",
+  "name": "My backend",
+  "version": "1.0.0",
+  "description": "A page backed by a WebAssembly module written in Rust.",
+  "api": 1,
+  "launcher": ">=0.9.0",
+  "backend": "backend.wasm",
+  "permissions": [
+    "instances:read"
+  ],
+  "contributes": {
+    "pages": [
+      {
+        "id": "stats",
+        "title": "%stats%",
+        "icon": "icons/chart.svg",
+        "entry": "ui/stats.html"
+      }
+    ],
+    "locales": {
+      "en": "locales/en.json",
+      "pl": "locales/pl.json"
+    },
+    "buttons": [
+      {
+        "id": "open-stats",
+        "slot": "sidebar.menu",
+        "title": "%stats%",
+        "icon": "icons/chart.svg",
+        "action": {
+          "type": "page",
+          "page": "stats"
+        }
+      }
+    ]
+  }
+}

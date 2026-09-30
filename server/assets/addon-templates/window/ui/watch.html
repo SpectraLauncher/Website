@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Server watch</h1>
+  <p class="lede">Servers you add here are pinged every time the window opens.</p>
+  <form id="add">
+    <input id="address" type="text" placeholder="play.example.net or host:port">
+    <button type="submit">Add</button>
+  </form>
+  <ul class="rows" id="list"></ul>
+  <p class="lede" id="version"></p>
+  <script>
+    const list = document.getElementById('list')
+
+    async function servers() {
+      return (await spectra.storage.get('servers')) ?? []
+    }
+
+    async function render() {
+      list.replaceChildren()
+      for (const address of await servers()) {
+        const row = document.createElement('li')
+        const name = document.createElement('span')
+        const state = document.createElement('span')
+        name.textContent = address
+        state.className = 'muted'
+        state.textContent = '…'
+        row.append(name, state)
+        list.append(row)
+
+        const [host, port] = address.split(':')
+        spectra.servers.ping(host, port ? Number(port) : undefined)
+          .then(result => { state.textContent = `${result.online}/${result.max} · ${result.latency_ms} ms` })
+          .catch(() => { state.textContent = 'offline' })
+      }
+    }
+
+    document.getElementById('add').addEventListener('submit', async (event) => {
+      event.preventDefault()
+      const input = document.getElementById('address')
+      const address = input.value.trim()
+      if (!address) return
+      await spectra.storage.set('servers', [...new Set([...(await servers()), address])])
+      input.value = ''
+      render()
+    })
+
+    ;(async () => {
+      render()
+      const current = await spectra.launcher.version()
+      const response = await spectra.http.fetch('https://usespectra.app/api/version')
+      const latest = response.ok ? JSON.parse(response.body).version : null
+      document.getElementById('version').textContent = latest && latest !== current
+        ? `Launcher ${current}, ${latest} is available.`
+        : `Launcher ${current}.`
+    })()
+  </script>
+</body>
+</html>

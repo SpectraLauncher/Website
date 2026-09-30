@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 id="name"></h1>
+  <p class="lede">Notes for this instance. They are saved as you type.</p>
+  <textarea id="notes"></textarea>
+  <script>
+    const id = spectra.context.instanceId
+    const key = `notes:${id}`
+    const box = document.getElementById('notes')
+    let timer
+
+    ;(async () => {
+      document.getElementById('name').textContent = (await spectra.instances.get(id)).name
+      box.value = (await spectra.storage.get(key)) ?? ''
+    })()
+
+    box.addEventListener('input', () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => spectra.storage.set(key, box.value), 400)
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "id": "my-theme",
+  "name": "My theme",
+  "version": "1.0.0",
+  "description": "A dark theme with its own background, and a link on the home screen.",
+  "api": 1,
+  "launcher": ">=0.9.0",
+  "contributes": {
+    "themes": [
+      {
+        "id": "night",
+        "name": "%night%",
+        "file": "themes/night.json"
+      }
+    ],
+    "locales": {
+      "en": "locales/en.json",
+      "pl": "locales/pl.json"
+    },
+    "buttons": [
+      {
+        "id": "website",
+        "slot": "home.header",
+        "title": "%website%",
+        "action": {
+          "type": "url",
+          "url": "https://usespectra.app"
+        }
+      }
+    ]
+  }
+}

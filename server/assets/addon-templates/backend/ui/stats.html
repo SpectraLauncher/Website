@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Statistics</h1>
+  <p class="lede">Counted by backend.wasm, not by this page.</p>
+  <ul class="rows" id="list"></ul>
+  <script>
+    ;(async () => {
+      const list = document.getElementById('list')
+      const row = (label, value) => {
+        const item = document.createElement('li')
+        const name = document.createElement('span')
+        const amount = document.createElement('span')
+        name.textContent = label
+        amount.className = 'muted'
+        amount.textContent = value
+        item.append(name, amount)
+        list.append(item)
+      }
+
+      const summary = await spectra.backend.call('summary')
+      row('Instances', summary.instances)
+      row('Hours played', (summary.playtimeSeconds / 3600).toFixed(1))
+      for (const [loader, count] of Object.entries(summary.loaders)) row(loader, count)
+    })()
+  </script>
+</body>
+</html>

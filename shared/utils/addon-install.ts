@@ -1,3 +1,10 @@
+export const ADDON_TEMPLATES = ['theme', 'page', 'window', 'backend'] as const
+export type AddonTemplate = typeof ADDON_TEMPLATES[number]
+
+export function isAddonTemplate(value: unknown): value is AddonTemplate {
+  return ADDON_TEMPLATES.includes(value as AddonTemplate)
+}
+
 export function launcherRequirement(meta: Record<string, unknown> | null | undefined): { range: string | null } | null {
   if (!meta || typeof meta.addonId !== 'string') return null
   const range = typeof meta.launcher === 'string' ? meta.launcher.trim() : ''

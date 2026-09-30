@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <label>
+    <input id="toast" type="checkbox">
+    Show a message when the game closes
+  </label>
+  <script>
+    const box = document.getElementById('toast')
+    ;(async () => {
+      box.checked = (await spectra.storage.get('toastOnExit')) !== false
+    })()
+    box.addEventListener('change', () => spectra.storage.set('toastOnExit', box.checked))
+  </script>
+</body>
+</html>
