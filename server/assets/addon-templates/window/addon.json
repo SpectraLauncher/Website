@@ -13,7 +13,7 @@
     "windows": [
       {
         "id": "watch",
-        "title": "%watch%",
+        "title": "Server watch",
         "entry": "ui/watch.html",
         "width": 420,
         "height": 560
