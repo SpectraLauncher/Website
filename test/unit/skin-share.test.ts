@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -49,5 +49,13 @@ describe('skin przekazany do edytora', () => {
     const post = readFileSync('server/api/tools/skin-share.post.ts', 'utf8')
     expect(post.indexOf('rateLimit(')).toBeLessThan(post.indexOf('shareSkin('))
     expect(post).toContain('isSkinPng(png)')
+  })
+
+  it('prerenderowane narzedzia czytaja parametry z adresu, bo route.query jest pusty w trakcie hydracji', () => {
+    const readers = readdirSync('app/pages/tools')
+      .filter(name => name.endsWith('.vue') && readFileSync(`app/pages/tools/${name}`, 'utf8').includes('useRoute()'))
+
+    expect(readers).toEqual([])
+    expect(readFileSync('app/pages/tools/skin-editor.vue', 'utf8')).toContain('new URLSearchParams(window.location.search)')
   })
 })
