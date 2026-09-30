@@ -74,7 +74,7 @@ describe('id addonu', () => {
 
   it('kolejna wersja nie moze zmienic id', async () => {
     await expect(claimAddonId({ id: 'p1', meta: { addonId: 'better-stats' } }, 'other'))
-      .rejects.toMatchObject({ statusCode: 400 })
+      .rejects.toMatchObject({ statusCode: 400, statusMessage: expect.stringMatching(/"better-stats".*"other" as a new project/) })
     expect(db.exec).not.toHaveBeenCalled()
   })
 

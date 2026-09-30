@@ -417,7 +417,10 @@ export async function claimAddonId(project: { id: string, meta: Record<string, u
   const pinned = typeof project.meta?.addonId === 'string' ? project.meta.addonId : null
   if (pinned) {
     if (pinned !== addonId) {
-      throw createError({ statusCode: 400, statusMessage: `addon.json id has to stay ${pinned}` })
+      throw createError({
+        statusCode: 400,
+        statusMessage: `this project is the addon "${pinned}", so addon.json has to keep that id; publish "${addonId}" as a new project`,
+      })
     }
     return
   }
