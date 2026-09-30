@@ -38,7 +38,8 @@ the thread, and the project goes back into the queue.
 
 A project is reviewed once. After approval, new versions and edits go live
 without waiting, and switching between public, unlisted and private does not send
-it back to the queue.
+it back to the queue. The one exception is a launcher addon: a version that asks
+for a permission or a host no approved version had waits for a moderator.
 
 ## Unlisted and archived
 

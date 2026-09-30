@@ -38,7 +38,9 @@ odpisz w wątku, a projekt wraca do kolejki.
 
 Projekt jest sprawdzany raz. Po akceptacji nowe wersje i zmiany wchodzą bez
 czekania, a przełączanie między publicznym, niepublicznym i prywatnym nie
-odsyła go z powrotem do kolejki.
+odsyła go z powrotem do kolejki. Jedyny wyjątek to addon do launchera: wersja,
+która prosi o uprawnienie albo host, którego nie miała żadna zatwierdzona wersja,
+czeka na moderatora.
 
 ## Niepubliczny i zarchiwizowany
 
