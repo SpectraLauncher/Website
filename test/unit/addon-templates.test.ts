@@ -43,7 +43,7 @@ describe('szablony addonow', () => {
   it.each(ADDON_TEMPLATES)('%s po spakowaniu przechodzi parser addonow', (name) => {
     const manifest = readAddonManifest(openZip(writeZip(filesOf(join(BASE, name)))))
     expect(manifest).not.toBeNull()
-    expect(manifest!.launcher).toBe('>=0.9.0')
+    expect(manifest!.launcher).toBe('>=1.0.0')
     expect(manifest!.id.startsWith('my-')).toBe(true)
   })
 
