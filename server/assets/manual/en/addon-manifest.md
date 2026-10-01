@@ -113,15 +113,17 @@ A command started from `instance.menu` or `instance.header` gets `{ instanceId }
 A list of `{ "id", "name", "file" }`, where `file` is a `.json`:
 
 ```json
-{ "mode": "oled", "accent": "violet", "background": "themes/night.png" }
+{ "mode": "oled", "accent": "violet", "background": "themes/night.png", "tint": "#c4b5fd" }
 ```
 
 - `mode`: `dark`, `oled` or `squared`
 - `accent`: `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`, `rose`, `red`,
   `orange`, `amber`, `green`, `emerald`, `teal` or `cyan`
-- `background`: a `.png`, `.jpg` or `.webp` in the archive
+- `background`: a `.png`, `.jpg` or `.webp` in the archive. An animated `.webp` moves in the launcher too
+- `tint`: a colour written as `#rrggbb`. The launcher uses it for the text, borders and panels that are
+  normally white and grey
 
-All three are optional. The player picks the theme in Settings.
+All four are optional. The player picks the theme in Settings.
 
 ### locales
 

@@ -113,15 +113,17 @@ Komenda uruchomiona z `instance.menu` albo `instance.header` dostaje `{ instance
 Lista `{ "id", "name", "file" }`, gdzie `file` to `.json`:
 
 ```json
-{ "mode": "oled", "accent": "violet", "background": "themes/night.png" }
+{ "mode": "oled", "accent": "violet", "background": "themes/night.png", "tint": "#c4b5fd" }
 ```
 
 - `mode`: `dark`, `oled` albo `squared`
 - `accent`: `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`, `rose`, `red`,
   `orange`, `amber`, `green`, `emerald`, `teal` albo `cyan`
-- `background`: plik `.png`, `.jpg` albo `.webp` z archiwum
+- `background`: plik `.png`, `.jpg` albo `.webp` z archiwum. Animowany `.webp` porusza się też w launcherze
+- `tint`: kolor zapisany jako `#rrggbb`. Launcher barwi nim teksty, obramowania i panele, które
+  normalnie są białe i szare
 
-Wszystkie trzy są opcjonalne. Motyw gracz wybiera w Ustawieniach.
+Wszystkie cztery są opcjonalne. Motyw gracz wybiera w Ustawieniach.
 
 ### locales
 
