@@ -121,7 +121,7 @@ A list of `{ "id", "name", "file" }`, where `file` is a `.json`:
   `orange`, `amber`, `green`, `emerald`, `teal` or `cyan`
 - `background`: a `.png`, `.jpg` or `.webp` in the archive. An animated `.webp` moves in the launcher too
 - `tint`: a colour written as `#rrggbb`. The launcher uses it for the text, borders and panels that are
-  normally white and grey
+  normally white and grey. It needs launcher 1.0.1; older versions ignore it
 
 All four are optional. The player picks the theme in Settings.
 

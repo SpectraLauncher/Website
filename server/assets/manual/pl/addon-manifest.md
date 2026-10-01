@@ -121,7 +121,7 @@ Lista `{ "id", "name", "file" }`, gdzie `file` to `.json`:
   `orange`, `amber`, `green`, `emerald`, `teal` albo `cyan`
 - `background`: plik `.png`, `.jpg` albo `.webp` z archiwum. Animowany `.webp` porusza się też w launcherze
 - `tint`: kolor zapisany jako `#rrggbb`. Launcher barwi nim teksty, obramowania i panele, które
-  normalnie są białe i szare
+  normalnie są białe i szare. Wymaga launchera 1.0.1; starsze wersje go pomijają
 
 Wszystkie cztery są opcjonalne. Motyw gracz wybiera w Ustawieniach.
 
