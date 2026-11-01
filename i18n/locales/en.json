@@ -2322,7 +2322,7 @@
     "linuxInstall": {
       "title": "Install on Linux with one line",
       "sub": "Paste this into a terminal. It picks the right package for your system.",
-      "note": "It installs the .deb on Debian and Ubuntu, the .rpm on Fedora and openSUSE, and the AppImage everywhere else. Installing a package asks for your password.",
+      "note": "It installs the .deb on Debian and Ubuntu, the .rpm on Fedora, and the AppImage everywhere else. Installing a package asks for your password.",
       "view": "Read the script",
       "copied": "Command copied."
     },

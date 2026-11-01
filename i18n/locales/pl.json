@@ -2322,7 +2322,7 @@
     "linuxInstall": {
       "title": "Instalacja na Linuksie jedną linijką",
       "sub": "Wklej to do terminala. Skrypt sam dobierze paczkę do Twojego systemu.",
-      "note": "Instaluje .deb na Debianie i Ubuntu, .rpm na Fedorze i openSUSE, a AppImage na pozostałych systemach. Instalacja paczki poprosi o hasło.",
+      "note": "Instaluje .deb na Debianie i Ubuntu, .rpm na Fedorze, a AppImage na pozostałych systemach. Instalacja paczki poprosi o hasło.",
       "view": "Zobacz skrypt",
       "copied": "Skopiowano polecenie."
     },

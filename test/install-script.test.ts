@@ -70,10 +70,11 @@ describe('install.sh', () => {
     expect(calls).toMatch(/^dnf install -y .*\/app\.x86_64\.rpm\n$/)
   })
 
-  it('installs the rpm with zypper, which refuses unsigned packages otherwise', () => {
-    const { status, calls } = run(['zypper'])
+  it('leaves zypper alone, because openSUSE names the rpm dependencies differently', () => {
+    const { status, calls, home } = run(['zypper'])
     expect(status).toBe(0)
-    expect(calls).toMatch(/^zypper --non-interactive install --allow-unsigned-rpm .*\/app\.x86_64\.rpm\n$/)
+    expect(calls).toBe('')
+    expect(existsSync(join(home, '.local/bin/spectra-launcher.AppImage'))).toBe(true)
   })
 
   it('falls back to an AppImage whose menu entry passes spectra:// links on', () => {

@@ -80,9 +80,6 @@ main() {
   elif command -v dnf >/dev/null 2>&1; then
     download rpm
     as_root dnf install -y "$file"
-  elif command -v zypper >/dev/null 2>&1; then
-    download rpm
-    as_root zypper --non-interactive install --allow-unsigned-rpm "$file"
   else
     install_appimage
   fi
