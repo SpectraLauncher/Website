@@ -210,7 +210,7 @@ console.log('✓ push update → notification + outdated recipient')
 // --- the minecraft link is only as good as mojang's answer ---
 await assert.rejects(
   () => call('/me/minecraft', { token: a, method: 'POST', body: { token: 'not-a-real-session' } }),
-  /401/,
+  /422/,
   'an invented token must not link a profile',
 )
 await assert.rejects(

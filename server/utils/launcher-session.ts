@@ -18,7 +18,7 @@ export async function redeemLauncherSession(event: H3Event, allowLegacyAgent = f
   const auth = useAuth()
   const redeemed = await auth.api.verifyOneTimeToken({ body: { token }, headers: event.headers }).catch(() => null)
   if (!redeemed?.user?.id) {
-    throw createError({ statusCode: 401, statusMessage: 'launcher sign-in expired' })
+    throw createError({ statusCode: 410, statusMessage: 'launcher sign-in expired' })
   }
 
   const ip = clientIp(event)

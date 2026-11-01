@@ -9,7 +9,6 @@ const session = useAuthSession()
 // explicit click — never on page load. Otherwise any link to this page would
 // hand a session to whatever app claimed the `spectra://` scheme.
 const state = ref<'idle' | 'working' | 'ready' | 'error'>('idle')
-const deepLink = ref('')
 const me = computed(() => session.value.data?.user as any)
 
 async function handOff() {
@@ -20,9 +19,8 @@ async function handOff() {
 
   if (!token) return void (state.value = 'error')
 
-  deepLink.value = `spectra://auth/${token}`
   state.value = 'ready'
-  window.location.href = deepLink.value
+  window.location.href = `spectra://auth/${token}`
 }
 
 watchEffect(() => {
@@ -106,14 +104,13 @@ useSeoMeta({ title: () => `${t('launcherAuth.title')}`, robots: 'noindex, nofoll
 
           <template v-if="state === 'ready'">
             <UButton
-              :to="deepLink"
-              external
               block
               size="lg"
               color="neutral"
               class="mt-5"
               icon="i-pixelarticons-external-link"
               :label="t('launcherAuth.openAgain')"
+              @click="handOff"
             />
             <p class="mt-3 text-center text-xs text-dimmed">{{ t('launcherAuth.closeHint') }}</p>
           </template>

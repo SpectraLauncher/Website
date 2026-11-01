@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       headers: { authorization: `Bearer ${token}` },
     })
   } catch {
-    throw createError({ statusCode: 401, statusMessage: 'Minecraft did not accept that session' })
+    throw createError({ statusCode: 422, statusMessage: 'Minecraft did not accept that session' })
   }
   if (!profile?.id || !profile?.name) {
     throw createError({ statusCode: 502, statusMessage: 'Minecraft returned no profile' })

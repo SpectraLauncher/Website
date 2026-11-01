@@ -49,4 +49,12 @@ describe('launcher sign-in', () => {
       ipAddress: '203.0.113.9',
     })
   })
+
+  it('answers a spent token with something other than 401, which signs the launcher out', async () => {
+    verifyOneTimeToken.mockRejectedValueOnce(new Error('invalid token'))
+    const event = { headers: { 'user-agent': 'Spectra-Launcher/1.0.1 (Linux)' }, ip: '203.0.113.10' } as any
+
+    await expect(redeemLauncherSession(event)).rejects.toMatchObject({ statusCode: 410 })
+    expect(createSession).not.toHaveBeenCalled()
+  })
 })
