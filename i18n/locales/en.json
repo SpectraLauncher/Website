@@ -2319,6 +2319,13 @@
     "dlTitle": "All installers",
     "dlSub": "Pick the file that matches your system. Every build comes straight from GitHub Releases.",
     "dlNote": "Prefer to compile it yourself? The full source is on GitHub under GPLv3.",
+    "linuxInstall": {
+      "title": "Install on Linux with one line",
+      "sub": "Paste this into a terminal. It picks the right package for your system.",
+      "note": "It installs the .deb on Debian and Ubuntu, the .rpm on Fedora and openSUSE, and the AppImage everywhere else. Installing a package asks for your password.",
+      "view": "Read the script",
+      "copied": "Command copied."
+    },
     "dlAll": "All releases",
     "dlSource": "Source on GitHub",
     "platforms": {

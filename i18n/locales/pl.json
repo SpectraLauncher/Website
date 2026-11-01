@@ -2319,6 +2319,13 @@
     "dlTitle": "Wszystkie instalatory",
     "dlSub": "Wybierz plik pasujący do Twojego systemu. Każdy build pochodzi prosto z GitHub Releases.",
     "dlNote": "Wolisz zbudować samodzielnie? Pełny kod źródłowy jest na GitHubie na licencji GPLv3.",
+    "linuxInstall": {
+      "title": "Instalacja na Linuksie jedną linijką",
+      "sub": "Wklej to do terminala. Skrypt sam dobierze paczkę do Twojego systemu.",
+      "note": "Instaluje .deb na Debianie i Ubuntu, .rpm na Fedorze i openSUSE, a AppImage na pozostałych systemach. Instalacja paczki poprosi o hasło.",
+      "view": "Zobacz skrypt",
+      "copied": "Skopiowano polecenie."
+    },
     "dlAll": "Wszystkie wydania",
     "dlSource": "Kod na GitHubie",
     "platforms": {

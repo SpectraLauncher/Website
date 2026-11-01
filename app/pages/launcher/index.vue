@@ -16,6 +16,13 @@ const primaryHref = computed(() => {
 
 const siteUrl = String(useRuntimeConfig().public.siteUrl).replace(/\/$/, '')
 const pageUrl = computed(() => `${siteUrl}${localePath('/launcher')}`)
+
+const toast = useToast()
+const linuxCommand = `curl -fsSL ${siteUrl}/install.sh | sh`
+const copyLinuxCommand = async () => {
+  await navigator.clipboard.writeText(linuxCommand)
+  toast.add({ title: t('launcherPage.linuxInstall.copied'), icon: 'i-pixelarticons-check', color: 'success' })
+}
 const seoTitle = computed(() => `${t('launcherPage.metaTitle')}`)
 
 defineOgImage('Spectra', {
@@ -284,6 +291,38 @@ useSchemaOrg(computed(() => [
             </ULink>
           </div>
         </div>
+      </div>
+
+      <div
+        id="linux-install"
+        v-reveal
+        class="mt-4 scroll-mt-28 rounded-3xl border border-zinc-600/50 bg-black/30 p-6 backdrop-blur-sm"
+      >
+        <div class="mb-4 flex items-center gap-3">
+          <UIcon name="i-simple-icons-linux" class="size-6 shrink-0 text-muted" />
+          <div>
+            <h3 class="text-base font-semibold tracking-tight">{{ t('launcherPage.linuxInstall.title') }}</h3>
+            <p class="text-xs text-dimmed">{{ t('launcherPage.linuxInstall.sub') }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 py-1.5 pl-4 pr-1.5">
+          <code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap py-1 font-mono text-sm">{{ linuxCommand }}</code>
+          <UButton
+            icon="i-pixelarticons-copy"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            class="shrink-0"
+            :label="t('colorCodes.copy')"
+            @click="copyLinuxCommand"
+          />
+        </div>
+
+        <p class="mt-3 text-xs/relaxed text-dimmed">
+          {{ t('launcherPage.linuxInstall.note') }}
+          <ULink :to="`${siteUrl}/install.sh`" external class="underline hover:text-default">{{ t('launcherPage.linuxInstall.view') }}</ULink>
+        </p>
       </div>
 
       <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-dimmed">
