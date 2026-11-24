@@ -2439,7 +2439,7 @@
     "security": "Security",
     "newEmail": "New e-mail",
     "changeEmail": "Change e-mail",
-    "emailPending": "Confirm the change from the link we sent to the new address.",
+    "emailPending": "Approve the change from the link we sent to your current address — a second one then goes to the new one.",
     "currentPassword": "Current password",
     "newPassword": "New password",
     "changePassword": "Change password",
