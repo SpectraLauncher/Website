@@ -124,7 +124,7 @@ export function mailTemplate(raw: {
     eyebrow: esc(raw.eyebrow),
     title: esc(raw.title),
     body: esc(raw.body),
-    ctaUrl: encodeURI(raw.ctaUrl).replace(/"/g, '%22'),
+    ctaUrl: esc(raw.ctaUrl),
     ctaLabel: esc(raw.ctaLabel),
     footnote: esc(raw.footnote),
   }

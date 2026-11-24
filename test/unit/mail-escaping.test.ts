@@ -40,6 +40,12 @@ describe('mailTemplate escapuje tekst', () => {
     expect(html).toContain('https://usespectra.app/x')
   })
 
+  it('zakodowany parametr w adresie nie jest kodowany drugi raz', () => {
+    const html = mailTemplate({ ...base, ctaUrl: 'https://usespectra.app/api/auth/verify-email?token=a.b.c&callbackURL=%2Faccount' })
+    expect(html).toContain('href="https://usespectra.app/api/auth/verify-email?token=a.b.c&amp;callbackURL=%2Faccount"')
+    expect(html).not.toContain('%252F')
+  })
+
   it('cudzyslow w adresie nie zamyka atrybutu href', () => {
     const html = mailTemplate({ ...base, ctaUrl: 'https://x.test/a"onmouseover="alert(1)' })
     expect(html).not.toContain('"onmouseover="')
