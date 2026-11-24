@@ -241,8 +241,6 @@ export function useAuth() {
       sendOnSignIn: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
-        // Better Auth reuses this hook for the second step of an e-mail change,
-        // with an already verified user carrying the new address.
         if (user.emailVerified) {
           await sendMail(user.email, 'Confirm your new Spectra e-mail', mailTemplate({
             preheader: 'One click and this address is used for your Spectra account.',
@@ -268,22 +266,7 @@ export function useAuth() {
       },
     },
     user: {
-      changeEmail: {
-        enabled: true,
-        sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
-          await sendMail(user.email, 'Confirm your Spectra e-mail change', mailTemplate({
-            preheader: `Move your Spectra account to ${newEmail}.`,
-            eyebrow: 'E-mail change',
-            title: 'Change your e-mail',
-            body: `Someone asked to move your Spectra account to ${newEmail}. `
-              + 'After you approve it here, we send one more link to the new address.',
-            ctaUrl: url,
-            ctaLabel: 'Approve change',
-            footnote: 'If this was not you, ignore this message and change your password — '
-              + 'your e-mail stays as it is.',
-          }))
-        },
-      },
+      changeEmail: { enabled: true },
       additionalFields: {
         mcUuid: { type: 'string', required: false, input: false },
         mcUsername: { type: 'string', required: false, input: false },

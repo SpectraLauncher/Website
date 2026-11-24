@@ -20,16 +20,8 @@ describe('zmiana e-maila', () => {
     expect(options().user.changeEmail.enabled).toBe(true)
   })
 
-  it('potwierdzenie idzie na stary adres', async () => {
-    const lines = await mailsTo(() => options().user.changeEmail.sendChangeEmailConfirmation({
-      user: { email: 'old@x.test', emailVerified: true },
-      newEmail: 'new@x.test',
-      url: 'https://usespectra.app/verify',
-      token: 't',
-    }))
-    expect(lines).toHaveLength(1)
-    expect(lines[0]).toMatch(/^\[mail\] old@x\.test — Confirm your Spectra e-mail change/)
-    expect(lines[0]).toContain('new@x.test')
+  it('nie wymaga zgody starego adresu', () => {
+    expect(options().user.changeEmail.sendChangeEmailConfirmation).toBeUndefined()
   })
 
   it('drugi krok nie wita jak nowe konto', async () => {
