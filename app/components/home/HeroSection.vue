@@ -22,6 +22,7 @@ const titleWords = computed(() => [
 ])
 
 const COUNT = 75          // public/frames/f_0001.webp … f_0075.webp
+const FRAMES_REV = 2      // podbij po podmianie klatek — CDN i przeglądarki trzymają je 4 h
 const W = 1280            // rozmiar klatki — bufor canvasa, CSS skaluje
 const H = 720
 
@@ -43,7 +44,7 @@ onMounted(() => {
 
   for (let i = 1; i <= COUNT; i++) {
     const img = new Image()
-    img.src = `/frames/f_${String(i).padStart(4, '0')}.webp`
+    img.src = `/frames/f_${String(i).padStart(4, '0')}.webp?v=${FRAMES_REV}`
     if (i === 1) img.onload = () => render(0)
     images.push(img)
   }

@@ -177,7 +177,7 @@ useSchemaOrg(computed(() => [
 
           <UiGlassCard v-reveal class="p-3">
             <img
-              src="/screenshots/MainMenu.png"
+              src="/screenshots/MainMenu.png?v=2"
               alt="Spectra Launcher"
               class="block w-full rounded-2xl"
               width="1280"
@@ -201,7 +201,7 @@ useSchemaOrg(computed(() => [
         </div>
         <UiGlassCard class="p-2.5" :class="i % 2 ? 'lg:order-1' : ''">
           <img
-            :src="`/screenshots/${row.shot}`"
+            :src="`/screenshots/${row.shot}?v=2`"
             :alt="row.title"
             class="block w-full rounded-2xl"
             loading="lazy"
