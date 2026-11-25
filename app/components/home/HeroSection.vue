@@ -22,7 +22,7 @@ const titleWords = computed(() => [
 ])
 
 const COUNT = 75          // public/frames/f_0001.webp … f_0075.webp
-const FRAMES_REV = 2      // podbij po podmianie klatek — CDN i przeglądarki trzymają je 4 h
+const FRAMES_REV = '1.1.0'     // podbij po podmianie klatek — CDN i przeglądarki trzymają je 4 h
 const W = 1280            // rozmiar klatki — bufor canvasa, CSS skaluje
 const H = 720
 

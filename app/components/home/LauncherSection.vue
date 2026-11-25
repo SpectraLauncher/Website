@@ -56,7 +56,7 @@ const bullets = computed(() => (tm('home.launcherBullets') as unknown[]).map(b =
         <UiGlassCard v-reveal class="p-3">
           
           <img
-            src="/screenshots/MainMenu.png?v=2"
+            src="/screenshots/MainMenu.png?v=1.1.0"
             alt="Spectra Launcher"
             class="block w-full rounded-2xl"
             loading="lazy"
