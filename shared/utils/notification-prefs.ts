@@ -9,7 +9,7 @@ export type NotificationChannel = typeof NOTIFICATION_CHANNELS[number]
 
 export const NOTIFICATION_GROUPS = {
   social: ['friend_request', 'friend_accepted'],
-  packs: ['instance_invite', 'instance_update'],
+  packs: ['instance_invite', 'instance_update', 'instance_collab'],
   projects: ['project_approved', 'project_rejected', 'project_removed', 'project_message'],
   comments: ['project_comment', 'comment_reply'],
   follows: ['project_updated'],

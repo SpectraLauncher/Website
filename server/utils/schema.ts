@@ -72,6 +72,10 @@ export async function ensureSchema() {
       PRIMARY KEY (code, user_id)
     );
     CREATE INDEX IF NOT EXISTS idx_share_recipient_user ON share_recipient(user_id);
+    -- A recipient with can_push may push new revisions of the same code.
+    -- pending_by keeps two people from uploading over each other.
+    ALTER TABLE share_recipient ADD COLUMN IF NOT EXISTS can_push BOOLEAN NOT NULL DEFAULT FALSE;
+    ALTER TABLE shares ADD COLUMN IF NOT EXISTS pending_by TEXT;
 
     -- Odznaki. Kolumna rule wybiera warunek z rejestru BADGE_RULES, a rule_value
     -- niesie jego parametr — liczbe, date albo tekst (patrz server/utils/badges.ts).

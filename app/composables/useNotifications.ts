@@ -31,6 +31,7 @@ export const NOTIFICATION_ICONS: Record<string, string> = {
   friend_accepted: 'i-pixelarticons-contact',
   instance_invite: 'i-pixelarticons-package',
   instance_update: 'i-pixelarticons-refresh',
+  instance_collab: 'i-pixelarticons-users',
   project_approved: 'i-pixelarticons-check-double',
   project_rejected: 'i-pixelarticons-close-box',
   project_removed: 'i-pixelarticons-trash',

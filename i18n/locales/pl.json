@@ -3765,6 +3765,7 @@
     "friend_accepted": "{actor} przyjął twoje zaproszenie",
     "instance_invite": "{actor} udostępnił ci modpack",
     "instance_update": "{actor} zaktualizował modpack, którego używasz",
+    "instance_collab": "{actor} zaprosił cię do wspólnego tworzenia modpacka",
     "project_approved": "{project} został zaakceptowany i jest publiczny",
     "project_rejected": "{project} został odrzucony przez moderację",
     "project_removed": "{project} został usunięty przez moderację",

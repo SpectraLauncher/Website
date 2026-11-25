@@ -68,3 +68,58 @@ export function normalizeCode(raw: unknown): string {
 export function packKey(code: string, revision: number) {
   return `packs/${code}/${revision}.zip`
 }
+
+export type ShareRole = 'owner' | 'collaborator'
+
+export function shareRole(ownerId: string | null, userId: string, canPush: boolean | null | undefined): ShareRole | null {
+  if (ownerId && ownerId === userId) return 'owner'
+  return canPush ? 'collaborator' : null
+}
+
+export const PUSH_BUSY = {
+  statusCode: 409,
+  statusMessage: 'someone else is pushing this pack right now — try again in a moment',
+  data: { reason: 'busy' },
+}
+
+interface PushTarget {
+  revision: number
+  uploaded: boolean
+  pending_by: string | null
+  pending_at: number | string | null
+}
+
+// A push has to start from the revision now live. Anything else would quietly
+// drop whatever someone pushed in between, so it is refused and the launcher
+// walks the person through the differences before trying again. A launcher
+// older than collaboration sends no base; only the owner could push then, so
+// only the owner may still push without one.
+export function pushRefusal(share: PushTarget, input: {
+  role: ShareRole
+  userId: string
+  base: number | null
+  now: number
+}): { statusCode: number, statusMessage: string, data: Record<string, unknown> } | null {
+  const pendingAt = Number(share.pending_at)
+  if (share.pending_by && share.pending_by !== input.userId
+    && pendingAt > input.now - UPLOAD_URL_TTL * 1000) {
+    return PUSH_BUSY
+  }
+  if (input.base === null) {
+    if (input.role === 'owner') return null
+    return { statusCode: 400, statusMessage: 'missing base revision', data: { reason: 'base' } }
+  }
+  if (share.uploaded && input.base !== share.revision) {
+    return {
+      statusCode: 409,
+      statusMessage: `revision ${share.revision} was pushed since you last updated — get it first`,
+      data: { reason: 'stale', revision: share.revision },
+    }
+  }
+  return null
+}
+
+export function updateAudience(ownerId: string | null, recipients: string[], pusherId: string): string[] {
+  return [...new Set([ownerId, ...recipients])]
+    .filter((id): id is string => !!id && id !== pusherId)
+}

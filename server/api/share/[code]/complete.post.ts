@@ -10,17 +10,27 @@ export default defineEventHandler(async (event) => {
     uploaded: boolean
     object_key: string | null
     pending_key: string | null
+    pending_by: string | null
     name: string | null
+    can_push: boolean | null
   }>(
-    'SELECT code, owner_id, revision, uploaded, object_key, pending_key, name FROM shares WHERE code = $1',
-    [code],
+    `SELECT s.code, s.owner_id, s.revision, s.uploaded, s.object_key, s.pending_key, s.pending_by,
+            s.name, r.can_push
+     FROM shares s LEFT JOIN share_recipient r ON r.code = s.code AND r.user_id = $2
+     WHERE s.code = $1`,
+    [code, me.id],
   )
 
-  if (!row || row.owner_id !== me.id) {
+  const role = row ? shareRole(row.owner_id, me.id, row.can_push) : null
+  if (!row || !role) {
     throw createError({ statusCode: 404, statusMessage: 'no such share' })
   }
   if (!row.pending_key) {
     throw createError({ statusCode: 409, statusMessage: 'nothing was being uploaded' })
+  }
+  // An upload started before pending_by existed can only have been the owner's.
+  if ((row.pending_by ?? row.owner_id) !== me.id) {
+    throw createError({ statusCode: 409, statusMessage: 'this upload is out of date' })
   }
 
   const revision = row.uploaded ? row.revision + 1 : row.revision
@@ -48,7 +58,8 @@ export default defineEventHandler(async (event) => {
   const now = Date.now()
   const expires = expiryFor(now)
   await exec(
-    `UPDATE shares SET object_key = $1, pending_key = NULL, pending_at = NULL, uploaded = TRUE,
+    `UPDATE shares SET object_key = $1, pending_key = NULL, pending_at = NULL, pending_by = NULL,
+            uploaded = TRUE,
             size = $2, revision = $3, expires = $4
      WHERE code = $5`,
     [row.pending_key, stored, revision, expires, code],
@@ -56,12 +67,17 @@ export default defineEventHandler(async (event) => {
 
   if (previous && previous !== row.pending_key) await r2Delete(r2, previous)
 
+  if (role === 'collaborator') {
+    await exec('UPDATE share_recipient SET imported_revision = $1 WHERE code = $2 AND user_id = $3',
+      [revision, code, me.id])
+  }
+
   if (revision > 1) {
     const recipients = await q<{ user_id: string }>(
       'SELECT user_id FROM share_recipient WHERE code = $1', [code])
-    for (const r of recipients) {
+    for (const userId of updateAudience(row.owner_id, recipients.map(r => r.user_id), me.id)) {
       await notify({
-        userId: r.user_id,
+        userId,
         kind: 'instance_update',
         actorId: me.id,
         shareCode: code,

@@ -34,7 +34,11 @@ export default defineEventHandler(async (event) => {
          ON CONFLICT (code, user_id) DO UPDATE SET imported_revision = EXCLUDED.imported_revision`,
         [code, user.id, Date.now(), row.revision],
       )
-      await clearNotifications(user.id, ['instance_invite', 'instance_update'], { shareCode: code })
+    }
+    // The owner gets updates too, once collaborators push.
+    if (user) {
+      await clearNotifications(user.id, ['instance_invite', 'instance_update', 'instance_collab'],
+        { shareCode: code })
     }
   }
 

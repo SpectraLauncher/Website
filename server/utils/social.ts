@@ -5,7 +5,7 @@ export type FriendStatus = 'pending' | 'accepted' | 'blocked'
 // Adding a kind: one entry here, one `notifications.<kind>` string per locale,
 // and an icon in NOTIFICATION_ICONS on the client.
 export type NotificationKind =
-  | 'friend_request' | 'friend_accepted' | 'instance_invite' | 'instance_update'
+  | 'friend_request' | 'friend_accepted' | 'instance_invite' | 'instance_update' | 'instance_collab'
   | 'project_approved' | 'project_rejected' | 'project_removed' | 'project_message'
   | 'project_comment' | 'comment_reply' | 'project_updated'
   | 'report_received' | 'report_closed'
